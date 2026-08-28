@@ -117,6 +117,7 @@ AI 不应该替代：
 
 当前执行入口：
 
+0. [`TODO_WSL3090.md`](TODO_WSL3090.md) — WSL2 RTX 3090 环境、测试与单图 smoke 交接
 1. [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)
 2. [`01_problem/problem_statement.md`](01_problem/problem_statement.md)
 3. [`03_gap_analysis/gap_matrix.md`](03_gap_analysis/gap_matrix.md)

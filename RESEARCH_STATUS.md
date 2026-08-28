@@ -51,6 +51,8 @@ RecurrentGRIP 将模型拆分为：
 
 ## 立即执行顺序
 
+> WSL 执行端的当前 TODO 与完整 Codex Prompt 见 [`TODO_WSL3090.md`](TODO_WSL3090.md)。
+
 1. 冻结原始 GRIP baseline，不修改其默认行为。
 2. 核验 NELL23K 与 CLEGR 当前复现结果。
 3. 构造 CLEGR 精确 hop split，并检查所有路径捷径。
