@@ -45,6 +45,7 @@ outputs/
 **/logs/*.txt
 
 # Temporary files
+*.log
 *.tmp
 *.temp
 *.bak
