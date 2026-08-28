@@ -1,0 +1,206 @@
+{
+    "P119": {
+        "label": "place of burial",
+        "description": "location of grave, resting place, place of ash-scattering, etc, (e.g. town/city or cemetery) for a person or animal. There may be several places: e.g. re-burials, cenotaphs, parts of body buried separately."
+    },
+    "P551": {
+        "label": "residence",
+        "description": "the place where the person is or has been, resident"
+    },
+    "P451": {
+        "label": "unmarried partner",
+        "description": "someone with whom the person is in a relationship without being married. Use \"spouse\" (P26) for married couples"
+    },
+    "P102": {
+        "label": "member of political party",
+        "description": "the political party of which this politician is or has been a member"
+    },
+    "P3095": {
+        "label": "practiced by",
+        "description": "type of agents that study this subject or work in this profession"
+    },
+    "P112": {
+        "label": "founded by",
+        "description": "founder or co-founder of this organization, religion or place"
+    },
+    "P69": {
+        "label": "educated at",
+        "description": "educational institution attended by subject"
+    },
+    "P135": {
+        "label": "movement",
+        "description": "literary, artistic, scientific or philosophical movement or scene associated with this person or work"
+    },
+    "P530": {
+        "label": "diplomatic relation",
+        "description": "diplomatic relations of the country"
+    },
+    "P641": {
+        "label": "sport",
+        "description": "sport in which the subject participates or belongs to"
+    },
+    "P140": {
+        "label": "religion",
+        "description": "religion of a person, organization or religious building, or associated with this subject"
+    },
+    "P57": {
+        "label": "director",
+        "description": "director(s) of film, TV-series, stageplay, video game or similar"
+    },
+    "P840": {
+        "label": "narrative location",
+        "description": "the narrative of the work is set in this location"
+    },
+    "P2283": {
+        "label": "uses",
+        "description": "item or concept used by the subject or in the operation (see also instrument [P1303] and armament [P520])"
+    },
+    "P1412": {
+        "label": "languages spoken, written, or signed",
+        "description": "language(s) that a person speaks, writes or signs, including the native language(s)"
+    },
+    "P780": {
+        "label": "symptoms",
+        "description": "possible symptoms of a medical condition"
+    },
+    "P1050": {
+        "label": "medical condition",
+        "description": "any state relevant to the health of an organism, including diseases and positive conditions"
+    },
+    "P1056": {
+        "label": "product or material produced",
+        "description": "material or product produced by a government agency, business, industry, facility, or process"
+    },
+    "P54": {
+        "label": "member of sports team",
+        "description": "sports teams or clubs that the subject currently represents or formerly represented"
+    },
+    "P495": {
+        "label": "country of origin",
+        "description": "country of origin of this item (creative work, food, phrase, product, etc.)"
+    },
+    "P509": {
+        "label": "cause of death",
+        "description": "underlying or immediate cause of death.  Underlying cause (e.g. car accident, stomach cancer) preferred.  Use 'manner of death' (P1196) for broadest category, e.g. natural causes, accident, homicide, suicide"
+    },
+    "P161": {
+        "label": "cast member",
+        "description": "actor in the subject production [use \"character role\" (P453) and/or \"name of the character role\" (P4633) as qualifiers] [use \"voice actor\" (P725) for voice-only role]"
+    },
+    "P737": {
+        "label": "influenced by",
+        "description": "this person, idea, etc. is informed by that other person, idea, etc., e.g. \"Heidegger was influenced by Aristotle\"."
+    },
+    "P26": {
+        "label": "spouse",
+        "description": "the subject has the object as their spouse (husband, wife, partner, etc.). Use \"unmarried partner\" (P451) for non-married companions"
+    },
+    "P361": {
+        "label": "part of",
+        "description": "object of which the subject is a part (if this subject is already part of object A which is a part of object B, then please only make the subject part of object A). Inverse property of \"has part\" (P527, see also \"has parts of the class\" (P2670))."
+    },
+    "P172": {
+        "label": "ethnic group",
+        "description": "subject's ethnicity (consensus is that a VERY high standard of proof is needed for this field to be used. In general this means 1) the subject claims it themself, or 2) it is widely agreed on by scholars, or 3) is fictional and portrayed as such)"
+    },
+    "P40": {
+        "label": "child",
+        "description": "subject has object as biological, foster, and/or adoptive child"
+    },
+    "P138": {
+        "label": "named after",
+        "description": "entity or event that inspired the subject's name, or namesake (in at least one language). Qualifier \"applies to name\" (P5168) can be used to indicate which one"
+    },
+    "P30": {
+        "label": "continent",
+        "description": "continent of which the subject is a part"
+    },
+    "P17": {
+        "label": "country",
+        "description": "sovereign state of this item; don't use on humans"
+    },
+    "P2348": {
+        "label": "time period",
+        "description": "time period (historic period or era, sports season, theatre season, legislative period etc.) in which the subject occurred"
+    },
+    "P27": {
+        "label": "country of citizenship",
+        "description": "the object is a country that recognizes the subject as its citizen"
+    },
+    "P101": {
+        "label": "field of work",
+        "description": "specialization of a person or organization; see P106 for the occupation"
+    },
+    "P740": {
+        "label": "location of formation",
+        "description": "location where a group or organization was formed"
+    },
+    "P50": {
+        "label": "author",
+        "description": "main creator(s) of a written work (use on works, not humans); use P2093 when Wikidata item is unknown or does not exist"
+    },
+    "P463": {
+        "label": "member of",
+        "description": "organization, musical group, or club to which the subject belongs. Do not use for membership in ethnic or social groups, nor for holding a position such as a member of parliament (use P39 for that)."
+    },
+    "P19": {
+        "label": "place of birth",
+        "description": "most specific known (e.g. city instead of country, or hospital instead of city) birth location of a person, animal or fictional character"
+    },
+    "P159": {
+        "label": "headquarters location",
+        "description": "specific location where an organization's headquarters is or has been situated. Inverse property of \"occupant\" (P466)."
+    },
+    "P3373": {
+        "label": "sibling",
+        "description": "the subject has the object as their sibling (brother, sister, etc.). Use \"relative\" (P1038) for siblings-in-law (brother-in-law, sister-in-law, etc.) and step-siblings (step-brothers, step-sisters, etc.)"
+    },
+    "P136": {
+        "label": "genre",
+        "description": "creative work's genre or an artist's field of work (P101). Use main subject (P921) to relate creative works to their topic"
+    },
+    "P106": {
+        "label": "occupation",
+        "description": "occupation of a person; see also \"field of work\" (Property:P101), \"position held\" (Property:P39)"
+    },
+    "P131": {
+        "label": "located in the administrative terroritorial entity",
+        "description": "the item is located on the territory of the following administrative entity. Use P276 (location) for specifying locations that are non-administrative places and for items about events"
+    },
+    "P113": {
+        "label": "airline hub",
+        "description": "airport that serves as a hub for an airline"
+    },
+    "P37": {
+        "label": "official language",
+        "description": "language designated as official by this item"
+    },
+    "P108": {
+        "label": "employer",
+        "description": "person or organization for which the subject works or worked"
+    },
+    "P407": {
+        "label": "language of work or name",
+        "description": "language associated with this creative work (such as books, shows, songs, or websites) or a name (for persons use \"native language\" (P103) and \"languages spoken, written or signed\" (P1412))"
+    },
+    "P264": {
+        "label": "record label",
+        "description": "brand and trademark associated with the marketing of subject music recordings and music videos"
+    },
+    "P749": {
+        "label": "parent organization",
+        "description": "parent organization of an organization, opposite of subsidiaries (P355)"
+    },
+    "P452": {
+        "label": "industry",
+        "description": "industry of company or organization"
+    },
+    "P1303": {
+        "label": "instrument",
+        "description": "musical instrument that a person plays"
+    },
+    "P20": {
+        "label": "place of death",
+        "description": "most specific known (e.g. city instead of country, or hospital instead of city) death location of a person, animal or fictional character"
+    }
+}

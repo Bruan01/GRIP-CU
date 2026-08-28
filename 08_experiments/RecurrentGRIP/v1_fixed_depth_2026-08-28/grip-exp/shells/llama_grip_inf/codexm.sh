@@ -1,0 +1,59 @@
+PYTHONPATH=. python scripts/mp_wrapper.py \
+    --script scripts/run_grip.py \
+    --num_process 1 \
+    --dataset codexm \
+    --output_file codexm_llama_submit.json \
+    --do_eval \
+    --metrics em f1 hit \
+    --llm_as_judge_model qwen-32b \
+    --report_to_wandb \
+    --wandb_project_name grip \
+    --wandb_run_name codexm_llama_submit \
+    --subprocess_args \
+    --overwrite True \
+    --task_generator_model_name llama3-8b \
+    --num_context_qa 8000 \
+    --num_reason_qa 2000 \
+    --num_summarization 6000 \
+    --sample_node_attribute_task False \
+    --repharse_context_qa False \
+    --context_upsampling False \
+    --task_gen_max_length 1000 \
+    --tokenize_max_length 4096 \
+    --gen_max_length 1000 \
+    --model_name llama3-8b \
+    --quantization False \
+    --lora_r 4 \
+    --lora_alpha 8 \
+    --target_modules down_proj up_proj gate_proj \
+    --gather_batches False \
+    --num_train_epochs 1 \
+    --involve_qa_epochs 10 \
+    --s1_stop_loss_threshold 0.15 \
+    --s2_stop_loss_threshold 0.15 \
+    --s1_min_epoch 1 \
+    --s2_min_epoch 1 \
+    --continue_training False \
+    --remove_unused_columns True \
+    --report_to none \
+    --overwrite_output_dir True \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 128 \
+    --learning_rate 1e-3 \
+    --weight_decay 1e-4 \
+    --adam_beta1 0.9 \
+    --adam_beta2 0.98 \
+    --adam_epsilon 1e-8 \
+    --max_grad_norm 1.0 \
+    --log_level info \
+    --logging_strategy steps \
+    --logging_steps 1 \
+    --save_strategy no \
+    --bf16 True \
+    --tf32 False \
+    --gradient_checkpointing False \
+    --lr_scheduler_type linear \
+    --no_graph_context True \
+    --use_subgraph False \
+    --index_format False
+

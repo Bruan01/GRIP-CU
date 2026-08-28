@@ -1,0 +1,50 @@
+# macOS / editors
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python environments and caches
+.venv/
+**/.venv/
+venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Model and training artifacts
+model_cache/
+**/model_cache/
+wandb/
+**/wandb/
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+
+# Generated outputs and immutable run data
+outputs/
+**/outputs/
+**/results/*
+!**/results/.gitkeep
+**/logs/*.log
+**/logs/*.txt
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
