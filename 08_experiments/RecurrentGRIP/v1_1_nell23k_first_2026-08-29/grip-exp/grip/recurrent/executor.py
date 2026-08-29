@@ -25,6 +25,12 @@ class FixedDepthRecurrentBlock(nn.Module):
     def __init__(self, block: nn.Module, depth: int = 1) -> None:
         super().__init__()
         self.block = block
+        # Transformers 4.56+ reads decoder-layer metadata from the wrapped layer
+        # while constructing the causal mask (for example Qwen2.attention_type).
+        # Keep this metadata visible on the recurrent wrapper.
+        for attribute in ("attention_type", "layer_idx"):
+            if hasattr(block, attribute):
+                setattr(self, attribute, getattr(block, attribute))
         self.depth = 1
         self.record_trace = False
         self._last_trace: list[torch.Tensor] = []

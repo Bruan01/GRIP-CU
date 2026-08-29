@@ -54,6 +54,10 @@ class RecurrentArguments:
         default=32,
         metadata={"help": "Per-graph cap for each hop bucket. 0 keeps all questions."},
     )
+    max_context_samples: int = field(
+        default=0,
+        metadata={"help": "Maximum graph-memory samples per graph; 0 keeps all samples."},
+    )
     adapter_control: str = field(
         default="all",
         metadata={"help": "Evaluation adapter condition: correct, shuffled, none, or all."},
@@ -99,8 +103,8 @@ class RecurrentArguments:
             raise ValueError("adapter_control must be one of: correct, shuffled, none, all")
         if self.evaluation_device not in {"auto", "cuda", "cpu", "mps"}:
             raise ValueError("evaluation_device must be one of: auto, cuda, cpu, mps")
-        if self.max_graphs < 0 or self.max_questions_per_hop < 0:
-            raise ValueError("max_graphs and max_questions_per_hop cannot be negative")
+        if self.max_graphs < 0 or self.max_questions_per_hop < 0 or self.max_context_samples < 0:
+            raise ValueError("max_graphs, max_questions_per_hop, and max_context_samples cannot be negative")
         if self.wall_time_limit_minutes < 1:
             raise ValueError("wall_time_limit_minutes must be positive")
         if self.hard_stop_minutes < self.wall_time_limit_minutes:

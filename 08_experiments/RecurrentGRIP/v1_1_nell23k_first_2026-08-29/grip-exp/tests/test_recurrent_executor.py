@@ -6,6 +6,13 @@ from torch import nn
 from grip.recurrent.executor import FixedDepthRecurrentBlock, trace_recurrence
 
 
+class MetadataBlock(nn.Module):
+    attention_type = "full_attention"
+
+    def forward(self, hidden_states, *args, **kwargs):
+        return hidden_states
+
+
 class CountingBlock(nn.Module):
     def __init__(self):
         super().__init__()
@@ -31,6 +38,10 @@ class RecurrentExecutorTest(unittest.TestCase):
         self.assertEqual(output[1], "final-pass-aux")
         self.assertEqual(len(traced.get_trace()), 3)
         self.assertTrue(torch.equal(traced.get_trace()[1], torch.full((1, 4), 2.0)))
+
+    def test_preserves_decoder_attention_metadata(self):
+        recurrent = FixedDepthRecurrentBlock(MetadataBlock(), depth=2)
+        self.assertEqual(recurrent.attention_type, "full_attention")
 
     def test_depth_must_be_positive(self):
         with self.assertRaisesRegex(ValueError, "at least 1"):

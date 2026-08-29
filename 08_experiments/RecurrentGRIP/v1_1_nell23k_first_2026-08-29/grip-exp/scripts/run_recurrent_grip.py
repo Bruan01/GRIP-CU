@@ -45,7 +45,15 @@ def _graph_id(record: dict, graph_index: int) -> str:
 
 def _parse_answer(text: str) -> str:
     matches = re.findall(r"<answer>(.*?)</answer>", text, flags=re.IGNORECASE | re.DOTALL)
-    return "; ".join(item.strip() for item in matches).strip()
+    if matches:
+        return "; ".join(item.strip() for item in matches).strip()
+
+    # Qwen may follow the documented ``[answer]`` shape without emitting the
+    # optional XML-like tags. Preserve that answer instead of scoring it as
+    # empty; untagged plain text is also retained for exact-match evaluation.
+    stripped = text.strip()
+    bracket_match = re.fullmatch(r"\[\s*(.*?)\s*\]", stripped, flags=re.DOTALL)
+    return (bracket_match.group(1) if bracket_match else stripped).strip()
 
 
 def _eval_dataset(record: dict, tokenizer):
@@ -245,6 +253,15 @@ def _train_adapters(
             context_upsampling=exp_args["context_upsampling"],
             format_as_instruction=exp_args["format_as_instruction"],
         )()[0]
+        max_context_samples = exp_args.get("max_context_samples", 0)
+        if max_context_samples:
+            context_samples = context_samples[:max_context_samples]
+            log_event(
+                "recurrent_context_samples_capped",
+                graph_id=graph_id,
+                max_context_samples=max_context_samples,
+                selected_context_samples=len(context_samples),
+            )
         task_dataset = build_recurrent_task_dataset(
             tokenizer=tokenizer,
             title=record.get("title", graph_id),

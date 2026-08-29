@@ -41,6 +41,7 @@ cp "$NELL_INPUT.stats.json" "$RUN_DIR/input_stats.json" 2>/dev/null || true
 } > "$RUN_DIR/environment.txt" 2>&1
 
 cd "$CODE_DIR"
+export PYTHONPATH="$CODE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 timeout --signal=TERM --kill-after=5m 45m \
   "$PYTHON" scripts/run_recurrent_pilot.py \
     --input_file "$NELL_INPUT" \
@@ -64,6 +65,7 @@ timeout --signal=TERM --kill-after=5m 45m \
     --bf16 true \
     --recurrent_depth_train 2 \
     --recurrent_depth_sweep 1 2 \
+    --max_context_samples 256 \
     --target_modules q_proj k_proj v_proj \
     --adapter_control all \
     --evaluation_device cuda \

@@ -1,9 +1,16 @@
 import unittest
 
 from grip.recurrent.outputs import RecurrentPrediction
+from scripts.run_recurrent_grip import _parse_answer
 
 
 class RecurrentOutputSchemaTest(unittest.TestCase):
+    def test_bracket_answer_is_parsed_without_tags(self):
+        self.assertEqual(_parse_answer("[concept:teamplaysinleague]"), "concept:teamplaysinleague")
+
+    def test_tagged_answer_is_parsed(self):
+        self.assertEqual(_parse_answer("<answer>r1</answer>"), "r1")
+
     def test_serialized_prediction_contains_mechanism_and_control_fields(self):
         prediction = RecurrentPrediction(
             graph_id="g0",

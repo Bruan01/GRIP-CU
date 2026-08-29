@@ -41,6 +41,7 @@ uv pip install --python .venv/bin/python \
   "openai==1.107.0" \
   "anthropic==0.66.0" \
   "tenacity==9.1.2" \
+  "tiktoken==0.11.0" \
   "pytest>=8,<9" \
   tqdm
 
