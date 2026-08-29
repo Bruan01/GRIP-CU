@@ -109,7 +109,7 @@ AI 不应该替代：
 
 ## 当前研究主线：RecurrentGRIP
 
-更新日期：2026-08-28
+更新日期：2026-08-29
 
 本项目当前聚焦：
 
@@ -125,5 +125,5 @@ AI 不应该替代：
 5. [`08_experiments/PILOT_PLAN.md`](08_experiments/PILOT_PLAN.md)
 6. [`11_paper/paper_outline.md`](11_paper/paper_outline.md)
 
-当前原则：先完成 Original GRIP 复现和 CLEGR 两小时 pilot；只有 pilot 通过预设决策门，才进入动态停止、机制干预和六数据集完整实验。
+当前原则：先在 NELL23K 上完成 Original GRIP/RecurrentGRIP 的 WSL smoke 和固定深度 Pilot；只有出现可信的 recurrence 信号，才运行 CLEGR 严格 K↔hop 机制确认，并在通过决策门后进入动态停止、机制干预和多数据集实验。
 

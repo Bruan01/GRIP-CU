@@ -1,0 +1,16 @@
+{
+  "version": "v1_1_nell23k_first_2026-08-29",
+  "dataset": "NELL23K relation prediction",
+  "model": "Qwen2.5-0.5B",
+  "seed": 2026,
+  "train_questions": 512,
+  "validation_questions": 128,
+  "test_questions": 512,
+  "num_candidates": 10,
+  "recurrent_depth_train": 2,
+  "recurrent_depth_sweep": [1, 2, 3, 4],
+  "adapter_controls": ["correct", "none"],
+  "wall_time_limit_minutes": 120,
+  "hard_stop_minutes": 180,
+  "notes": "NELL23K has one graph, so shuffled-adapter control is skipped. Structural distance is computed on the undirected train graph and is diagnostic rather than a causal hop label."
+}

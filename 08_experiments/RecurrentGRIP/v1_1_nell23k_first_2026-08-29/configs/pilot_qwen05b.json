@@ -1,0 +1,47 @@
+{
+  "experiment_id": "RG-E1-v1-fixed-depth-2026-08-28",
+  "model_name": "qwen-0.5b",
+  "dataset": "CLEGR-Reasoning/StationShortestCount",
+  "train_hops": [
+    1,
+    2
+  ],
+  "validation_hops": [
+    1,
+    2
+  ],
+  "test_hops": [
+    3,
+    4
+  ],
+  "recurrent_depth_train": 2,
+  "recurrent_depth_sweep": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "adapter_controls": [
+    "correct",
+    "shuffled",
+    "none"
+  ],
+  "lora_r": 4,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj"
+  ],
+  "seed": 2026,
+  "soft_wall_time_minutes": 120,
+  "hard_stop_minutes": 180,
+  "development_host": "macOS",
+  "execution_host": "Windows WSL2 + RTX 3090 24GB",
+  "python_version": "3.11",
+  "torch_version": "2.7.1+cu126",
+  "evaluation_device": "cuda",
+  "require_cuda": true,
+  "dtype": "bfloat16"
+}

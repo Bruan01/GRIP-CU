@@ -1,98 +1,82 @@
-# CLEGR Two-Hour Pilot Plan
+# NELL23K-First Pilot Plan
 
-更新日期：2026-08-28
+更新日期：2026-08-29
 
-## 1. Pilot 问题
+## 决策
 
-在只使用 1–2 hop 任务训练后，测试时增加共享 recurrence，能否改善未见的 3–4 hop 闭卷图推理？
+RecurrentGRIP 首轮 WSL2 RTX 3090 smoke 和两小时 Pilot 改用 NELL23K。CLEGR
+不再是运行前置条件，原 CLEGR 方案保存在
+[`CLEGR_MECHANISM_PLAN.md`](CLEGR_MECHANISM_PLAN.md)，待 NELL23K 出现递归深度信号后执行。
 
-## 2. 时间预算
+## 当前代码版本
 
-单次 pilot 的 GPU 时间上限：2 小时。超过 3 小时强制停止并保留部分结果。
+```text
+08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/
+```
 
-## 3. 数据
+## 数据协议
 
-### v1 可证伪子任务
+```text
+train.txt -> train graph + recurrent QA train
+valid.txt -> validation
+test.txt  -> test
+```
 
-CLEGR-Reasoning 同时包含 Filter、Aggregation、Topology 和 PathReasoning，不能把所有 reasoning 问题直接解释为固定 hop。首轮 Pilot 因此只使用 `StationShortestCount`：从问题恢复两个端点，并在 `edge_index` 上重新计算真实无向最短距离。数据标签必须等于 `max(该距离 - 1, 0)`，否则拒绝样本。其他 PathReasoning 类型留到 v1.1。
+默认 smoke 使用 64/32/64 个 train/validation/test 问题；候选关系由训练关系
+词表确定性采样。实体对结构距离在 train graph 上通过无向 BFS 重算。不可达样本
+保留在整体准确率中，但不进入 hop/K correlation。
 
-- Dataset：CLEGR；
-- 图数量：先使用 8–16 张小图；
-- 节点数：20–50；
-- 训练：1–2 hop；
-- 验证：1–2 hop；
-- 测试：3–4 hop；
-- 节点名称：随机无语义标识；
-- 每条样本保存 shortest distance、relation path 和 frontiers；
-- 自动排除一跳或更短路径捷径。
+## Smoke
 
-## 4. 模型
+```text
+Model: Qwen2.5-0.5B
+K_train: 2
+K_eval: 1,2
+Controls: correct adapter / adapter disabled
+Hard timeout: 45 minutes
+```
 
-- 优先 Qwen2.5-0.5B 或 1.5B；
-- LoRA rank：4 或 8；
-- recurrent executor：1 个共享 block 或连续 2 个共享 block；
-- recurrence sweep：\(K=1,2,3,4,5\)；
-- Pilot 使用固定深度，不实现 halt head；
-- 训练 token 和 QA 数对所有方法保持一致。
+命令：
 
-## 5. 对照
+```bash
+cd 08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29
+bash configs/setup_wsl3090.sh
+bash configs/test_wsl3090.sh
+bash configs/prepare_nell23k.sh
+RUN_ID=wsl3090_nell23k_smoke_20260829_01 bash configs/run_nell23k_smoke_wsl.sh
+RUN_DIR="$(cat results/LAST_NELL23K_SMOKE_RUN.txt)" bash configs/analyze_nell23k.sh
+```
 
-### P0：Base LM
+## Smoke Gate
 
-不加载图 adapter，检查泄漏。
+- CUDA、BF16、RTX 3090 验证通过；
+- 全部 unittest 通过；
+- adapter 只存在于 recurrent executor layer；
+- K=1/2 都产生预测；
+- correct/none 都产生结果；
+- adapter 保存、重载后模型仍在 CUDA；
+- 无 OOM、NaN、CUDA error 和 CPU 静默回退；
+- 运行目录、环境、输入统计、日志和预测完整保存。
 
-### P1：Original GRIP
+## Two-Hour Pilot
 
-原始一次前向推理。
+Smoke 通过后：
 
-### P2：GRIP + More Reasoning QA
+```bash
+MAX_TRAIN_QUESTIONS=512 \
+MAX_VALIDATION_QUESTIONS=128 \
+MAX_TEST_QUESTIONS=512 \
+  bash configs/prepare_nell23k.sh
 
-与 RecurrentGRIP 使用完全相同的训练问题，不使用 recurrence。
+RUN_ID=wsl3090_nell23k_pilot_20260829_01 \
+  bash configs/run_nell23k_pilot_wsl.sh
+```
 
-### P3：Fixed-Depth RecurrentGRIP
+Pilot 比较 K=1/2/3/4，并报告整体 accuracy、correct-vs-none、结构距离分桶、
+延迟和峰值显存。
 
-同一个 executor 重复 \(K\) 次。
+## 解释边界
 
-## 6. 记录内容
-
-每条问题记录：
-
-- graph ID；
-- question ID；
-- true hop；
-- recurrence \(K\)；
-- raw response；
-- parsed answer；
-- correctness；
-- latency；
-- peak memory；
-- 每步 pooled hidden state；
-- 使用的 adapter ID。
-
-## 7. 成功条件
-
-至少满足两项：
-
-1. 3–4 hop 比 Original GRIP 提升至少 5 个绝对百分点；
-2. 3–4 hop 上 \(K=3/4\) 明显优于 \(K=1\)；
-3. 最优 \(K\) 与 true hop 正相关；
-4. 1–2 hop 性能下降不超过 2 个百分点；
-5. adapter shuffle 明显破坏性能。
-
-## 8. 失败诊断顺序
-
-若 pilot 失败，按以下顺序检查：
-
-1. 原始 GRIP 是否成功记住 1-hop 事实；
-2. 多跳数据是否存在捷径或答案解析错误；
-3. recurrent block 是否真正共享权重；
-4. graph LoRA 是否实际作用于 recurrent block；
-5. hidden state 是否出现数值发散或表示坍缩；
-6. 增加 recurrence 是否只是造成 overthinking；
-7. 执行器是否需要跨图 meta-training。
-
-## 9. Pilot 后决策
-
-- 通过：进入 v2 动态停止和机制分析；
-- 部分通过：只调整 executor 位置、残差门和训练深度，不扩展六数据集；
-- 未通过：停止方法扩张，形成负结果分析，并比较 SuccessorGRIP 备选方向。
+NELL23K 的 train-graph shortest path 是结构相关性诊断，不是受控的推理 hop 标签。
+NELL23K 可以支持“RecurrentGRIP 在原始 GRIP 数据集上有效”和“K 对不同结构距离
+产生差异”，但严格的 K↔hop 因果主张仍由后续 CLEGR 机制实验确认。

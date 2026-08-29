@@ -25,4 +25,5 @@ vMAJOR[_MINOR]_<mechanism>_YYYY-MM-DD/
 
 | 版本 | 日期 | 机制 | 状态 |
 |---|---|---|---|
-| `v1_fixed_depth_2026-08-28` | 2026-08-28 | 单层共享参数固定深度递归执行 | macOS static PASS；WSL2 RTX 3090 scripts ready；待 WSL ML integration/smoke |
+| `v1_fixed_depth_2026-08-28` | 2026-08-28 | CLEGR-first 单层共享参数固定深度递归执行 | 已冻结；保留为严格 hop 机制版本 |
+| `v1_1_nell23k_first_2026-08-29` | 2026-08-29 | NELL23K-first fixed-depth executor 与结构距离分析 | macOS 验证中；待 WSL2 RTX 3090 smoke |
