@@ -1,0 +1,37 @@
+{
+  "audit_scope": "local independent recomputation; no external cross-model reviewer backend was available",
+  "status": "warn",
+  "checks": {
+    "run_status_complete": true,
+    "prediction_rows": 864,
+    "candidate_score_rows": 288,
+    "prediction_unique_keys": 864,
+    "candidate_score_unique_keys": 288,
+    "complete_prediction_grid": true,
+    "all_candidate_counts_equal_10": true,
+    "all_score_counts_equal_10": true,
+    "all_targets_in_candidates": true,
+    "source_input_available": true,
+    "all_predictions_match_source_question_target_candidates": true,
+    "all_scores_finite": true,
+    "recorded_correct_matches_recomputed_exact_match": true,
+    "no_runtime_error_markers": true,
+    "validation_only_normalization_selection": true,
+    "selected_normalization": "raw_sum",
+    "correct_only_validation_would_select_same_normalization": true,
+    "target_excluded_from_model_prompt_by_dataset_path": true,
+    "true_candidate_order_permutation_was_run": false,
+    "shuffled_or_wrong_graph_adapter_control_available": false,
+    "wrong_depth_control_available": true,
+    "run_environment_commit_exactly_identifies_probe_code": false,
+    "submitted_calibration_uses_selected_normalization": false
+  },
+  "findings": [
+    "Candidate-order robustness is invalid: the runner reverses already-computed score dictionaries instead of rebuilding the prompt with permuted candidates and re-running the model.",
+    "The available wrong_depth adapter is trained on the same NELL23K graph; it is a recurrence mismatch control, not a shuffled/wrong-graph memory-specificity control.",
+    "Normalization was selected on validation only, but pooled across all adapter controls. Raw-sum also wins on correct-adapter validation alone, so this does not change the current conclusion.",
+    "The environment records parent commit 2ee0c86 rather than an exact committed probe implementation; the submitted source snapshot exists, but run-to-code provenance is weaker than a clean committed-run hash.",
+    "response_in_candidates uses raw string membership while correctness uses punctuation-normalized exact match; one valid free response is therefore marked out-of-set in metadata without affecting accuracy.",
+    "The submitted calibration script always ranks norm_logprob margins even though raw_sum was selected, so calibration.json is not calibration for the actual score decoder."
+  ]
+}

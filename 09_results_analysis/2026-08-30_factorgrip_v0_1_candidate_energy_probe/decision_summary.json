@@ -1,0 +1,30 @@
+{
+  "verdict": "STOP_AS_STANDALONE_DECODER_IDEA__KEEP_AS_BASELINE_COMPONENT",
+  "go_gate": {
+    "correct_minus_none_test_ge_5pp": false,
+    "score_minus_free_test_ge_10pp": true,
+    "validation_test_direction_consistent": true,
+    "wrong_or_shuffled_below_correct": false,
+    "candidate_order_permutation_stable": null,
+    "go": false
+  },
+  "key_effects": {
+    "test_correct_score_accuracy": 0.34375,
+    "test_none_score_accuracy": 0.375,
+    "test_correct_score_minus_none_pp": -3.125,
+    "test_correct_score_minus_free_pp": 17.1875,
+    "test_correct_constrained_minus_free_pp": 17.1875,
+    "validation_correct_score_minus_none_pp": -15.625,
+    "test_correct_score_binomial_p_vs_random_10way": 1.2020746138529458e-07,
+    "test_none_score_binomial_p_vs_random_10way": 4.4933065324781245e-09
+  },
+  "claim_supported": "partial",
+  "supported_claim": "Candidate-constrained or sequence-likelihood decoding substantially reduces free-generation output failures on this 96-question NELL23K diagnostic subset.",
+  "unsupported_claims": [
+    "The correct GRIP adapter stores or retrieves facts better than the base model.",
+    "Candidate-energy decoding validates FactorGRIP as a publishable main method.",
+    "Candidate-order robustness has been established.",
+    "The result is leaderboard-scale or generalizes beyond NELL23K/Qwen2.5-0.5B/one seed."
+  ],
+  "recommended_next_experiment": "v0_1_1 audit rerun for valid order permutation and memory-specific controls, then proceed to equal-budget FactorGRIP storage/factorization only after an Original-GRIP baseline reproduces positive adapter gain."
+}

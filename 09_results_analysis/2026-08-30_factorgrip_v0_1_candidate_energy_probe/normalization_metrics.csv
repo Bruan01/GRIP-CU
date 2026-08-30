@@ -1,0 +1,13 @@
+split,adapter_control,normalization,n,correct,accuracy,mean_selected_token_length,mean_top1_top2_margin
+validation,correct,raw_sum,32,12,0.375,13.15625,1.4214776307344437
+validation,correct,length_normalized,32,10,0.3125,14.53125,0.1048950334664521
+validation,none,raw_sum,32,17,0.53125,12.59375,1.9125017076730728
+validation,none,length_normalized,32,11,0.34375,14.46875,0.14190612033439406
+validation,wrong_depth,raw_sum,32,15,0.46875,12.90625,1.4189812242984772
+validation,wrong_depth,length_normalized,32,8,0.25,14.96875,0.09782776798597433
+test,correct,raw_sum,64,22,0.34375,13.203125,1.3811188265681267
+test,correct,length_normalized,64,13,0.203125,14.59375,0.10271021691775115
+test,none,raw_sum,64,24,0.375,13.203125,1.5611853748559952
+test,none,length_normalized,64,21,0.328125,14.21875,0.12222819959996607
+test,wrong_depth,raw_sum,64,23,0.359375,13.1875,1.3878467828035355
+test,wrong_depth,length_normalized,64,17,0.265625,14.625,0.10797266872000631

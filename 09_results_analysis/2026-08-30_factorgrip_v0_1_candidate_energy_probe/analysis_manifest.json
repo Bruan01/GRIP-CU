@@ -1,0 +1,30 @@
+{
+  "analysis_date": "2026-08-30",
+  "source_run": "08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/results/runs/wsl3090_nell23k_candidate_energy_20260830_01",
+  "source_commit_pulled": "2994d43",
+  "run_environment_commit": "2ee0c86e5553ff81329fe4e51fbe72138caa183c",
+  "bootstrap_samples": 20000,
+  "seed": 20260830,
+  "input_sha256": {
+    "config.json": "6e9f949ce18446b07ab7174b67b746242a2387d9e6813299339353695f94f061",
+    "environment.txt": "f52564b46caa4b6d418bb0940efe1e0d45aec5066446a62803538caeb8926624",
+    "run.log": "7c17e304118ddb046174893d46c193dbd15c1dfaf9d94c705ed224c57bbd4ea3",
+    "predictions.jsonl": "8544c496a73f98630098652fecff9e8421c28cc76cd3fd54f6200265e4d479d2",
+    "candidate_scores.jsonl": "c80e7bae731fb0189761d76bc66a929ad7e2e8a7fe49a58e9013bf9e211f2388",
+    "analysis/summary.json": "6f64851d205aa2bde25dd5d1b43b2ce90e588c8a9ca4d9d8794fda1980d9071d"
+  },
+  "source_input": {
+    "path": "08_experiments/RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/grip-exp/outputs/data/nell23k/recurrent_relation_prediction.json",
+    "sha256": "e9b4f037150c3b58ca3421647fe53b63a15876a9a5a9ed755df7907c99e1c478"
+  },
+  "outputs": [
+    "condition_metrics.csv",
+    "normalization_metrics.csv",
+    "paired_comparisons.csv",
+    "candidate_position_diagnostics.csv",
+    "failure_examples.jsonl",
+    "integrity_audit.json",
+    "decision_summary.json",
+    "REPORT.md"
+  ]
+}
