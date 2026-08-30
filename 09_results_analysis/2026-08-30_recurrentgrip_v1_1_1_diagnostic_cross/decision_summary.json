@@ -1,0 +1,29 @@
+{
+  "date": "2026-08-30",
+  "source_commit": "8955bf5",
+  "source_run": "wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross",
+  "integrity": "pass",
+  "decision": "pivot_within_grip",
+  "stop_as_main": "fixed-depth RecurrentGRIP",
+  "retain_as": [
+    "negative diagnostic",
+    "stability ablation",
+    "mechanism baseline"
+  ],
+  "recommended_main_idea": "FactorGRIP: graph-structured low-rank adapter factorization with query-conditioned sparse composition",
+  "immediate_next_experiment": "Candidate-Energy Probe on existing checkpoints",
+  "pilot_gate": {
+    "adapter_test_gain_pp_min": 5,
+    "score_vs_generation_gain_pp_min": 10,
+    "validation_test_same_direction": true,
+    "wrong_or_shuffled_control_required": true
+  },
+  "claims": {
+    "C1_graph_facts_seen": "supported",
+    "C2_usable_parametric_memory": "unsupported",
+    "C3_depth_matching_repairs_k2": "partial",
+    "C4_recurrence_adds_reasoning": "unsupported",
+    "C5_scale_current_version": "unsupported",
+    "C6_leaderboard_paper": "unsupported"
+  }
+}

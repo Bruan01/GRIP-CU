@@ -1,0 +1,13 @@
+{
+  "source_run": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross",
+  "audit_status": "pass",
+  "prediction_count": 768,
+  "condition_count": 16,
+  "selection_sha256": "d4a9cf3f6d2deee090af5137a2b52f89f8ce335926eabbd344ece85729d72885",
+  "condition_metrics_file": "condition_metrics.csv",
+  "paired_comparisons_file": "paired_comparisons.csv",
+  "transition_file": "k1_k2_transitions.csv",
+  "state_by_transition_file": "state_by_transition.csv",
+  "bootstrap_samples": 20000,
+  "bootstrap_seed": 20260830
+}
