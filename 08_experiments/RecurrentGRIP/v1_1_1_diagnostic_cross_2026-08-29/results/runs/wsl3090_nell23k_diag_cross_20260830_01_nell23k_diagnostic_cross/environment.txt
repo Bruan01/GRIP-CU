@@ -1,0 +1,175 @@
+run_id=wsl3090_nell23k_diag_cross_20260830_01
+run_dir=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross
+dataset=NELL23K
+nell_input=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/grip-exp/outputs/data/nell23k/recurrent_relation_prediction.json
+2026-08-30T00:24:48+08:00
+Sun Aug 30 00:24:48 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.07             Driver Version: 581.80         CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3090        On  |   00000000:01:00.0 Off |                  N/A |
+| 34%   43C    P0            125W /  370W |    1732MiB /  24576MiB |      3%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A             378      G   /Xwayland                             N/A      |
++-----------------------------------------------------------------------------------------+
+{
+  "python": "3.10.19",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "torch": "2.12.0+cu130",
+  "torch_cuda_build": "13.0",
+  "device_index": 0,
+  "device_name": "NVIDIA GeForce RTX 3090",
+  "device_memory_gib": 24.0,
+  "compute_capability": "8.6",
+  "bf16_supported": true
+}
+accelerate==1.13.0
+aiodns==3.6.1
+aiofiles==25.1.0
+aiohappyeyeballs==2.6.1
+aiohttp==3.13.3
+aiosignal==1.4.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anthropic==0.66.0
+anyio==4.12.1
+ast-comments==1.2.3
+async-timeout==5.0.1
+attrs==25.4.0
+backports.zstd @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_backports.zstd_1765057663/work
+Brotli @ file:///home/conda/feedstock_root/build_artifacts/brotli-split_1764016952863/work
+cachetools==6.2.4
+ccxt==4.5.31
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1776866578774/work/certifi
+cffi==2.0.0
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1760437218288/work
+click==8.3.1
+coincurve==21.0.0
+cryptography==46.0.3
+cuda-bindings==13.2.0
+cuda-pathfinder==1.5.4
+cuda-toolkit==13.0.2
+distro==1.9.0
+et_xmlfile==2.0.0
+exceptiongroup==1.3.1
+fastapi==0.115.0
+filelock==3.29.0
+freqtrade==2025.6
+freqtrade-client==2025.6
+frozenlist==1.8.0
+fsspec==2026.4.0
+ft-pandas-ta==0.3.16
+gmpy2 @ file:///home/conda/feedstock_root/build_artifacts/gmpy2_1762946744175/work
+greenlet==3.3.0
+h11==0.16.0
+h2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_h2_1756364871/work
+hf-xet==1.2.0
+hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
+httpcore==1.0.9
+httpx==0.28.1
+huggingface-hub==0.36.0
+humanize==4.15.0
+hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1760286409563/work
+janus==2.0.0
+Jinja2==3.1.6
+jiter==0.14.0
+joblib==1.5.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+loguru==0.7.3
+markdown-it-py==4.0.0
+MarkupSafe==3.0.3
+mdurl==0.1.2
+mpmath==1.3.0
+multidict==6.7.0
+networkx==3.4.2
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1747544640217/work/dist/numpy-2.2.6-cp310-cp310-linux_x86_64.whl#sha256=d6d964caeef85d00073d27cd62b46883d275b3d8162f723f0fcabbd0b3cc3f9d
+nvidia-cublas==13.1.1.3
+nvidia-cuda-cupti==13.0.85
+nvidia-cuda-nvrtc==13.0.88
+nvidia-cuda-runtime==13.0.96
+nvidia-cudnn-cu13==9.20.0.48
+nvidia-cufft==12.0.0.61
+nvidia-cufile==1.15.1.6
+nvidia-curand==10.4.0.35
+nvidia-cusolver==12.0.4.66
+nvidia-cusparse==12.6.3.3
+nvidia-cusparselt-cu13==0.8.1
+nvidia-nccl-cu13==2.29.7
+nvidia-nvjitlink==13.0.88
+nvidia-nvshmem-cu13==3.4.5
+nvidia-nvtx==13.0.85
+openai==1.107.0
+openpyxl==3.1.2
+orjson==3.11.5
+packaging==25.0
+pandas==2.3.3
+peft==0.17.1
+pillow==12.2.0
+prompt_toolkit==3.0.52
+propcache==0.4.1
+psutil==7.2.1
+pyarrow==22.0.0
+pycares==4.11.0
+pycoingecko==3.2.0
+pycparser==2.23
+pydantic==2.9.2
+pydantic-settings==2.5.2
+pydantic_core==2.23.4
+Pygments==2.19.2
+PyJWT==2.10.1
+pypdf==6.11.0
+PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+python-rapidjson==1.23
+python-telegram-bot==22.5
+pytz==2025.2
+PyYAML @ file:///home/conda/feedstock_root/build_artifacts/pyyaml_1758891829620/work
+questionary==2.1.1
+referencing==0.37.0
+regex==2025.11.3
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1755614211359/work
+rich==14.2.0
+rpds-py==0.30.0
+safetensors==0.7.0
+schedule==1.2.2
+scipy==1.15.3
+sdnotify==0.3.2
+six==1.17.0
+sniffio==1.3.1
+SQLAlchemy==2.0.45
+starlette==0.38.6
+sympy==1.14.0
+ta-lib==0.5.5
+tabulate==0.9.0
+technical==1.5.3
+tenacity==9.1.2
+tiktoken==0.11.0
+tokenizers==0.22.1
+torch==2.12.0+cu130
+torchaudio==2.5.1
+torchvision==0.27.0+cu130
+tqdm==4.67.1
+transformers==4.57.3
+triton==3.7.0
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+tzdata==2025.2
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1764955326932/work
+uvicorn==0.30.6
+wcwidth==0.2.14
+websockets==15.0.1
+yarl==1.22.0

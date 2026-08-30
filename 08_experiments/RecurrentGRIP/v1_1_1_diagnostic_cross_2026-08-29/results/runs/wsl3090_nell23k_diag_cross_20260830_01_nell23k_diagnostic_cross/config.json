@@ -1,0 +1,57 @@
+{
+  "experiment_id": "RG-E3-v1.1.1-diagnostic-cross-2026-08-29",
+  "dataset": "NELL23K",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "purpose": "Separate graph-fact storage failure from recurrent train/eval depth mismatch.",
+  "context_sampling": {
+    "strategy": "node_random_train_qa_anchor_edge_relation_round_robin_v2",
+    "node_samples": 32,
+    "edge_samples": 224,
+    "seed": 2026,
+    "selection_order": [
+      "anchor exact train-QA graph facts",
+      "fill remaining edge budget by relation round-robin",
+      "sample node declarations independently"
+    ]
+  },
+  "depth_matrix": {
+    "train": [
+      1,
+      2
+    ],
+    "eval": [
+      1,
+      2
+    ]
+  },
+  "adapter_controls": [
+    "correct",
+    "none"
+  ],
+  "expected_input_split": {
+    "train": 64,
+    "validation": 32,
+    "test": 64
+  },
+  "decision_scope": "diagnostic only; do not treat as the paper-scale result",
+  "expected_context_audit": {
+    "unique_nodes": 20799,
+    "raw_edges": 24321,
+    "clean_unique_edges": 24310,
+    "relations": 198,
+    "selected_nodes": 32,
+    "selected_edges": 224,
+    "selected_relations": 198,
+    "train_qa_facts": 64,
+    "train_qa_fact_coverage": 1.0,
+    "train_qa_entity_endpoint_coverage": 1.0,
+    "selection_sha256": "d4a9cf3f6d2deee090af5137a2b52f89f8ce335926eabbd344ece85729d72885"
+  },
+  "required_prediction_audit": [
+    "recurrent_train_k",
+    "generated_token_count",
+    "ended_with_eos",
+    "response_in_candidates",
+    "step_pooled_hidden_states"
+  ]
+}

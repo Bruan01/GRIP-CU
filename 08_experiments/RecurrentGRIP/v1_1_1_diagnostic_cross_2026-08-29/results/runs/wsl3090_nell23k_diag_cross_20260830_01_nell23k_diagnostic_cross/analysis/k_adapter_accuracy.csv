@@ -1,0 +1,5 @@
+bucket,count,accuracy
+k=1|adapter=correct,192,0.109375
+k=1|adapter=none,192,0.25
+k=2|adapter=correct,192,0.036458333333333336
+k=2|adapter=none,192,0.010416666666666666

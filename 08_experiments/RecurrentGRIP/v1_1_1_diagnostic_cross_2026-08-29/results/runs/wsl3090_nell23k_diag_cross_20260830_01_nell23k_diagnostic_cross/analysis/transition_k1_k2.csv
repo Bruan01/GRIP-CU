@@ -1,0 +1,9 @@
+bucket,both_correct,both_wrong,k1_correct_k2_wrong,k1_wrong_k2_correct,paired_count
+split=test|train_k=1|adapter=correct,1,52,10,1,64
+split=test|train_k=1|adapter=none,0,48,16,0,64
+split=test|train_k=2|adapter=correct,1,58,3,2,64
+split=test|train_k=2|adapter=none,0,48,16,0,64
+split=validation|train_k=1|adapter=correct,0,28,4,0,32
+split=validation|train_k=1|adapter=none,0,23,8,1,32
+split=validation|train_k=2|adapter=correct,1,29,1,1,32
+split=validation|train_k=2|adapter=none,0,23,8,1,32

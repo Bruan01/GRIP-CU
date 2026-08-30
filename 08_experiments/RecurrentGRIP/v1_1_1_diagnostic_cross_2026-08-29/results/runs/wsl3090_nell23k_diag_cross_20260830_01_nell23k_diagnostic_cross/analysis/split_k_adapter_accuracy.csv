@@ -1,0 +1,9 @@
+bucket,count,accuracy
+split=test|k=1|adapter=correct,128,0.1171875
+split=test|k=1|adapter=none,128,0.25
+split=test|k=2|adapter=correct,128,0.0390625
+split=test|k=2|adapter=none,128,0.0
+split=validation|k=1|adapter=correct,64,0.09375
+split=validation|k=1|adapter=none,64,0.25
+split=validation|k=2|adapter=correct,64,0.03125
+split=validation|k=2|adapter=none,64,0.03125

@@ -1,0 +1,9 @@
+bucket,count,accuracy
+train_k=1|eval_k=1|adapter=correct,96,0.15625
+train_k=1|eval_k=1|adapter=none,96,0.25
+train_k=1|eval_k=2|adapter=correct,96,0.020833333333333332
+train_k=1|eval_k=2|adapter=none,96,0.010416666666666666
+train_k=2|eval_k=1|adapter=correct,96,0.0625
+train_k=2|eval_k=1|adapter=none,96,0.25
+train_k=2|eval_k=2|adapter=correct,96,0.052083333333333336
+train_k=2|eval_k=2|adapter=none,96,0.010416666666666666

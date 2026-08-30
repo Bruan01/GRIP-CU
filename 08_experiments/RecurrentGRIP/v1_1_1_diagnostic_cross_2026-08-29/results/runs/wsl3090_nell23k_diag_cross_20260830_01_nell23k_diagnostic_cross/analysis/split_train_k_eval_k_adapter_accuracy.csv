@@ -1,0 +1,17 @@
+bucket,count,accuracy
+split=test|train_k=1|eval_k=1|adapter=correct,64,0.171875
+split=test|train_k=1|eval_k=1|adapter=none,64,0.25
+split=test|train_k=1|eval_k=2|adapter=correct,64,0.03125
+split=test|train_k=1|eval_k=2|adapter=none,64,0.0
+split=test|train_k=2|eval_k=1|adapter=correct,64,0.0625
+split=test|train_k=2|eval_k=1|adapter=none,64,0.25
+split=test|train_k=2|eval_k=2|adapter=correct,64,0.046875
+split=test|train_k=2|eval_k=2|adapter=none,64,0.0
+split=validation|train_k=1|eval_k=1|adapter=correct,32,0.125
+split=validation|train_k=1|eval_k=1|adapter=none,32,0.25
+split=validation|train_k=1|eval_k=2|adapter=correct,32,0.0
+split=validation|train_k=1|eval_k=2|adapter=none,32,0.03125
+split=validation|train_k=2|eval_k=1|adapter=correct,32,0.0625
+split=validation|train_k=2|eval_k=1|adapter=none,32,0.25
+split=validation|train_k=2|eval_k=2|adapter=correct,32,0.0625
+split=validation|train_k=2|eval_k=2|adapter=none,32,0.03125

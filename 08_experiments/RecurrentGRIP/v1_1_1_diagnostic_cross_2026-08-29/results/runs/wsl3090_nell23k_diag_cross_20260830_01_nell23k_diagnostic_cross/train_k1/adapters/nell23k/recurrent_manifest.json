@@ -1,0 +1,18 @@
+{
+  "graph_id": "nell23k",
+  "safe_graph_id": "nell23k",
+  "executor_layer_index": 12,
+  "recurrent_depth_train": 1,
+  "context_sampling_strategy": "node_random_train_qa_anchor_edge_relation_round_robin_v2",
+  "context_selection_sha256": "d4a9cf3f6d2deee090af5137a2b52f89f8ce335926eabbd344ece85729d72885",
+  "context_selected_node_count": 32,
+  "context_selected_edge_count": 224,
+  "context_selected_relation_count": 198,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj"
+  ],
+  "lora_r": 4,
+  "lora_alpha": 32
+}

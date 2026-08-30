@@ -1,0 +1,53 @@
+{
+  "dataset": "NELL23K",
+  "graph": {
+    "nodes": 20799,
+    "edges": 24321,
+    "relations": 198
+  },
+  "splits": {
+    "train": {
+      "available": 24321,
+      "selected": 64,
+      "distance_counts": {
+        "1": 64
+      }
+    },
+    "validation": {
+      "available": 4951,
+      "selected": 32,
+      "distance_counts": {
+        "3": 18,
+        "unreachable": 2,
+        "4": 3,
+        "1": 3,
+        "2": 4,
+        "5": 2
+      }
+    },
+    "test": {
+      "available": 4944,
+      "selected": 64,
+      "distance_counts": {
+        "unreachable": 7,
+        "2": 6,
+        "4": 8,
+        "7": 2,
+        "1": 7,
+        "3": 24,
+        "5": 6,
+        "6": 2,
+        "9": 1,
+        "10": 1
+      }
+    }
+  },
+  "source_sha256": {
+    "train.txt": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+    "valid.txt": "a40951319088c26e46dc6711b55b06c58be924aa7eea2f671d89c3ccec0bcabb",
+    "test.txt": "9d48fa18ac395e4960521bcb1563883624e9d695fec6a4c44f2fb657194440c2",
+    "entity2text.json": "86397d9291c0559bcb3a52f11454000cfc6259a26ad855e2feccd35c74444195"
+  },
+  "seed": 2026,
+  "num_candidates": 10
+}
