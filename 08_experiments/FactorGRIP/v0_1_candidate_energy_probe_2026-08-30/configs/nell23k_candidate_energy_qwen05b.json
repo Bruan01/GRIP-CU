@@ -1,0 +1,15 @@
+{
+  "experiment_id": "FG-E1-v0.1-candidate-energy-2026-08-30",
+  "dataset": "NELL23K",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "environment": "conda:guardenv",
+  "purpose": "Inference-only candidate-energy probe separating graph storage from decoder failure.",
+  "input_counts": {"train": 64, "validation": 32, "test": 64},
+  "candidate_count": 10,
+  "eval_recurrent_k": 1,
+  "adapter_controls": ["correct", "none", "wrong_depth"],
+  "decoder_types": ["free", "constrained", "score"],
+  "normalization": "length_normalized_selected_on_validation_and_frozen_for_test",
+  "shuffled_adapter": "unavailable_single_graph",
+  "forbidden": ["7B", "other_datasets", "training", "FactorGRIP_experts", "target_constructed_prompt"]
+}

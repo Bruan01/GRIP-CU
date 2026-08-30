@@ -1,0 +1,17 @@
+{
+  "captured_at_utc": "2026-08-30T12:37:31.372660+00:00",
+  "hostname": "kieran",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.10.19 (main, Oct 21 2025, 16:43:05) [GCC 11.2.0]",
+  "git_commit": "2ee0c86e5553ff81329fe4e51fbe72138caa183c",
+  "cuda_visible_devices": null,
+  "conda_default_env": "guardenv",
+  "conda_prefix": "/home/kieran/miniconda3/envs/guardenv",
+  "torch": "2.12.0+cu130",
+  "torch_cuda_build": "13.0",
+  "cuda_available": true,
+  "gpu_count": 1,
+  "gpu_names": [
+    "NVIDIA GeForce RTX 3090"
+  ]
+}

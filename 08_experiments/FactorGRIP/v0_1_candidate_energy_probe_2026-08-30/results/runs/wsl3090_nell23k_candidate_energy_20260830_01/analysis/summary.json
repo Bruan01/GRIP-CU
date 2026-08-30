@@ -1,0 +1,199 @@
+{
+  "count": 864,
+  "groups": [
+    {
+      "split": "test",
+      "adapter_control": "correct",
+      "decoder_type": "constrained",
+      "n": 64,
+      "correct": 22,
+      "accuracy": 0.34375,
+      "mean_latency_seconds": 0.6067686599817534,
+      "mean_peak_memory_bytes": 1010556416.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "correct",
+      "decoder_type": "free",
+      "n": 64,
+      "correct": 11,
+      "accuracy": 0.171875,
+      "mean_latency_seconds": 0.4315070245938841,
+      "mean_peak_memory_bytes": 1010406960.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "correct",
+      "decoder_type": "score",
+      "n": 64,
+      "correct": 22,
+      "accuracy": 0.34375,
+      "mean_latency_seconds": 0.07812364048731979,
+      "mean_peak_memory_bytes": 4187522864.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "none",
+      "decoder_type": "constrained",
+      "n": 64,
+      "correct": 24,
+      "accuracy": 0.375,
+      "mean_latency_seconds": 0.6115092306172301,
+      "mean_peak_memory_bytes": 1010558744.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "none",
+      "decoder_type": "free",
+      "n": 64,
+      "correct": 16,
+      "accuracy": 0.25,
+      "mean_latency_seconds": 0.6642936637581442,
+      "mean_peak_memory_bytes": 1010612272.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "none",
+      "decoder_type": "score",
+      "n": 64,
+      "correct": 24,
+      "accuracy": 0.375,
+      "mean_latency_seconds": 0.08038177429989446,
+      "mean_peak_memory_bytes": 4187522864.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "wrong_depth",
+      "decoder_type": "constrained",
+      "n": 64,
+      "correct": 24,
+      "accuracy": 0.375,
+      "mean_latency_seconds": 0.6154054946782708,
+      "mean_peak_memory_bytes": 1010557008.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "wrong_depth",
+      "decoder_type": "free",
+      "n": 64,
+      "correct": 4,
+      "accuracy": 0.0625,
+      "mean_latency_seconds": 0.9278192731071613,
+      "mean_peak_memory_bytes": 1010829800.0
+    },
+    {
+      "split": "test",
+      "adapter_control": "wrong_depth",
+      "decoder_type": "score",
+      "n": 64,
+      "correct": 23,
+      "accuracy": 0.359375,
+      "mean_latency_seconds": 0.08302638586974354,
+      "mean_peak_memory_bytes": 4187522864.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "correct",
+      "decoder_type": "constrained",
+      "n": 32,
+      "correct": 14,
+      "accuracy": 0.4375,
+      "mean_latency_seconds": 0.5850678840579349,
+      "mean_peak_memory_bytes": 1010643952.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "correct",
+      "decoder_type": "free",
+      "n": 32,
+      "correct": 4,
+      "accuracy": 0.125,
+      "mean_latency_seconds": 0.4957465902698459,
+      "mean_peak_memory_bytes": 1010548912.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "correct",
+      "decoder_type": "score",
+      "n": 32,
+      "correct": 12,
+      "accuracy": 0.375,
+      "mean_latency_seconds": 0.11568135159905069,
+      "mean_peak_memory_bytes": 4232823632.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "none",
+      "decoder_type": "constrained",
+      "n": 32,
+      "correct": 17,
+      "accuracy": 0.53125,
+      "mean_latency_seconds": 0.5903170387027785,
+      "mean_peak_memory_bytes": 1010641744.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "none",
+      "decoder_type": "free",
+      "n": 32,
+      "correct": 8,
+      "accuracy": 0.25,
+      "mean_latency_seconds": 0.6686003302093013,
+      "mean_peak_memory_bytes": 1010710208.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "none",
+      "decoder_type": "score",
+      "n": 32,
+      "correct": 17,
+      "accuracy": 0.53125,
+      "mean_latency_seconds": 0.07776554987503914,
+      "mean_peak_memory_bytes": 4232791648.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "wrong_depth",
+      "decoder_type": "constrained",
+      "n": 32,
+      "correct": 16,
+      "accuracy": 0.5,
+      "mean_latency_seconds": 0.5916607543185819,
+      "mean_peak_memory_bytes": 1010644048.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "wrong_depth",
+      "decoder_type": "free",
+      "n": 32,
+      "correct": 2,
+      "accuracy": 0.0625,
+      "mean_latency_seconds": 0.9634638931893278,
+      "mean_peak_memory_bytes": 1010955216.0
+    },
+    {
+      "split": "validation",
+      "adapter_control": "wrong_depth",
+      "decoder_type": "score",
+      "n": 32,
+      "correct": 15,
+      "accuracy": 0.46875,
+      "mean_latency_seconds": 0.08107578368799295,
+      "mean_peak_memory_bytes": 4232791648.0
+    }
+  ],
+  "selected_normalization": "raw_sum",
+  "validation_correct_none_delta": -0.15625,
+  "validation_score_generation_delta": 0.25,
+  "test_correct_none_delta": -0.03125,
+  "test_score_generation_delta": 0.171875,
+  "go_gate": {
+    "correct_none_gain_ge_5pp": false,
+    "score_vs_free_gain_ge_10pp": true,
+    "validation_test_direction_consistent": true,
+    "wrong_or_shuffled_below_correct": false,
+    "candidate_order_permutation_stable": true,
+    "go": false,
+    "reason": "STOP: shuffled adapter unavailable or one or more Go-gate conditions failed"
+  }
+}

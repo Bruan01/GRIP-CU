@@ -1,0 +1,64 @@
+{
+  "run_id": "wsl3090_nell23k_candidate_energy_20260830_01",
+  "experiment": "FactorGRIP v0.1 candidate-energy probe",
+  "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/grip-exp/outputs/data/nell23k/recurrent_relation_prediction.json",
+  "args": {
+    "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/grip-exp/outputs/data/nell23k/recurrent_relation_prediction.json",
+    "run_root": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/results/runs",
+    "run_id": "wsl3090_nell23k_candidate_energy_20260830_01",
+    "resume": true,
+    "model_name": "/home/kieran/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+    "model_source": "local",
+    "model_cache_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/grip-exp/model_cache",
+    "local_files_only": true,
+    "adapter_k1": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/../../RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross/train_k1/adapters/nell23k",
+    "adapter_k2": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/FactorGRIP/v0_1_candidate_energy_probe_2026-08-30/../../RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross/train_k2/adapters/nell23k",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "tokenize_max_length": 4096,
+    "gen_max_length": 24,
+    "max_total_length": 1024,
+    "seed": 2026,
+    "max_questions": 0,
+    "adapter_controls": [
+      "correct",
+      "none",
+      "wrong_depth"
+    ],
+    "decoders": [
+      "free",
+      "constrained",
+      "score"
+    ]
+  },
+  "environment": {
+    "captured_at_utc": "2026-08-30T12:37:31.372660+00:00",
+    "hostname": "kieran",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.10.19 (main, Oct 21 2025, 16:43:05) [GCC 11.2.0]",
+    "git_commit": "2ee0c86e5553ff81329fe4e51fbe72138caa183c",
+    "cuda_visible_devices": null,
+    "conda_default_env": "guardenv",
+    "conda_prefix": "/home/kieran/miniconda3/envs/guardenv",
+    "torch": "2.12.0+cu130",
+    "torch_cuda_build": "13.0",
+    "cuda_available": true,
+    "gpu_count": 1,
+    "gpu_names": [
+      "NVIDIA GeForce RTX 3090"
+    ]
+  },
+  "adapter_controls": [
+    "correct",
+    "none",
+    "wrong_depth"
+  ],
+  "decoder_types": [
+    "free",
+    "constrained",
+    "score"
+  ],
+  "shuffled_control": "unavailable: single NELL23K graph; wrong_depth is available",
+  "selected_normalization": "raw_sum",
+  "question_count": 96
+}

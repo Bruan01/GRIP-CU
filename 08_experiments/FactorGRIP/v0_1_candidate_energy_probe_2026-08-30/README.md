@@ -80,3 +80,25 @@ Go to FactorGRIP v0.2 only if all hold：
 - macOS：代码、静态测试、结果分析；
 - WSL2 + RTX 3090 24GB：模型加载与 candidate scoring；
 - 预计 Qwen2.5-0.5B probe 为 0.5–1.5 GPU 小时；实际 wall time 必须由 runner 外层 monotonic timer 记录。
+
+## WSL execution (conda `guardenv`)
+
+All WSL scripts use the existing conda environment `guardenv`; they do not create or use a project `.venv`.
+
+```bash
+export CONDA_ENV=guardenv
+bash configs/prepare_nell23k.sh
+bash configs/check_mac_static.sh
+bash configs/run_nell23k_candidate_probe_wsl.sh
+```
+
+The final command requires WSL2 CUDA access, a local Qwen2.5-0.5B cache, and the v1.1.1 `train_k1`/`train_k2` adapters. The wrapper first checks `grip-exp/model_cache/`, then automatically discovers a standard Hugging Face cache under `$HOME/.cache/huggingface/hub/`. You can also set `MODEL_PATH` explicitly to any complete local Transformers directory. If no cache is available, download one with `guardenv`:
+
+```bash
+cd grip-exp
+conda run --no-capture-output -n guardenv python scripts/download_model.py \
+  --model_name qwen-0.5b --model_cache_dir model_cache
+cd ..
+```
+
+The downloader verifies all safetensor shards and resumes interrupted downloads. The expected project-cache directory is `grip-exp/model_cache/Qwen--Qwen2.5-0.5B-Instruct/`. It refuses to overwrite an existing run directory. To continue an interrupted run, set `RESUME=1` with the same `RUN_ID`; use a new `RUN_ID` for every fresh run.

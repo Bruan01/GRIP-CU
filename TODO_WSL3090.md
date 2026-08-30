@@ -160,3 +160,14 @@ WSL_NELL23K_SMOKE_2026-08-29.md
 5. 验证 Markdown 已写入；
 6. 必要修复与摘要提交到独立 WSL 集成分支；
 7. 尚未启动两小时 Pilot，也未下载 CLEGR。
+
+## F. 已核验环境记忆（2026-08-30）
+
+FactorGRIP v0.1 的 WSL2/模型缓存信息已记录于：
+
+- [`12_ai_logs/decisions/2026-08-30-wsl3090-factorgrip-environment.md`](12_ai_logs/decisions/2026-08-30-wsl3090-factorgrip-environment.md)
+
+关键设置：使用 conda `guardenv`；用户 WSL 已核验 RTX 3090 / Driver 581.80 /
+CUDA 13.0；Qwen2.5-0.5B 已存在于
+`$HOME/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/`，FactorGRIP
+wrapper 会自动发现该标准 Hugging Face snapshot，不需要重复下载。

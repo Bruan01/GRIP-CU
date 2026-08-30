@@ -1,0 +1,2306 @@
+[
+  {
+    "question_id": "nell23k:validation:82",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.972639083862305,
+    "margin": 0.15883289239345444
+  },
+  {
+    "question_id": "nell23k:validation:346",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.964084148406982,
+    "margin": 0.1471104621887207
+  },
+  {
+    "question_id": "nell23k:validation:800",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.20637321472168,
+    "margin": 0.054366565885997975
+  },
+  {
+    "question_id": "nell23k:validation:814",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.566642761230469,
+    "margin": 0.2504191031822791
+  },
+  {
+    "question_id": "nell23k:validation:985",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.73408031463623,
+    "margin": 0.12615746663029026
+  },
+  {
+    "question_id": "nell23k:validation:1077",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.909224987030029,
+    "margin": 0.01732716193565953
+  },
+  {
+    "question_id": "nell23k:validation:1100",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.865264892578125,
+    "margin": 0.0707805437919421
+  },
+  {
+    "question_id": "nell23k:validation:1516",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.279190063476562,
+    "margin": 0.06435856452355015
+  },
+  {
+    "question_id": "nell23k:validation:1625",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.777586936950684,
+    "margin": 0.0740380103771503
+  },
+  {
+    "question_id": "nell23k:validation:1669",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.463169574737549,
+    "margin": 0.02284981523241314
+  },
+  {
+    "question_id": "nell23k:validation:2026",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.8010358810424805,
+    "margin": 0.07125609812110356
+  },
+  {
+    "question_id": "nell23k:validation:2111",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.797491073608398,
+    "margin": 0.04900081341083229
+  },
+  {
+    "question_id": "nell23k:validation:2192",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.854660987854004,
+    "margin": 0.12044243323497283
+  },
+  {
+    "question_id": "nell23k:validation:2523",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.294858932495117,
+    "margin": 0.118649164835612
+  },
+  {
+    "question_id": "nell23k:validation:2584",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.952801704406738,
+    "margin": 0.13095203848446124
+  },
+  {
+    "question_id": "nell23k:validation:2708",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -10.745803833007812,
+    "margin": 0.14796501398086548
+  },
+  {
+    "question_id": "nell23k:validation:2735",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.628909111022949,
+    "margin": 0.06225035740778995
+  },
+  {
+    "question_id": "nell23k:validation:2896",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.319061279296875,
+    "margin": 0.011327234903971362
+  },
+  {
+    "question_id": "nell23k:validation:2910",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.085186958312988,
+    "margin": 0.10937193016600766
+  },
+  {
+    "question_id": "nell23k:validation:3031",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.96468448638916,
+    "margin": 0.17763363747369676
+  },
+  {
+    "question_id": "nell23k:validation:3120",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.601195812225342,
+    "margin": 0.09500788563516882
+  },
+  {
+    "question_id": "nell23k:validation:3281",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.21969747543335,
+    "margin": 0.17177052724929076
+  },
+  {
+    "question_id": "nell23k:validation:3289",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.424755573272705,
+    "margin": 0.04973314624083669
+  },
+  {
+    "question_id": "nell23k:validation:3309",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.3901777267456055,
+    "margin": 0.11215987205505362
+  },
+  {
+    "question_id": "nell23k:validation:3362",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.157780647277832,
+    "margin": 0.009880969398900152
+  },
+  {
+    "question_id": "nell23k:validation:3448",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -9.504676818847656,
+    "margin": 0.39875825246175134
+  },
+  {
+    "question_id": "nell23k:validation:3729",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.06726360321045,
+    "margin": 0.012518379423353432
+  },
+  {
+    "question_id": "nell23k:validation:3763",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.919866561889648,
+    "margin": 0.10864516666957302
+  },
+  {
+    "question_id": "nell23k:validation:3842",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.271406650543213,
+    "margin": 0.13102388381958008
+  },
+  {
+    "question_id": "nell23k:validation:4100",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.179595947265625,
+    "margin": 0.051162346815451565
+  },
+  {
+    "question_id": "nell23k:validation:4306",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.16420841217041,
+    "margin": 0.20099843600217032
+  },
+  {
+    "question_id": "nell23k:validation:4921",
+    "split": "validation",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.535130500793457,
+    "margin": 0.02989289699456632
+  },
+  {
+    "question_id": "nell23k:test:3",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.858809947967529,
+    "margin": 0.08755451838175454
+  },
+  {
+    "question_id": "nell23k:test:149",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.224206924438477,
+    "margin": 0.20517584482828777
+  },
+  {
+    "question_id": "nell23k:test:222",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.717824935913086,
+    "margin": 0.20372895633473115
+  },
+  {
+    "question_id": "nell23k:test:263",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.3479509353637695,
+    "margin": 0.08963034826032279
+  },
+  {
+    "question_id": "nell23k:test:325",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.578042507171631,
+    "margin": 0.06958382129669194
+  },
+  {
+    "question_id": "nell23k:test:521",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.340785026550293,
+    "margin": 0.02215775576504797
+  },
+  {
+    "question_id": "nell23k:test:522",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.307751655578613,
+    "margin": 0.09674390157063806
+  },
+  {
+    "question_id": "nell23k:test:607",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.8250813484191895,
+    "margin": 0.16196326109079218
+  },
+  {
+    "question_id": "nell23k:test:681",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.513859748840332,
+    "margin": 0.01638825734456384
+  },
+  {
+    "question_id": "nell23k:test:683",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.243638038635254,
+    "margin": 0.020344880209014704
+  },
+  {
+    "question_id": "nell23k:test:689",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.5542120933532715,
+    "margin": 0.36659665107727046
+  },
+  {
+    "question_id": "nell23k:test:691",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.616884231567383,
+    "margin": 0.02479411106483609
+  },
+  {
+    "question_id": "nell23k:test:785",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.745973110198975,
+    "margin": 0.121025949716568
+  },
+  {
+    "question_id": "nell23k:test:907",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -10.739044189453125,
+    "margin": 0.03234228558010532
+  },
+  {
+    "question_id": "nell23k:test:914",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.118910789489746,
+    "margin": 0.1557178399501703
+  },
+  {
+    "question_id": "nell23k:test:1077",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.993192672729492,
+    "margin": 0.24021480764661518
+  },
+  {
+    "question_id": "nell23k:test:1115",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.586526870727539,
+    "margin": 0.22960955363053537
+  },
+  {
+    "question_id": "nell23k:test:1139",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.815397262573242,
+    "margin": 0.025520642598469978
+  },
+  {
+    "question_id": "nell23k:test:1254",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.074621677398682,
+    "margin": 0.05557017273955289
+  },
+  {
+    "question_id": "nell23k:test:1301",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.184768676757812,
+    "margin": 0.03235404674823461
+  },
+  {
+    "question_id": "nell23k:test:1418",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.684015274047852,
+    "margin": 0.10326602874014545
+  },
+  {
+    "question_id": "nell23k:test:1450",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.398745536804199,
+    "margin": 0.035487182000104145
+  },
+  {
+    "question_id": "nell23k:test:1596",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.851108074188232,
+    "margin": 0.29197333164704153
+  },
+  {
+    "question_id": "nell23k:test:1607",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.93526840209961,
+    "margin": 0.31883960765796704
+  },
+  {
+    "question_id": "nell23k:test:1707",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.258642196655273,
+    "margin": 0.14479227627024932
+  },
+  {
+    "question_id": "nell23k:test:1871",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -10.388066291809082,
+    "margin": 0.06672965970813716
+  },
+  {
+    "question_id": "nell23k:test:1890",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.748111248016357,
+    "margin": 0.008225671450297067
+  },
+  {
+    "question_id": "nell23k:test:1923",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.854045391082764,
+    "margin": 0.012743677411760523
+  },
+  {
+    "question_id": "nell23k:test:2083",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.921783447265625,
+    "margin": 0.0661375636146182
+  },
+  {
+    "question_id": "nell23k:test:2206",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.0035881996154785,
+    "margin": 0.13764859324666712
+  },
+  {
+    "question_id": "nell23k:test:2219",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.353102207183838,
+    "margin": 0.016630812124772465
+  },
+  {
+    "question_id": "nell23k:test:2336",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.02839469909668,
+    "margin": 0.0694282385019156
+  },
+  {
+    "question_id": "nell23k:test:2422",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.590727806091309,
+    "margin": 0.08048748035056918
+  },
+  {
+    "question_id": "nell23k:test:2471",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.541182518005371,
+    "margin": 0.04323163152742787
+  },
+  {
+    "question_id": "nell23k:test:2546",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.262022495269775,
+    "margin": 0.22070147991180422
+  },
+  {
+    "question_id": "nell23k:test:2571",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.902022838592529,
+    "margin": 0.024325565380208636
+  },
+  {
+    "question_id": "nell23k:test:2595",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -5.930932521820068,
+    "margin": 0.2663304775189131
+  },
+  {
+    "question_id": "nell23k:test:2718",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.361963272094727,
+    "margin": 0.07056981867009948
+  },
+  {
+    "question_id": "nell23k:test:2926",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.959438800811768,
+    "margin": 0.0025802737190609992
+  },
+  {
+    "question_id": "nell23k:test:3141",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.0276517868042,
+    "margin": 0.006654540697733524
+  },
+  {
+    "question_id": "nell23k:test:3190",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.792702674865723,
+    "margin": 0.30839837165105904
+  },
+  {
+    "question_id": "nell23k:test:3202",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.423079013824463,
+    "margin": 0.03359952117457543
+  },
+  {
+    "question_id": "nell23k:test:3236",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.560181617736816,
+    "margin": 0.0980064868927002
+  },
+  {
+    "question_id": "nell23k:test:3275",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -6.785623550415039,
+    "margin": 0.03020306428273517
+  },
+  {
+    "question_id": "nell23k:test:3278",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.119128704071045,
+    "margin": 0.107175316129412
+  },
+  {
+    "question_id": "nell23k:test:3354",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.16934871673584,
+    "margin": 0.3359095573425293
+  },
+  {
+    "question_id": "nell23k:test:3446",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.229227066040039,
+    "margin": 0.03934725562294761
+  },
+  {
+    "question_id": "nell23k:test:3600",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.321141719818115,
+    "margin": 0.013280415534973167
+  },
+  {
+    "question_id": "nell23k:test:3955",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -10.325693130493164,
+    "margin": 0.08306773503621412
+  },
+  {
+    "question_id": "nell23k:test:3993",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.931247234344482,
+    "margin": 0.06605703830719001
+  },
+  {
+    "question_id": "nell23k:test:4056",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.544021606445312,
+    "margin": 0.3247796058654785
+  },
+  {
+    "question_id": "nell23k:test:4074",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.579092025756836,
+    "margin": 0.08070743083953857
+  },
+  {
+    "question_id": "nell23k:test:4128",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -6.58956241607666,
+    "margin": 0.03603757676624114
+  },
+  {
+    "question_id": "nell23k:test:4158",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -8.12789535522461,
+    "margin": 0.08674848344590924
+  },
+  {
+    "question_id": "nell23k:test:4289",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -9.41499137878418,
+    "margin": 0.07093421391078403
+  },
+  {
+    "question_id": "nell23k:test:4345",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -9.571528434753418,
+    "margin": 0.03223494994334686
+  },
+  {
+    "question_id": "nell23k:test:4469",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.564201831817627,
+    "margin": 0.0009640568778628289
+  },
+  {
+    "question_id": "nell23k:test:4569",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.23265552520752,
+    "margin": 0.16806912181353328
+  },
+  {
+    "question_id": "nell23k:test:4672",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -8.853958129882812,
+    "margin": 0.06838861192975731
+  },
+  {
+    "question_id": "nell23k:test:4695",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.108948707580566,
+    "margin": 0.012284384145365035
+  },
+  {
+    "question_id": "nell23k:test:4714",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.749941349029541,
+    "margin": 0.0148850486392067
+  },
+  {
+    "question_id": "nell23k:test:4749",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -5.900357723236084,
+    "margin": 0.22158152858416236
+  },
+  {
+    "question_id": "nell23k:test:4820",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": false,
+    "best_score": -7.106865882873535,
+    "margin": 0.041068077087402344
+  },
+  {
+    "question_id": "nell23k:test:4911",
+    "split": "test",
+    "adapter_control": "correct",
+    "correct": true,
+    "best_score": -7.743061542510986,
+    "margin": 0.055924514929453495
+  },
+  {
+    "question_id": "nell23k:validation:82",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.083863258361816,
+    "margin": 0.26512021284836984
+  },
+  {
+    "question_id": "nell23k:validation:346",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.33139705657959,
+    "margin": 0.2693273104154146
+  },
+  {
+    "question_id": "nell23k:validation:800",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -6.499545097351074,
+    "margin": 0.02991793269202825
+  },
+  {
+    "question_id": "nell23k:validation:814",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.34841775894165,
+    "margin": 0.36982013795759294
+  },
+  {
+    "question_id": "nell23k:validation:985",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -10.034457206726074,
+    "margin": 0.25906333982390883
+  },
+  {
+    "question_id": "nell23k:validation:1077",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -11.722829818725586,
+    "margin": 0.04015773381942356
+  },
+  {
+    "question_id": "nell23k:validation:1100",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.608154296875,
+    "margin": 0.1226564700786884
+  },
+  {
+    "question_id": "nell23k:validation:1516",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.0186128616333,
+    "margin": 0.12081033755571413
+  },
+  {
+    "question_id": "nell23k:validation:1625",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.781705856323242,
+    "margin": 0.11697861475822258
+  },
+  {
+    "question_id": "nell23k:validation:1669",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.251016616821289,
+    "margin": 0.05135918515069149
+  },
+  {
+    "question_id": "nell23k:validation:2026",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.264654159545898,
+    "margin": 0.0057002077198990975
+  },
+  {
+    "question_id": "nell23k:validation:2111",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -12.949539184570312,
+    "margin": 0.04740157494178188
+  },
+  {
+    "question_id": "nell23k:validation:2192",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.805953979492188,
+    "margin": 0.22459058272532928
+  },
+  {
+    "question_id": "nell23k:validation:2523",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.120837211608887,
+    "margin": 0.10166305965847444
+  },
+  {
+    "question_id": "nell23k:validation:2584",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -9.47078800201416,
+    "margin": 0.12897814582375922
+  },
+  {
+    "question_id": "nell23k:validation:2708",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.095518112182617,
+    "margin": 0.22120152986966646
+  },
+  {
+    "question_id": "nell23k:validation:2735",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.792289733886719,
+    "margin": 0.09941246221353728
+  },
+  {
+    "question_id": "nell23k:validation:2896",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -10.854781150817871,
+    "margin": 0.08314859602186409
+  },
+  {
+    "question_id": "nell23k:validation:2910",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.645028114318848,
+    "margin": 0.11212318707135771
+  },
+  {
+    "question_id": "nell23k:validation:3031",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.71335220336914,
+    "margin": 0.1407296945760539
+  },
+  {
+    "question_id": "nell23k:validation:3120",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -6.563026428222656,
+    "margin": 0.264050608846397
+  },
+  {
+    "question_id": "nell23k:validation:3281",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.54073429107666,
+    "margin": 0.4719313212803432
+  },
+  {
+    "question_id": "nell23k:validation:3289",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.283552169799805,
+    "margin": 0.02676535280127279
+  },
+  {
+    "question_id": "nell23k:validation:3309",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.822541236877441,
+    "margin": 0.0008956591288249438
+  },
+  {
+    "question_id": "nell23k:validation:3362",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.539942741394043,
+    "margin": 0.00956328207986401
+  },
+  {
+    "question_id": "nell23k:validation:3448",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -11.213973999023438,
+    "margin": 0.5229169300624303
+  },
+  {
+    "question_id": "nell23k:validation:3729",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.047924041748047,
+    "margin": 0.03927326202392578
+  },
+  {
+    "question_id": "nell23k:validation:3763",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -12.42762565612793,
+    "margin": 0.13366127014160145
+  },
+  {
+    "question_id": "nell23k:validation:3842",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.797369003295898,
+    "margin": 0.07635957544500183
+  },
+  {
+    "question_id": "nell23k:validation:4100",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -6.7846479415893555,
+    "margin": 0.03589920508555877
+  },
+  {
+    "question_id": "nell23k:validation:4306",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.846078872680664,
+    "margin": 0.1489720625035903
+  },
+  {
+    "question_id": "nell23k:validation:4921",
+    "split": "validation",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.488689422607422,
+    "margin": 0.0005470055800217422
+  },
+  {
+    "question_id": "nell23k:test:3",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.789467811584473,
+    "margin": 0.11998976683005314
+  },
+  {
+    "question_id": "nell23k:test:149",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -9.317957878112793,
+    "margin": 0.23622595469156904
+  },
+  {
+    "question_id": "nell23k:test:222",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.3175048828125,
+    "margin": 0.2060277559099154
+  },
+  {
+    "question_id": "nell23k:test:263",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.298819541931152,
+    "margin": 0.06958840338236971
+  },
+  {
+    "question_id": "nell23k:test:325",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.227867126464844,
+    "margin": 0.013164710998535112
+  },
+  {
+    "question_id": "nell23k:test:521",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.771434783935547,
+    "margin": 0.07770503651012073
+  },
+  {
+    "question_id": "nell23k:test:522",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.799178123474121,
+    "margin": 0.024524927139282227
+  },
+  {
+    "question_id": "nell23k:test:607",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.262932777404785,
+    "margin": 0.05320929013765774
+  },
+  {
+    "question_id": "nell23k:test:681",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.903777122497559,
+    "margin": 0.057678302129109627
+  },
+  {
+    "question_id": "nell23k:test:683",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -6.971393585205078,
+    "margin": 0.07093917353871904
+  },
+  {
+    "question_id": "nell23k:test:689",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.278306007385254,
+    "margin": 0.2249362937405578
+  },
+  {
+    "question_id": "nell23k:test:691",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -10.326181411743164,
+    "margin": 0.11731852737127568
+  },
+  {
+    "question_id": "nell23k:test:785",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.339834213256836,
+    "margin": 0.15190807672647333
+  },
+  {
+    "question_id": "nell23k:test:907",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -13.822186470031738,
+    "margin": 0.00878272586398654
+  },
+  {
+    "question_id": "nell23k:test:914",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.088376998901367,
+    "margin": 0.12405462998610284
+  },
+  {
+    "question_id": "nell23k:test:1077",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.490781784057617,
+    "margin": 0.2644275426864624
+  },
+  {
+    "question_id": "nell23k:test:1115",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -6.237667083740234,
+    "margin": 0.34832605448636145
+  },
+  {
+    "question_id": "nell23k:test:1139",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.604129791259766,
+    "margin": 0.028689146041870117
+  },
+  {
+    "question_id": "nell23k:test:1254",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -9.909482955932617,
+    "margin": 0.055548101991087506
+  },
+  {
+    "question_id": "nell23k:test:1301",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -10.079887390136719,
+    "margin": 0.044665160545935945
+  },
+  {
+    "question_id": "nell23k:test:1418",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.939826011657715,
+    "margin": 0.018306481210809022
+  },
+  {
+    "question_id": "nell23k:test:1450",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.903871536254883,
+    "margin": 0.036955695885878326
+  },
+  {
+    "question_id": "nell23k:test:1596",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -12.706439971923828,
+    "margin": 0.2838112806662535
+  },
+  {
+    "question_id": "nell23k:test:1607",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -11.278739929199219,
+    "margin": 0.48787892432439905
+  },
+  {
+    "question_id": "nell23k:test:1707",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -11.91109848022461,
+    "margin": 0.197266250713918
+  },
+  {
+    "question_id": "nell23k:test:1871",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -12.60322380065918,
+    "margin": 0.0016887121730380095
+  },
+  {
+    "question_id": "nell23k:test:1890",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.987605094909668,
+    "margin": 0.05150615374247225
+  },
+  {
+    "question_id": "nell23k:test:1923",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.943593978881836,
+    "margin": 0.005553994859967992
+  },
+  {
+    "question_id": "nell23k:test:2083",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.181676387786865,
+    "margin": 0.03816015947432738
+  },
+  {
+    "question_id": "nell23k:test:2206",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -10.946840286254883,
+    "margin": 0.19695366561682515
+  },
+  {
+    "question_id": "nell23k:test:2219",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.881487846374512,
+    "margin": 0.07599429857163209
+  },
+  {
+    "question_id": "nell23k:test:2336",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.709551811218262,
+    "margin": 0.08061239535991971
+  },
+  {
+    "question_id": "nell23k:test:2422",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -9.054594039916992,
+    "margin": 0.06376370261697206
+  },
+  {
+    "question_id": "nell23k:test:2471",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.247153282165527,
+    "margin": 0.035526167444822176
+  },
+  {
+    "question_id": "nell23k:test:2546",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.069209098815918,
+    "margin": 0.156822943687439
+  },
+  {
+    "question_id": "nell23k:test:2571",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.073829650878906,
+    "margin": 0.05915521172916183
+  },
+  {
+    "question_id": "nell23k:test:2595",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.006545066833496,
+    "margin": 0.24074180920918786
+  },
+  {
+    "question_id": "nell23k:test:2718",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -12.090944290161133,
+    "margin": 0.024791655602393048
+  },
+  {
+    "question_id": "nell23k:test:2926",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -5.788440704345703,
+    "margin": 0.1826705024355934
+  },
+  {
+    "question_id": "nell23k:test:3141",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -10.061007499694824,
+    "margin": 0.06086528301239014
+  },
+  {
+    "question_id": "nell23k:test:3190",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.12507152557373,
+    "margin": 0.3979822137302026
+  },
+  {
+    "question_id": "nell23k:test:3202",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -9.860861778259277,
+    "margin": 0.015486912293867672
+  },
+  {
+    "question_id": "nell23k:test:3236",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -11.013870239257812,
+    "margin": 0.03404355660462999
+  },
+  {
+    "question_id": "nell23k:test:3275",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.664749145507812,
+    "margin": 0.19690524207221138
+  },
+  {
+    "question_id": "nell23k:test:3278",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.586328029632568,
+    "margin": 0.22126351084027973
+  },
+  {
+    "question_id": "nell23k:test:3354",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.529569625854492,
+    "margin": 0.31554510328504776
+  },
+  {
+    "question_id": "nell23k:test:3446",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.934027671813965,
+    "margin": 0.0099129519619785
+  },
+  {
+    "question_id": "nell23k:test:3600",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.367603302001953,
+    "margin": 0.040860748291015714
+  },
+  {
+    "question_id": "nell23k:test:3955",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -11.277453422546387,
+    "margin": 0.4415196516574956
+  },
+  {
+    "question_id": "nell23k:test:3993",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -9.06381893157959,
+    "margin": 0.026459773381551033
+  },
+  {
+    "question_id": "nell23k:test:4056",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -9.939128875732422,
+    "margin": 0.3658696901230586
+  },
+  {
+    "question_id": "nell23k:test:4074",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -11.600452423095703,
+    "margin": 0.17187182108561205
+  },
+  {
+    "question_id": "nell23k:test:4128",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.53746509552002,
+    "margin": 0.13610227221534366
+  },
+  {
+    "question_id": "nell23k:test:4158",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -8.234273910522461,
+    "margin": 0.13014799753824868
+  },
+  {
+    "question_id": "nell23k:test:4289",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -11.703301429748535,
+    "margin": 0.0678358123415993
+  },
+  {
+    "question_id": "nell23k:test:4345",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -12.159745216369629,
+    "margin": 0.012666940689086914
+  },
+  {
+    "question_id": "nell23k:test:4469",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.976177215576172,
+    "margin": 0.03566475475535669
+  },
+  {
+    "question_id": "nell23k:test:4569",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.043851852416992,
+    "margin": 0.012326047878072677
+  },
+  {
+    "question_id": "nell23k:test:4672",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -10.704474449157715,
+    "margin": 0.1291365623474121
+  },
+  {
+    "question_id": "nell23k:test:4695",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.732198238372803,
+    "margin": 0.06459665298461914
+  },
+  {
+    "question_id": "nell23k:test:4714",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -8.306144714355469,
+    "margin": 0.014608780543009403
+  },
+  {
+    "question_id": "nell23k:test:4749",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": true,
+    "best_score": -7.6585845947265625,
+    "margin": 0.2721177509852818
+  },
+  {
+    "question_id": "nell23k:test:4820",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.603565216064453,
+    "margin": 0.07316567347599912
+  },
+  {
+    "question_id": "nell23k:test:4911",
+    "split": "test",
+    "adapter_control": "none",
+    "correct": false,
+    "best_score": -7.476738929748535,
+    "margin": 0.039779484272003174
+  },
+  {
+    "question_id": "nell23k:validation:82",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.572904586791992,
+    "margin": 0.16951242593618532
+  },
+  {
+    "question_id": "nell23k:validation:346",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.737014770507812,
+    "margin": 0.06999646700345552
+  },
+  {
+    "question_id": "nell23k:validation:800",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -7.626492500305176,
+    "margin": 0.008619978314354237
+  },
+  {
+    "question_id": "nell23k:validation:814",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.235186576843262,
+    "margin": 0.2356265345190326
+  },
+  {
+    "question_id": "nell23k:validation:985",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.80656623840332,
+    "margin": 0.2085652484244238
+  },
+  {
+    "question_id": "nell23k:validation:1077",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.255921363830566,
+    "margin": 0.0660315293532151
+  },
+  {
+    "question_id": "nell23k:validation:1100",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.722054481506348,
+    "margin": 0.03630469395564151
+  },
+  {
+    "question_id": "nell23k:validation:1516",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.490270614624023,
+    "margin": 0.07083826798659099
+  },
+  {
+    "question_id": "nell23k:validation:1625",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.949413299560547,
+    "margin": 0.03408111975743222
+  },
+  {
+    "question_id": "nell23k:validation:1669",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.699867248535156,
+    "margin": 0.007987720625741157
+  },
+  {
+    "question_id": "nell23k:validation:2026",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.167584419250488,
+    "margin": 0.03065620287500248
+  },
+  {
+    "question_id": "nell23k:validation:2111",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.607677459716797,
+    "margin": 0.04308062791824341
+  },
+  {
+    "question_id": "nell23k:validation:2192",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.513870239257812,
+    "margin": 0.17857521008222532
+  },
+  {
+    "question_id": "nell23k:validation:2523",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.404609680175781,
+    "margin": 0.11690235137939453
+  },
+  {
+    "question_id": "nell23k:validation:2584",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.61550235748291,
+    "margin": 0.06603509865555113
+  },
+  {
+    "question_id": "nell23k:validation:2708",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.586420059204102,
+    "margin": 0.01426219023191011
+  },
+  {
+    "question_id": "nell23k:validation:2735",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.66889762878418,
+    "margin": 0.013824300451593108
+  },
+  {
+    "question_id": "nell23k:validation:2896",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.065877914428711,
+    "margin": 0.009291818406846786
+  },
+  {
+    "question_id": "nell23k:validation:2910",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.799724578857422,
+    "margin": 0.11592087091184122
+  },
+  {
+    "question_id": "nell23k:validation:3031",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.883281707763672,
+    "margin": 0.1795173686939281
+  },
+  {
+    "question_id": "nell23k:validation:3120",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.118699073791504,
+    "margin": 0.1480664602771603
+  },
+  {
+    "question_id": "nell23k:validation:3281",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.454996109008789,
+    "margin": 0.32851719856262207
+  },
+  {
+    "question_id": "nell23k:validation:3289",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.015998840332031,
+    "margin": 0.030383925688894142
+  },
+  {
+    "question_id": "nell23k:validation:3309",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.91923713684082,
+    "margin": 0.022294600804646847
+  },
+  {
+    "question_id": "nell23k:validation:3362",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.332630157470703,
+    "margin": 0.03274435746042348
+  },
+  {
+    "question_id": "nell23k:validation:3448",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -11.145090103149414,
+    "margin": 0.38163234506334587
+  },
+  {
+    "question_id": "nell23k:validation:3729",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.30805492401123,
+    "margin": 0.06866738531324601
+  },
+  {
+    "question_id": "nell23k:validation:3763",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -11.092456817626953,
+    "margin": 0.08154140199933735
+  },
+  {
+    "question_id": "nell23k:validation:3842",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.233782768249512,
+    "margin": 0.0624211918223988
+  },
+  {
+    "question_id": "nell23k:validation:4100",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -7.883021354675293,
+    "margin": 0.023766951683240056
+  },
+  {
+    "question_id": "nell23k:validation:4306",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.748592376708984,
+    "margin": 0.17968549798516664
+  },
+  {
+    "question_id": "nell23k:validation:4921",
+    "split": "validation",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.625330924987793,
+    "margin": 0.09513723340808833
+  },
+  {
+    "question_id": "nell23k:test:3",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.883952140808105,
+    "margin": 0.08423883487016726
+  },
+  {
+    "question_id": "nell23k:test:149",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.46901798248291,
+    "margin": 0.1912087122599283
+  },
+  {
+    "question_id": "nell23k:test:222",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.34117603302002,
+    "margin": 0.21794186920678915
+  },
+  {
+    "question_id": "nell23k:test:263",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.894766807556152,
+    "margin": 0.11094321930807749
+  },
+  {
+    "question_id": "nell23k:test:325",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.124473571777344,
+    "margin": 0.09691789526688421
+  },
+  {
+    "question_id": "nell23k:test:521",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.243486404418945,
+    "margin": 0.02567114974513207
+  },
+  {
+    "question_id": "nell23k:test:522",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.141608238220215,
+    "margin": 0.06462734086172917
+  },
+  {
+    "question_id": "nell23k:test:607",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.38359546661377,
+    "margin": 0.06141391167273891
+  },
+  {
+    "question_id": "nell23k:test:681",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.04007625579834,
+    "margin": 0.03358260790507006
+  },
+  {
+    "question_id": "nell23k:test:683",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.29416561126709,
+    "margin": 0.0797441245266125
+  },
+  {
+    "question_id": "nell23k:test:689",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.0299711227417,
+    "margin": 0.3265472355051937
+  },
+  {
+    "question_id": "nell23k:test:691",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.471004486083984,
+    "margin": 0.005557555778353818
+  },
+  {
+    "question_id": "nell23k:test:785",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.772730827331543,
+    "margin": 0.18039248998348534
+  },
+  {
+    "question_id": "nell23k:test:907",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -12.9346342086792,
+    "margin": 0.002257113986545156
+  },
+  {
+    "question_id": "nell23k:test:914",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.132987976074219,
+    "margin": 0.1081012774736454
+  },
+  {
+    "question_id": "nell23k:test:1077",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.878976821899414,
+    "margin": 0.26468346800122944
+  },
+  {
+    "question_id": "nell23k:test:1115",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -7.611875057220459,
+    "margin": 0.2708164384731879
+  },
+  {
+    "question_id": "nell23k:test:1139",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.6566743850708,
+    "margin": 0.007590691248575809
+  },
+  {
+    "question_id": "nell23k:test:1254",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.221200942993164,
+    "margin": 0.005903160179054345
+  },
+  {
+    "question_id": "nell23k:test:1301",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.103499412536621,
+    "margin": 0.014148426055908159
+  },
+  {
+    "question_id": "nell23k:test:1418",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.543197631835938,
+    "margin": 0.042075041334638685
+  },
+  {
+    "question_id": "nell23k:test:1450",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.469722747802734,
+    "margin": 0.023341459386489016
+  },
+  {
+    "question_id": "nell23k:test:1596",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.633750915527344,
+    "margin": 0.25316254053360376
+  },
+  {
+    "question_id": "nell23k:test:1607",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.451434135437012,
+    "margin": 0.34591561097365164
+  },
+  {
+    "question_id": "nell23k:test:1707",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.570419311523438,
+    "margin": 0.08977026097914753
+  },
+  {
+    "question_id": "nell23k:test:1871",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -12.85639476776123,
+    "margin": 0.0466111368603177
+  },
+  {
+    "question_id": "nell23k:test:1890",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.410787582397461,
+    "margin": 0.0622715950012207
+  },
+  {
+    "question_id": "nell23k:test:1923",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.696444511413574,
+    "margin": 0.061704499380929145
+  },
+  {
+    "question_id": "nell23k:test:2083",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.449498176574707,
+    "margin": 0.011358408700852252
+  },
+  {
+    "question_id": "nell23k:test:2206",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.211164474487305,
+    "margin": 0.1780080924746138
+  },
+  {
+    "question_id": "nell23k:test:2219",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -7.738361358642578,
+    "margin": 0.0251518885294596
+  },
+  {
+    "question_id": "nell23k:test:2336",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.74462604522705,
+    "margin": 0.05963204457209659
+  },
+  {
+    "question_id": "nell23k:test:2422",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.503863334655762,
+    "margin": 0.057048596587835565
+  },
+  {
+    "question_id": "nell23k:test:2471",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.137596130371094,
+    "margin": 0.04989595974192895
+  },
+  {
+    "question_id": "nell23k:test:2546",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.132621765136719,
+    "margin": 0.15493765672047932
+  },
+  {
+    "question_id": "nell23k:test:2571",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.220120429992676,
+    "margin": 0.02247037256465234
+  },
+  {
+    "question_id": "nell23k:test:2595",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -7.864492416381836,
+    "margin": 0.2225456767612033
+  },
+  {
+    "question_id": "nell23k:test:2718",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.870085716247559,
+    "margin": 0.005009155768852747
+  },
+  {
+    "question_id": "nell23k:test:2926",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -7.145201683044434,
+    "margin": 0.1742221627916608
+  },
+  {
+    "question_id": "nell23k:test:3141",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.347694396972656,
+    "margin": 0.08748769760131836
+  },
+  {
+    "question_id": "nell23k:test:3190",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.805810928344727,
+    "margin": 0.33299400692894343
+  },
+  {
+    "question_id": "nell23k:test:3202",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.5013427734375,
+    "margin": 0.050444058009556314
+  },
+  {
+    "question_id": "nell23k:test:3236",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.009100914001465,
+    "margin": 0.07300350604913175
+  },
+  {
+    "question_id": "nell23k:test:3275",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.49489974975586,
+    "margin": 0.04566354221767854
+  },
+  {
+    "question_id": "nell23k:test:3278",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -7.799835681915283,
+    "margin": 0.1437370777130127
+  },
+  {
+    "question_id": "nell23k:test:3354",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.088284492492676,
+    "margin": 0.27814285490247936
+  },
+  {
+    "question_id": "nell23k:test:3446",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.17211627960205,
+    "margin": 0.023586891509674413
+  },
+  {
+    "question_id": "nell23k:test:3600",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.08917236328125,
+    "margin": 0.0630994160970052
+  },
+  {
+    "question_id": "nell23k:test:3955",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.752981185913086,
+    "margin": 0.29799576294727825
+  },
+  {
+    "question_id": "nell23k:test:3993",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.841493606567383,
+    "margin": 0.10588178634643564
+  },
+  {
+    "question_id": "nell23k:test:4056",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.626253128051758,
+    "margin": 0.36555582682291665
+  },
+  {
+    "question_id": "nell23k:test:4074",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.969715118408203,
+    "margin": 0.12159474406923565
+  },
+  {
+    "question_id": "nell23k:test:4128",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -8.465901374816895,
+    "margin": 0.0020832379659017075
+  },
+  {
+    "question_id": "nell23k:test:4158",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.574769973754883,
+    "margin": 0.0237744013468425
+  },
+  {
+    "question_id": "nell23k:test:4289",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.845022201538086,
+    "margin": 0.007997857956659193
+  },
+  {
+    "question_id": "nell23k:test:4345",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -10.960197448730469,
+    "margin": 0.05575815836588538
+  },
+  {
+    "question_id": "nell23k:test:4469",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.450480461120605,
+    "margin": 0.02234005326984312
+  },
+  {
+    "question_id": "nell23k:test:4569",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.435443878173828,
+    "margin": 0.08503806952274207
+  },
+  {
+    "question_id": "nell23k:test:4672",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -10.429533004760742,
+    "margin": 0.15671191896711079
+  },
+  {
+    "question_id": "nell23k:test:4695",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -8.436347007751465,
+    "margin": 0.06382896538936733
+  },
+  {
+    "question_id": "nell23k:test:4714",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -9.11306095123291,
+    "margin": 0.02960912386576331
+  },
+  {
+    "question_id": "nell23k:test:4749",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": true,
+    "best_score": -7.673426628112793,
+    "margin": 0.2549201675823757
+  },
+  {
+    "question_id": "nell23k:test:4820",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.652864456176758,
+    "margin": 0.05549406681664937
+  },
+  {
+    "question_id": "nell23k:test:4911",
+    "split": "test",
+    "adapter_control": "wrong_depth",
+    "correct": false,
+    "best_score": -9.425508499145508,
+    "margin": 0.1260879238446554
+  }
+]
