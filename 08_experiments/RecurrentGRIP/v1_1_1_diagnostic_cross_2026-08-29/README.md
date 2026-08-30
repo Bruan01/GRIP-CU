@@ -180,6 +180,30 @@ response_in_candidates
 step_pooled_hidden_states
 ```
 
+## Git-Trackable Audit Export
+
+根 `.gitignore` 会忽略完整 `results/runs/`，因此 diagnostic runner 在分析完成后自动导出
+小型审计产物到：
+
+```text
+09_results_analysis/artifacts/RecurrentGRIP_v1_1_1/<RUN_DIR_NAME>/
+```
+
+导出内容包含 config、environment、cross audit、两个 context manifests、全部 analysis
+JSON/CSV，以及移除完整 `step_pooled_hidden_states` 后的逐题 `predictions_audit.jsonl`。
+state dynamics 的聚合 norm/cosine/relative-delta 仍完整保留。导出器会校验 cross audit、
+prediction count、summary count，并生成包含 SHA256 的 `artifact_manifest.json`。
+
+手动重新导出尚未导出的 run：
+
+```bash
+RUN_DIR=/absolute/path/to/completed/run \
+PYTHON="$(command -v python)" \
+  bash configs/export_diagnostic_cross_artifacts.sh
+```
+
+已存在的导出目录不会被覆盖。
+
 ## Innovation Assessment
 
 当前创新性与可证伪边界见 `design/INNOVATION_ASSESSMENT.md`。核心结论是：固定深度

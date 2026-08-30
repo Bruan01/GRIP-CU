@@ -11,6 +11,7 @@ from pathlib import Path
 
 roots = [Path("arguments"), Path("data"), Path("evaluation"), Path("grip"), Path("scripts"), Path("tests")]
 paths = [Path("recurrent_context_sampling.py"), Path("recurrent_cross_audit.py")]
+paths.extend(Path("../configs").glob("*.py"))
 for root in roots:
     paths.extend(root.rglob("*.py"))
 count = 0
@@ -29,5 +30,6 @@ python3 -m unittest \
   tests.test_recurrent_args \
   tests.test_recurrent_metrics \
   tests.test_recurrent_cross_audit \
+  tests.test_export_diagnostic_artifacts \
   -v
 echo "macOS static checks: PASS"

@@ -23,6 +23,13 @@
 - `grip-exp/tests/test_recurrent_cross_audit.py`
 - `configs/run_nell23k_diagnostic_cross_wsl.sh`
 - `configs/nell23k_diagnostic_cross_qwen05b.json`
+- `configs/export_diagnostic_cross_artifacts.py`
+  - 校验 cross-run audit 与 prediction/summary count；
+  - 导出 config、environment、context manifests 和 analysis；
+  - 移除完整 hidden-state vectors，保留逐题审计字段；
+  - 生成含 SHA256 的 artifact manifest。
+- `configs/export_diagnostic_cross_artifacts.sh`
+- `grip-exp/tests/test_export_diagnostic_artifacts.py`
 - `design/DIAGNOSTIC_CROSS_PLAN.md`
 
 ## Modified in v1.1.1

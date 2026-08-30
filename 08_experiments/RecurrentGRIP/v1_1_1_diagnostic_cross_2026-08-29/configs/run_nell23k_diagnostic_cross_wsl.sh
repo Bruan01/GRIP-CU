@@ -3,10 +3,12 @@ set -euo pipefail
 
 VERSION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CODE_DIR="$VERSION_DIR/grip-exp"
+REPOSITORY_DIR="$(cd "$VERSION_DIR/../../.." && pwd)"
 PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
 NELL_INPUT="${NELL_INPUT:-$CODE_DIR/outputs/data/nell23k/recurrent_relation_prediction.json}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 RUN_DIR="${RUN_DIR:-$VERSION_DIR/results/runs/${RUN_ID}_nell23k_diagnostic_cross}"
+AUDIT_EXPORT_DIR="${AUDIT_EXPORT_DIR:-$REPOSITORY_DIR/09_results_analysis/artifacts/RecurrentGRIP_v1_1_1/$(basename "$RUN_DIR")}"
 CONTEXT_NODE_SAMPLES="${CONTEXT_NODE_SAMPLES:-32}"
 CONTEXT_EDGE_SAMPLES="${CONTEXT_EDGE_SAMPLES:-224}"
 CONTEXT_SAMPLING_SEED="${CONTEXT_SAMPLING_SEED:-2026}"
@@ -135,6 +137,12 @@ cat "$RUN_DIR/train_k1/predictions.jsonl" "$RUN_DIR/train_k2/predictions.jsonl" 
   --input_file "$RUN_DIR/predictions.jsonl" \
   --output_dir "$RUN_DIR/analysis" \
   2>&1 | tee "$RUN_DIR/analysis.log"
+"$PYTHON" "$VERSION_DIR/configs/export_diagnostic_cross_artifacts.py" \
+  --run-dir "$RUN_DIR" \
+  --output-dir "$AUDIT_EXPORT_DIR" \
+  --repository-dir "$REPOSITORY_DIR" \
+  2>&1 | tee "$RUN_DIR/artifact_export.log"
 
 echo "$RUN_DIR" > "$VERSION_DIR/results/LAST_NELL23K_DIAGNOSTIC_CROSS_RUN.txt"
 echo "NELL23K diagnostic cross completed: $RUN_DIR"
+echo "Git-trackable audit export: $AUDIT_EXPORT_DIR"
