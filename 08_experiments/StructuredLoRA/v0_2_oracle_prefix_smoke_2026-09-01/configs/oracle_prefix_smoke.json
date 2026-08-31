@@ -1,0 +1,120 @@
+{
+  "format_version": 1,
+  "experiment_id": "structured_lora_v0_2_oracle_prefix_smoke_2026-09-01",
+  "model": {
+    "name_or_path": "Qwen/Qwen2.5-0.5B-Instruct",
+    "local_files_only": false,
+    "trust_remote_code": false,
+    "dtype": "bfloat16",
+    "device": "cuda",
+    "attn_implementation": "eager"
+  },
+  "data": {
+    "train": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl",
+    "validation": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl",
+    "test": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_test.jsonl",
+    "expected_sizes": {
+      "train": 716,
+      "validation": 152,
+      "test": 156
+    },
+    "max_length": 256,
+    "max_new_tokens": 24
+  },
+  "lora": {
+    "total_rank": 8,
+    "groups": 4,
+    "group_rank": 2,
+    "alpha": 16,
+    "dropout": 0.0,
+    "orthogonal_init": true,
+    "target_modules": [
+      "down_proj",
+      "up_proj",
+      "gate_proj"
+    ]
+  },
+  "routing_controls": {
+    "depth_permutation": {
+      "1": 3,
+      "2": 1,
+      "3": 4,
+      "4": 2
+    },
+    "random_group_order": [
+      2,
+      0,
+      3,
+      1
+    ],
+    "non_nested_masks": {
+      "1": [
+        2
+      ],
+      "2": [
+        0,
+        3
+      ],
+      "3": [
+        0,
+        1,
+        3
+      ],
+      "4": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  "training": {
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "smoke_seeds": [
+      42
+    ],
+    "micro_batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "max_optimizer_steps": 180,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "warmup_ratio": 0.05,
+    "max_grad_norm": 1.0,
+    "num_workers": 0,
+    "log_every_steps": 10,
+    "gradient_checkpointing": false
+  },
+  "analysis": {
+    "gradient_probe_batch_size": 4,
+    "knockout_methods": [
+      "monolithic",
+      "static_split",
+      "ordered_prefix",
+      "ordered_prefix_local_credit"
+    ],
+    "knockout_examples_per_depth": 16
+  },
+  "methods": [
+    "monolithic",
+    "static_split",
+    "flat_oracle",
+    "ordered_prefix",
+    "ordered_prefix_local_credit",
+    "permuted_depth_prefix",
+    "random_group_order",
+    "non_nested_random_masks"
+  ],
+  "gate": {
+    "minimum_seeds_for_final": 3,
+    "ordered_over_monolithic": 0.0,
+    "ordered_over_flat": 0.0,
+    "deep_3_4_improvement": 0.03,
+    "maximum_1hop_drop": 0.01,
+    "ordered_over_permuted": 0.0,
+    "ordered_over_non_nested": 0.0
+  }
+}

@@ -119,6 +119,7 @@ AI 不应该替代：
 
 - RecurrentGRIP 与 FactorGRIP 的已有版本和失败/诊断证据继续保留；
 - StructuredLoRA v0.1 已完成完整 NELL23K depth data audit；
+- StructuredLoRA v0.2 oracle-prefix 等 rank 方法、对照、WSL 运行器与静态测试已完成，GPU smoke 待运行；
 - 已生成 34,216 条 support-depth 标签和 1,024 条严格 exact-hop QA；
 - 当前决策为 `GO_ORACLE_PREFIX`；
 - 下一步只实现 perfect-routing 的等 rank 对照，oracle 失败则终止，不提前实现 learned router。
@@ -130,5 +131,6 @@ AI 不应该替代：
 3. [`08_experiments/StructuredLoRA/README.md`](08_experiments/StructuredLoRA/README.md)
 4. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md)
 5. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/reports/REPORT.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/reports/REPORT.md)
+6. [`08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/README.md`](08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/README.md)
 
 历史 RecurrentGRIP 状态保存在 [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)，旧 WSL 交接保存在 [`TODO_WSL3090.md`](TODO_WSL3090.md)，不删除、不覆盖。

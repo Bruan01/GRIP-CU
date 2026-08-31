@@ -27,22 +27,30 @@ G4：长路径残差
 - [x] 严格 1/2/3/4-hop path QA 生成器
 - [x] 34,216 条完整标签和 1,024 条 exact-hop QA
 - [x] 旧诊断预测 768/768 重新连接新标签
-- [x] 8 个纯 Python 测试与确定性 artifact 检查
-- [x] v0.1 Go gate：GO_ORACLE_PREFIX
+- [x] v0.1 Go gate：`GO_ORACLE_PREFIX`
+- [x] 创建独立 `v0_2_oracle_prefix_smoke_2026-09-01`
+- [x] 实现 equal-rank monolithic、static split、flat oracle、ordered prefix
+- [x] 实现 depth-local credit、permuted depth、random order 和 non-nested controls
+- [x] 实现三 seeds 配置、WSL 启动器、断点续跑、结果汇总和预注册 gate
+- [x] 实现 gradient cosine、group knockout、参数量/显存/时间记录
+- [x] macOS 13 个纯 Python 静态测试与 setup audit
 
-## 下一步
+## 当前待办
 
-- [ ] 创建 `v0_2_oracle_prefix_smoke_2026-09-01`
-- [ ] 实现 equal-rank monolithic、static split、flat oracle expert、ordered oracle prefix
-- [ ] 实现 depth-local credit 和 permuted/random controls
-- [ ] 在 Qwen2.5-0.5B + RTX 3090 上运行 exact-hop smoke
-- [ ] oracle-prefix 通过后才创建 learned ordinal router
+- [ ] 在 Qwen2.5-0.5B + RTX 3090 上运行 one-seed exact-hop smoke
+- [ ] 提交 `results/runs/<RUN_ID>/` 的指标、预测和报告
+- [ ] preliminary go 后运行 seeds `[42,43,44]`
+- [ ] 只有最终 `GO_LEARNED_ROUTER` 才创建 learned ordinal router
+
+## 重要控制修正
+
+固定 random group order 仍然是 nested prefix，只是组身份置换，因此它是 symmetry control，不能预注册成“必须下降”。真正的结构负对照是保持每个深度 active rank 相同但破坏集合嵌套的 `non_nested_random_masks`。
 
 ## 关键入口
 
 1. [`08_experiments/StructuredLoRA/README.md`](08_experiments/StructuredLoRA/README.md)
-2. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md)
-3. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/PROJECT_MEMORY.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/PROJECT_MEMORY.md)
+2. [`08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/README.md`](08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/README.md)
+3. [`08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/PROJECT_MEMORY.md`](08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/PROJECT_MEMORY.md)
 4. [`TODO_STRUCTURED_LORA.md`](TODO_STRUCTURED_LORA.md)
 
 ## Stop rule

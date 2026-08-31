@@ -72,3 +72,5 @@ RecurrentGRIP 将模型拆分为共享问题编码器、共享递归图执行器
 - `08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/README.md`
 - `08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/design/NELL23K_FIRST_PLAN.md`
 - `08_experiments/CLEGR_MECHANISM_PLAN.md`
+
+- StructuredLoRA v0.2 oracle-prefix implementation: READY_FOR_WSL_GPU（GPU 结果待运行）
