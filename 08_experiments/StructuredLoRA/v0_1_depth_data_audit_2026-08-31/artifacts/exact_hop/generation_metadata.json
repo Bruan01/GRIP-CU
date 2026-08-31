@@ -1,0 +1,37 @@
+{
+  "seed": 20260831,
+  "per_depth": 256,
+  "max_depth": 4,
+  "total_tasks": 1024,
+  "attempts_by_depth": {
+    "1": 298,
+    "2": 1295,
+    "3": 3875,
+    "4": 10513
+  },
+  "rejection_counts": {
+    "dead_end_or_cycle": 12986,
+    "duplicate_signature": 26,
+    "non_unique_relation_chain": 1675,
+    "shorter_directed_path": 270
+  },
+  "split_counts": {
+    "train": 716,
+    "validation": 152,
+    "test": 156
+  },
+  "depth_split_counts": {
+    "d1:train": 179,
+    "d1:validation": 38,
+    "d1:test": 39,
+    "d2:train": 179,
+    "d2:validation": 38,
+    "d2:test": 39,
+    "d3:train": 179,
+    "d3:validation": 38,
+    "d3:test": 39,
+    "d4:train": 179,
+    "d4:validation": 38,
+    "d4:test": 39
+  }
+}

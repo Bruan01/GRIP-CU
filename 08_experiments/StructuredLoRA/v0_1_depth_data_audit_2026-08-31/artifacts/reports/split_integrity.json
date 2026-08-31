@@ -1,0 +1,29 @@
+{
+  "train": {
+    "rows": 24321,
+    "unique_triples": 24321,
+    "duplicate_rows": 0,
+    "self_loops": 11,
+    "exact_train_overlap": null,
+    "unseen_relation_rows": 0,
+    "unseen_endpoint_rows": 0
+  },
+  "valid": {
+    "rows": 4951,
+    "unique_triples": 4951,
+    "duplicate_rows": 0,
+    "self_loops": 4,
+    "exact_train_overlap": 0,
+    "unseen_relation_rows": 0,
+    "unseen_endpoint_rows": 6
+  },
+  "test": {
+    "rows": 4944,
+    "unique_triples": 4944,
+    "duplicate_rows": 0,
+    "self_loops": 2,
+    "exact_train_overlap": 0,
+    "unseen_relation_rows": 0,
+    "unseen_endpoint_rows": 5
+  }
+}

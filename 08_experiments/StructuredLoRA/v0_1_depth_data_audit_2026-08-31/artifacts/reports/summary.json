@@ -1,0 +1,144 @@
+{
+  "format_version": 1,
+  "experiment": "StructuredLoRA v0.1 depth data audit",
+  "config": {
+    "dataset": "NELL23K",
+    "data_dir": "../../../13_base_method/grip-exp/data/raw_datasets/nell23k",
+    "output_dir": "artifacts",
+    "max_depth": 4,
+    "exact_hop_per_depth": 256,
+    "exact_hop_split": {
+      "train": 0.7,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "max_attempts_per_depth": 500000,
+    "seed": 20260831,
+    "prediction_files": [
+      "../../RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross/predictions.jsonl"
+    ],
+    "expected_source_sha256": {
+      "train": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+      "valid": "a40951319088c26e46dc6711b55b06c58be924aa7eea2f671d89c3ccec0bcabb",
+      "test": "9d48fa18ac395e4960521bcb1563883624e9d695fec6a4c44f2fb657194440c2"
+    }
+  },
+  "config_path": "configs/depth_audit_nell23k.json",
+  "dataset": {
+    "name": "NELL23K",
+    "split_sizes": {
+      "train": 24321,
+      "valid": 4951,
+      "test": 4944
+    },
+    "train_nodes": 20789,
+    "train_edges": 24321,
+    "train_relations": 198,
+    "source_sha256": {
+      "train": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+      "valid": "a40951319088c26e46dc6711b55b06c58be924aa7eea2f671d89c3ccec0bcabb",
+      "test": "9d48fa18ac395e4960521bcb1563883624e9d695fec6a4c44f2fb657194440c2"
+    },
+    "split_integrity": {
+      "train": {
+        "rows": 24321,
+        "unique_triples": 24321,
+        "duplicate_rows": 0,
+        "self_loops": 11,
+        "exact_train_overlap": null,
+        "unseen_relation_rows": 0,
+        "unseen_endpoint_rows": 0
+      },
+      "valid": {
+        "rows": 4951,
+        "unique_triples": 4951,
+        "duplicate_rows": 0,
+        "self_loops": 4,
+        "exact_train_overlap": 0,
+        "unseen_relation_rows": 0,
+        "unseen_endpoint_rows": 6
+      },
+      "test": {
+        "rows": 4944,
+        "unique_triples": 4944,
+        "duplicate_rows": 0,
+        "self_loops": 2,
+        "exact_train_overlap": 0,
+        "unseen_relation_rows": 0,
+        "unseen_endpoint_rows": 5
+      }
+    }
+  },
+  "label_artifact": {
+    "path": "artifacts/depth_labels/nell23k_support_depth.jsonl.gz",
+    "rows": 34216,
+    "sha256": "d7f9f9404fb0452ecd9b08f0d874227184b4d516d482966158ee57a19bab2751",
+    "censoring": "A null bounded distance means no path was found within 4 steps; it does not prove global unreachability."
+  },
+  "exact_hop": {
+    "seed": 20260831,
+    "per_depth": 256,
+    "max_depth": 4,
+    "total_tasks": 1024,
+    "attempts_by_depth": {
+      "1": 298,
+      "2": 1295,
+      "3": 3875,
+      "4": 10513
+    },
+    "rejection_counts": {
+      "dead_end_or_cycle": 12986,
+      "duplicate_signature": 26,
+      "non_unique_relation_chain": 1675,
+      "shorter_directed_path": 270
+    },
+    "split_counts": {
+      "train": 716,
+      "validation": 152,
+      "test": 156
+    },
+    "depth_split_counts": {
+      "d1:train": 179,
+      "d1:validation": 38,
+      "d1:test": 39,
+      "d2:train": 179,
+      "d2:validation": 38,
+      "d2:test": 39,
+      "d3:train": 179,
+      "d3:validation": 38,
+      "d3:test": 39,
+      "d4:train": 179,
+      "d4:validation": 38,
+      "d4:test": 39
+    },
+    "sha256": "39e13195625c50803bc065b107b76e92c5feff6a1a23ce022e80a7bfa9642493"
+  },
+  "predictions": {
+    "prediction_rows_total": 768,
+    "prediction_rows_joined": 768,
+    "prediction_rows_unmatched": 0,
+    "prediction_rows_ambiguous": 0,
+    "join_rate": 1.0,
+    "files_found": [
+      "../../RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross/predictions.jsonl"
+    ],
+    "files_missing": []
+  },
+  "decision": {
+    "decision": "GO_ORACLE_PREFIX",
+    "gates": {
+      "exact_hop_generation_complete": true,
+      "at_least_two_nontrivial_test_buckets": true,
+      "depth_not_relation_identity": true,
+      "existing_baseline_has_depth_variation": true
+    },
+    "supported_nontrivial_test_buckets": [
+      "2",
+      "3",
+      "4"
+    ],
+    "maximum_observed_baseline_accuracy_spread": 0.14912280701754385,
+    "relation_depth_nmi_test": 0.15915836220356178,
+    "interpretation": "Proceed only to an oracle-prefix, equal-rank pilot. Learned routing remains blocked until the oracle structure beats monolithic LoRA."
+  }
+}

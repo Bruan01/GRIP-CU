@@ -1,0 +1,11 @@
+{
+  "prediction_rows_total": 768,
+  "prediction_rows_joined": 768,
+  "prediction_rows_unmatched": 0,
+  "prediction_rows_ambiguous": 0,
+  "join_rate": 1.0,
+  "files_found": [
+    "../../RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross/predictions.jsonl"
+  ],
+  "files_missing": []
+}

@@ -1,3 +1,5 @@
+> 历史状态说明（2026-08-31）：本文件冻结 RecurrentGRIP 阶段记录。当前候选主线已切换到 [`STRUCTURED_LORA_STATUS.md`](STRUCTURED_LORA_STATUS.md)，不删除本文件以保留失败分析和决策 provenance。
+
 # RecurrentGRIP Research Status
 
 更新日期：2026-08-29

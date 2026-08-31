@@ -107,23 +107,28 @@ AI 不应该替代：
 
 ---
 
-## 当前研究主线：RecurrentGRIP
+## 当前研究主线：StructuredLoRA
 
-更新日期：2026-08-29
+更新日期：2026-08-31
 
-本项目当前聚焦：
+当前候选问题：
 
-> 将 GRIP 的图专属 LoRA 从静态事实存储提升为可被共享递归模块反复调用的可执行参数图程序，并区分 graph storage、retrieval 与 execution。
+> GRIP 的单一 LoRA 子空间是否混合了不同结构支撑深度的图知识并产生参数干扰？能否在相同总 rank 下，用有序累计深度残差实现更准确、可干预的参数化图推理？
+
+当前状态：
+
+- RecurrentGRIP 与 FactorGRIP 的已有版本和失败/诊断证据继续保留；
+- StructuredLoRA v0.1 已完成完整 NELL23K depth data audit；
+- 已生成 34,216 条 support-depth 标签和 1,024 条严格 exact-hop QA；
+- 当前决策为 `GO_ORACLE_PREFIX`；
+- 下一步只实现 perfect-routing 的等 rank 对照，oracle 失败则终止，不提前实现 learned router。
 
 当前执行入口：
 
-0. [`TODO_WSL3090.md`](TODO_WSL3090.md) — WSL2 RTX 3090 环境、测试与单图 smoke 交接
-1. [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)
-2. [`01_problem/problem_statement.md`](01_problem/problem_statement.md)
-3. [`03_gap_analysis/gap_matrix.md`](03_gap_analysis/gap_matrix.md)
-4. [`07_method_versions/v1_first_core_idea/recurrentgrip_design.md`](07_method_versions/v1_first_core_idea/recurrentgrip_design.md)
-5. [`08_experiments/PILOT_PLAN.md`](08_experiments/PILOT_PLAN.md)
-6. [`11_paper/paper_outline.md`](11_paper/paper_outline.md)
+1. [`STRUCTURED_LORA_STATUS.md`](STRUCTURED_LORA_STATUS.md)
+2. [`TODO_STRUCTURED_LORA.md`](TODO_STRUCTURED_LORA.md)
+3. [`08_experiments/StructuredLoRA/README.md`](08_experiments/StructuredLoRA/README.md)
+4. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md)
+5. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/reports/REPORT.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/reports/REPORT.md)
 
-当前原则：先在 NELL23K 上完成 Original GRIP/RecurrentGRIP 的 WSL smoke 和固定深度 Pilot；只有出现可信的 recurrence 信号，才运行 CLEGR 严格 K↔hop 机制确认，并在通过决策门后进入动态停止、机制干预和多数据集实验。
-
+历史 RecurrentGRIP 状态保存在 [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)，旧 WSL 交接保存在 [`TODO_WSL3090.md`](TODO_WSL3090.md)，不删除、不覆盖。

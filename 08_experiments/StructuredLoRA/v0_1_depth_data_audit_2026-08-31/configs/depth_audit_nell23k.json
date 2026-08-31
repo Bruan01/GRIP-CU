@@ -1,0 +1,22 @@
+{
+  "dataset": "NELL23K",
+  "data_dir": "../../../13_base_method/grip-exp/data/raw_datasets/nell23k",
+  "output_dir": "artifacts",
+  "max_depth": 4,
+  "exact_hop_per_depth": 256,
+  "exact_hop_split": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "max_attempts_per_depth": 500000,
+  "seed": 20260831,
+  "prediction_files": [
+    "../../RecurrentGRIP/v1_1_1_diagnostic_cross_2026-08-29/results/runs/wsl3090_nell23k_diag_cross_20260830_01_nell23k_diagnostic_cross/predictions.jsonl"
+  ],
+  "expected_source_sha256": {
+    "train": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+    "valid": "a40951319088c26e46dc6711b55b06c58be924aa7eea2f671d89c3ccec0bcabb",
+    "test": "9d48fa18ac395e4960521bcb1563883624e9d695fec6a4c44f2fb657194440c2"
+  }
+}
