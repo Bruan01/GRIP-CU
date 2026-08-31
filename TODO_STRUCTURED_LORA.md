@@ -10,7 +10,7 @@ v0.2 方法、对照、训练器、评估器和静态验证已经完成：
 08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/
 ```
 
-当前唯一主任务是在 WSL2 + RTX 3090 上运行 oracle-prefix smoke，而不是继续改方法或实现 learned router。
+WSL2 + RTX 3090 上的 oracle-prefix smoke 已完成；当前按预注册 stop rule 记录结果，不继续改方法或实现 learned router。
 
 完整 WSL 交接 Prompt：
 
@@ -49,6 +49,11 @@ non-nested random masks（decisive structure control）
 ```
 
 ## Smoke 后
+
+已完成 `wsl3090_oracle_prefix_smoke_01`：8 个方法、seed 42 全部完成，结果为 `PRELIMINARY_STOP`。
+`ordered_prefix` 未同时超过 monolithic、permuted control 和 deep-hop gate，因此禁止运行 full seeds，
+也禁止实现 router。结果位于 `08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/results/runs/wsl3090_oracle_prefix_smoke_01/`。
+
 
 检查：
 

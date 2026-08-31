@@ -59,3 +59,45 @@ RUN_ID=wsl3090_oracle_prefix_smoke_01 bash configs/run_wsl_smoke.sh
 ```
 
 将完整 `results/runs/<RUN_ID>/` 提交远程，再根据 `REPORT.md` 决定停止还是扩展三个 seeds。
+
+## Smoke run outcome (2026-09-01)
+
+使用 conda `guardenv` 在 WSL2 RTX 3090 上完成注册的 v0.2 smoke：
+
+- `RUN_ID=wsl3090_oracle_prefix_smoke_01`
+- PyTorch `2.12.0+cu130`，Transformers `4.57.3`
+- CUDA 可用，GPU 为 `NVIDIA GeForce RTX 3090`，compute capability `8.6`
+- 8/8 methods 完成，单注册 seed `42`；数据为 train/validation/test = `716/152/156`
+- 所有方法 trainable parameters 均为 `3,317,760`，满足 equal-rank 公平性
+- smoke decision：`PRELIMINARY_STOP`
+
+Test accuracy / depth accuracy：
+
+| method | overall | d1 | d2 | d3 | d4 | macro-hop | worst-hop |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `monolithic` | 0.3462 | 0.1538 | 0.2821 | 0.5128 | 0.4359 | 0.3462 | 0.1538 |
+| `static_split` | 0.3782 | 0.1795 | 0.3077 | 0.5385 | 0.4872 | 0.3782 | 0.1795 |
+| `flat_oracle` | 0.2949 | 0.1538 | 0.1795 | 0.4103 | 0.4359 | 0.2949 | 0.1538 |
+| `ordered_prefix` | 0.3205 | 0.1538 | 0.2051 | 0.4615 | 0.4615 | 0.3205 | 0.1538 |
+| `ordered_prefix_local_credit` | 0.2949 | 0.1282 | 0.1795 | 0.4103 | 0.4615 | 0.2949 | 0.1282 |
+| `permuted_depth_prefix` | 0.3462 | 0.1795 | 0.2308 | 0.5128 | 0.4615 | 0.3462 | 0.1795 |
+| `random_group_order` | 0.3205 | 0.1538 | 0.2051 | 0.4359 | 0.4872 | 0.3205 | 0.1538 |
+| `non_nested_random_masks` | 0.2949 | 0.1026 | 0.1538 | 0.4359 | 0.4872 | 0.2949 | 0.1026 |
+
+Gate audit：`ordered_prefix` 未超过 `monolithic`（-2.56 pp）、未超过
+`permuted_depth_prefix`（-2.56 pp），3/4-hop 平均相对 monolithic 为 -1.28 pp，
+因此未满足注册 gate。它超过 `flat_oracle` 和 `non_nested_random_masks`，且 1-hop 未下降，
+但不足以输出 `PRELIMINARY_GO`。按预注册规则不实现 learned router，也不运行 full seeds。
+
+机制探针已生成于各 method 的 `run_summary.json`：包括 depth gradient cosine、gradient norm
+和 group knockout。`monolithic/static_split/ordered_prefix/ordered_prefix_local_credit` 均有
+knockout 结果；各 method 的 adapter 权重只保留本机并被 Git 忽略。
+
+可复现结果目录：
+
+```text
+results/runs/wsl3090_oracle_prefix_smoke_01/
+```
+
+提交结果时只提交 `REPORT.md`、`suite_summary.json`、`suite_metrics.csv`、各 method 的
+metadata/predictions/config 等文本结果，不提交任何 `adapter_model.pt`。

@@ -1,0 +1,212 @@
+{
+  "aggregate": {
+    "flat_oracle": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 325.132,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.2948717948717949,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.1794871794871795,
+        "3": 0.41025641025641024,
+        "4": 0.4358974358974359
+      },
+      "test_macro_depth_accuracy": 0.2948717948717949,
+      "test_worst_depth_accuracy": 0.15384615384615385,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.29605263157894735
+    },
+    "monolithic": {
+      "mean_peak_gpu_memory_bytes": 2752788992.0,
+      "mean_training_seconds": 143.392,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.34615384615384615,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.28205128205128205,
+        "3": 0.5128205128205128,
+        "4": 0.4358974358974359
+      },
+      "test_macro_depth_accuracy": 0.34615384615384615,
+      "test_worst_depth_accuracy": 0.15384615384615385,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.3157894736842105
+    },
+    "non_nested_random_masks": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 331.265,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.2948717948717949,
+      "test_accuracy_by_depth": {
+        "1": 0.10256410256410256,
+        "2": 0.15384615384615385,
+        "3": 0.4358974358974359,
+        "4": 0.48717948717948717
+      },
+      "test_macro_depth_accuracy": 0.2948717948717949,
+      "test_worst_depth_accuracy": 0.10256410256410256,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.29605263157894735
+    },
+    "ordered_prefix": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 323.732,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.32051282051282054,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.20512820512820512,
+        "3": 0.46153846153846156,
+        "4": 0.46153846153846156
+      },
+      "test_macro_depth_accuracy": 0.3205128205128205,
+      "test_worst_depth_accuracy": 0.15384615384615385,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.29605263157894735
+    },
+    "ordered_prefix_local_credit": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 322.42,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.2948717948717949,
+      "test_accuracy_by_depth": {
+        "1": 0.1282051282051282,
+        "2": 0.1794871794871795,
+        "3": 0.41025641025641024,
+        "4": 0.46153846153846156
+      },
+      "test_macro_depth_accuracy": 0.2948717948717949,
+      "test_worst_depth_accuracy": 0.1282051282051282,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.2565789473684211
+    },
+    "permuted_depth_prefix": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 324.217,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.34615384615384615,
+      "test_accuracy_by_depth": {
+        "1": 0.1794871794871795,
+        "2": 0.23076923076923078,
+        "3": 0.5128205128205128,
+        "4": 0.46153846153846156
+      },
+      "test_macro_depth_accuracy": 0.34615384615384615,
+      "test_worst_depth_accuracy": 0.1794871794871795,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.27631578947368424
+    },
+    "random_group_order": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 320.816,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.32051282051282054,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.20512820512820512,
+        "3": 0.4358974358974359,
+        "4": 0.48717948717948717
+      },
+      "test_macro_depth_accuracy": 0.32051282051282054,
+      "test_worst_depth_accuracy": 0.15384615384615385,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.2894736842105263
+    },
+    "static_split": {
+      "mean_peak_gpu_memory_bytes": 3194127872.0,
+      "mean_training_seconds": 325.79,
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "test_accuracy": 0.3782051282051282,
+      "test_accuracy_by_depth": {
+        "1": 0.1794871794871795,
+        "2": 0.3076923076923077,
+        "3": 0.5384615384615384,
+        "4": 0.48717948717948717
+      },
+      "test_macro_depth_accuracy": 0.3782051282051282,
+      "test_worst_depth_accuracy": 0.1794871794871795,
+      "trainable_parameters": [
+        3317760
+      ],
+      "validation_accuracy": 0.32894736842105265
+    }
+  },
+  "gate": {
+    "all_checks_pass": false,
+    "checks": {
+      "deep_3_4_improvement": {
+        "pass": false,
+        "threshold": 0.03,
+        "value": -0.012820512820512775
+      },
+      "one_hop_not_degraded": {
+        "pass": true,
+        "threshold": -0.01,
+        "value": 0.0
+      },
+      "ordered_over_flat": {
+        "pass": true,
+        "threshold": 0.0,
+        "value": 0.02564102564102566
+      },
+      "ordered_over_monolithic": {
+        "pass": false,
+        "threshold": 0.0,
+        "value": -0.025641025641025605
+      },
+      "ordered_over_non_nested": {
+        "pass": true,
+        "threshold": 0.0,
+        "value": 0.02564102564102566
+      },
+      "ordered_over_permuted": {
+        "pass": false,
+        "threshold": 0.0,
+        "value": -0.025641025641025605
+      }
+    },
+    "minimum_seed_count": 1,
+    "random_group_order_note": "A fixed permutation of group identities preserves the nested prefix function class. It is a symmetry control, not a valid expected-degradation control; the non-nested mask is decisive.",
+    "required_seed_count": 3,
+    "status": "PRELIMINARY_STOP"
+  },
+  "run_count": 8
+}
