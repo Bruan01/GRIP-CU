@@ -51,3 +51,13 @@ One seed is preliminary. Three seeds are required for final Go/Stop. Only `GO_LE
 - macOS is for editing, deterministic data construction, unit tests, and static audit.
 - WSL2 + RTX 3090 24GB is for PyTorch/Transformers runtime.
 - The local macOS Python used on 2026-09-01 does not contain `torch`; this is expected and checked again in WSL preflight.
+
+## 2026-09-01 WSL smoke result
+
+Run `wsl3090_priority_distill_smoke_01` completed in conda `guardenv` on WSL2 Ubuntu with an RTX 3090. The local model snapshot used was `/home/kieran/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775`; using this explicit path avoids model-alias/cache-resolution ambiguity. Runtime versions were Python 3.10.19, PyTorch 2.12.0+cu130, Transformers 4.57.3, and PEFT 0.17.1; `torch.cuda.is_available()` was true.
+
+All five seed-42 methods completed. Test accuracy was: `answer_only=0.3141`, `more_qa_equal_token=0.3526`, `random_path_equal_token=0.3397`, `all_paths_equal_token=0.3397`, and `oracle_priority_equal_token=0.3141`. Oracle deep 3/4 accuracy was `0.4487`, below answer-only `0.4872`. Equal-token audit passed: path methods were within `0.02558%` relative Stage-1 input-token gap and had zero prompt truncation. Every run was graph-free at inference (`inference_graph_access=false`) and used CUDA.
+
+The suite decision is `PRELIMINARY_STOP`: every mechanism comparison involving oracle failed, while only token-budget and no-truncation checks passed. Do not run the registered full seeds and do not implement `GO_LEARNED_PRIORITIZER`/v0.2 learned scoring from this smoke. Preserve the result as a negative preliminary result.
+
+For future WSL execution, load conda explicitly before invoking scripts: `source /home/kieran/miniconda3/etc/profile.d/conda.sh && conda activate guardenv`. Pass the explicit local model path when a script's model resolver does not recognize the logical alias.

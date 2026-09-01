@@ -1,0 +1,41 @@
+{
+  "candidate_pool_count": 716,
+  "reference_input_tokens": 199315,
+  "reference_method": "all_paths_equal_token",
+  "selected_method_budget": {
+    "cycles": 3,
+    "examples": 1453,
+    "input_tokens": 199321,
+    "overshoot_tokens": 6,
+    "supervised_tokens": 10065,
+    "target_input_tokens": 199315,
+    "truncated_examples": 0,
+    "truncated_prompt_tokens": 0
+  },
+  "stage2_epochs": 4,
+  "stage2_input_tokens": 219732,
+  "unbalanced_stage1_input_tokens": {
+    "all_paths_equal_token": 199315,
+    "more_qa_equal_token": 54933,
+    "oracle_priority_equal_token": 98199,
+    "random_path_equal_token": 97856
+  },
+  "unbalanced_stage1_truncation": {
+    "all_paths_equal_token": {
+      "examples": 0,
+      "prompt_tokens": 0
+    },
+    "more_qa_equal_token": {
+      "examples": 0,
+      "prompt_tokens": 0
+    },
+    "oracle_priority_equal_token": {
+      "examples": 0,
+      "prompt_tokens": 0
+    },
+    "random_path_equal_token": {
+      "examples": 0,
+      "prompt_tokens": 0
+    }
+  }
+}

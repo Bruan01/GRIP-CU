@@ -1,0 +1,21 @@
+{
+  "cuda_available": true,
+  "cuda_version": "13.0",
+  "env": {
+    "CONDA_DEFAULT_ENV": "guardenv",
+    "CUDA_VISIBLE_DEVICES": null,
+    "WSL_DISTRO_NAME": "Ubuntu"
+  },
+  "git": {
+    "branch": "wsl/nell23k-smoke-20260829",
+    "commit": "bf76ea03e0522d5f38f58c3bf71e69efea253858",
+    "status_short": "M 08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/artifacts/supervision/audit.json"
+  },
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "gpu_total_memory": 25769148416,
+  "hostname": "kieran",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "python": "3.10.19",
+  "torch": "2.12.0+cu130",
+  "transformers": "4.57.3"
+}

@@ -1,0 +1,150 @@
+{
+  "aggregate": {
+    "all_paths_equal_token": {
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "stage1_input_tokens": 199315.0,
+      "stage1_optimizer_steps": 83.0,
+      "stage1_truncated_example_rate": 0.0,
+      "test_accuracy": 0.33974358974358976,
+      "test_accuracy_by_depth": {
+        "1": 0.1794871794871795,
+        "2": 0.23076923076923078,
+        "3": 0.48717948717948717,
+        "4": 0.46153846153846156
+      },
+      "test_deep_3_4_accuracy": 0.47435897435897434,
+      "test_macro_depth_accuracy": 0.33974358974358976,
+      "test_worst_depth_accuracy": 0.1794871794871795
+    },
+    "answer_only": {
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "stage1_input_tokens": 0.0,
+      "stage1_optimizer_steps": 0.0,
+      "stage1_truncated_example_rate": 0.0,
+      "test_accuracy": 0.3141025641025641,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.1282051282051282,
+        "3": 0.5384615384615384,
+        "4": 0.4358974358974359
+      },
+      "test_deep_3_4_accuracy": 0.48717948717948717,
+      "test_macro_depth_accuracy": 0.3141025641025641,
+      "test_worst_depth_accuracy": 0.1282051282051282
+    },
+    "more_qa_equal_token": {
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "stage1_input_tokens": 199366.0,
+      "stage1_optimizer_steps": 93.0,
+      "stage1_truncated_example_rate": 0.0,
+      "test_accuracy": 0.3525641025641026,
+      "test_accuracy_by_depth": {
+        "1": 0.1794871794871795,
+        "2": 0.20512820512820512,
+        "3": 0.6153846153846154,
+        "4": 0.41025641025641024
+      },
+      "test_deep_3_4_accuracy": 0.5128205128205128,
+      "test_macro_depth_accuracy": 0.35256410256410253,
+      "test_worst_depth_accuracy": 0.1794871794871795
+    },
+    "oracle_priority_equal_token": {
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "stage1_input_tokens": 199321.0,
+      "stage1_optimizer_steps": 89.0,
+      "stage1_truncated_example_rate": 0.0,
+      "test_accuracy": 0.3141025641025641,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.20512820512820512,
+        "3": 0.46153846153846156,
+        "4": 0.4358974358974359
+      },
+      "test_deep_3_4_accuracy": 0.44871794871794873,
+      "test_macro_depth_accuracy": 0.3141025641025641,
+      "test_worst_depth_accuracy": 0.15384615384615385
+    },
+    "random_path_equal_token": {
+      "seed_count": 1,
+      "seeds": [
+        42
+      ],
+      "stage1_input_tokens": 199337.0,
+      "stage1_optimizer_steps": 89.0,
+      "stage1_truncated_example_rate": 0.0,
+      "test_accuracy": 0.33974358974358976,
+      "test_accuracy_by_depth": {
+        "1": 0.15384615384615385,
+        "2": 0.23076923076923078,
+        "3": 0.46153846153846156,
+        "4": 0.5128205128205128
+      },
+      "test_deep_3_4_accuracy": 0.48717948717948717,
+      "test_macro_depth_accuracy": 0.33974358974358976,
+      "test_worst_depth_accuracy": 0.15384615384615385
+    }
+  },
+  "gate": {
+    "all_checks_pass": false,
+    "checks": {
+      "deep_3_4_improvement": {
+        "comparison": "greater",
+        "pass": false,
+        "threshold": 0.0,
+        "value": -0.038461538461538436
+      },
+      "oracle_over_all_paths": {
+        "comparison": "greater",
+        "pass": false,
+        "threshold": 0.0,
+        "value": -0.02564102564102566
+      },
+      "oracle_over_answer_only": {
+        "comparison": "greater_equal",
+        "pass": false,
+        "threshold": 0.02,
+        "value": 0.0
+      },
+      "oracle_over_more_qa": {
+        "comparison": "greater_equal",
+        "pass": false,
+        "threshold": 0.01,
+        "value": -0.03846153846153849
+      },
+      "oracle_over_random_path": {
+        "comparison": "greater",
+        "pass": false,
+        "threshold": 0.0,
+        "value": -0.02564102564102566
+      },
+      "stage1_no_prompt_truncation": {
+        "comparison": "less_equal",
+        "pass": true,
+        "threshold": 0.0,
+        "value": 0.0
+      },
+      "stage1_token_budget_match": {
+        "comparison": "less_equal",
+        "pass": true,
+        "threshold": 0.01,
+        "value": 0.0002558109206183602
+      }
+    },
+    "minimum_seed_count": 1,
+    "required_seed_count": 3,
+    "status": "PRELIMINARY_STOP"
+  },
+  "run_count": 5
+}
