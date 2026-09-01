@@ -30,7 +30,8 @@ Experiment 回答“怎么证明它有效”。
 
 ## 版本化方法实验
 
-- `StructuredLoRA/`：当前候选主线；v0.1 先审计 support depth 和 exact-hop 数据，v0.2 已实现 oracle-prefix 等预算验证，等待 WSL 3090 运行。
+- `PriorityDistillGRIP/`：当前候选主线；v0.1 用 NELL23K strict exact-hop 测试训练期 oracle path priority 能否在 graph-free 推理时超过 answer-only 与等 token 对照，等待 WSL 3090 seed-42 smoke。
+- `StructuredLoRA/`：历史结构化秩实验；v0.2 oracle-prefix smoke 为 `PRELIMINARY_STOP`，停止 learned router，完整证据继续保留。
 - `RecurrentGRIP/`：历史递归执行实验快照与诊断结果，继续保留。
 - `FactorGRIP/`：历史 candidate-energy/factorization probe，继续保留。
 - Original GRIP 保持在 `13_base_method/grip-exp/`，实验方法不直接修改基线仓库。

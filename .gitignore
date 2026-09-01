@@ -55,3 +55,9 @@ outputs/
 !08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/results/**
 08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/results/runs/**/adapter_model.pt
 08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/results/logs/
+
+# PriorityDistill-GRIP v0.1 keeps research metrics/predictions but not adapter weights.
+!08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/
+!08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/**
+08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/runs/**/adapter_model.pt
+08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/logs/

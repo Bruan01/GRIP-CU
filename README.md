@@ -107,30 +107,30 @@ AI 不应该替代：
 
 ---
 
-## 当前研究主线：StructuredLoRA
+## 当前研究主线：PriorityDistill-GRIP
 
-更新日期：2026-08-31
+更新日期：2026-09-01
 
 当前候选问题：
 
-> GRIP 的单一 LoRA 子空间是否混合了不同结构支撑深度的图知识并产生参数干扰？能否在相同总 rank 下，用有序累计深度残差实现更准确、可干预的参数化图推理？
+> 如果训练时拥有完美的关键路径，并把路径监督蒸馏进普通等 rank LoRA，推理时完全不访问图，能否比 answer-only GRIP、同 token More-QA、随机路径和未筛选路径更准确？
 
 当前状态：
 
-- RecurrentGRIP 与 FactorGRIP 的已有版本和失败/诊断证据继续保留；
-- StructuredLoRA v0.1 已完成完整 NELL23K depth data audit；
-- StructuredLoRA v0.2 oracle-prefix 等 rank 方法、对照、WSL 运行器与静态测试已完成，GPU smoke 待运行；
-- 已生成 34,216 条 support-depth 标签和 1,024 条严格 exact-hop QA；
-- 当前决策为 `GO_ORACLE_PREFIX`；
-- 下一步只实现 perfect-routing 的等 rank 对照，oracle 失败则终止，不提前实现 learned router。
+- RecurrentGRIP、FactorGRIP 与 StructuredLoRA 的全部版本和失败/诊断证据继续保留；
+- StructuredLoRA v0.2 的 RTX 3090 oracle-prefix smoke 已得到 `PRELIMINARY_STOP`，不继续 learned router；
+- PriorityDistill-GRIP v0.1 已创建独立代码、五个注册对照、两阶段等 token 训练与 graph-free 评测；
+- NELL23K train-only candidate pools 与监督 artifacts 已生成，19 个 macOS 单元测试和静态审计通过；
+- 当前状态为 `READY_FOR_WSL_GPU`；下一步只跑 seed 42 oracle gate；
+- 只有 `GO_LEARNED_PRIORITIZER` 才允许创建 learned scorer/DPO 的下一版本。
 
 当前执行入口：
 
-1. [`STRUCTURED_LORA_STATUS.md`](STRUCTURED_LORA_STATUS.md)
-2. [`TODO_STRUCTURED_LORA.md`](TODO_STRUCTURED_LORA.md)
-3. [`08_experiments/StructuredLoRA/README.md`](08_experiments/StructuredLoRA/README.md)
-4. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/README.md)
-5. [`08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/reports/REPORT.md`](08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/reports/REPORT.md)
-6. [`08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/README.md`](08_experiments/StructuredLoRA/v0_2_oracle_prefix_smoke_2026-09-01/README.md)
+1. [`TODO_PRIORITY_DISTILL.md`](TODO_PRIORITY_DISTILL.md)
+2. [`08_experiments/PriorityDistillGRIP/README.md`](08_experiments/PriorityDistillGRIP/README.md)
+3. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/README.md`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/README.md)
+4. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/PROJECT_MEMORY.md`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/PROJECT_MEMORY.md)
+5. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/NEXT_STEP_WSL_PROMPT.md`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/NEXT_STEP_WSL_PROMPT.md)
+6. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/artifacts/setup_audit.json`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/artifacts/setup_audit.json)
 
-历史 RecurrentGRIP 状态保存在 [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)，旧 WSL 交接保存在 [`TODO_WSL3090.md`](TODO_WSL3090.md)，不删除、不覆盖。
+StructuredLoRA 历史状态继续保存在 [`STRUCTURED_LORA_STATUS.md`](STRUCTURED_LORA_STATUS.md) 与 [`TODO_STRUCTURED_LORA.md`](TODO_STRUCTURED_LORA.md)；RecurrentGRIP 历史状态保存在 [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)，不删除、不覆盖。
