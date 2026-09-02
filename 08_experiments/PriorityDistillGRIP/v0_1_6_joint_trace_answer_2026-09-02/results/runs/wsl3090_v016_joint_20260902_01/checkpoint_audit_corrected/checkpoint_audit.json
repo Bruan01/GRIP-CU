@@ -1,0 +1,261 @@
+{
+  "checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v016_joint_20260902_01/checkpoints/stage2_epoch8/adapter_model.pt",
+  "data": {
+    "depth_counts": {
+      "test": {
+        "1": 39,
+        "2": 39,
+        "3": 39,
+        "4": 39
+      },
+      "train": {
+        "1": 179,
+        "2": 179,
+        "3": 179,
+        "4": 179
+      },
+      "validation": {
+        "1": 38,
+        "2": 38,
+        "3": 38,
+        "4": 38
+      }
+    },
+    "split_sizes": {
+      "test": 156,
+      "train": 716,
+      "validation": 152
+    },
+    "task_id_overlaps": {}
+  },
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "format_version": 1,
+  "injection": {
+    "target_modules": [
+      "down_proj",
+      "up_proj",
+      "gate_proj"
+    ],
+    "trainable_parameters": 3317760
+  },
+  "interpretation": {
+    "gold_trace_masked": "tests whether correct intermediate nodes are sufficient when terminal remains hidden",
+    "gold_trace_unmasked": "oracle-only sanity check; visible terminal should make copying possible, not a graph-free score",
+    "train_vs_test": "high train but low test indicates memorization/poor compositional generalization"
+  },
+  "metrics": {
+    "gold_trace_test": {
+      "accuracy": 0.36538461538461536,
+      "accuracy_by_depth": {
+        "1": 0.1282051282051282,
+        "2": 0.3076923076923077,
+        "3": 0.5384615384615384,
+        "4": 0.48717948717948717
+      },
+      "correct": 57,
+      "count": 156,
+      "deep_3_4_accuracy": 0.5128205128205128,
+      "joint": {
+        "accuracy": 0.3525641025641026,
+        "accuracy_by_depth": {
+          "1": 0.1282051282051282,
+          "2": 0.3076923076923077,
+          "3": 0.5384615384615384,
+          "4": 0.4358974358974359
+        },
+        "correct": 55,
+        "count": 156,
+        "deep_3_4_accuracy": 0.48717948717948717,
+        "macro_depth_accuracy": 0.35256410256410253,
+        "worst_depth_accuracy": 0.1282051282051282
+      },
+      "macro_depth_accuracy": 0.36538461538461536,
+      "trace": {
+        "accuracy": 0.8653846153846154,
+        "accuracy_by_depth": {
+          "1": 0.8717948717948718,
+          "2": 0.9230769230769231,
+          "3": 0.8717948717948718,
+          "4": 0.7948717948717948
+        },
+        "correct": 135,
+        "count": 156,
+        "deep_3_4_accuracy": 0.8333333333333334,
+        "macro_depth_accuracy": 0.8653846153846154,
+        "worst_depth_accuracy": 0.7948717948717948
+      },
+      "worst_depth_accuracy": 0.1282051282051282
+    },
+    "gold_trace_unmasked_test": {
+      "accuracy": 0.5256410256410257,
+      "accuracy_by_depth": {
+        "1": 0.1282051282051282,
+        "2": 0.5641025641025641,
+        "3": 0.6410256410256411,
+        "4": 0.7692307692307693
+      },
+      "correct": 82,
+      "count": 156,
+      "deep_3_4_accuracy": 0.7051282051282052,
+      "joint": {
+        "accuracy": 0.02564102564102564,
+        "accuracy_by_depth": {
+          "1": 0.02564102564102564,
+          "2": 0.05128205128205128,
+          "3": 0.02564102564102564,
+          "4": 0.0
+        },
+        "correct": 4,
+        "count": 156,
+        "deep_3_4_accuracy": 0.01282051282051282,
+        "macro_depth_accuracy": 0.02564102564102564,
+        "worst_depth_accuracy": 0.0
+      },
+      "macro_depth_accuracy": 0.5256410256410257,
+      "trace": {
+        "accuracy": 0.12179487179487179,
+        "accuracy_by_depth": {
+          "1": 0.23076923076923078,
+          "2": 0.1794871794871795,
+          "3": 0.07692307692307693,
+          "4": 0.0
+        },
+        "correct": 19,
+        "count": 156,
+        "deep_3_4_accuracy": 0.038461538461538464,
+        "macro_depth_accuracy": 0.12179487179487179,
+        "worst_depth_accuracy": 0.0
+      },
+      "worst_depth_accuracy": 0.1282051282051282
+    },
+    "gold_trace_unmasked_validation": {
+      "accuracy": 0.5131578947368421,
+      "accuracy_by_depth": {
+        "1": 0.21052631578947367,
+        "2": 0.42105263157894735,
+        "3": 0.631578947368421,
+        "4": 0.7894736842105263
+      },
+      "correct": 78,
+      "count": 152,
+      "deep_3_4_accuracy": 0.7105263157894737,
+      "joint": {
+        "accuracy": 0.013157894736842105,
+        "accuracy_by_depth": {
+          "1": 0.0,
+          "2": 0.05263157894736842,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "correct": 2,
+        "count": 152,
+        "deep_3_4_accuracy": 0.0,
+        "macro_depth_accuracy": 0.013157894736842105,
+        "worst_depth_accuracy": 0.0
+      },
+      "macro_depth_accuracy": 0.513157894736842,
+      "trace": {
+        "accuracy": 0.09868421052631579,
+        "accuracy_by_depth": {
+          "1": 0.05263157894736842,
+          "2": 0.23684210526315788,
+          "3": 0.10526315789473684,
+          "4": 0.0
+        },
+        "correct": 15,
+        "count": 152,
+        "deep_3_4_accuracy": 0.05263157894736842,
+        "macro_depth_accuracy": 0.09868421052631579,
+        "worst_depth_accuracy": 0.0
+      },
+      "worst_depth_accuracy": 0.21052631578947367
+    },
+    "gold_trace_validation": {
+      "accuracy": 0.35526315789473684,
+      "accuracy_by_depth": {
+        "1": 0.18421052631578946,
+        "2": 0.34210526315789475,
+        "3": 0.42105263157894735,
+        "4": 0.47368421052631576
+      },
+      "correct": 54,
+      "count": 152,
+      "deep_3_4_accuracy": 0.4473684210526316,
+      "joint": {
+        "accuracy": 0.3092105263157895,
+        "accuracy_by_depth": {
+          "1": 0.18421052631578946,
+          "2": 0.34210526315789475,
+          "3": 0.3684210526315789,
+          "4": 0.34210526315789475
+        },
+        "correct": 47,
+        "count": 152,
+        "deep_3_4_accuracy": 0.35526315789473684,
+        "macro_depth_accuracy": 0.30921052631578944,
+        "worst_depth_accuracy": 0.18421052631578946
+      },
+      "macro_depth_accuracy": 0.35526315789473684,
+      "trace": {
+        "accuracy": 0.7697368421052632,
+        "accuracy_by_depth": {
+          "1": 0.868421052631579,
+          "2": 0.9473684210526315,
+          "3": 0.7368421052631579,
+          "4": 0.5263157894736842
+        },
+        "correct": 117,
+        "count": 152,
+        "deep_3_4_accuracy": 0.631578947368421,
+        "macro_depth_accuracy": 0.7697368421052632,
+        "worst_depth_accuracy": 0.5263157894736842
+      },
+      "worst_depth_accuracy": 0.18421052631578946
+    },
+    "graph_free_train": {
+      "accuracy": 0.7988826815642458,
+      "accuracy_by_depth": {
+        "1": 0.8938547486033519,
+        "2": 0.7430167597765364,
+        "3": 0.7932960893854749,
+        "4": 0.7653631284916201
+      },
+      "correct": 572,
+      "count": 716,
+      "deep_3_4_accuracy": 0.7793296089385475,
+      "joint": {
+        "accuracy": 0.6061452513966481,
+        "accuracy_by_depth": {
+          "1": 0.8938547486033519,
+          "2": 0.5586592178770949,
+          "3": 0.5810055865921788,
+          "4": 0.39106145251396646
+        },
+        "correct": 434,
+        "count": 716,
+        "deep_3_4_accuracy": 0.4860335195530726,
+        "macro_depth_accuracy": 0.6061452513966481,
+        "worst_depth_accuracy": 0.39106145251396646
+      },
+      "macro_depth_accuracy": 0.7988826815642458,
+      "trace": {
+        "accuracy": 0.6620111731843575,
+        "accuracy_by_depth": {
+          "1": 1.0,
+          "2": 0.6256983240223464,
+          "3": 0.6201117318435754,
+          "4": 0.4022346368715084
+        },
+        "correct": 474,
+        "count": 716,
+        "deep_3_4_accuracy": 0.5111731843575419,
+        "macro_depth_accuracy": 0.6620111731843575,
+        "worst_depth_accuracy": 0.4022346368715084
+      },
+      "worst_depth_accuracy": 0.7430167597765364
+    }
+  },
+  "model": "/home/kieran/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "purpose": "posthoc_joint_checkpoint_audit"
+}

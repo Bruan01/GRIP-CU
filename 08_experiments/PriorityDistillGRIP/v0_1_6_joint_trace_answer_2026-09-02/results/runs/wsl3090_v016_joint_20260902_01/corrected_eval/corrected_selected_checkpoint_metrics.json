@@ -1,0 +1,287 @@
+{
+  "generation_budget": 80,
+  "metrics": {
+    "gold_trace_test": {
+      "accuracy": 0.2564102564102564,
+      "accuracy_by_depth": {
+        "1": 0.02564102564102564,
+        "2": 0.3333333333333333,
+        "3": 0.23076923076923078,
+        "4": 0.4358974358974359
+      },
+      "correct": 40,
+      "count": 156,
+      "deep_3_4_accuracy": 0.3333333333333333,
+      "joint": {
+        "accuracy": 0.14102564102564102,
+        "accuracy_by_depth": {
+          "1": 0.0,
+          "2": 0.20512820512820512,
+          "3": 0.1282051282051282,
+          "4": 0.23076923076923078
+        },
+        "correct": 22,
+        "count": 156,
+        "deep_3_4_accuracy": 0.1794871794871795,
+        "macro_depth_accuracy": 0.14102564102564102,
+        "worst_depth_accuracy": 0.0
+      },
+      "macro_depth_accuracy": 0.2564102564102564,
+      "trace": {
+        "accuracy": 0.4423076923076923,
+        "accuracy_by_depth": {
+          "1": 0.5128205128205128,
+          "2": 0.5128205128205128,
+          "3": 0.3076923076923077,
+          "4": 0.4358974358974359
+        },
+        "correct": 69,
+        "count": 156,
+        "deep_3_4_accuracy": 0.3717948717948718,
+        "macro_depth_accuracy": 0.4423076923076923,
+        "worst_depth_accuracy": 0.3076923076923077
+      },
+      "worst_depth_accuracy": 0.02564102564102564
+    },
+    "gold_trace_unmasked_test": {
+      "accuracy": 0.3782051282051282,
+      "accuracy_by_depth": {
+        "1": 0.10256410256410256,
+        "2": 0.41025641025641024,
+        "3": 0.4358974358974359,
+        "4": 0.5641025641025641
+      },
+      "correct": 59,
+      "count": 156,
+      "deep_3_4_accuracy": 0.5,
+      "joint": {
+        "accuracy": 0.019230769230769232,
+        "accuracy_by_depth": {
+          "1": 0.05128205128205128,
+          "2": 0.0,
+          "3": 0.02564102564102564,
+          "4": 0.0
+        },
+        "correct": 3,
+        "count": 156,
+        "deep_3_4_accuracy": 0.01282051282051282,
+        "macro_depth_accuracy": 0.019230769230769232,
+        "worst_depth_accuracy": 0.0
+      },
+      "macro_depth_accuracy": 0.3782051282051282,
+      "trace": {
+        "accuracy": 0.1282051282051282,
+        "accuracy_by_depth": {
+          "1": 0.3076923076923077,
+          "2": 0.05128205128205128,
+          "3": 0.15384615384615385,
+          "4": 0.0
+        },
+        "correct": 20,
+        "count": 156,
+        "deep_3_4_accuracy": 0.07692307692307693,
+        "macro_depth_accuracy": 0.1282051282051282,
+        "worst_depth_accuracy": 0.0
+      },
+      "worst_depth_accuracy": 0.10256410256410256
+    },
+    "gold_trace_unmasked_validation": {
+      "accuracy": 0.35526315789473684,
+      "accuracy_by_depth": {
+        "1": 0.05263157894736842,
+        "2": 0.4473684210526316,
+        "3": 0.39473684210526316,
+        "4": 0.5263157894736842
+      },
+      "correct": 54,
+      "count": 152,
+      "deep_3_4_accuracy": 0.4605263157894737,
+      "joint": {
+        "accuracy": 0.013157894736842105,
+        "accuracy_by_depth": {
+          "1": 0.0,
+          "2": 0.05263157894736842,
+          "3": 0.0,
+          "4": 0.0
+        },
+        "correct": 2,
+        "count": 152,
+        "deep_3_4_accuracy": 0.0,
+        "macro_depth_accuracy": 0.013157894736842105,
+        "worst_depth_accuracy": 0.0
+      },
+      "macro_depth_accuracy": 0.35526315789473684,
+      "trace": {
+        "accuracy": 0.14473684210526316,
+        "accuracy_by_depth": {
+          "1": 0.2894736842105263,
+          "2": 0.15789473684210525,
+          "3": 0.13157894736842105,
+          "4": 0.0
+        },
+        "correct": 22,
+        "count": 152,
+        "deep_3_4_accuracy": 0.06578947368421052,
+        "macro_depth_accuracy": 0.14473684210526316,
+        "worst_depth_accuracy": 0.0
+      },
+      "worst_depth_accuracy": 0.05263157894736842
+    },
+    "gold_trace_validation": {
+      "accuracy": 0.27631578947368424,
+      "accuracy_by_depth": {
+        "1": 0.10526315789473684,
+        "2": 0.34210526315789475,
+        "3": 0.2894736842105263,
+        "4": 0.3684210526315789
+      },
+      "correct": 42,
+      "count": 152,
+      "deep_3_4_accuracy": 0.32894736842105265,
+      "joint": {
+        "accuracy": 0.14473684210526316,
+        "accuracy_by_depth": {
+          "1": 0.07894736842105263,
+          "2": 0.18421052631578946,
+          "3": 0.21052631578947367,
+          "4": 0.10526315789473684
+        },
+        "correct": 22,
+        "count": 152,
+        "deep_3_4_accuracy": 0.15789473684210525,
+        "macro_depth_accuracy": 0.14473684210526316,
+        "worst_depth_accuracy": 0.07894736842105263
+      },
+      "macro_depth_accuracy": 0.27631578947368424,
+      "trace": {
+        "accuracy": 0.4605263157894737,
+        "accuracy_by_depth": {
+          "1": 0.6842105263157895,
+          "2": 0.5526315789473685,
+          "3": 0.39473684210526316,
+          "4": 0.21052631578947367
+        },
+        "correct": 70,
+        "count": 152,
+        "deep_3_4_accuracy": 0.3026315789473684,
+        "macro_depth_accuracy": 0.46052631578947373,
+        "worst_depth_accuracy": 0.21052631578947367
+      },
+      "worst_depth_accuracy": 0.10526315789473684
+    },
+    "graph_free_test": {
+      "accuracy": 0.2948717948717949,
+      "accuracy_by_depth": {
+        "1": 0.1282051282051282,
+        "2": 0.2564102564102564,
+        "3": 0.358974358974359,
+        "4": 0.4358974358974359
+      },
+      "correct": 46,
+      "count": 156,
+      "deep_3_4_accuracy": 0.3974358974358974,
+      "joint": {
+        "accuracy": 0.07051282051282051,
+        "accuracy_by_depth": {
+          "1": 0.1282051282051282,
+          "2": 0.05128205128205128,
+          "3": 0.05128205128205128,
+          "4": 0.05128205128205128
+        },
+        "correct": 11,
+        "count": 156,
+        "deep_3_4_accuracy": 0.05128205128205128,
+        "macro_depth_accuracy": 0.0705128205128205,
+        "worst_depth_accuracy": 0.05128205128205128
+      },
+      "macro_depth_accuracy": 0.2948717948717949,
+      "trace": {
+        "accuracy": 0.3141025641025641,
+        "accuracy_by_depth": {
+          "1": 1.0,
+          "2": 0.10256410256410256,
+          "3": 0.10256410256410256,
+          "4": 0.05128205128205128
+        },
+        "correct": 49,
+        "count": 156,
+        "deep_3_4_accuracy": 0.07692307692307693,
+        "macro_depth_accuracy": 0.31410256410256415,
+        "worst_depth_accuracy": 0.05128205128205128
+      },
+      "worst_depth_accuracy": 0.1282051282051282
+    },
+    "graph_free_validation": {
+      "accuracy": 0.27631578947368424,
+      "accuracy_by_depth": {
+        "1": 0.15789473684210525,
+        "2": 0.3157894736842105,
+        "3": 0.2894736842105263,
+        "4": 0.34210526315789475
+      },
+      "correct": 42,
+      "count": 152,
+      "deep_3_4_accuracy": 0.3157894736842105,
+      "joint": {
+        "accuracy": 0.125,
+        "accuracy_by_depth": {
+          "1": 0.15789473684210525,
+          "2": 0.15789473684210525,
+          "3": 0.10526315789473684,
+          "4": 0.07894736842105263
+        },
+        "correct": 19,
+        "count": 152,
+        "deep_3_4_accuracy": 0.09210526315789473,
+        "macro_depth_accuracy": 0.125,
+        "worst_depth_accuracy": 0.07894736842105263
+      },
+      "macro_depth_accuracy": 0.2763157894736842,
+      "trace": {
+        "accuracy": 0.34868421052631576,
+        "accuracy_by_depth": {
+          "1": 0.9736842105263158,
+          "2": 0.18421052631578946,
+          "3": 0.13157894736842105,
+          "4": 0.10526315789473684
+        },
+        "correct": 53,
+        "count": 152,
+        "deep_3_4_accuracy": 0.11842105263157894,
+        "macro_depth_accuracy": 0.3486842105263158,
+        "worst_depth_accuracy": 0.10526315789473684
+      },
+      "worst_depth_accuracy": 0.15789473684210525
+    },
+    "oracle_evidence_test": {
+      "accuracy": 0.15384615384615385,
+      "accuracy_by_depth": {
+        "1": 0.05128205128205128,
+        "2": 0.23076923076923078,
+        "3": 0.1282051282051282,
+        "4": 0.20512820512820512
+      },
+      "correct": 24,
+      "count": 156,
+      "deep_3_4_accuracy": 0.16666666666666666,
+      "macro_depth_accuracy": 0.15384615384615385,
+      "worst_depth_accuracy": 0.05128205128205128
+    },
+    "oracle_evidence_validation": {
+      "accuracy": 0.11842105263157894,
+      "accuracy_by_depth": {
+        "1": 0.10526315789473684,
+        "2": 0.15789473684210525,
+        "3": 0.05263157894736842,
+        "4": 0.15789473684210525
+      },
+      "correct": 18,
+      "count": 152,
+      "deep_3_4_accuracy": 0.10526315789473684,
+      "macro_depth_accuracy": 0.11842105263157894,
+      "worst_depth_accuracy": 0.05263157894736842
+    }
+  },
+  "selected_checkpoint": "stage2_epoch5",
+  "selection_rule": "max corrected graph_free validation accuracy; test read after selection"
+}

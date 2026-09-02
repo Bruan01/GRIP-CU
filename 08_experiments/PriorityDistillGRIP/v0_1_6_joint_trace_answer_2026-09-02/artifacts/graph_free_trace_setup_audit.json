@@ -1,0 +1,71 @@
+{
+  "all_paths_rows": 716,
+  "anti_copy_rows": 716,
+  "config": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/configs/graph_free_trace.json",
+  "config_sha256": "45231f8a2cd562f4052bd65780004eb87817460c8a43e6a520df75a3e6f6eecd",
+  "data": {
+    "depth_counts": {
+      "test": {
+        "1": 39,
+        "2": 39,
+        "3": 39,
+        "4": 39
+      },
+      "train": {
+        "1": 179,
+        "2": 179,
+        "3": 179,
+        "4": 179
+      },
+      "validation": {
+        "1": 38,
+        "2": 38,
+        "3": 38,
+        "4": 38
+      }
+    },
+    "paths": {
+      "test": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_test.jsonl",
+      "train": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl",
+      "validation": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl"
+    },
+    "sha256": {
+      "test": "17891c6d3eabd1627a3a3e05835bb66cb3d46e1bf5d749044fbf7ee266363658",
+      "train": "8a3784e5b21bc76280a98dbe44d8ac1addb965c4b46aba3061ef94aa1efde51b",
+      "validation": "097eea8a44789ae0f6d268d193baa07916d013cda63013d4f9f37f61df043e94"
+    },
+    "split_sizes": {
+      "test": 156,
+      "train": 716,
+      "validation": 152
+    },
+    "task_id_overlaps": {}
+  },
+  "explicit_anti_copy_rows": 716,
+  "explicit_rows": 716,
+  "invariants": {
+    "all_paths_has_four_unlabeled_paths": true,
+    "anti_copy_has_four_paths": true,
+    "anti_copy_hides_terminal_marker": true,
+    "anti_copy_lists_four_unassociated_endpoints": true,
+    "candidate_pools_cover_train": true,
+    "controlled_protocol_is_valid": true,
+    "distractors_train_only": true,
+    "evaluation_has_no_candidate_evidence": true,
+    "explicit_anti_copy_masks_terminals": true,
+    "explicit_has_two_line_targets": true,
+    "explicit_selection_has_four_paths": true,
+    "four_candidates_per_pool": true,
+    "one_gold_per_pool": true,
+    "oracle_has_one_gold_path": true,
+    "query_pool_is_gold_plus_train_distractors": true,
+    "trace_depth_labels_and_intermediates": true,
+    "trace_has_graph_free_prompts": true,
+    "trace_targets_have_trace_and_answer": true,
+    "trace_targets_mask_terminal": true
+  },
+  "oracle_rows": 716,
+  "protocol": "graph_free_trace",
+  "status": "READY_FOR_WSL_GPU",
+  "trace_rows": 716
+}
