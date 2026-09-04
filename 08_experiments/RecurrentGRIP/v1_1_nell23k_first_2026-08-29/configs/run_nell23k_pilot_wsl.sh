@@ -4,7 +4,7 @@ set -euo pipefail
 VERSION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CODE_DIR="$VERSION_DIR/grip-exp"
 PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
-NELL_INPUT="${NELL_INPUT:-$CODE_DIR/outputs/data/nell23k/recurrent_relation_prediction.json}"
+NELL_INPUT="${NELL_INPUT:-$CODE_DIR/outputs/data/nell23k/recurrent_relation_prediction_pilot.json}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 RUN_DIR="${RUN_DIR:-$VERSION_DIR/results/runs/${RUN_ID}_nell23k_qwen05b_pilot}"
 
@@ -41,6 +41,7 @@ cp "$NELL_INPUT.stats.json" "$RUN_DIR/input_stats.json" 2>/dev/null || true
   "$PYTHON" -m pip freeze 2>/dev/null || uv pip freeze --python "$PYTHON"
 } > "$RUN_DIR/environment.txt" 2>&1
 
+export PYTHONPATH="$CODE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 cd "$CODE_DIR"
 timeout --signal=TERM --kill-after=5m 180m \
   "$PYTHON" scripts/run_recurrent_pilot.py \

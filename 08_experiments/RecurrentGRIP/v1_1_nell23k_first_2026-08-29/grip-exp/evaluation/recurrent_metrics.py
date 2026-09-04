@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from math import sqrt
+import re
 from typing import Iterable
 
 from evaluation.utils import normalize_answer
@@ -10,6 +11,34 @@ from evaluation.utils import normalize_answer
 def exact_match(prediction: str, targets: Iterable[str]) -> bool:
     normalized_prediction = normalize_answer(prediction)
     return any(normalized_prediction == normalize_answer(str(target)) for target in targets)
+
+
+def _canonical_relation(value: str) -> str:
+    """Canonicalize the spaced relation form emitted by small language models."""
+    value = value.strip()
+    match = re.fullmatch(r"concept\s*:\s*(.+)", value, flags=re.IGNORECASE | re.DOTALL)
+    if not match:
+        return value
+    suffix = re.sub(r"[^A-Za-z0-9]+", "", match.group(1))
+    return f"concept:{suffix}" if suffix else value
+
+
+def parse_recurrent_answer(text: str) -> str:
+    """Parse recurrent relation answers from the formats used by the model."""
+    text = str(text or "").strip()
+    tagged = re.findall(r"<answer>(.*?)</answer>", text, flags=re.IGNORECASE | re.DOTALL)
+    if tagged:
+        return "; ".join(_canonical_relation(item) for item in tagged).strip()
+
+    bracketed = re.findall(r"\[([^\[\]\n]+)\]", text)
+    relation_like = [
+        item.strip()
+        for item in bracketed
+        if re.search(r"concept\s*:", item, re.IGNORECASE)
+    ]
+    if relation_like:
+        return _canonical_relation(relation_like[0])
+    return text
 
 
 def _average_ranks(values: list[float]) -> list[float]:

@@ -49,3 +49,9 @@ outputs/
 *.tmp
 *.temp
 *.bak
+
+# Local HF cache and archived experiment artifacts (too large / regenerable)
+.cache/
+**/.cache/
+*.tar.gz
+*.sha256

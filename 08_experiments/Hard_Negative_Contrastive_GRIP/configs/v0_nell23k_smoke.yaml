@@ -1,0 +1,23 @@
+# v0 NELL23K Smoke Configuration
+
+model_name: qwen2.5-0.5b-instruct
+model_source: auto
+local_files_only: true
+train_questions: 64
+validation_questions: 32
+test_questions: 64
+num_candidates: 10
+num_per_kind: 4
+path_hops: 2
+seed: 2026
+lora_r: 4
+lora_alpha: 32
+lambda_candidate: 0.0
+lambda_adapter: 0.0
+temperature: 1.0
+margin: 0.2
+adapter_control: none
+hard_stop_minutes: 45
+
+# First run order: B0, B1, then B2-B6.
+# Keep this file frozen; create a new version for changed settings.

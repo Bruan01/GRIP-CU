@@ -3,12 +3,27 @@ import csv
 import json
 from pathlib import Path
 
-from evaluation.recurrent_metrics import summarize_recurrent_predictions
+from evaluation.recurrent_metrics import (
+    exact_match,
+    parse_recurrent_answer,
+    summarize_recurrent_predictions,
+)
 
 
 def load_jsonl(path: str) -> list[dict]:
     with open(path, "r", encoding="utf-8") as stream:
         return [json.loads(line) for line in stream if line.strip()]
+
+
+def refresh_prediction_fields(rows: list[dict]) -> None:
+    """Recompute parsed answers so analysis also works on older prediction files."""
+    for row in rows:
+        raw_response = row.get("raw_response")
+        if raw_response is None:
+            continue
+        response = parse_recurrent_answer(raw_response)
+        row["response"] = response
+        row["correct"] = exact_match(response, row.get("target", []))
 
 
 def _write_bucket_csv(path: Path, buckets: dict[str, dict]) -> None:
@@ -26,6 +41,7 @@ def main() -> None:
     args = parser.parse_args()
 
     rows = load_jsonl(args.input_file)
+    refresh_prediction_fields(rows)
     summary = summarize_recurrent_predictions(rows)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

@@ -21,7 +21,7 @@ from arguments import (
     TaskArguments,
     parse_args,
 )
-from evaluation.recurrent_metrics import exact_match
+from evaluation.recurrent_metrics import exact_match, parse_recurrent_answer
 from grip.recurrent import (
     RecurrentPrediction,
     build_recurrent_peft_model,
@@ -41,11 +41,6 @@ def _safe_id(value: object) -> str:
 
 def _graph_id(record: dict, graph_index: int) -> str:
     return str(record.get("id", record.get("title", graph_index)))
-
-
-def _parse_answer(text: str) -> str:
-    matches = re.findall(r"<answer>(.*?)</answer>", text, flags=re.IGNORECASE | re.DOTALL)
-    return "; ".join(item.strip() for item in matches).strip()
 
 
 def _eval_dataset(record: dict, tokenizer):
@@ -166,7 +161,7 @@ def evaluate_depth_sweep(
                     raw_response = tokenizer.decode(
                         generated[0][input_ids.shape[-1]:], skip_special_tokens=True
                     )
-                    parsed = _parse_answer(raw_response)
+                    parsed = parse_recurrent_answer(raw_response)
                     peak_memory = (
                         torch.cuda.max_memory_allocated(device)
                         if torch.cuda.is_available() and device.type == "cuda"

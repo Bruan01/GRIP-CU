@@ -32,7 +32,12 @@ class RecurrentExecutorTest(unittest.TestCase):
         self.assertEqual(len(traced.get_trace()), 3)
         self.assertTrue(torch.equal(traced.get_trace()[1], torch.full((1, 4), 2.0)))
 
-    def test_depth_must_be_positive(self):
+    def test_attention_type_is_delegated_to_wrapped_block(self):
+        inner = CountingBlock()
+        inner.attention_type = "full_attention"
+        recurrent = FixedDepthRecurrentBlock(inner, depth=1)
+        self.assertEqual(recurrent.attention_type, "full_attention")
+
         with self.assertRaisesRegex(ValueError, "at least 1"):
             FixedDepthRecurrentBlock(CountingBlock(), depth=0)
 

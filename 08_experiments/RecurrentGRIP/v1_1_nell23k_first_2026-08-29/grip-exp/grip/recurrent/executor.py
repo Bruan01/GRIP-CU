@@ -30,6 +30,11 @@ class FixedDepthRecurrentBlock(nn.Module):
         self._last_trace: list[torch.Tensor] = []
         self.set_depth(depth)
 
+    @property
+    def attention_type(self) -> str:
+        """Expose the decoder-layer attention type required by Transformers."""
+        return self.block.attention_type
+
     def set_depth(self, depth: int) -> None:
         if depth < 1:
             raise ValueError("recurrent depth must be at least 1")

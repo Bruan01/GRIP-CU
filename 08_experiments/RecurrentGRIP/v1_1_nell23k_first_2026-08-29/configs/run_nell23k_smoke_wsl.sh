@@ -40,6 +40,7 @@ cp "$NELL_INPUT.stats.json" "$RUN_DIR/input_stats.json" 2>/dev/null || true
   "$PYTHON" -m pip freeze 2>/dev/null || uv pip freeze --python "$PYTHON"
 } > "$RUN_DIR/environment.txt" 2>&1
 
+export PYTHONPATH="$CODE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 cd "$CODE_DIR"
 timeout --signal=TERM --kill-after=5m 45m \
   "$PYTHON" scripts/run_recurrent_pilot.py \
@@ -54,6 +55,7 @@ timeout --signal=TERM --kill-after=5m 45m \
     --hard_stop_minutes 45 \
     --seed 2026 \
     -- \
+    --max_steps 1000 \
     --num_train_epochs 1 \
     --per_device_train_batch_size 1 \
     --gradient_accumulation_steps 4 \

@@ -24,6 +24,7 @@ if [[ ! -f "$RUN_DIR/predictions.jsonl" ]]; then
   exit 1
 fi
 
+export PYTHONPATH="$CODE_DIR${PYTHONPATH:+:$PYTHONPATH}"
 cd "$CODE_DIR"
 "$PYTHON" scripts/analyze_recurrent_results.py \
   --input_file "$RUN_DIR/predictions.jsonl" \
