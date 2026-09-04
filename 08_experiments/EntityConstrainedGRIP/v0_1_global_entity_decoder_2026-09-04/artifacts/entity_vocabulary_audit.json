@@ -1,0 +1,31 @@
+{
+  "entity_count": 20789,
+  "output_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/artifacts/entities_train_graph.jsonl",
+  "output_sha256": "1366c0fc73eedf7d8409e168aad7fec235a1dde563be4301fb08617b5aec415b",
+  "relation_count": 198,
+  "source_path": "/Users/mac/CODE/GRIP/ai_research_workflow/13_base_method/grip-exp/data/raw_datasets/nell23k/train.txt",
+  "source_sha256": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+  "source_split": "train",
+  "test_answer_coverage": {
+    "coverage": 1.0,
+    "covered": 156,
+    "missing_answers": [],
+    "missing_unique_count": 0,
+    "total": 156
+  },
+  "train_answer_coverage": {
+    "coverage": 1.0,
+    "covered": 716,
+    "missing_answers": [],
+    "missing_unique_count": 0,
+    "total": 716
+  },
+  "triple_count": 24321,
+  "validation_answer_coverage": {
+    "coverage": 1.0,
+    "covered": 152,
+    "missing_answers": [],
+    "missing_unique_count": 0,
+    "total": 152
+  }
+}

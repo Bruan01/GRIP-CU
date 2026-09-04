@@ -107,30 +107,32 @@ AI 不应该替代：
 
 ---
 
-## 当前研究主线：PriorityDistill-GRIP
+## 当前研究主线：EntityConstrained-GRIP
 
-更新日期：2026-09-01
+更新日期：2026-09-04
 
-当前候选问题：
+当前问题：
 
-> 如果训练时拥有完美的关键路径，并把路径监督蒸馏进普通等 rank LoRA，推理时完全不访问图，能否比 answer-only GRIP、同 token More-QA、随机路径和未筛选路径更准确？
+> train-KG-only 全局实体约束能否把冻结 GRIP checkpoint 中未被自由生成读出的 latent entity preference 转化为 semantic exact match，而不是只提高输出合法率？
 
 当前状态：
 
-- RecurrentGRIP、FactorGRIP 与 StructuredLoRA 的全部版本和失败/诊断证据继续保留；
-- StructuredLoRA v0.2 的 RTX 3090 oracle-prefix smoke 已得到 `PRELIMINARY_STOP`，不继续 learned router；
-- PriorityDistill-GRIP v0.1 已创建独立代码、五个注册对照、两阶段等 token 训练与 graph-free 评测；
-- NELL23K train-only candidate pools 与监督 artifacts 已生成，19 个 macOS 单元测试和静态审计通过；
-- 当前状态为 `READY_FOR_WSL_GPU`；下一步只跑 seed 42 oracle gate；
-- 只有 `GO_LEARNED_PRIORITIZER` 才允许创建 learned scorer/DPO 的下一版本。
+- PriorityDistill-GRIP 的稳定涨点 claim 已停止；
+- E03 已修订为 **validation-only D0 artifact reuse + D1 global trie**；
+- primary 为 validation-selected direct seed43/44，More-QA seed42 为 reference，joint seed43/44 为 secondary；
+- Phase-A runner 不打开 test，并输出 D0→D1 invalid/valid-wrong/correct error transitions；
+- gate 要求两个 direct checkpoints 平均 canonical EM `≥ +2 pp`、每 checkpoint raw/canonical 非负、novel-composition 平均下降不超过 `1 pp`；
+- D2 只有 `PRELIMINARY_GO_D2` 后才运行，D3 始终 diagnostic-only；
+- 完整静态门禁、协议残留搜索和 Git 边界审计已通过，当前状态为 `READY_TO_PUSH_VALIDATION_ONLY_E03`；
+- 当前仍未 commit、未 push、未运行 WSL GPU；机制通过后才返回官方 Qwen2.5-7B、LoRA rank/alpha `4/8`、三随机种子 Phase B。
 
 当前执行入口：
 
-1. [`TODO_PRIORITY_DISTILL.md`](TODO_PRIORITY_DISTILL.md)
-2. [`08_experiments/PriorityDistillGRIP/README.md`](08_experiments/PriorityDistillGRIP/README.md)
-3. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/README.md`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/README.md)
-4. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/PROJECT_MEMORY.md`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/PROJECT_MEMORY.md)
-5. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/NEXT_STEP_WSL_PROMPT.md`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/NEXT_STEP_WSL_PROMPT.md)
-6. [`08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/artifacts/setup_audit.json`](08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/artifacts/setup_audit.json)
+1. [`TODO_ENTITY_CONSTRAINED_GRIP.md`](TODO_ENTITY_CONSTRAINED_GRIP.md)
+2. [`08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/README.md`](08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/README.md)
+3. [`08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/EXPERIMENT_PLAN.md`](08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/EXPERIMENT_PLAN.md)
+4. [`08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/PROJECT_MEMORY.md`](08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/PROJECT_MEMORY.md)
+5. [`08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/NEXT_STEP_WSL_PROMPT.md`](08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/NEXT_STEP_WSL_PROMPT.md)
+6. [`08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/artifacts/setup_audit.json`](08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/artifacts/setup_audit.json)
 
-StructuredLoRA 历史状态继续保存在 [`STRUCTURED_LORA_STATUS.md`](STRUCTURED_LORA_STATUS.md) 与 [`TODO_STRUCTURED_LORA.md`](TODO_STRUCTURED_LORA.md)；RecurrentGRIP 历史状态保存在 [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)，不删除、不覆盖。
+PriorityDistill、StructuredLoRA、RecurrentGRIP 的历史状态和负结果继续保留，不删除、不覆盖。

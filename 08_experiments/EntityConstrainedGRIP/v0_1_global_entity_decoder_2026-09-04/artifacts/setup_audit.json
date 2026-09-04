@@ -1,0 +1,201 @@
+{
+  "answer_coverage": {
+    "test": {
+      "coverage": 1.0,
+      "covered": 156,
+      "missing_answers": [],
+      "missing_unique_count": 0,
+      "total": 156
+    },
+    "train": {
+      "coverage": 1.0,
+      "covered": 716,
+      "missing_answers": [],
+      "missing_unique_count": 0,
+      "total": 716
+    },
+    "validation": {
+      "coverage": 1.0,
+      "covered": 152,
+      "missing_answers": [],
+      "missing_unique_count": 0,
+      "total": 152
+    }
+  },
+  "checkpoints": [
+    {
+      "d0_predictions": {
+        "validation": {
+          "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed43_20260903/predictions_stage2_epoch5_graph_free_validation.jsonl",
+          "prediction_field": "prediction_text",
+          "sha256": "db30237c2dcebf81bd68e0f91ed68dd50a19ee6f69ad464d9c90a48fb5369116"
+        }
+      },
+      "kind": "adapter",
+      "name": "direct_answer_only_seed43",
+      "observed_sha256": null,
+      "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed43_20260903/checkpoints/stage2_epoch5/adapter_model.pt",
+      "prompt_protocol": "answer_only",
+      "resolved_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed43_20260903/checkpoints/stage2_epoch5/adapter_model.pt",
+      "role": "primary_direct",
+      "selection": "validation_selected_stage2_epoch5",
+      "sha256": "9febfcf3ffa55eb23d8d77331f9164c7435e70b4e776d2a92351572f41ef67d2",
+      "status": "missing"
+    },
+    {
+      "d0_predictions": {
+        "validation": {
+          "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed44_20260903/predictions_stage2_epoch4_graph_free_validation.jsonl",
+          "prediction_field": "prediction_text",
+          "sha256": "06f285bfd3a8cd079b6ebec104b79095d0ca518e8d3808a93f62454dfa5ddcf4"
+        }
+      },
+      "kind": "adapter",
+      "name": "direct_answer_only_seed44",
+      "observed_sha256": null,
+      "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed44_20260903/checkpoints/stage2_epoch4/adapter_model.pt",
+      "prompt_protocol": "answer_only",
+      "resolved_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed44_20260903/checkpoints/stage2_epoch4/adapter_model.pt",
+      "role": "primary_direct",
+      "selection": "validation_selected_stage2_epoch4",
+      "sha256": "50ea8ccdced5c8ee044d43375f9e85b77943458921c079f2e2ccb6802c9cd29b",
+      "status": "missing"
+    },
+    {
+      "d0_predictions": {
+        "validation": {
+          "path": "08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/runs/wsl3090_priority_distill_smoke_01/more_qa_equal_token/seed_42/predictions_validation.jsonl",
+          "prediction_field": "prediction_text",
+          "sha256": "c6a04d1bb620fe1856fbe1364a1cd08f34c0f0642ff093e136b3da0cf168f253"
+        }
+      },
+      "kind": "adapter",
+      "name": "more_qa_equal_token_seed42",
+      "observed_sha256": null,
+      "path": "08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/runs/wsl3090_priority_distill_smoke_01/more_qa_equal_token/seed_42/adapter_model.pt",
+      "prompt_protocol": "answer_only",
+      "resolved_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/runs/wsl3090_priority_distill_smoke_01/more_qa_equal_token/seed_42/adapter_model.pt",
+      "role": "reference_more_qa",
+      "selection": "frozen_seed42",
+      "sha256": "45c8e4f5f70a0e28fec8dc44fb17e5eba9975e2ff8c8f0cb664802d55e9df3b8",
+      "status": "missing"
+    },
+    {
+      "d0_predictions": {
+        "validation": {
+          "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed43_20260903/predictions_stage2_epoch7_graph_free_validation.jsonl",
+          "prediction_field": "prediction_answer",
+          "sha256": "477732fb9d32e1ad849a49e7c4ef64e82d061d66c611d192f56352315f5fc250"
+        }
+      },
+      "kind": "adapter",
+      "name": "joint_trace_answer_seed43",
+      "observed_sha256": null,
+      "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed43_20260903/checkpoints/stage2_epoch7/adapter_model.pt",
+      "prompt_protocol": "joint_answer_slot",
+      "resolved_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed43_20260903/checkpoints/stage2_epoch7/adapter_model.pt",
+      "role": "secondary_joint",
+      "selection": "validation_selected_stage2_epoch7",
+      "sha256": "58fd46b02da4837107b7244ddf8b4634c8a4c4921cf11888e20dc3a4a7953271",
+      "status": "missing"
+    },
+    {
+      "d0_predictions": {
+        "validation": {
+          "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed44_20260903/predictions_stage2_epoch6_graph_free_validation.jsonl",
+          "prediction_field": "prediction_answer",
+          "sha256": "49bfa68604d30930efc9ff82dcd5791acef7bd7b57f3ebbe6df52dbd194a4f68"
+        }
+      },
+      "kind": "adapter",
+      "name": "joint_trace_answer_seed44",
+      "observed_sha256": null,
+      "path": "08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed44_20260903/checkpoints/stage2_epoch6/adapter_model.pt",
+      "prompt_protocol": "joint_answer_slot",
+      "resolved_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed44_20260903/checkpoints/stage2_epoch6/adapter_model.pt",
+      "role": "secondary_joint",
+      "selection": "validation_selected_stage2_epoch6",
+      "sha256": "fb4552c8740c7e64cd5abc1c5457f79424beed3a383f80654623064f562926be",
+      "status": "missing"
+    }
+  ],
+  "config": "08_experiments/EntityConstrainedGRIP/v0_1_global_entity_decoder_2026-09-04/configs/phase_a_decoder_smoke.json",
+  "config_sha256": "326964bab15a3e2daba8d51ed2128ec9e869a67e250d430f8be6a1af27684bae",
+  "d0_artifacts": {
+    "direct_answer_only_seed43": {
+      "expected_sha256": "db30237c2dcebf81bd68e0f91ed68dd50a19ee6f69ad464d9c90a48fb5369116",
+      "metadata_authority": "registered_dataset_rows",
+      "observed_sha256": "db30237c2dcebf81bd68e0f91ed68dd50a19ee6f69ad464d9c90a48fb5369116",
+      "prediction_field": "prediction_text",
+      "prediction_field_authority": "frozen_d0_artifact",
+      "row_count": 152,
+      "source_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed43_20260903/predictions_stage2_epoch5_graph_free_validation.jsonl",
+      "task_id_alignment": "exact"
+    },
+    "direct_answer_only_seed44": {
+      "expected_sha256": "06f285bfd3a8cd079b6ebec104b79095d0ca518e8d3808a93f62454dfa5ddcf4",
+      "metadata_authority": "registered_dataset_rows",
+      "observed_sha256": "06f285bfd3a8cd079b6ebec104b79095d0ca518e8d3808a93f62454dfa5ddcf4",
+      "prediction_field": "prediction_text",
+      "prediction_field_authority": "frozen_d0_artifact",
+      "row_count": 152,
+      "source_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed44_20260903/predictions_stage2_epoch4_graph_free_validation.jsonl",
+      "task_id_alignment": "exact"
+    },
+    "more_qa_equal_token_seed42": {
+      "expected_sha256": "c6a04d1bb620fe1856fbe1364a1cd08f34c0f0642ff093e136b3da0cf168f253",
+      "metadata_authority": "registered_dataset_rows",
+      "observed_sha256": "c6a04d1bb620fe1856fbe1364a1cd08f34c0f0642ff093e136b3da0cf168f253",
+      "prediction_field": "prediction_text",
+      "prediction_field_authority": "frozen_d0_artifact",
+      "row_count": 152,
+      "source_path": "/Users/mac/CODE/GRIP/ai_research_workflow/08_experiments/PriorityDistillGRIP/v0_1_oracle_priority_smoke_2026-09-01/results/runs/wsl3090_priority_distill_smoke_01/more_qa_equal_token/seed_42/predictions_validation.jsonl",
+      "task_id_alignment": "exact"
+    }
+  },
+  "data": {
+    "paths": {
+      "test": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_test.jsonl",
+      "train": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl",
+      "validation": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl"
+    },
+    "train_graph": "13_base_method/grip-exp/data/raw_datasets/nell23k/train.txt",
+    "vocabulary_source_split": "train"
+  },
+  "decoder_registry": [
+    "D0",
+    "D1"
+  ],
+  "entity_count": 20789,
+  "evaluation_splits": [
+    "validation"
+  ],
+  "graph_free_prompt_boundary": true,
+  "initial_checkpoints": [
+    "direct_answer_only_seed43",
+    "direct_answer_only_seed44",
+    "more_qa_equal_token_seed42"
+  ],
+  "invariants": {
+    "checkpoint_registry_complete": true,
+    "d0_artifacts_verified": true,
+    "decoder_registry_complete": true,
+    "expected_entity_count": true,
+    "expected_split_sizes": true,
+    "graph_free_prompt_boundary": true,
+    "official_phase_b_anchor_registered": true,
+    "split_task_ids_disjoint": true,
+    "test_answer_coverage_expected": true,
+    "train_answer_coverage_complete": true,
+    "train_only_vocabulary_source": true,
+    "validation_answer_coverage_complete": true,
+    "validation_only_initial_split": true
+  },
+  "official_phase_b_anchor_registered": true,
+  "split_sizes": {
+    "test": 156,
+    "train": 716,
+    "validation": 152
+  },
+  "status": "STATIC_READY_D0_ARTIFACTS_VERIFIED_REMOTE_CHECKPOINTS_OPTIONAL"
+}
