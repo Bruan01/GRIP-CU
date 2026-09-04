@@ -1,0 +1,12 @@
+{
+ "format_version":1,"experiment_id":"query_graph_lora_grip_v0_2_oracle_basis_routing_2026-09-04","evaluation_splits":["validation"],
+ "model":{"name_or_path":"Qwen/Qwen2.5-0.5B-Instruct","device":"cuda","dtype":"bfloat16","local_files_only":true,"trust_remote_code":false,"attn_implementation":"eager"},
+ "data":{"train":"08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl","validation":"08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl","expected_sizes":{"train":716,"validation":152},"max_length":192},
+ "lora":{"groups":4,"group_rank":2,"total_rank":8,"alpha":16,"dropout":0.05,"target_modules":["down_proj","up_proj","gate_proj"]},
+ "routing":{"feature_dim":64,"fit_split":"train","oracle_application_split":"validation"},
+ "training":{"seeds":[43,44],"data_order_seed":20260904,"batch_size":4,"gradient_accumulation_steps":4,"max_optimizer_steps":120,"learning_rate":0.0002,"weight_decay":0.0,"max_grad_norm":1.0},
+ "evaluation":{"max_new_tokens":32},"analysis":{"gradient_probe_batch_size":8},
+ "minimal_methods":["static_rank8","uniform_basis","shuffled_oracle_route","oracle_hop_route","oracle_relation_path_route"],
+ "methods":["static_rank4","static_rank8","uniform_basis","random_route","shuffled_oracle_route","oracle_hop_route","oracle_relation_family_route","oracle_relation_path_route"],
+ "gate":{"minimum_seeds":2,"canonical_gain_pp":2.0,"novel_gain_pp":2.0,"maximum_seen_drop_pp":1.0,"oracle_over_control_pp":1.0}
+}

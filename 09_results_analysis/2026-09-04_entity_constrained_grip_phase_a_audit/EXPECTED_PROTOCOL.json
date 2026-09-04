@@ -1,0 +1,1 @@
+{"expected_git_commit":"821078c7129a7c907e3e34ce6230c6312c4da0e2","expected_evaluation_splits_opened":["validation"],"primary_checkpoints":["direct_answer_only_seed43","direct_answer_only_seed44"],"expected_validation_count":152,"expected_decision":"STOP_DECODER_PRIMARY","expected_next_action":"STOP_D2_AND_PHASE_B"}

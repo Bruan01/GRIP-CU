@@ -1,0 +1,32 @@
+{
+  "experiment_id": "E09",
+  "name": "QueryGraph-LoRA GRIP",
+  "version": "v0.1_oracle_basis_routing",
+  "created": "2026-09-04",
+  "status": "SUPERSEDED_BY_V0_2_AFTER_E03_STOP",
+  "active_experiment": false,
+  "depends_on": {
+    "experiment": "E03 EntityConstrained-GRIP",
+    "required_decision": "decoder bottleneck characterized before L4 intervention"
+  },
+  "primary_component": "L4.03 parameter grouping and routing",
+  "graph_free_inference": true,
+  "phases": [
+    "A_oracle_basis_routing",
+    "B_deterministic_query_router",
+    "C_bayesian_latent_query_graph",
+    "D_official_7B_three_seed"
+  ],
+  "phase_a_gate": {
+    "decision": "GO_QUERY_ROUTER",
+    "mean_canonical_em_over_equal_parameter_static_pp": 2.0,
+    "novel_composition_gain_pp": 2.0,
+    "max_seen_composition_drop_pp": 1.0,
+    "minimum_direct_checkpoints": 2
+  },
+  "stop_decision": "STOP_GRAPH_CONDITIONAL_LORA",
+  "source_paper": {
+    "title": "iLoRA: Bayesian Low-Rank Adaptation with Latent Interaction Graphs for Microbiome Diagnosis",
+    "arxiv_id": "2605.30179"
+  }
+}

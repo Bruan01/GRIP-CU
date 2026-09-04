@@ -1,0 +1,129 @@
+{
+  "config": "08_experiments/QueryGraphLoRAGRIP/v0_2_oracle_basis_routing_2026-09-04/configs/phase_a_oracle.json",
+  "data": {
+    "depth_counts": {
+      "train": {
+        "1": 179,
+        "2": 179,
+        "3": 179,
+        "4": 179
+      },
+      "validation": {
+        "1": 38,
+        "2": 38,
+        "3": 38,
+        "4": 38
+      }
+    },
+    "overlaps": {},
+    "paths": {
+      "train": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl",
+      "validation": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl"
+    },
+    "split_sizes": {
+      "train": 716,
+      "validation": 152
+    },
+    "validation_composition_counts": {
+      "novel": 93,
+      "seen": 59
+    }
+  },
+  "invariants": {
+    "expected_train_size": true,
+    "expected_validation_size": true,
+    "family_clusters_balanced": true,
+    "minimal_matrix_exact": true,
+    "path_clusters_balanced": true,
+    "rank_budget_exact": true,
+    "registered_seeds_exact": true,
+    "route_fit_train_only": true,
+    "seen_and_novel_composition": true,
+    "shuffle_preserves_path_distribution": true,
+    "test_not_opened": true,
+    "test_path_absent": true,
+    "train_depth_balanced": true,
+    "train_validation_disjoint": true,
+    "validation_depth_balanced": true,
+    "validation_only": true
+  },
+  "route_audit": {
+    "application_splits": [
+      "train",
+      "validation"
+    ],
+    "cluster_counts": {
+      "train": {
+        "oracle_hop_route": {
+          "0": 179,
+          "1": 179,
+          "2": 179,
+          "3": 179
+        },
+        "oracle_relation_family_route": {
+          "0": 179,
+          "1": 179,
+          "2": 179,
+          "3": 179
+        },
+        "oracle_relation_path_route": {
+          "0": 179,
+          "1": 179,
+          "2": 179,
+          "3": 179
+        },
+        "random_route": {
+          "0": 184,
+          "1": 176,
+          "2": 183,
+          "3": 173
+        },
+        "shuffled_oracle_route": {
+          "0": 179,
+          "1": 179,
+          "2": 179,
+          "3": 179
+        }
+      },
+      "validation": {
+        "oracle_hop_route": {
+          "0": 38,
+          "1": 38,
+          "2": 38,
+          "3": 38
+        },
+        "oracle_relation_family_route": {
+          "0": 60,
+          "1": 21,
+          "2": 32,
+          "3": 39
+        },
+        "oracle_relation_path_route": {
+          "0": 49,
+          "1": 42,
+          "2": 29,
+          "3": 32
+        },
+        "random_route": {
+          "0": 40,
+          "1": 39,
+          "2": 35,
+          "3": 38
+        },
+        "shuffled_oracle_route": {
+          "0": 49,
+          "1": 42,
+          "2": 29,
+          "3": 32
+        }
+      }
+    },
+    "feature_dim": 64,
+    "fit_splits": [
+      "train"
+    ],
+    "groups": 4,
+    "test_opened": false
+  },
+  "status": "LOCAL_IMPLEMENTATION_READY_FOR_WSL_VALIDATION"
+}
