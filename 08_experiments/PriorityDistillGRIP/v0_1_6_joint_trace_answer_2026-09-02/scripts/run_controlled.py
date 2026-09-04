@@ -15,11 +15,12 @@ def main():
     p.add_argument("--output-dir", type=Path, required=True)
     p.add_argument("--model-name-or-path")
     p.add_argument("--overwrite", action="store_true")
+    p.add_argument("--training-seed", type=int, help="override config training.seed for a reproducible seed sweep")
     a = p.parse_args()
     out = a.output_dir.expanduser().resolve()
     if out.exists() and any(out.iterdir()):
         if not a.overwrite: raise FileExistsError(f"output exists; pass --overwrite: {out}")
         shutil.rmtree(out)
-    summary = run_controlled(repo_root=REPO, config_path=a.config.expanduser().resolve(), config=load_config(a.config.expanduser().resolve()), output_dir=out, model_override=a.model_name_or_path)
+    summary = run_controlled(repo_root=REPO, config_path=a.config.expanduser().resolve(), config=load_config(a.config.expanduser().resolve()), output_dir=out, model_override=a.model_name_or_path, seed_override=a.training_seed)
     print(f"complete protocol={summary['protocol']} actual_optimizer_steps={summary['training']['actual_optimizer_steps']} output={out}")
 if __name__ == "__main__": main()

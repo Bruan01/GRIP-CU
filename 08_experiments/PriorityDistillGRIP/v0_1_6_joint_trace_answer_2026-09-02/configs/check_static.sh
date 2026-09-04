@@ -9,6 +9,8 @@ export PYTHONPATH="$EXPERIMENT_ROOT${PYTHONPATH:+:$PYTHONPATH}"
 "$PYTHON_EXECUTABLE" scripts/validate_setup.py --config configs/graph_free_trace.json --output artifacts/graph_free_trace_setup_audit.json
 "$PYTHON_EXECUTABLE" scripts/validate_setup.py --config configs/graph_free_trace_joint.json --output artifacts/graph_free_trace_joint_setup_audit.json
 "$PYTHON_EXECUTABLE" scripts/validate_setup.py --config configs/candidate_index_anti_copy_bridge.json --output artifacts/candidate_index_anti_copy_bridge_setup_audit.json
+"$PYTHON_EXECUTABLE" scripts/validate_setup.py --config configs/direct_answer_only_fair_20260903.json --output artifacts/direct_answer_only_fair_20260903_setup_audit.json
+"$PYTHON_EXECUTABLE" scripts/validate_setup.py --config configs/graph_free_trace_joint_fair_20260903.json --output artifacts/graph_free_trace_joint_fair_20260903_setup_audit.json
 "$PYTHON_EXECUTABLE" scripts/runtime_self_test.py
 "$PYTHON_EXECUTABLE" -m py_compile scripts/*.py priority_distill/*.py tests/*.py
 bash -n configs/*.sh
@@ -20,6 +22,8 @@ expected = {
     'graph_free_trace.json': 'graph_free_trace',
     'graph_free_trace_joint.json': 'graph_free_trace_joint',
     'candidate_index_anti_copy_bridge.json': 'candidate_index_anti_copy_bridge',
+    'direct_answer_only_fair_20260903.json': 'direct_answer_only',
+    'graph_free_trace_joint_fair_20260903.json': 'graph_free_trace_joint',
 }
 for name, protocol in expected.items():
     config = load_config(Path('configs') / name)

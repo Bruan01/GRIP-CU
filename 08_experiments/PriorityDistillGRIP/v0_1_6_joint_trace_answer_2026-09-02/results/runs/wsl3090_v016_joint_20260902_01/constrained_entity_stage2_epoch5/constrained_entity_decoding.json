@@ -1,0 +1,125 @@
+{
+  "candidate_set": {
+    "gold_plus_train_distractors": 4,
+    "same_depth_only": true,
+    "train_split_only": true
+  },
+  "checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v016_joint_20260902_01/checkpoints/stage2_epoch5/adapter_model.pt",
+  "data": {
+    "depth_counts": {
+      "test": {
+        "1": 39,
+        "2": 39,
+        "3": 39,
+        "4": 39
+      },
+      "train": {
+        "1": 179,
+        "2": 179,
+        "3": 179,
+        "4": 179
+      },
+      "validation": {
+        "1": 38,
+        "2": 38,
+        "3": 38,
+        "4": 38
+      }
+    },
+    "split_sizes": {
+      "test": 156,
+      "train": 716,
+      "validation": 152
+    },
+    "task_id_overlaps": {}
+  },
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "environment": {
+    "cuda_available": true,
+    "cuda_version": "13.0",
+    "env": {
+      "CONDA_DEFAULT_ENV": "base",
+      "CUDA_VISIBLE_DEVICES": null,
+      "WSL_DISTRO_NAME": "Ubuntu"
+    },
+    "git": {
+      "branch": "wsl/nell23k-smoke-20260829",
+      "commit": "60687c52b8d2a9cab21697b5b9f005e0dcd8be32",
+      "status_short": "M 08_experiments/PriorityDistillGRIP/README.md\n M 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/priority_distill/candidates.py\n M 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/tests/test_candidates.py\n M TODO_PRIORITY_DISTILL.md\n?? 08_experiments/PriorityDistillGRIP/v0_1_1_oracle_stage2_diagnostic_2026-09-01/\n?? 08_experiments/PriorityDistillGRIP/v0_1_2_controlled_protocol_2026-09-01/\n?? 08_experiments/PriorityDistillGRIP/v0_1_3_candidate_selection_anti_copy_2026-09-01/\n?? 08_experiments/PriorityDistillGRIP/v0_1_4_explicit_path_selection_2026-09-01/\n?? 08_experiments/PriorityDistillGRIP/v0_1_5_bridge_supervision_2026-09-01/\n?? 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/priority_distill/constrained.py\n?? 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v016_joint_20260902_01/candidate_ranking_stage2_epoch5/\n?? 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v016_joint_20260902_01/constrained_entity_stage2_epoch5/\n?? 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v016_joint_20260902_01/constrained_entity_stage2_epoch8/\n?? 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/scripts/evaluate_constrained_answers.py\n?? 08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/tests/test_constrained.py"
+    },
+    "gpu_name": "NVIDIA GeForce RTX 3090",
+    "gpu_total_memory": 25769148416,
+    "hostname": "kieran",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.10.19",
+    "torch": "2.12.0+cu130",
+    "transformers": "4.57.3"
+  },
+  "format_version": 1,
+  "interpretation": {
+    "higher_than_free_generation": "suggests malformed/open-vocabulary decoding is a major bottleneck",
+    "near_random": "suggests the model does not reliably rank the correct entity even when generation is constrained",
+    "scope": "candidate-set diagnostic, not full-vocabulary accuracy"
+  },
+  "metrics": {
+    "test": {
+      "accuracy": 0.5,
+      "by_depth": {
+        "1": {
+          "accuracy": 0.46153846153846156,
+          "correct": 18,
+          "count": 39
+        },
+        "2": {
+          "accuracy": 0.5897435897435898,
+          "correct": 23,
+          "count": 39
+        },
+        "3": {
+          "accuracy": 0.46153846153846156,
+          "correct": 18,
+          "count": 39
+        },
+        "4": {
+          "accuracy": 0.48717948717948717,
+          "correct": 19,
+          "count": 39
+        }
+      },
+      "correct": 78,
+      "count": 156,
+      "random_candidate_baseline": 0.25
+    },
+    "validation": {
+      "accuracy": 0.48026315789473684,
+      "by_depth": {
+        "1": {
+          "accuracy": 0.5263157894736842,
+          "correct": 20,
+          "count": 38
+        },
+        "2": {
+          "accuracy": 0.42105263157894735,
+          "correct": 16,
+          "count": 38
+        },
+        "3": {
+          "accuracy": 0.5263157894736842,
+          "correct": 20,
+          "count": 38
+        },
+        "4": {
+          "accuracy": 0.4473684210526316,
+          "correct": 17,
+          "count": 38
+        }
+      },
+      "correct": 73,
+      "count": 152,
+      "random_candidate_baseline": 0.25
+    }
+  },
+  "model": "/home/kieran/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "purpose": "graph_free_candidate_set_constrained_entity_decoding"
+}

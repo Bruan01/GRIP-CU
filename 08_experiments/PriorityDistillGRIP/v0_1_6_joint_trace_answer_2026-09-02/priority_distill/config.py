@@ -17,8 +17,8 @@ def load_config(path: Path) -> dict:
 def validate_config(config: dict) -> None:
     if config.get("format_version") != 1:
         raise ValueError("format_version must be 1")
-    if not any(str(config.get("experiment_id", "")).endswith(date) for date in ("2026-09-01", "2026-09-02")):
-        raise ValueError("config must be dated 2026-09-01 or 2026-09-02")
+    if not any(str(config.get("experiment_id", "")).endswith(date) for date in ("2026-09-01", "2026-09-02", "2026-09-03")):
+        raise ValueError("config must be dated 2026-09-01, 2026-09-02, or 2026-09-03")
     if config.get("protocol") not in PROTOCOLS:
         raise ValueError(f"protocol must be one of {sorted(PROTOCOLS)}")
     model = config["model"]

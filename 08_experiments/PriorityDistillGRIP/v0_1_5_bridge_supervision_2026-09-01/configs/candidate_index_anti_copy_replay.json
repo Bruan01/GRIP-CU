@@ -1,0 +1,77 @@
+{
+  "format_version": 1,
+  "experiment_id": "priority_distill_grip_v0_1_4_candidate_index_anti_copy_replay_2026-09-01",
+  "protocol": "candidate_index_anti_copy_replay",
+  "model": {
+    "name_or_path": "Qwen/Qwen2.5-0.5B-Instruct",
+    "local_files_only": true,
+    "trust_remote_code": false,
+    "dtype": "bfloat16",
+    "device": "cuda",
+    "attn_implementation": "eager"
+  },
+  "data": {
+    "train": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl",
+    "validation": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl",
+    "test": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_test.jsonl",
+    "expected_sizes": {
+      "train": 716,
+      "validation": 152,
+      "test": 156
+    },
+    "max_length": 640,
+    "max_new_tokens": 24,
+    "evaluation_batch_size": 8
+  },
+  "candidates": {
+    "distractor_count": 3,
+    "seed": 20260901,
+    "same_depth_only": true,
+    "different_answer_only": true,
+    "train_split_only": true
+  },
+  "lora": {
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.0,
+    "orthogonal_init": false,
+    "target_modules": [
+      "down_proj",
+      "up_proj",
+      "gate_proj"
+    ]
+  },
+  "training": {
+    "seed": 42,
+    "micro_batch_size": 4,
+    "num_workers": 0,
+    "tokens_per_optimizer_step": 2048,
+    "stage2_epochs": 8,
+    "weight_decay": 0.0001,
+    "warmup_ratio": 0.05,
+    "max_grad_norm": 1.0,
+    "log_every_steps": 10,
+    "gradient_checkpointing": false,
+    "first_segment_learning_rate": 0.0005,
+    "first_segment_scheduler": "cosine",
+    "answer_only_learning_rate": 0.0003,
+    "answer_only_scheduler": "constant",
+    "stage2_replay_ratio": 0.2
+  },
+  "diagnostic": {
+    "conditions": [
+      "graph_free",
+      "candidate_selection",
+      "candidate_selection_terminal_masked",
+      "oracle_evidence"
+    ],
+    "splits": [
+      "validation",
+      "test"
+    ],
+    "evaluate_initial": false
+  },
+  "runtime": {
+    "disable_progress": false
+  }
+}

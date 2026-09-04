@@ -1,6 +1,7 @@
 """Controlled candidate-selection and Stage-2 replay experiment."""
 from __future__ import annotations
 
+import copy
 import math
 import time
 from pathlib import Path
@@ -250,8 +251,15 @@ def _prepare_rows(train_rows, tokenizer, config, seed):
     return segments, audit
 
 
-def run_controlled(*, repo_root: Path, config_path: Path, config: dict, output_dir: Path, model_override: str | None) -> dict:
+def run_controlled(*, repo_root: Path, config_path: Path, config: dict, output_dir: Path, model_override: str | None, seed_override: int | None = None) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
+    # Keep the registered JSON config immutable, while allowing a reproducible
+    # seed sweep to reuse the exact same protocol and data definition.
+    if seed_override is not None:
+        config = copy.deepcopy(config)
+        if int(seed_override) < 0:
+            raise ValueError("seed_override must be non-negative")
+        config["training"]["seed"] = int(seed_override)
     seed = int(config["training"]["seed"])
     set_seed(seed)
     splits, paths, split_audit = load_splits(repo_root, config["data"])
@@ -328,7 +336,8 @@ def run_controlled(*, repo_root: Path, config_path: Path, config: dict, output_d
         # Graph-free validation is the only checkpoint-selection signal.  The
         # more expensive candidate diagnostics are run at stage 1 and again
         # only for the validation-selected checkpoint below.
-        eval_conditions = all_conditions if index == 0 else graph_free_only
+        evaluate_stage1_all = bool(config.get("diagnostic", {}).get("evaluate_stage1_all_conditions", True))
+        eval_conditions = all_conditions if (index == 0 and evaluate_stage1_all) else graph_free_only
         metrics = evaluate_checkpoint(model, tokenizer, splits, config, device, dtype, output_dir, name, conditions=eval_conditions)
         diagnostics.append({"checkpoint": name, "stage": name, "epoch": index, "metrics": metrics})
         segment_progress.set_postfix(
@@ -361,6 +370,7 @@ def run_controlled(*, repo_root: Path, config_path: Path, config: dict, output_d
         "experiment_id": config["experiment_id"],
         "protocol": config["protocol"],
         "seed": seed,
+        "seed_override": seed_override,
         "model": resolved_model,
         "config_path": str(config_path.relative_to(repo_root)),
         "config_sha256": sha256_file(config_path),

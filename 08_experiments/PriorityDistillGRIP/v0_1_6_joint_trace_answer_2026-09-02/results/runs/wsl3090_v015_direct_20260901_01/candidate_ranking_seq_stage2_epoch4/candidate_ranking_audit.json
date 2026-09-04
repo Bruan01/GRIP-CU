@@ -1,0 +1,99 @@
+{
+  "checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_5_bridge_supervision_2026-09-01/results/runs/wsl3090_v015_direct_20260901_01/checkpoints/stage2_epoch4/adapter_model.pt",
+  "conditions": {
+    "gold_trace": {
+      "accuracy_by_depth": {
+        "1": 0.38461538461538464,
+        "2": 0.41025641025641024,
+        "3": 0.46153846153846156,
+        "4": 0.358974358974359
+      },
+      "count": 156,
+      "mean_rank": 2.1025641025641026,
+      "mrr": 0.6324786324786322,
+      "rank1_accuracy": 0.40384615384615385,
+      "rank_counts": {
+        "1": 63,
+        "2": 42,
+        "3": 23,
+        "4": 28
+      }
+    },
+    "graph_free": {
+      "accuracy_by_depth": {
+        "1": 0.2564102564102564,
+        "2": 0.3333333333333333,
+        "3": 0.38461538461538464,
+        "4": 0.4358974358974359
+      },
+      "count": 156,
+      "mean_rank": 2.2948717948717947,
+      "mrr": 0.5860042735042733,
+      "rank1_accuracy": 0.3525641025641026,
+      "rank_counts": {
+        "1": 55,
+        "2": 33,
+        "3": 35,
+        "4": 33
+      }
+    },
+    "oracle_evidence": {
+      "accuracy_by_depth": {
+        "1": 1.0,
+        "2": 0.9487179487179487,
+        "3": 0.8974358974358975,
+        "4": 0.9487179487179487
+      },
+      "count": 156,
+      "mean_rank": 1.0512820512820513,
+      "mrr": 0.9743589743589743,
+      "rank1_accuracy": 0.9487179487179487,
+      "rank_counts": {
+        "1": 148,
+        "2": 8,
+        "3": 0,
+        "4": 0
+      }
+    }
+  },
+  "data": {
+    "depth_counts": {
+      "test": {
+        "1": 39,
+        "2": 39,
+        "3": 39,
+        "4": 39
+      },
+      "train": {
+        "1": 179,
+        "2": 179,
+        "3": 179,
+        "4": 179
+      },
+      "validation": {
+        "1": 38,
+        "2": 38,
+        "3": 38,
+        "4": 38
+      }
+    },
+    "split_sizes": {
+      "test": 156,
+      "train": 716,
+      "validation": 152
+    },
+    "task_id_overlaps": {}
+  },
+  "device": "cuda",
+  "dtype": "torch.bfloat16",
+  "format_version": 1,
+  "interpretation": {
+    "candidate_set": "one held-out gold answer plus three deterministic same-depth train distractors; this is a relative diagnostic, not full-vocabulary accuracy",
+    "rank1_high_but_generation_low": "the model assigns probability to the answer but decoding/formatting may be the bottleneck",
+    "rank1_low_even_with_oracle_evidence": "the model is not using the supplied path reliably"
+  },
+  "length_normalization": 0.0,
+  "model": "/home/kieran/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/7ae557604adf67be50417f59c2c2f167def9a775",
+  "purpose": "teacher_forced_answer_candidate_ranking",
+  "score_definition": "sum(log p(answer_token | prompt, previous_answer_tokens)) / len(answer_tokens)^length_normalization"
+}

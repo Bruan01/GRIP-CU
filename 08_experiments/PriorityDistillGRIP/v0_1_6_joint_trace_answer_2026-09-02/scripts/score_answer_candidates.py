@@ -39,8 +39,14 @@ def _answer_tokens(tokenizer, answer: str) -> list[int]:
     return tokenizer(str(answer), add_special_tokens=False)["input_ids"]
 
 
-def _score_suffixes(model, tokenizer, prompts: list[str], prefixes: list[str], answers: list[str], device: torch.device, dtype: torch.dtype, batch_size: int) -> list[float]:
-    """Mean teacher-forced log-probability of answer after prompt+prefix."""
+def _score_suffixes(model, tokenizer, prompts: list[str], prefixes: list[str], answers: list[str], device: torch.device, dtype: torch.dtype, batch_size: int, length_normalization: float) -> list[float]:
+    """Length-normalized teacher-forced log-probability of answer.
+
+    ``length_normalization=1`` is mean token log-probability (the original
+    diagnostic). ``0`` is the sequence log-probability and is the new
+    sequence-level scorer. Intermediate values are useful for sensitivity
+    checks because entity IDs have different token lengths.
+    """
     scores: list[float] = []
     model.eval()
     with torch.inference_mode():
@@ -68,7 +74,7 @@ def _score_suffixes(model, tokenizer, prompts: list[str], prefixes: list[str], a
             for index, (seq, offset) in enumerate(zip(sequences, answer_offsets)):
                 answer_ids = seq[offset:]
                 token_scores = [log_probs[index, position - 1, token].item() for position, token in enumerate(answer_ids, start=offset)]
-                scores.append(sum(token_scores) / len(token_scores))
+                scores.append(sum(token_scores) / (len(token_scores) ** length_normalization))
     return scores
 
 
@@ -108,7 +114,10 @@ def main() -> None:
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--model-name-or-path", required=True)
     ap.add_argument("--batch-size", type=int, default=8)
+    ap.add_argument("--length-normalization", type=float, default=1.0, help="0=sequence sum, 1=mean token log-probability")
     args = ap.parse_args()
+    if args.length_normalization < 0:
+        raise ValueError("--length-normalization must be non-negative")
     config_path = args.config.expanduser().resolve()
     out = args.output_dir.expanduser().resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -129,7 +138,7 @@ def main() -> None:
             prompts = [prompt] * len(pool)
             prefixes = [prefix] * len(pool)
             answers = [str(candidate["answer"]) for candidate in pool]
-            scores = _score_suffixes(model, tokenizer, prompts, prefixes, answers, device, dtype, args.batch_size)
+            scores = _score_suffixes(model, tokenizer, prompts, prefixes, answers, device, dtype, args.batch_size, args.length_normalization)
             order = sorted(range(len(pool)), key=lambda i: scores[i], reverse=True)
             gold_index = next(i for i, candidate in enumerate(pool) if candidate["is_gold"])
             rank = order.index(gold_index) + 1
@@ -154,6 +163,8 @@ def main() -> None:
     report = {
         "format_version": 1,
         "purpose": "teacher_forced_answer_candidate_ranking",
+        "length_normalization": args.length_normalization,
+        "score_definition": "sum(log p(answer_token | prompt, previous_answer_tokens)) / len(answer_tokens)^length_normalization",
         "checkpoint": str(args.checkpoint.expanduser().resolve()),
         "model": resolved,
         "device": str(device),

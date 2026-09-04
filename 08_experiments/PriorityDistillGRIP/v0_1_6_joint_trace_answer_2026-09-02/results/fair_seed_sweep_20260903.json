@@ -1,0 +1,159 @@
+{
+  "by_protocol": {
+    "direct_answer_only": {
+      "metrics": {
+        "deployment_sequence_rank1_test": {
+          "count": 1,
+          "max": 0.5192307692307693,
+          "mean": 0.5192307692307693,
+          "min": 0.5192307692307693,
+          "std_sample": 0.0
+        },
+        "graph_free_test": {
+          "count": 2,
+          "max": 0.3333333333333333,
+          "mean": 0.3173076923076923,
+          "min": 0.30128205128205127,
+          "std_sample": 0.022663678884184215
+        },
+        "graph_free_validation": {
+          "count": 2,
+          "max": 0.3355263157894737,
+          "mean": 0.32894736842105265,
+          "min": 0.3223684210526316,
+          "std_sample": 0.009304036594559825
+        }
+      },
+      "runs": [
+        {
+          "constrained_test": null,
+          "deployment_sequence_rank1_test": 0.5192307692307693,
+          "graph_free_test": 0.3333333333333333,
+          "graph_free_validation": 0.3223684210526316,
+          "max_new_tokens": null,
+          "protocol": "direct_answer_only",
+          "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed43_20260903",
+          "seed": 43,
+          "seed_override": 43,
+          "selected_checkpoint": "stage2_epoch5"
+        },
+        {
+          "graph_free_test": 0.30128205128205127,
+          "graph_free_validation": 0.3355263157894737,
+          "max_new_tokens": null,
+          "protocol": "direct_answer_only",
+          "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed44_20260903",
+          "seed": 44,
+          "seed_override": 44,
+          "selected_checkpoint": "stage2_epoch4"
+        }
+      ],
+      "seeds": [
+        43,
+        44
+      ]
+    },
+    "graph_free_trace_joint": {
+      "metrics": {
+        "deployment_sequence_rank1_test": {
+          "count": 1,
+          "max": 0.4358974358974359,
+          "mean": 0.4358974358974359,
+          "min": 0.4358974358974359,
+          "std_sample": 0.0
+        },
+        "graph_free_test": {
+          "count": 2,
+          "max": 0.34615384615384615,
+          "mean": 0.33974358974358976,
+          "min": 0.3333333333333333,
+          "std_sample": 0.009065471553673694
+        },
+        "graph_free_validation": {
+          "count": 2,
+          "max": 0.34210526315789475,
+          "mean": 0.32565789473684215,
+          "min": 0.3092105263157895,
+          "std_sample": 0.023260091486399584
+        }
+      },
+      "runs": [
+        {
+          "constrained_test": null,
+          "deployment_sequence_rank1_test": 0.4358974358974359,
+          "graph_free_test": 0.34615384615384615,
+          "graph_free_validation": 0.3092105263157895,
+          "max_new_tokens": null,
+          "protocol": "graph_free_trace_joint",
+          "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed43_20260903",
+          "seed": 43,
+          "seed_override": 43,
+          "selected_checkpoint": "stage2_epoch7"
+        },
+        {
+          "graph_free_test": 0.3333333333333333,
+          "graph_free_validation": 0.34210526315789475,
+          "max_new_tokens": null,
+          "protocol": "graph_free_trace_joint",
+          "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed44_20260903",
+          "seed": 44,
+          "seed_override": 44,
+          "selected_checkpoint": "stage2_epoch6"
+        }
+      ],
+      "seeds": [
+        43,
+        44
+      ]
+    }
+  },
+  "format_version": 1,
+  "purpose": "fair_direct_vs_joint_multi_seed_aggregate",
+  "runs": [
+    {
+      "constrained_test": null,
+      "deployment_sequence_rank1_test": 0.5192307692307693,
+      "graph_free_test": 0.3333333333333333,
+      "graph_free_validation": 0.3223684210526316,
+      "max_new_tokens": null,
+      "protocol": "direct_answer_only",
+      "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed43_20260903",
+      "seed": 43,
+      "seed_override": 43,
+      "selected_checkpoint": "stage2_epoch5"
+    },
+    {
+      "graph_free_test": 0.30128205128205127,
+      "graph_free_validation": 0.3355263157894737,
+      "max_new_tokens": null,
+      "protocol": "direct_answer_only",
+      "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_direct_seed44_20260903",
+      "seed": 44,
+      "seed_override": 44,
+      "selected_checkpoint": "stage2_epoch4"
+    },
+    {
+      "constrained_test": null,
+      "deployment_sequence_rank1_test": 0.4358974358974359,
+      "graph_free_test": 0.34615384615384615,
+      "graph_free_validation": 0.3092105263157895,
+      "max_new_tokens": null,
+      "protocol": "graph_free_trace_joint",
+      "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed43_20260903",
+      "seed": 43,
+      "seed_override": 43,
+      "selected_checkpoint": "stage2_epoch7"
+    },
+    {
+      "graph_free_test": 0.3333333333333333,
+      "graph_free_validation": 0.34210526315789475,
+      "max_new_tokens": null,
+      "protocol": "graph_free_trace_joint",
+      "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed44_20260903",
+      "seed": 44,
+      "seed_override": 44,
+      "selected_checkpoint": "stage2_epoch6"
+    }
+  ],
+  "selection_rule": "each run selects checkpoint by validation only; test is read after selection"
+}

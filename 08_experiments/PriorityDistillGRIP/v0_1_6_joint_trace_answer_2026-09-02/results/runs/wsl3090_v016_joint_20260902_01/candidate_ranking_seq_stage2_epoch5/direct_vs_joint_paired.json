@@ -1,0 +1,41 @@
+{
+  "format_version": 1,
+  "direct_name": "v0.1.5_direct",
+  "other_name": "v0.1.6_joint",
+  "overall": {
+    "count": 156,
+    "direct_correct": 55,
+    "other_correct": 100,
+    "direct_accuracy": 0.3525641025641026,
+    "other_accuracy": 0.6410256410256411,
+    "other_wins": 49,
+    "direct_wins": 4,
+    "both_correct": 51,
+    "both_wrong": 52
+  },
+  "by_composition": {
+    "novel_composition": {
+      "count": 89,
+      "direct_correct": 36,
+      "other_correct": 59,
+      "direct_accuracy": 0.4044943820224719,
+      "other_accuracy": 0.6629213483146067,
+      "other_wins": 25,
+      "direct_wins": 2,
+      "both_correct": 34,
+      "both_wrong": 28
+    },
+    "seen_composition": {
+      "count": 67,
+      "direct_correct": 19,
+      "other_correct": 41,
+      "direct_accuracy": 0.2835820895522388,
+      "other_accuracy": 0.6119402985074627,
+      "other_wins": 24,
+      "direct_wins": 2,
+      "both_correct": 17,
+      "both_wrong": 24
+    }
+  },
+  "interpretation": "paired counts are descriptive; this is a 4-way candidate-set diagnostic, not full-vocabulary accuracy"
+}

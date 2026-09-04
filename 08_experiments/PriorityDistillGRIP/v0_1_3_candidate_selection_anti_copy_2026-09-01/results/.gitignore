@@ -1,0 +1,8 @@
+*
+!.gitignore
+!README.md
+!runs/
+runs/*
+runs/**/adapter_model.pt
+!logs/
+logs/*

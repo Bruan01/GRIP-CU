@@ -1,0 +1,23 @@
+{
+  "answer_prompt_is_same_as_stage2": true,
+  "diagnostic_method": "oracle_priority_equal_token",
+  "reference_input_tokens": 199315,
+  "reference_method": "all_paths_equal_token",
+  "selected_stage1_budget": {
+    "cycles": 3,
+    "examples": 1453,
+    "input_tokens": 199321,
+    "overshoot_tokens": 6,
+    "supervised_tokens": 10065,
+    "target_input_tokens": 199315,
+    "truncated_examples": 0,
+    "truncated_prompt_tokens": 0
+  },
+  "stage1_truncated_examples": 0,
+  "stage1_truncated_prompt_tokens": 0,
+  "stage2_epochs": 8,
+  "stage2_examples_per_epoch": 716,
+  "stage2_input_tokens_per_epoch": 54933,
+  "stage2_total_input_tokens": 439464,
+  "unbalanced_oracle_input_tokens": 98199
+}

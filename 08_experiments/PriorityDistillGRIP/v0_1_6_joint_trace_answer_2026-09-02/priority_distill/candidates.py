@@ -65,7 +65,21 @@ def build_candidate_pools(train_rows: list[dict], distractor_count: int, seed: i
                 f"not enough same-depth, different-answer distractors for {row['task_id']}: "
                 f"need {distractor_count}, found {len(eligible)}"
             )
-        selected = eligible[:distractor_count]
+        selected: list[dict] = []
+        selected_answers: set[str] = set()
+        for candidate in eligible:
+            answer = str(candidate["answer"])
+            if answer in selected_answers:
+                continue
+            selected.append(candidate)
+            selected_answers.add(answer)
+            if len(selected) == distractor_count:
+                break
+        if len(selected) < distractor_count:
+            raise ValueError(
+                f"not enough same-depth, different-answer distractors with unique answers for {row['task_id']}: "
+                f"need {distractor_count}, found {len(selected)}"
+            )
         pool = [candidate_from_row(row, is_gold=True)] + [candidate_from_row(item, is_gold=False) for item in selected]
         pools[row["task_id"]] = pool
     return pools
@@ -91,4 +105,16 @@ def build_candidate_pool_for_query(row: dict, train_rows: list[dict], distractor
     )
     if len(eligible) < distractor_count:
         raise ValueError(f"not enough train-only distractors for {row['task_id']}")
-    return [candidate_from_row(row, is_gold=True)] + [candidate_from_row(item, is_gold=False) for item in eligible[:distractor_count]]
+    selected: list[dict] = []
+    selected_answers: set[str] = set()
+    for candidate in eligible:
+        answer = str(candidate["answer"])
+        if answer in selected_answers:
+            continue
+        selected.append(candidate)
+        selected_answers.add(answer)
+        if len(selected) == distractor_count:
+            break
+    if len(selected) < distractor_count:
+        raise ValueError(f"not enough unique train-only distractor answers for {row['task_id']}")
+    return [candidate_from_row(row, is_gold=True)] + [candidate_from_row(item, is_gold=False) for item in selected]

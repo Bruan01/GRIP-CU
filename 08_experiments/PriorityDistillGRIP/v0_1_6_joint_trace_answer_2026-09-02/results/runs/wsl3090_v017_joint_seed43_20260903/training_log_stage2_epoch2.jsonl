@@ -1,0 +1,2 @@
+{"epoch": 2, "input_tokens": 22605, "learning_rate": 0.0003, "mean_token_weighted_loss": 0.26285224057778506, "optimizer_step": 10, "stage": "stage2_epoch2"}
+{"epoch": 2, "input_tokens": 45130, "learning_rate": 0.0003, "mean_token_weighted_loss": 0.269137858679989, "optimizer_step": 20, "stage": "stage2_epoch2"}

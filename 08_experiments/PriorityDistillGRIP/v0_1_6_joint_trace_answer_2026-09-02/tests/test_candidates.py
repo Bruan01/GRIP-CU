@@ -41,7 +41,9 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(sum(candidate["is_gold"] for candidate in pool), 1)
         self.assertEqual(len(pool), 4)
         self.assertTrue(all(candidate["source_split"] == "train" for candidate in pool))
-        self.assertNotEqual({candidate["answer"] for candidate in pool if not candidate["is_gold"]}, {"gold"})
+        distractor_answers = [candidate["answer"] for candidate in pool if not candidate["is_gold"]]
+        self.assertNotEqual(set(distractor_answers), {"gold"})
+        self.assertEqual(len(distractor_answers), len(set(distractor_answers)))
 
     def test_pool_is_deterministic(self):
         rows = [make_row(i, ["r1", f"r{i}"]) for i in range(6)]

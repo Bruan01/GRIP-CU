@@ -1,0 +1,59 @@
+{
+  "format_version": 1,
+  "experiment_id": "priority_distill_grip_v0_1_1_oracle_stage2_diagnostic_2026-09-01",
+  "model": {
+    "name_or_path": "Qwen/Qwen2.5-0.5B-Instruct",
+    "local_files_only": true,
+    "trust_remote_code": false,
+    "dtype": "bfloat16",
+    "device": "cuda",
+    "attn_implementation": "eager"
+  },
+  "data": {
+    "train": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_train.jsonl",
+    "validation": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_validation.jsonl",
+    "test": "08_experiments/StructuredLoRA/v0_1_depth_data_audit_2026-08-31/artifacts/exact_hop/nell23k_exact_hop_test.jsonl",
+    "expected_sizes": {"train": 716, "validation": 152, "test": 156},
+    "max_length": 512,
+    "max_new_tokens": 24,
+    "evaluation_batch_size": 8
+  },
+  "candidates": {
+    "distractor_count": 3,
+    "seed": 20260901,
+    "same_depth_only": true,
+    "different_answer_only": true,
+    "train_split_only": true
+  },
+  "lora": {
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.0,
+    "orthogonal_init": false,
+    "target_modules": ["down_proj", "up_proj", "gate_proj"]
+  },
+  "training": {
+    "seed": 42,
+    "micro_batch_size": 4,
+    "num_workers": 0,
+    "stage1_reference_method": "all_paths_equal_token",
+    "stage1_tokens_per_optimizer_step": 2048,
+    "stage1_learning_rate": 0.0005,
+    "stage2_epochs": 8,
+    "stage2_tokens_per_optimizer_step": 2048,
+    "stage2_learning_rate": 0.001,
+    "stage2_scheduler": "constant",
+    "weight_decay": 0.0001,
+    "warmup_ratio": 0.05,
+    "max_grad_norm": 1.0,
+    "log_every_steps": 10,
+    "gradient_checkpointing": false
+  },
+  "diagnostic": {
+    "evaluate_initial": true,
+    "evaluate_after_stage1": true,
+    "evaluate_after_each_stage2_epoch": true,
+    "conditions": ["graph_free", "oracle_evidence"],
+    "splits": ["validation", "test"]
+  }
+}

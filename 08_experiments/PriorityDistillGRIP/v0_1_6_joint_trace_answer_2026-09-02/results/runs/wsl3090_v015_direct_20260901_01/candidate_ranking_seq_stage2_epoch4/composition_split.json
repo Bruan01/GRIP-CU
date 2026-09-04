@@ -1,0 +1,68 @@
+{
+  "format_version": 2,
+  "purpose": "seen_vs_novel_relation_chain_composition_audit",
+  "prediction_kind": "ranking",
+  "condition": "graph_free",
+  "train_task_count": 716,
+  "eval_task_count": 156,
+  "train_composition_count": 521,
+  "eval_composition_count": 134,
+  "prediction_count": 156,
+  "groups": {
+    "novel_composition": {
+      "correct": 36,
+      "count": 89,
+      "accuracy": 0.4044943820224719,
+      "by_depth": {
+        "1": {
+          "correct": 3,
+          "count": 9,
+          "accuracy": 0.3333333333333333
+        },
+        "2": {
+          "correct": 10,
+          "count": 23,
+          "accuracy": 0.43478260869565216
+        },
+        "3": {
+          "correct": 13,
+          "count": 29,
+          "accuracy": 0.4482758620689655
+        },
+        "4": {
+          "correct": 10,
+          "count": 28,
+          "accuracy": 0.35714285714285715
+        }
+      }
+    },
+    "seen_composition": {
+      "correct": 19,
+      "count": 67,
+      "accuracy": 0.2835820895522388,
+      "by_depth": {
+        "1": {
+          "correct": 7,
+          "count": 30,
+          "accuracy": 0.23333333333333334
+        },
+        "2": {
+          "correct": 3,
+          "count": 16,
+          "accuracy": 0.1875
+        },
+        "3": {
+          "correct": 2,
+          "count": 10,
+          "accuracy": 0.2
+        },
+        "4": {
+          "correct": 7,
+          "count": 11,
+          "accuracy": 0.6363636363636364
+        }
+      }
+    }
+  },
+  "definition": "seen_composition means the exact ordered relation tuple occurred in train; novel_composition means it did not"
+}

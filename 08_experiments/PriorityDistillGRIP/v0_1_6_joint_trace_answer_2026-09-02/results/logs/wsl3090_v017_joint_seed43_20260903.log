@@ -1,0 +1,1149 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+graph_free_trace_joint overall:   0%|          | 0/9 [00:00<?, ?segment/s]
+
+stage1 train:   0%|          | 0/506 [00:00<?, ?batch/s][A
+
+stage1 train:   0%|          | 1/506 [00:01<08:43,  1.04s/batch][A
+
+stage1 train:   0%|          | 2/506 [00:01<04:50,  1.73batch/s][A
+
+stage1 train:   1%|          | 3/506 [00:01<03:18,  2.54batch/s][A
+
+stage1 train:   1%|          | 4/506 [00:48<2:38:06, 18.90s/batch][A
+
+stage1 train:   5%|▍         | 24/506 [00:53<14:13,  1.77s/batch, loss=3.490, opt_steps=4][A
+
+stage1 train:   9%|▉         | 48/506 [00:58<06:12,  1.23batch/s, loss=2.648, opt_steps=9][A
+
+stage1 train:  14%|█▍        | 73/506 [01:03<03:46,  1.91batch/s, loss=1.043, opt_steps=14][A
+
+stage1 train:  19%|█▉        | 96/506 [01:08<02:45,  2.48batch/s, loss=0.974, opt_steps=19][A
+
+stage1 train:  24%|██▍       | 121/506 [01:13<02:06,  3.05batch/s, loss=1.354, opt_steps=24][A
+
+stage1 train:  29%|██▊       | 145/506 [01:18<01:43,  3.48batch/s, loss=0.492, opt_steps=29][A
+
+stage1 train:  34%|███▎      | 170/506 [01:23<01:26,  3.87batch/s, loss=0.481, opt_steps=34][A
+
+stage1 train:  39%|███▊      | 195/506 [01:28<01:14,  4.18batch/s, loss=0.393, opt_steps=39][A
+
+stage1 train:  48%|████▊     | 244/506 [01:38<00:58,  4.48batch/s, loss=0.703, opt_steps=48][A
+
+stage1 train:  53%|█████▎    | 268/506 [01:43<00:52,  4.55batch/s, loss=0.580, opt_steps=53][A
+
+stage1 train:  58%|█████▊    | 292/506 [01:48<00:46,  4.61batch/s, loss=0.414, opt_steps=58][A
+
+stage1 train:  62%|██████▏   | 316/506 [01:53<00:40,  4.68batch/s, loss=0.763, opt_steps=63][A
+
+stage1 train:  67%|██████▋   | 341/506 [01:58<00:34,  4.75batch/s, loss=0.250, opt_steps=68][A
+
+stage1 train:  72%|███████▏  | 366/506 [02:03<00:29,  4.81batch/s, loss=0.146, opt_steps=73][A
+
+stage1 train:  77%|███████▋  | 388/506 [02:08<00:25,  4.70batch/s, loss=0.416, opt_steps=77][A
+
+stage1 train:  82%|████████▏ | 413/506 [02:13<00:19,  4.79batch/s, loss=0.429, opt_steps=82][A
+
+stage1 train:  87%|████████▋ | 438/506 [02:18<00:14,  4.85batch/s, loss=0.626, opt_steps=87][A
+
+stage1 train:  92%|█████████▏| 463/506 [02:23<00:08,  4.89batch/s, loss=0.283, opt_steps=92][A
+
+stage1 train:  96%|█████████▌| 486/506 [02:28<00:04,  4.79batch/s, loss=0.472, opt_steps=97][A
+
+                                                                                            [A
+
+graph_free eval stage1:   0%|          | 0/19 [00:00<?, ?batch/s][AThe following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+
+graph_free eval stage1:   5%|▌         | 1/19 [00:02<00:43,  2.43s/batch][A
+
+graph_free eval stage1:  11%|█         | 2/19 [00:04<00:38,  2.27s/batch][A
+
+graph_free eval stage1:  16%|█▌        | 3/19 [00:06<00:34,  2.14s/batch][A
+
+graph_free eval stage1:  21%|██        | 4/19 [00:08<00:31,  2.11s/batch][A
+
+graph_free eval stage1:  26%|██▋       | 5/19 [00:11<00:31,  2.22s/batch][A
+
+graph_free eval stage1:  32%|███▏      | 6/19 [00:13<00:30,  2.38s/batch][A
+
+graph_free eval stage1:  37%|███▋      | 7/19 [00:16<00:29,  2.50s/batch][A
+
+graph_free eval stage1:  42%|████▏     | 8/19 [00:19<00:27,  2.51s/batch][A
+
+graph_free eval stage1:  47%|████▋     | 9/19 [00:21<00:26,  2.62s/batch][A
+
+graph_free eval stage1:  53%|█████▎    | 10/19 [00:24<00:24,  2.73s/batch][A
+
+graph_free eval stage1:  58%|█████▊    | 11/19 [00:27<00:22,  2.82s/batch][A
+
+graph_free eval stage1:  63%|██████▎   | 12/19 [00:31<00:22,  3.15s/batch][A
+
+graph_free eval stage1:  68%|██████▊   | 13/19 [00:35<00:19,  3.21s/batch][A
+
+graph_free eval stage1:  74%|███████▎  | 14/19 [00:38<00:16,  3.33s/batch][A
+
+graph_free eval stage1:  79%|███████▉  | 15/19 [00:42<00:13,  3.49s/batch][A
+
+graph_free eval stage1:  84%|████████▍ | 16/19 [00:45<00:10,  3.45s/batch][A
+
+graph_free eval stage1:  89%|████████▉ | 17/19 [00:50<00:07,  3.69s/batch][A
+
+graph_free eval stage1:  95%|█████████▍| 18/19 [00:54<00:03,  3.74s/batch][A
+
+graph_free eval stage1: 100%|██████████| 19/19 [00:58<00:00,  3.90s/batch][A
+
+                                                                          [A
+
+graph_free eval stage1:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage1:   5%|▌         | 1/20 [00:49<15:36, 49.27s/batch][A
+
+graph_free eval stage1:  90%|█████████ | 18/20 [00:52<00:04,  2.14s/batch][A
+
+graph_free eval stage1:  95%|█████████▌| 19/20 [00:56<00:02,  2.24s/batch][A
+
+graph_free eval stage1: 100%|██████████| 20/20 [00:59<00:00,  2.32s/batch][A
+
+                                                                          [A
+
+gold_trace eval stage1:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+gold_trace eval stage1:   5%|▌         | 1/19 [00:02<00:39,  2.21s/batch][A
+
+gold_trace eval stage1:  11%|█         | 2/19 [00:04<00:37,  2.19s/batch][A
+
+gold_trace eval stage1:  16%|█▌        | 3/19 [00:06<00:35,  2.22s/batch][A
+
+gold_trace eval stage1:  21%|██        | 4/19 [00:08<00:31,  2.09s/batch][A
+
+gold_trace eval stage1:  26%|██▋       | 5/19 [00:10<00:29,  2.12s/batch][A
+
+gold_trace eval stage1:  32%|███▏      | 6/19 [01:00<03:56, 18.23s/batch][A
+
+                                                                         [A
+
+gold_trace eval stage1:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+gold_trace eval stage1:   5%|▌         | 1/20 [00:02<00:46,  2.43s/batch][A
+
+gold_trace eval stage1:  10%|█         | 2/20 [00:04<00:39,  2.22s/batch][A
+
+gold_trace eval stage1:  15%|█▌        | 3/20 [00:06<00:38,  2.24s/batch][A
+
+gold_trace eval stage1:  20%|██        | 4/20 [00:08<00:33,  2.12s/batch][A
+
+gold_trace eval stage1:  25%|██▌       | 5/20 [00:11<00:32,  2.19s/batch][A
+
+gold_trace eval stage1:  30%|███       | 6/20 [00:13<00:32,  2.29s/batch][A
+
+gold_trace eval stage1:  35%|███▌      | 7/20 [00:16<00:30,  2.37s/batch][A
+
+gold_trace eval stage1:  40%|████      | 8/20 [00:19<00:30,  2.57s/batch][A
+
+gold_trace eval stage1:  45%|████▌     | 9/20 [00:21<00:28,  2.57s/batch][A
+
+gold_trace eval stage1:  50%|█████     | 10/20 [00:24<00:27,  2.75s/batch][A
+
+gold_trace eval stage1:  55%|█████▌    | 11/20 [00:28<00:26,  2.99s/batch][A
+
+gold_trace eval stage1:  60%|██████    | 12/20 [00:31<00:24,  3.11s/batch][A
+
+gold_trace eval stage1:  65%|██████▌   | 13/20 [00:35<00:22,  3.21s/batch][A
+
+gold_trace eval stage1:  70%|███████   | 14/20 [00:37<00:18,  3.07s/batch][A
+
+gold_trace eval stage1:  75%|███████▌  | 15/20 [00:41<00:15,  3.14s/batch][A
+
+gold_trace eval stage1:  80%|████████  | 16/20 [00:44<00:12,  3.22s/batch][A
+
+gold_trace eval stage1:  85%|████████▌ | 17/20 [00:48<00:10,  3.33s/batch][A
+
+gold_trace eval stage1:  90%|█████████ | 18/20 [00:51<00:06,  3.44s/batch][A
+
+gold_trace eval stage1:  95%|█████████▌| 19/20 [00:55<00:03,  3.47s/batch][A
+
+gold_trace eval stage1: 100%|██████████| 20/20 [00:58<00:00,  3.41s/batch][A
+
+                                                                          [A
+
+oracle_evidence eval stage1:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+oracle_evidence eval stage1:   5%|▌         | 1/19 [00:00<00:16,  1.08batch/s][A
+
+oracle_evidence eval stage1:  11%|█         | 2/19 [00:01<00:13,  1.22batch/s][A
+
+oracle_evidence eval stage1:  16%|█▌        | 3/19 [00:02<00:12,  1.28batch/s][A
+
+oracle_evidence eval stage1:  21%|██        | 4/19 [00:03<00:11,  1.31batch/s][A
+
+oracle_evidence eval stage1:  26%|██▋       | 5/19 [00:03<00:10,  1.39batch/s][A
+
+oracle_evidence eval stage1:  32%|███▏      | 6/19 [00:04<00:09,  1.38batch/s][A
+
+oracle_evidence eval stage1:  37%|███▋      | 7/19 [00:05<00:08,  1.36batch/s][A
+
+oracle_evidence eval stage1:  42%|████▏     | 8/19 [00:06<00:08,  1.37batch/s][A
+
+oracle_evidence eval stage1:  47%|████▋     | 9/19 [00:06<00:07,  1.31batch/s][A
+
+oracle_evidence eval stage1:  53%|█████▎    | 10/19 [00:07<00:07,  1.27batch/s][A
+
+oracle_evidence eval stage1:  58%|█████▊    | 11/19 [00:55<02:01, 15.19s/batch][A
+
+                                                                               [A
+
+oracle_evidence eval stage1:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+oracle_evidence eval stage1:   5%|▌         | 1/20 [00:00<00:12,  1.47batch/s][A
+
+oracle_evidence eval stage1:  10%|█         | 2/20 [00:01<00:11,  1.51batch/s][A
+
+oracle_evidence eval stage1:  15%|█▌        | 3/20 [00:02<00:12,  1.39batch/s][A
+
+oracle_evidence eval stage1:  20%|██        | 4/20 [00:02<00:10,  1.51batch/s][A
+
+oracle_evidence eval stage1:  25%|██▌       | 5/20 [00:03<00:09,  1.59batch/s][A
+
+oracle_evidence eval stage1:  30%|███       | 6/20 [00:04<00:10,  1.38batch/s][A
+
+oracle_evidence eval stage1:  35%|███▌      | 7/20 [00:04<00:09,  1.35batch/s][A
+
+oracle_evidence eval stage1:  40%|████      | 8/20 [00:05<00:08,  1.46batch/s][A
+
+oracle_evidence eval stage1:  45%|████▌     | 9/20 [00:06<00:07,  1.41batch/s][A
+
+oracle_evidence eval stage1:  50%|█████     | 10/20 [00:06<00:06,  1.48batch/s][A
+
+oracle_evidence eval stage1:  55%|█████▌    | 11/20 [00:07<00:06,  1.38batch/s][A
+
+oracle_evidence eval stage1:  60%|██████    | 12/20 [00:08<00:05,  1.41batch/s][A
+
+oracle_evidence eval stage1:  65%|██████▌   | 13/20 [00:08<00:04,  1.54batch/s][A
+
+oracle_evidence eval stage1:  70%|███████   | 14/20 [00:09<00:03,  1.64batch/s][A
+
+oracle_evidence eval stage1:  75%|███████▌  | 15/20 [00:10<00:03,  1.55batch/s][A
+
+oracle_evidence eval stage1:  80%|████████  | 16/20 [00:10<00:02,  1.43batch/s][A
+
+oracle_evidence eval stage1:  85%|████████▌ | 17/20 [00:11<00:01,  1.59batch/s][A
+
+oracle_evidence eval stage1:  90%|█████████ | 18/20 [00:12<00:01,  1.60batch/s][A
+
+oracle_evidence eval stage1:  95%|█████████▌| 19/20 [00:12<00:00,  1.42batch/s][A
+
+oracle_evidence eval stage1: 100%|██████████| 20/20 [00:13<00:00,  1.36batch/s][A
+
+                                                                               [A
+graph_free_trace_joint overall:  11%|█         | 1/9 [06:06<48:55, 366.96s/segment, checkpoint=stage1, test=0.276, val=0.224]
+
+stage2_epoch1 train:   0%|          | 0/122 [00:00<?, ?batch/s][A
+
+stage2_epoch1 train:   1%|          | 1/122 [00:47<1:35:14, 47.23s/batch][A
+
+stage2_epoch1 train:  21%|██▏       | 26/122 [00:52<02:22,  1.49s/batch, loss=0.352, opt_steps=5][A
+
+stage2_epoch1 train:  40%|████      | 49/122 [00:57<00:56,  1.29batch/s, loss=0.487, opt_steps=9][A
+
+stage2_epoch1 train:  61%|██████    | 74/122 [01:02<00:24,  1.97batch/s, loss=0.357, opt_steps=14][A
+
+stage2_epoch1 train:  80%|███████▉  | 97/122 [01:07<00:09,  2.53batch/s, loss=0.752, opt_steps=19][A
+
+stage2_epoch1 train:  99%|█████████▉| 121/122 [01:12<00:00,  3.03batch/s, loss=0.492, opt_steps=24][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch1:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch1:   5%|▌         | 1/19 [00:02<00:42,  2.33s/batch][A
+
+graph_free eval stage2_epoch1:  11%|█         | 2/19 [00:51<08:28, 29.90s/batch][A
+
+graph_free eval stage2_epoch1:  42%|████▏     | 8/19 [01:06<01:17,  7.03s/batch][A
+
+                                                                                [A
+
+graph_free eval stage2_epoch1:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch1:   5%|▌         | 1/20 [00:02<00:43,  2.27s/batch][A
+
+graph_free eval stage2_epoch1:  10%|█         | 2/20 [00:04<00:40,  2.25s/batch][A
+
+graph_free eval stage2_epoch1:  15%|█▌        | 3/20 [00:06<00:38,  2.28s/batch][A
+
+graph_free eval stage2_epoch1:  20%|██        | 4/20 [00:09<00:36,  2.26s/batch][A
+
+graph_free eval stage2_epoch1:  25%|██▌       | 5/20 [00:11<00:37,  2.47s/batch][A
+
+graph_free eval stage2_epoch1:  30%|███       | 6/20 [00:14<00:36,  2.60s/batch][A
+
+graph_free eval stage2_epoch1:  35%|███▌      | 7/20 [00:17<00:34,  2.62s/batch][A
+
+graph_free eval stage2_epoch1:  40%|████      | 8/20 [00:20<00:33,  2.78s/batch][A
+
+graph_free eval stage2_epoch1:  45%|████▌     | 9/20 [00:23<00:30,  2.73s/batch][A
+
+graph_free eval stage2_epoch1:  50%|█████     | 10/20 [00:25<00:27,  2.71s/batch][A
+
+graph_free eval stage2_epoch1:  55%|█████▌    | 11/20 [00:29<00:27,  3.07s/batch][A
+
+graph_free eval stage2_epoch1:  60%|██████    | 12/20 [00:32<00:24,  3.12s/batch][A
+
+graph_free eval stage2_epoch1:  65%|██████▌   | 13/20 [00:36<00:23,  3.38s/batch][A
+
+graph_free eval stage2_epoch1:  70%|███████   | 14/20 [00:39<00:19,  3.28s/batch][A
+
+graph_free eval stage2_epoch1:  75%|███████▌  | 15/20 [00:43<00:16,  3.26s/batch][A
+
+graph_free eval stage2_epoch1:  80%|████████  | 16/20 [00:47<00:13,  3.47s/batch][A
+
+graph_free eval stage2_epoch1:  85%|████████▌ | 17/20 [00:50<00:10,  3.54s/batch][A
+
+graph_free eval stage2_epoch1:  90%|█████████ | 18/20 [00:54<00:07,  3.61s/batch][A
+
+graph_free eval stage2_epoch1:  95%|█████████▌| 19/20 [00:58<00:03,  3.59s/batch][A
+
+graph_free eval stage2_epoch1: 100%|██████████| 20/20 [01:01<00:00,  3.63s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall:  22%|██▏       | 2/9 [08:35<27:50, 238.64s/segment, checkpoint=stage2_epoch1, test=0.237, val=0.164]
+
+stage2_epoch2 train:   0%|          | 0/123 [00:00<?, ?batch/s][A
+
+stage2_epoch2 train:   1%|          | 1/123 [00:00<00:25,  4.86batch/s][A
+
+stage2_epoch2 train:   2%|▏         | 2/123 [00:00<00:27,  4.39batch/s][A
+
+stage2_epoch2 train:   2%|▏         | 3/123 [00:00<00:28,  4.27batch/s][A
+
+stage2_epoch2 train:   3%|▎         | 4/123 [00:00<00:25,  4.58batch/s][A
+
+stage2_epoch2 train:   4%|▍         | 5/123 [00:01<00:25,  4.69batch/s, loss=0.125, opt_steps=1][A
+
+stage2_epoch2 train:   5%|▍         | 6/123 [00:01<00:24,  4.70batch/s, loss=0.125, opt_steps=1][A
+
+stage2_epoch2 train:   6%|▌         | 7/123 [00:01<00:25,  4.53batch/s, loss=0.125, opt_steps=1][A
+
+stage2_epoch2 train:   7%|▋         | 8/123 [00:48<29:08, 15.21s/batch, loss=0.125, opt_steps=1][A
+
+stage2_epoch2 train:  25%|██▌       | 31/123 [00:53<02:19,  1.52s/batch, loss=0.147, opt_steps=6][A
+
+stage2_epoch2 train:  46%|████▌     | 56/123 [00:58<00:50,  1.34batch/s, loss=0.232, opt_steps=11][A
+
+stage2_epoch2 train:  65%|██████▌   | 80/123 [01:03<00:21,  1.98batch/s, loss=0.337, opt_steps=16][A
+
+stage2_epoch2 train:  85%|████████▌ | 105/123 [01:08<00:06,  2.60batch/s, loss=0.504, opt_steps=21][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch2:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch2:   5%|▌         | 1/19 [00:01<00:35,  1.98s/batch][A
+
+graph_free eval stage2_epoch2:  11%|█         | 2/19 [00:04<00:34,  2.06s/batch][A
+
+graph_free eval stage2_epoch2:  16%|█▌        | 3/19 [00:06<00:33,  2.09s/batch][A
+
+graph_free eval stage2_epoch2:  21%|██        | 4/19 [00:08<00:31,  2.08s/batch][A
+
+graph_free eval stage2_epoch2:  26%|██▋       | 5/19 [00:10<00:31,  2.22s/batch][A
+
+graph_free eval stage2_epoch2:  32%|███▏      | 6/19 [00:13<00:30,  2.31s/batch][A
+
+graph_free eval stage2_epoch2:  37%|███▋      | 7/19 [01:02<03:33, 17.80s/batch][A
+
+graph_free eval stage2_epoch2:  47%|████▋     | 9/19 [01:08<01:44, 10.45s/batch][A
+
+graph_free eval stage2_epoch2:  84%|████████▍ | 16/19 [01:33<00:16,  5.59s/batch][A
+
+                                                                                 [A
+
+graph_free eval stage2_epoch2:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch2:   5%|▌         | 1/20 [00:02<00:40,  2.12s/batch][A
+
+graph_free eval stage2_epoch2:  10%|█         | 2/20 [00:04<00:38,  2.15s/batch][A
+
+graph_free eval stage2_epoch2:  15%|█▌        | 3/20 [00:06<00:37,  2.21s/batch][A
+
+graph_free eval stage2_epoch2:  20%|██        | 4/20 [00:08<00:35,  2.19s/batch][A
+
+graph_free eval stage2_epoch2:  25%|██▌       | 5/20 [00:10<00:33,  2.20s/batch][A
+
+graph_free eval stage2_epoch2:  30%|███       | 6/20 [00:13<00:34,  2.43s/batch][A
+
+graph_free eval stage2_epoch2:  35%|███▌      | 7/20 [00:16<00:31,  2.43s/batch][A
+
+graph_free eval stage2_epoch2:  40%|████      | 8/20 [00:19<00:32,  2.67s/batch][A
+
+graph_free eval stage2_epoch2:  45%|████▌     | 9/20 [00:22<00:31,  2.87s/batch][A
+
+graph_free eval stage2_epoch2:  50%|█████     | 10/20 [00:26<00:30,  3.07s/batch][A
+
+graph_free eval stage2_epoch2:  55%|█████▌    | 11/20 [00:29<00:29,  3.25s/batch][A
+
+graph_free eval stage2_epoch2:  60%|██████    | 12/20 [00:33<00:26,  3.26s/batch][A
+
+graph_free eval stage2_epoch2:  65%|██████▌   | 13/20 [01:23<02:03, 17.60s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall:  33%|███▎      | 3/9 [11:01<19:37, 196.31s/segment, checkpoint=stage2_epoch2, test=0.288, val=0.257]
+
+stage2_epoch3 train:   0%|          | 0/122 [00:00<?, ?batch/s][A
+
+stage2_epoch3 train:   1%|          | 1/122 [00:00<00:20,  5.79batch/s][A
+
+stage2_epoch3 train:   2%|▏         | 2/122 [00:00<00:22,  5.30batch/s][A
+
+stage2_epoch3 train:   2%|▏         | 3/122 [00:00<00:23,  5.02batch/s][A
+
+stage2_epoch3 train:   3%|▎         | 4/122 [00:00<00:22,  5.20batch/s][A
+
+stage2_epoch3 train:   4%|▍         | 5/122 [00:48<33:28, 17.17s/batch, loss=0.135, opt_steps=1][A
+
+stage2_epoch3 train:  24%|██▍       | 29/122 [00:52<02:17,  1.47s/batch, loss=0.184, opt_steps=5][A
+
+stage2_epoch3 train:  63%|██████▎   | 77/122 [01:03<00:25,  1.80batch/s, loss=0.240, opt_steps=15][A
+
+stage2_epoch3 train:  83%|████████▎ | 101/122 [01:08<00:09,  2.28batch/s, loss=0.157, opt_steps=20][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch3:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch3:   5%|▌         | 1/19 [00:02<00:38,  2.12s/batch][A
+
+graph_free eval stage2_epoch3:  11%|█         | 2/19 [00:04<00:35,  2.09s/batch][A
+
+graph_free eval stage2_epoch3:  16%|█▌        | 3/19 [00:06<00:33,  2.12s/batch][A
+
+graph_free eval stage2_epoch3:  21%|██        | 4/19 [00:08<00:31,  2.13s/batch][A
+
+graph_free eval stage2_epoch3:  26%|██▋       | 5/19 [00:10<00:31,  2.25s/batch][A
+
+graph_free eval stage2_epoch3:  32%|███▏      | 6/19 [00:13<00:31,  2.41s/batch][A
+
+graph_free eval stage2_epoch3:  37%|███▋      | 7/19 [00:16<00:29,  2.44s/batch][A
+
+graph_free eval stage2_epoch3:  42%|████▏     | 8/19 [00:18<00:26,  2.39s/batch][A
+
+graph_free eval stage2_epoch3:  47%|████▋     | 9/19 [00:21<00:24,  2.44s/batch][A
+
+graph_free eval stage2_epoch3:  53%|█████▎    | 10/19 [00:23<00:23,  2.59s/batch][A
+
+graph_free eval stage2_epoch3:  58%|█████▊    | 11/19 [00:26<00:21,  2.68s/batch][A
+
+graph_free eval stage2_epoch3:  63%|██████▎   | 12/19 [00:30<00:20,  2.98s/batch][A
+
+graph_free eval stage2_epoch3:  68%|██████▊   | 13/19 [00:33<00:18,  3.05s/batch][A
+
+graph_free eval stage2_epoch3:  74%|███████▎  | 14/19 [00:37<00:16,  3.35s/batch][A
+
+graph_free eval stage2_epoch3:  79%|███████▉  | 15/19 [00:41<00:13,  3.38s/batch][A
+
+graph_free eval stage2_epoch3:  84%|████████▍ | 16/19 [00:44<00:10,  3.51s/batch][A
+
+graph_free eval stage2_epoch3:  89%|████████▉ | 17/19 [00:49<00:07,  3.84s/batch][A
+
+graph_free eval stage2_epoch3:  95%|█████████▍| 18/19 [00:53<00:03,  3.85s/batch][A
+
+graph_free eval stage2_epoch3: 100%|██████████| 19/19 [00:57<00:00,  3.95s/batch][A
+
+                                                                                 [A
+
+graph_free eval stage2_epoch3:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch3:   5%|▌         | 1/20 [00:02<00:39,  2.06s/batch][A
+
+graph_free eval stage2_epoch3:  10%|█         | 2/20 [00:03<00:34,  1.94s/batch][A
+
+graph_free eval stage2_epoch3:  15%|█▌        | 3/20 [00:06<00:36,  2.12s/batch][A
+
+graph_free eval stage2_epoch3:  20%|██        | 4/20 [00:08<00:32,  2.06s/batch][A
+
+graph_free eval stage2_epoch3:  25%|██▌       | 5/20 [00:12<00:43,  2.89s/batch][A
+
+graph_free eval stage2_epoch3:  30%|███       | 6/20 [00:15<00:39,  2.81s/batch][A
+
+graph_free eval stage2_epoch3:  35%|███▌      | 7/20 [01:04<03:55, 18.09s/batch][A
+
+                                                                                [A
+graph_free_trace_joint overall:  44%|████▍     | 4/9 [13:26<14:38, 175.79s/segment, checkpoint=stage2_epoch3, test=0.288, val=0.230]
+
+stage2_epoch4 train:   0%|          | 0/123 [00:00<?, ?batch/s][A
+
+stage2_epoch4 train:   1%|          | 1/123 [00:00<00:22,  5.34batch/s][A
+
+stage2_epoch4 train:   2%|▏         | 2/123 [00:00<00:23,  5.11batch/s][A
+
+stage2_epoch4 train:   2%|▏         | 3/123 [00:00<00:23,  5.01batch/s][A
+
+stage2_epoch4 train:   3%|▎         | 4/123 [00:00<00:23,  5.03batch/s][A
+
+stage2_epoch4 train:   4%|▍         | 5/123 [00:00<00:23,  5.01batch/s, loss=0.113, opt_steps=1][A
+
+stage2_epoch4 train:   5%|▍         | 6/123 [00:01<00:22,  5.11batch/s, loss=0.113, opt_steps=1][A
+
+stage2_epoch4 train:   6%|▌         | 7/123 [00:01<00:22,  5.11batch/s, loss=0.113, opt_steps=1][A
+
+stage2_epoch4 train:   7%|▋         | 8/123 [00:01<00:22,  5.06batch/s, loss=0.113, opt_steps=1][A
+
+stage2_epoch4 train:   7%|▋         | 9/123 [00:48<28:18, 14.90s/batch, loss=0.113, opt_steps=1][A
+
+stage2_epoch4 train:  28%|██▊       | 34/123 [00:53<02:05,  1.41s/batch, loss=0.109, opt_steps=6][A
+
+stage2_epoch4 train:  48%|████▊     | 59/123 [00:58<00:46,  1.38batch/s, loss=0.099, opt_steps=11][A
+
+stage2_epoch4 train:  67%|██████▋   | 83/123 [01:03<00:19,  2.00batch/s, loss=0.267, opt_steps=16][A
+
+stage2_epoch4 train:  87%|████████▋ | 107/123 [01:08<00:06,  2.58batch/s, loss=0.177, opt_steps=21][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch4:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch4:   5%|▌         | 1/19 [00:02<00:37,  2.10s/batch][A
+
+graph_free eval stage2_epoch4:  11%|█         | 2/19 [00:04<00:36,  2.17s/batch][A
+
+graph_free eval stage2_epoch4:  16%|█▌        | 3/19 [00:06<00:33,  2.07s/batch][A
+
+graph_free eval stage2_epoch4:  21%|██        | 4/19 [00:08<00:30,  2.05s/batch][A
+
+graph_free eval stage2_epoch4:  26%|██▋       | 5/19 [00:11<00:32,  2.31s/batch][A
+
+graph_free eval stage2_epoch4:  32%|███▏      | 6/19 [00:13<00:31,  2.45s/batch][A
+
+graph_free eval stage2_epoch4:  37%|███▋      | 7/19 [00:16<00:29,  2.43s/batch][A
+
+graph_free eval stage2_epoch4:  42%|████▏     | 8/19 [00:18<00:26,  2.43s/batch][A
+
+graph_free eval stage2_epoch4:  47%|████▋     | 9/19 [01:08<02:52, 17.25s/batch][A
+
+graph_free eval stage2_epoch4:  63%|██████▎   | 12/19 [01:18<01:05,  9.29s/batch][A
+
+                                                                                 [A
+
+graph_free eval stage2_epoch4:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch4:   5%|▌         | 1/20 [00:49<15:41, 49.57s/batch][A
+
+graph_free eval stage2_epoch4:  90%|█████████ | 18/20 [00:53<00:04,  2.16s/batch][A
+
+graph_free eval stage2_epoch4:  95%|█████████▌| 19/20 [00:56<00:02,  2.27s/batch][A
+
+graph_free eval stage2_epoch4: 100%|██████████| 20/20 [01:00<00:00,  2.41s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall:  56%|█████▌    | 5/9 [15:50<10:58, 164.60s/segment, checkpoint=stage2_epoch4, test=0.314, val=0.283]
+
+stage2_epoch5 train:   0%|          | 0/122 [00:00<?, ?batch/s][A
+
+stage2_epoch5 train:   1%|          | 1/122 [00:00<00:28,  4.24batch/s][A
+
+stage2_epoch5 train:   2%|▏         | 2/122 [00:00<00:25,  4.65batch/s][A
+
+stage2_epoch5 train:   2%|▏         | 3/122 [00:00<00:23,  5.05batch/s][A
+
+stage2_epoch5 train:   3%|▎         | 4/122 [00:00<00:22,  5.17batch/s][A
+
+stage2_epoch5 train:   4%|▍         | 5/122 [00:01<00:23,  4.93batch/s, loss=0.064, opt_steps=1][A
+
+stage2_epoch5 train:   5%|▍         | 6/122 [00:01<00:22,  5.23batch/s, loss=0.064, opt_steps=1][A
+
+stage2_epoch5 train:   6%|▌         | 7/122 [00:01<00:24,  4.75batch/s, loss=0.064, opt_steps=1][A
+
+stage2_epoch5 train:   7%|▋         | 8/122 [00:01<00:23,  4.89batch/s, loss=0.064, opt_steps=1][A
+
+stage2_epoch5 train:   7%|▋         | 9/122 [00:01<00:23,  4.85batch/s, loss=0.064, opt_steps=1][A
+
+stage2_epoch5 train:   8%|▊         | 10/122 [00:02<00:22,  4.89batch/s, loss=0.089, opt_steps=2][A
+
+stage2_epoch5 train:   9%|▉         | 11/122 [00:49<27:00, 14.60s/batch, loss=0.089, opt_steps=2][A
+
+stage2_epoch5 train:  30%|██▉       | 36/122 [00:54<02:01,  1.41s/batch, loss=0.161, opt_steps=7][A
+
+stage2_epoch5 train:  49%|████▉     | 60/122 [00:59<00:45,  1.35batch/s, loss=0.114, opt_steps=12][A
+
+stage2_epoch5 train:  68%|██████▊   | 83/122 [01:04<00:20,  1.94batch/s, loss=0.208, opt_steps=16][A
+
+stage2_epoch5 train:  88%|████████▊ | 107/122 [01:09<00:05,  2.53batch/s, loss=0.102, opt_steps=21][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch5:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch5:   5%|▌         | 1/19 [00:02<00:38,  2.14s/batch][A
+
+graph_free eval stage2_epoch5:  11%|█         | 2/19 [00:04<00:37,  2.18s/batch][A
+
+graph_free eval stage2_epoch5:  16%|█▌        | 3/19 [00:06<00:33,  2.12s/batch][A
+
+graph_free eval stage2_epoch5:  21%|██        | 4/19 [00:08<00:32,  2.14s/batch][A
+
+graph_free eval stage2_epoch5:  26%|██▋       | 5/19 [00:11<00:33,  2.37s/batch][A
+
+graph_free eval stage2_epoch5:  32%|███▏      | 6/19 [00:13<00:30,  2.33s/batch][A
+
+graph_free eval stage2_epoch5:  37%|███▋      | 7/19 [00:16<00:29,  2.42s/batch][A
+
+graph_free eval stage2_epoch5:  42%|████▏     | 8/19 [00:18<00:27,  2.48s/batch][A
+
+graph_free eval stage2_epoch5:  47%|████▋     | 9/19 [01:08<02:52, 17.29s/batch][A
+
+graph_free eval stage2_epoch5:  63%|██████▎   | 12/19 [01:18<01:05,  9.32s/batch][A
+
+                                                                                 [A
+
+graph_free eval stage2_epoch5:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch5:   5%|▌         | 1/20 [00:02<00:40,  2.12s/batch][A
+
+graph_free eval stage2_epoch5:  10%|█         | 2/20 [00:04<00:39,  2.17s/batch][A
+
+graph_free eval stage2_epoch5:  15%|█▌        | 3/20 [00:06<00:37,  2.23s/batch][A
+
+graph_free eval stage2_epoch5:  20%|██        | 4/20 [00:08<00:35,  2.19s/batch][A
+
+graph_free eval stage2_epoch5:  25%|██▌       | 5/20 [00:11<00:34,  2.27s/batch][A
+
+graph_free eval stage2_epoch5:  30%|███       | 6/20 [00:13<00:33,  2.37s/batch][A
+
+graph_free eval stage2_epoch5:  35%|███▌      | 7/20 [00:16<00:30,  2.35s/batch][A
+
+graph_free eval stage2_epoch5:  40%|████      | 8/20 [00:18<00:30,  2.52s/batch][A
+
+graph_free eval stage2_epoch5:  45%|████▌     | 9/20 [00:21<00:26,  2.45s/batch][A
+
+graph_free eval stage2_epoch5:  50%|█████     | 10/20 [00:24<00:25,  2.57s/batch][A
+
+graph_free eval stage2_epoch5:  55%|█████▌    | 11/20 [01:14<02:35, 17.23s/batch][A
+
+graph_free eval stage2_epoch5:  70%|███████   | 14/20 [01:24<00:56,  9.34s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall:  67%|██████▋   | 6/9 [18:15<07:53, 157.83s/segment, checkpoint=stage2_epoch5, test=0.321, val=0.250]
+
+stage2_epoch6 train:   0%|          | 0/123 [00:00<?, ?batch/s][A
+
+stage2_epoch6 train:   1%|          | 1/123 [00:00<00:20,  5.93batch/s][A
+
+stage2_epoch6 train:   2%|▏         | 2/123 [00:00<00:20,  5.87batch/s][A
+
+stage2_epoch6 train:   2%|▏         | 3/123 [00:00<00:22,  5.29batch/s][A
+
+stage2_epoch6 train:   3%|▎         | 4/123 [00:00<00:21,  5.47batch/s][A
+
+stage2_epoch6 train:   4%|▍         | 5/123 [00:00<00:21,  5.45batch/s, loss=0.062, opt_steps=1][A
+
+stage2_epoch6 train:   5%|▍         | 6/123 [00:01<00:22,  5.12batch/s, loss=0.062, opt_steps=1][A
+
+stage2_epoch6 train:   6%|▌         | 7/123 [00:01<00:23,  4.98batch/s, loss=0.062, opt_steps=1][A
+
+stage2_epoch6 train:   7%|▋         | 8/123 [00:01<00:22,  5.09batch/s, loss=0.062, opt_steps=1][A
+
+stage2_epoch6 train:   7%|▋         | 9/123 [00:01<00:23,  4.82batch/s, loss=0.062, opt_steps=1][A
+
+stage2_epoch6 train:   8%|▊         | 10/123 [00:01<00:23,  4.78batch/s, loss=0.070, opt_steps=2][A
+
+stage2_epoch6 train:   9%|▉         | 11/123 [00:02<00:22,  4.98batch/s, loss=0.070, opt_steps=2][A
+
+stage2_epoch6 train:  10%|▉         | 12/123 [00:02<00:21,  5.11batch/s, loss=0.070, opt_steps=2][A
+
+stage2_epoch6 train:  11%|█         | 13/123 [00:02<00:21,  5.16batch/s, loss=0.070, opt_steps=2][A
+
+stage2_epoch6 train:  11%|█▏        | 14/123 [00:02<00:20,  5.20batch/s, loss=0.070, opt_steps=2][A
+
+stage2_epoch6 train:  12%|█▏        | 15/123 [00:49<25:52, 14.38s/batch, loss=0.033, opt_steps=3][A
+
+stage2_epoch6 train:  32%|███▏      | 39/123 [00:54<02:02,  1.45s/batch, loss=0.069, opt_steps=7][A
+
+stage2_epoch6 train:  33%|███▎      | 40/123 [00:55<01:55,  1.39s/batch, loss=0.222, opt_steps=8][A
+
+stage2_epoch6 train:  33%|███▎      | 41/123 [00:55<01:47,  1.31s/batch, loss=0.222, opt_steps=8][A
+
+stage2_epoch6 train:  34%|███▍      | 42/123 [00:55<01:38,  1.21s/batch, loss=0.222, opt_steps=8][A
+
+stage2_epoch6 train:  35%|███▍      | 43/123 [00:55<01:27,  1.10s/batch, loss=0.222, opt_steps=8][A
+
+stage2_epoch6 train:  36%|███▌      | 44/123 [00:55<01:16,  1.03batch/s, loss=0.222, opt_steps=8][A
+
+stage2_epoch6 train:  37%|███▋      | 45/123 [00:56<01:06,  1.18batch/s, loss=0.078, opt_steps=9][A
+
+stage2_epoch6 train:  37%|███▋      | 46/123 [00:56<00:55,  1.38batch/s, loss=0.078, opt_steps=9][A
+
+stage2_epoch6 train:  38%|███▊      | 47/123 [00:56<00:46,  1.62batch/s, loss=0.078, opt_steps=9][A
+
+stage2_epoch6 train:  39%|███▉      | 48/123 [00:56<00:39,  1.92batch/s, loss=0.078, opt_steps=9][A
+
+stage2_epoch6 train:  40%|███▉      | 49/123 [00:56<00:32,  2.26batch/s, loss=0.078, opt_steps=9][A
+
+stage2_epoch6 train:  41%|████      | 50/123 [00:57<00:28,  2.57batch/s, loss=0.085, opt_steps=10][A
+
+stage2_epoch6 train:  41%|████▏     | 51/123 [00:57<00:24,  2.89batch/s, loss=0.085, opt_steps=10][A
+
+stage2_epoch6 train:  42%|████▏     | 52/123 [00:57<00:21,  3.37batch/s, loss=0.085, opt_steps=10][A
+
+stage2_epoch6 train:  43%|████▎     | 53/123 [00:57<00:19,  3.67batch/s, loss=0.085, opt_steps=10][A
+
+stage2_epoch6 train:  44%|████▍     | 54/123 [00:57<00:16,  4.09batch/s, loss=0.085, opt_steps=10][A
+
+stage2_epoch6 train:  45%|████▍     | 55/123 [00:58<00:16,  4.06batch/s, loss=0.205, opt_steps=11][A
+
+stage2_epoch6 train:  46%|████▌     | 56/123 [00:58<00:15,  4.43batch/s, loss=0.205, opt_steps=11][A
+
+stage2_epoch6 train:  46%|████▋     | 57/123 [00:58<00:13,  4.75batch/s, loss=0.205, opt_steps=11][A
+
+stage2_epoch6 train:  47%|████▋     | 58/123 [00:58<00:13,  4.87batch/s, loss=0.205, opt_steps=11][A
+
+stage2_epoch6 train:  48%|████▊     | 59/123 [00:58<00:12,  4.99batch/s, loss=0.205, opt_steps=11][A
+
+stage2_epoch6 train:  49%|████▉     | 60/123 [00:59<00:13,  4.60batch/s, loss=0.165, opt_steps=12][A
+
+stage2_epoch6 train:  50%|████▉     | 61/123 [00:59<00:12,  4.83batch/s, loss=0.165, opt_steps=12][A
+
+stage2_epoch6 train:  50%|█████     | 62/123 [00:59<00:12,  4.92batch/s, loss=0.165, opt_steps=12][A
+
+stage2_epoch6 train:  51%|█████     | 63/123 [00:59<00:12,  4.95batch/s, loss=0.165, opt_steps=12][A
+
+stage2_epoch6 train:  52%|█████▏    | 64/123 [01:00<00:11,  4.96batch/s, loss=0.165, opt_steps=12][A
+
+stage2_epoch6 train:  53%|█████▎    | 65/123 [01:00<00:11,  5.06batch/s, loss=0.111, opt_steps=13][A
+
+stage2_epoch6 train:  54%|█████▎    | 66/123 [01:00<00:11,  4.83batch/s, loss=0.111, opt_steps=13][A
+
+stage2_epoch6 train:  54%|█████▍    | 67/123 [01:00<00:11,  4.82batch/s, loss=0.111, opt_steps=13][A
+
+stage2_epoch6 train:  55%|█████▌    | 68/123 [01:00<00:11,  4.90batch/s, loss=0.111, opt_steps=13][A
+
+stage2_epoch6 train:  56%|█████▌    | 69/123 [01:01<00:10,  5.05batch/s, loss=0.111, opt_steps=13][A
+
+stage2_epoch6 train:  57%|█████▋    | 70/123 [01:01<00:10,  4.84batch/s, loss=0.198, opt_steps=14][A
+
+stage2_epoch6 train:  58%|█████▊    | 71/123 [01:01<00:10,  4.86batch/s, loss=0.198, opt_steps=14][A
+
+stage2_epoch6 train:  59%|█████▊    | 72/123 [01:01<00:11,  4.47batch/s, loss=0.198, opt_steps=14][A
+
+stage2_epoch6 train:  59%|█████▉    | 73/123 [01:01<00:11,  4.53batch/s, loss=0.198, opt_steps=14][A
+
+stage2_epoch6 train:  60%|██████    | 74/123 [01:02<00:10,  4.74batch/s, loss=0.198, opt_steps=14][A
+
+stage2_epoch6 train:  61%|██████    | 75/123 [01:02<00:10,  4.72batch/s, loss=0.047, opt_steps=15][A
+
+stage2_epoch6 train:  62%|██████▏   | 76/123 [01:02<00:09,  4.89batch/s, loss=0.047, opt_steps=15][A
+
+stage2_epoch6 train:  63%|██████▎   | 77/123 [01:02<00:09,  4.95batch/s, loss=0.047, opt_steps=15][A
+
+stage2_epoch6 train:  63%|██████▎   | 78/123 [01:02<00:09,  4.82batch/s, loss=0.047, opt_steps=15][A
+
+stage2_epoch6 train:  64%|██████▍   | 79/123 [01:03<00:09,  4.82batch/s, loss=0.047, opt_steps=15][A
+
+stage2_epoch6 train:  65%|██████▌   | 80/123 [01:03<00:09,  4.50batch/s, loss=0.099, opt_steps=16][A
+
+stage2_epoch6 train:  66%|██████▌   | 81/123 [01:03<00:08,  4.69batch/s, loss=0.099, opt_steps=16][A
+
+stage2_epoch6 train:  67%|██████▋   | 82/123 [01:03<00:08,  4.86batch/s, loss=0.099, opt_steps=16][A
+
+stage2_epoch6 train:  67%|██████▋   | 83/123 [01:03<00:08,  4.81batch/s, loss=0.099, opt_steps=16][A
+
+stage2_epoch6 train:  68%|██████▊   | 84/123 [01:04<00:07,  5.02batch/s, loss=0.099, opt_steps=16][A
+
+stage2_epoch6 train:  69%|██████▉   | 85/123 [01:04<00:07,  4.86batch/s, loss=0.026, opt_steps=17][A
+
+stage2_epoch6 train:  70%|██████▉   | 86/123 [01:04<00:07,  4.97batch/s, loss=0.026, opt_steps=17][A
+
+stage2_epoch6 train:  71%|███████   | 87/123 [01:04<00:07,  5.06batch/s, loss=0.026, opt_steps=17][A
+
+stage2_epoch6 train:  72%|███████▏  | 88/123 [01:04<00:07,  4.99batch/s, loss=0.026, opt_steps=17][A
+
+stage2_epoch6 train:  72%|███████▏  | 89/123 [01:05<00:06,  5.12batch/s, loss=0.026, opt_steps=17][A
+
+stage2_epoch6 train:  73%|███████▎  | 90/123 [01:05<00:06,  5.11batch/s, loss=0.133, opt_steps=18][A
+
+stage2_epoch6 train:  74%|███████▍  | 91/123 [01:05<00:06,  5.06batch/s, loss=0.133, opt_steps=18][A
+
+stage2_epoch6 train:  75%|███████▍  | 92/123 [01:05<00:06,  5.03batch/s, loss=0.133, opt_steps=18][A
+
+stage2_epoch6 train:  76%|███████▌  | 93/123 [01:05<00:06,  4.79batch/s, loss=0.133, opt_steps=18][A
+
+stage2_epoch6 train:  76%|███████▋  | 94/123 [01:06<00:05,  4.99batch/s, loss=0.133, opt_steps=18][A
+
+stage2_epoch6 train:  77%|███████▋  | 95/123 [01:06<00:05,  4.92batch/s, loss=0.099, opt_steps=19][A
+
+stage2_epoch6 train:  78%|███████▊  | 96/123 [01:06<00:05,  4.85batch/s, loss=0.099, opt_steps=19][A
+
+stage2_epoch6 train:  79%|███████▉  | 97/123 [01:06<00:05,  4.98batch/s, loss=0.099, opt_steps=19][A
+
+stage2_epoch6 train:  80%|███████▉  | 98/123 [01:06<00:05,  4.91batch/s, loss=0.099, opt_steps=19][A
+
+stage2_epoch6 train:  80%|████████  | 99/123 [01:07<00:05,  4.69batch/s, loss=0.099, opt_steps=19][A
+
+stage2_epoch6 train:  81%|████████▏ | 100/123 [01:07<00:04,  4.73batch/s, loss=0.056, opt_steps=20][A
+
+stage2_epoch6 train:  82%|████████▏ | 101/123 [01:07<00:04,  4.83batch/s, loss=0.056, opt_steps=20][A
+
+stage2_epoch6 train:  83%|████████▎ | 102/123 [01:07<00:04,  4.95batch/s, loss=0.056, opt_steps=20][A
+
+stage2_epoch6 train:  84%|████████▎ | 103/123 [01:08<00:04,  4.79batch/s, loss=0.056, opt_steps=20][A
+
+stage2_epoch6 train:  85%|████████▍ | 104/123 [01:08<00:03,  4.80batch/s, loss=0.056, opt_steps=20][A
+
+stage2_epoch6 train:  85%|████████▌ | 105/123 [01:08<00:03,  4.89batch/s, loss=0.139, opt_steps=21][A
+
+stage2_epoch6 train:  86%|████████▌ | 106/123 [01:08<00:03,  4.89batch/s, loss=0.139, opt_steps=21][A
+
+stage2_epoch6 train:  87%|████████▋ | 107/123 [01:08<00:03,  4.83batch/s, loss=0.139, opt_steps=21][A
+
+stage2_epoch6 train:  88%|████████▊ | 108/123 [01:09<00:03,  4.79batch/s, loss=0.139, opt_steps=21][A
+
+stage2_epoch6 train:  89%|████████▊ | 109/123 [01:09<00:02,  4.90batch/s, loss=0.139, opt_steps=21][A
+
+stage2_epoch6 train:  89%|████████▉ | 110/123 [01:09<00:02,  4.88batch/s, loss=0.013, opt_steps=22][A
+
+stage2_epoch6 train:  90%|█████████ | 111/123 [01:09<00:02,  5.00batch/s, loss=0.013, opt_steps=22][A
+
+stage2_epoch6 train:  91%|█████████ | 112/123 [01:09<00:02,  5.16batch/s, loss=0.013, opt_steps=22][A
+
+stage2_epoch6 train:  92%|█████████▏| 113/123 [01:10<00:01,  5.12batch/s, loss=0.013, opt_steps=22][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch6:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch6:   5%|▌         | 1/19 [00:01<00:35,  1.95s/batch][A
+
+graph_free eval stage2_epoch6:  11%|█         | 2/19 [00:04<00:34,  2.05s/batch][A
+
+graph_free eval stage2_epoch6:  16%|█▌        | 3/19 [00:06<00:32,  2.03s/batch][A
+
+graph_free eval stage2_epoch6:  21%|██        | 4/19 [00:08<00:30,  2.05s/batch][A
+
+graph_free eval stage2_epoch6:  26%|██▋       | 5/19 [00:11<00:32,  2.35s/batch][A
+
+graph_free eval stage2_epoch6:  32%|███▏      | 6/19 [00:13<00:30,  2.35s/batch][A
+
+graph_free eval stage2_epoch6:  37%|███▋      | 7/19 [00:15<00:28,  2.37s/batch][A
+
+graph_free eval stage2_epoch6:  42%|████▏     | 8/19 [00:18<00:26,  2.44s/batch][A
+
+graph_free eval stage2_epoch6:  47%|████▋     | 9/19 [00:21<00:25,  2.56s/batch][A
+
+graph_free eval stage2_epoch6:  53%|█████▎    | 10/19 [00:24<00:24,  2.69s/batch][A
+
+graph_free eval stage2_epoch6:  58%|█████▊    | 11/19 [00:27<00:22,  2.77s/batch][A
+
+graph_free eval stage2_epoch6:  63%|██████▎   | 12/19 [00:30<00:20,  2.97s/batch][A
+
+graph_free eval stage2_epoch6:  68%|██████▊   | 13/19 [00:33<00:18,  3.04s/batch][A
+
+graph_free eval stage2_epoch6:  74%|███████▎  | 14/19 [01:24<01:27, 17.46s/batch][A
+
+graph_free eval stage2_epoch6: 100%|██████████| 19/19 [01:44<00:00,  8.26s/batch][A
+
+                                                                                 [A
+
+graph_free eval stage2_epoch6:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch6:  40%|████      | 8/20 [00:20<00:30,  2.51s/batch][A
+
+graph_free eval stage2_epoch6:  45%|████▌     | 9/20 [00:22<00:27,  2.50s/batch][A
+
+graph_free eval stage2_epoch6:  50%|█████     | 10/20 [00:25<00:25,  2.54s/batch][A
+
+graph_free eval stage2_epoch6:  55%|█████▌    | 11/20 [00:29<00:25,  2.81s/batch][A
+
+graph_free eval stage2_epoch6:  60%|██████    | 12/20 [00:32<00:23,  2.96s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall:  78%|███████▊  | 7/9 [20:40<05:07, 153.64s/segment, checkpoint=stage2_epoch6, test=0.340, val=0.283]
+
+stage2_epoch7 train:   0%|          | 0/123 [00:00<?, ?batch/s][A
+
+stage2_epoch7 train:   1%|          | 1/123 [00:00<00:24,  5.01batch/s][A
+
+stage2_epoch7 train:   2%|▏         | 2/123 [00:00<00:24,  4.88batch/s][A
+
+stage2_epoch7 train:   2%|▏         | 3/123 [00:00<00:27,  4.32batch/s][A
+
+stage2_epoch7 train:   3%|▎         | 4/123 [00:00<00:27,  4.40batch/s][A
+
+stage2_epoch7 train:   4%|▍         | 5/123 [00:01<00:25,  4.59batch/s, loss=0.100, opt_steps=1][A
+
+stage2_epoch7 train:   5%|▍         | 6/123 [00:01<00:25,  4.58batch/s, loss=0.100, opt_steps=1][A
+
+stage2_epoch7 train:   6%|▌         | 7/123 [00:01<00:24,  4.74batch/s, loss=0.100, opt_steps=1][A
+
+stage2_epoch7 train:   7%|▋         | 8/123 [00:01<00:25,  4.48batch/s, loss=0.100, opt_steps=1][A
+
+stage2_epoch7 train:   7%|▋         | 9/123 [00:01<00:24,  4.68batch/s, loss=0.100, opt_steps=1][A
+
+stage2_epoch7 train:   8%|▊         | 10/123 [00:02<00:23,  4.84batch/s, loss=0.079, opt_steps=2][A
+
+stage2_epoch7 train:   9%|▉         | 11/123 [00:02<00:22,  4.89batch/s, loss=0.079, opt_steps=2][A
+
+stage2_epoch7 train:  10%|▉         | 12/123 [00:02<00:23,  4.83batch/s, loss=0.079, opt_steps=2][A
+
+stage2_epoch7 train:  11%|█         | 13/123 [00:02<00:22,  4.85batch/s, loss=0.079, opt_steps=2][A
+
+stage2_epoch7 train:  11%|█▏        | 14/123 [00:50<26:11, 14.41s/batch, loss=0.079, opt_steps=2][A
+
+stage2_epoch7 train:  32%|███▏      | 39/123 [00:55<01:58,  1.41s/batch, loss=0.064, opt_steps=7][A
+
+stage2_epoch7 train:  51%|█████     | 63/123 [01:00<00:44,  1.35batch/s, loss=0.037, opt_steps=12][A
+
+stage2_epoch7 train:  72%|███████▏  | 88/123 [01:05<00:17,  2.02batch/s, loss=0.029, opt_steps=17][A
+
+stage2_epoch7 train:  90%|█████████ | 111/123 [01:10<00:04,  2.55batch/s, loss=0.093, opt_steps=22][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch7:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch7:   5%|▌         | 1/19 [00:01<00:33,  1.86s/batch][A
+
+graph_free eval stage2_epoch7:  11%|█         | 2/19 [00:04<00:36,  2.12s/batch][A
+
+graph_free eval stage2_epoch7:  16%|█▌        | 3/19 [00:06<00:33,  2.11s/batch][A
+
+graph_free eval stage2_epoch7:  21%|██        | 4/19 [00:08<00:31,  2.11s/batch][A
+
+graph_free eval stage2_epoch7:  26%|██▋       | 5/19 [00:10<00:31,  2.24s/batch][A
+
+graph_free eval stage2_epoch7:  32%|███▏      | 6/19 [00:13<00:30,  2.36s/batch][A
+
+graph_free eval stage2_epoch7:  37%|███▋      | 7/19 [00:16<00:29,  2.44s/batch][A
+
+graph_free eval stage2_epoch7:  42%|████▏     | 8/19 [00:18<00:27,  2.48s/batch][A
+
+graph_free eval stage2_epoch7:  47%|████▋     | 9/19 [00:21<00:25,  2.57s/batch][A
+
+graph_free eval stage2_epoch7:  53%|█████▎    | 10/19 [00:24<00:25,  2.81s/batch][A
+
+graph_free eval stage2_epoch7:  58%|█████▊    | 11/19 [00:27<00:23,  2.92s/batch][A
+
+graph_free eval stage2_epoch7:  63%|██████▎   | 12/19 [00:31<00:21,  3.14s/batch][A
+
+graph_free eval stage2_epoch7:  68%|██████▊   | 13/19 [00:34<00:19,  3.21s/batch][A
+
+graph_free eval stage2_epoch7:  74%|███████▎  | 14/19 [00:38<00:16,  3.38s/batch][A
+
+graph_free eval stage2_epoch7:  79%|███████▉  | 15/19 [00:42<00:14,  3.53s/batch][A
+
+graph_free eval stage2_epoch7:  84%|████████▍ | 16/19 [00:46<00:10,  3.54s/batch][A
+
+graph_free eval stage2_epoch7:  89%|████████▉ | 17/19 [00:51<00:08,  4.01s/batch][A
+
+graph_free eval stage2_epoch7:  95%|█████████▍| 18/19 [00:54<00:03,  3.92s/batch][A
+
+graph_free eval stage2_epoch7: 100%|██████████| 19/19 [01:00<00:00,  4.30s/batch][A
+
+                                                                                 [A
+
+graph_free eval stage2_epoch7:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch7:   5%|▌         | 1/20 [00:49<15:40, 49.50s/batch][A
+
+graph_free eval stage2_epoch7:  60%|██████    | 12/20 [01:19<00:44,  5.52s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall:  89%|████████▉ | 8/9 [23:07<02:31, 151.37s/segment, checkpoint=stage2_epoch7, test=0.346, val=0.309]
+
+stage2_epoch8 train:   0%|          | 0/123 [00:00<?, ?batch/s][A
+
+stage2_epoch8 train:   1%|          | 1/123 [00:00<00:24,  4.97batch/s][A
+
+stage2_epoch8 train:   2%|▏         | 2/123 [00:00<00:25,  4.70batch/s][A
+
+stage2_epoch8 train:   2%|▏         | 3/123 [00:00<00:24,  4.86batch/s][A
+
+stage2_epoch8 train:   3%|▎         | 4/123 [00:00<00:26,  4.50batch/s][A
+
+stage2_epoch8 train:   4%|▍         | 5/123 [00:01<00:25,  4.59batch/s, loss=0.016, opt_steps=1][A
+
+stage2_epoch8 train:   5%|▍         | 6/123 [00:01<00:24,  4.82batch/s, loss=0.016, opt_steps=1][A
+
+stage2_epoch8 train:   6%|▌         | 7/123 [00:01<00:25,  4.57batch/s, loss=0.016, opt_steps=1][A
+
+stage2_epoch8 train:   7%|▋         | 8/123 [00:48<29:06, 15.19s/batch, loss=0.016, opt_steps=1][A
+
+stage2_epoch8 train:   7%|▋         | 9/123 [00:48<19:57, 10.51s/batch, loss=0.016, opt_steps=1][A
+
+stage2_epoch8 train:  27%|██▋       | 33/123 [00:53<01:37,  1.08s/batch, loss=0.021, opt_steps=6][A
+
+stage2_epoch8 train:  28%|██▊       | 34/123 [00:53<01:32,  1.04s/batch, loss=0.021, opt_steps=6][A
+
+stage2_epoch8 train:  46%|████▋     | 57/123 [00:58<00:34,  1.94batch/s, loss=0.023, opt_steps=11][A
+
+stage2_epoch8 train:  67%|██████▋   | 82/123 [01:03<00:14,  2.77batch/s, loss=0.086, opt_steps=16][A
+
+stage2_epoch8 train:  87%|████████▋ | 107/123 [01:08<00:04,  3.39batch/s, loss=0.009, opt_steps=21][A
+
+                                                                                                   [A
+
+graph_free eval stage2_epoch8:   0%|          | 0/19 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch8:   5%|▌         | 1/19 [00:01<00:35,  1.94s/batch][A
+
+graph_free eval stage2_epoch8:  11%|█         | 2/19 [00:04<00:35,  2.10s/batch][A
+
+graph_free eval stage2_epoch8:  16%|█▌        | 3/19 [00:06<00:33,  2.06s/batch][A
+
+graph_free eval stage2_epoch8:  21%|██        | 4/19 [00:08<00:31,  2.08s/batch][A
+
+graph_free eval stage2_epoch8:  26%|██▋       | 5/19 [00:10<00:31,  2.23s/batch][A
+
+graph_free eval stage2_epoch8:  32%|███▏      | 6/19 [00:13<00:30,  2.34s/batch][A
+
+graph_free eval stage2_epoch8:  37%|███▋      | 7/19 [00:15<00:29,  2.45s/batch][A
+
+graph_free eval stage2_epoch8:  42%|████▏     | 8/19 [00:18<00:26,  2.44s/batch][A
+
+graph_free eval stage2_epoch8:  47%|████▋     | 9/19 [01:08<02:53, 17.32s/batch][A
+
+                                                                                [A
+
+graph_free eval stage2_epoch8:   0%|          | 0/20 [00:00<?, ?batch/s][A
+
+graph_free eval stage2_epoch8:   5%|▌         | 1/20 [00:02<00:46,  2.44s/batch][A
+
+graph_free eval stage2_epoch8:  10%|█         | 2/20 [00:04<00:40,  2.24s/batch][A
+
+graph_free eval stage2_epoch8:  15%|█▌        | 3/20 [00:06<00:38,  2.26s/batch][A
+
+graph_free eval stage2_epoch8:  20%|██        | 4/20 [00:11<00:53,  3.35s/batch][A
+
+graph_free eval stage2_epoch8:  25%|██▌       | 5/20 [00:14<00:44,  2.99s/batch][A
+
+graph_free eval stage2_epoch8:  30%|███       | 6/20 [00:16<00:40,  2.89s/batch][A
+
+graph_free eval stage2_epoch8:  35%|███▌      | 7/20 [00:19<00:36,  2.82s/batch][A
+
+graph_free eval stage2_epoch8:  40%|████      | 8/20 [00:22<00:33,  2.83s/batch][A
+
+graph_free eval stage2_epoch8:  45%|████▌     | 9/20 [00:25<00:31,  2.82s/batch][A
+
+graph_free eval stage2_epoch8:  50%|█████     | 10/20 [01:15<02:53, 17.38s/batch][A
+
+                                                                                 [A
+graph_free_trace_joint overall: 100%|██████████| 9/9 [25:34<00:00, 150.14s/segment, checkpoint=stage2_epoch8, test=0.346, val=0.263]
+graph_free_trace_joint overall: 100%|██████████| 9/9 [25:34<00:00, 170.49s/segment, checkpoint=stage2_epoch8, test=0.346, val=0.263]
+
+graph_free eval stage2_epoch7:   0%|          | 0/19 [00:00<?, ?batch/s]
+graph_free eval stage2_epoch7:   5%|▌         | 1/19 [00:01<00:34,  1.93s/batch]
+graph_free eval stage2_epoch7:  11%|█         | 2/19 [00:04<00:35,  2.10s/batch]
+graph_free eval stage2_epoch7:  16%|█▌        | 3/19 [00:06<00:34,  2.17s/batch]
+graph_free eval stage2_epoch7:  21%|██        | 4/19 [00:08<00:32,  2.18s/batch]
+graph_free eval stage2_epoch7:  26%|██▋       | 5/19 [00:11<00:32,  2.30s/batch]
+graph_free eval stage2_epoch7:  32%|███▏      | 6/19 [00:13<00:31,  2.41s/batch]
+graph_free eval stage2_epoch7:  37%|███▋      | 7/19 [00:16<00:30,  2.52s/batch]
+graph_free eval stage2_epoch7:  42%|████▏     | 8/19 [00:19<00:27,  2.52s/batch]
+graph_free eval stage2_epoch7:  47%|████▋     | 9/19 [00:21<00:26,  2.63s/batch]
+graph_free eval stage2_epoch7:  53%|█████▎    | 10/19 [00:25<00:25,  2.87s/batch]
+graph_free eval stage2_epoch7:  58%|█████▊    | 11/19 [00:28<00:24,  3.01s/batch]
+graph_free eval stage2_epoch7:  63%|██████▎   | 12/19 [00:32<00:22,  3.21s/batch]
+graph_free eval stage2_epoch7:  68%|██████▊   | 13/19 [00:36<00:20,  3.37s/batch]
+graph_free eval stage2_epoch7:  74%|███████▎  | 14/19 [00:39<00:17,  3.50s/batch]
+graph_free eval stage2_epoch7:  79%|███████▉  | 15/19 [00:43<00:14,  3.65s/batch]
+graph_free eval stage2_epoch7:  84%|████████▍ | 16/19 [00:47<00:11,  3.72s/batch]
+graph_free eval stage2_epoch7:  89%|████████▉ | 17/19 [00:53<00:08,  4.20s/batch]
+graph_free eval stage2_epoch7:  95%|█████████▍| 18/19 [00:57<00:04,  4.16s/batch]
+graph_free eval stage2_epoch7: 100%|██████████| 19/19 [01:01<00:00,  4.10s/batch]
+
+
+graph_free eval stage2_epoch7:   0%|          | 0/20 [00:00<?, ?batch/s]
+graph_free eval stage2_epoch7:   5%|▌         | 1/20 [00:02<00:44,  2.35s/batch]
+graph_free eval stage2_epoch7:  10%|█         | 2/20 [00:04<00:42,  2.35s/batch]
+graph_free eval stage2_epoch7:  15%|█▌        | 3/20 [00:07<00:42,  2.49s/batch]
+graph_free eval stage2_epoch7:  20%|██        | 4/20 [00:09<00:37,  2.34s/batch]
+graph_free eval stage2_epoch7:  25%|██▌       | 5/20 [00:11<00:35,  2.37s/batch]
+graph_free eval stage2_epoch7:  30%|███       | 6/20 [00:14<00:35,  2.57s/batch]
+graph_free eval stage2_epoch7:  35%|███▌      | 7/20 [00:17<00:33,  2.55s/batch]
+graph_free eval stage2_epoch7:  40%|████      | 8/20 [00:20<00:33,  2.83s/batch]
+graph_free eval stage2_epoch7:  45%|████▌     | 9/20 [00:23<00:29,  2.72s/batch]
+graph_free eval stage2_epoch7:  50%|█████     | 10/20 [00:26<00:28,  2.81s/batch]
+graph_free eval stage2_epoch7:  55%|█████▌    | 11/20 [00:29<00:26,  2.97s/batch]
+graph_free eval stage2_epoch7:  60%|██████    | 12/20 [00:33<00:24,  3.12s/batch]
+graph_free eval stage2_epoch7:  65%|██████▌   | 13/20 [00:36<00:22,  3.20s/batch]
+graph_free eval stage2_epoch7:  70%|███████   | 14/20 [00:39<00:19,  3.18s/batch]
+graph_free eval stage2_epoch7:  75%|███████▌  | 15/20 [00:42<00:15,  3.18s/batch]
+graph_free eval stage2_epoch7:  80%|████████  | 16/20 [00:46<00:13,  3.27s/batch]
+graph_free eval stage2_epoch7:  85%|████████▌ | 17/20 [00:49<00:10,  3.36s/batch]
+graph_free eval stage2_epoch7:  90%|█████████ | 18/20 [00:54<00:07,  3.68s/batch]
+graph_free eval stage2_epoch7:  95%|█████████▌| 19/20 [00:57<00:03,  3.67s/batch]
+graph_free eval stage2_epoch7: 100%|██████████| 20/20 [01:01<00:00,  3.74s/batch]
+
+
+gold_trace eval stage2_epoch7:   0%|          | 0/19 [00:00<?, ?batch/s]
+gold_trace eval stage2_epoch7:   5%|▌         | 1/19 [00:01<00:35,  1.96s/batch]
+gold_trace eval stage2_epoch7:  11%|█         | 2/19 [00:04<00:35,  2.08s/batch]
+gold_trace eval stage2_epoch7:  16%|█▌        | 3/19 [00:06<00:33,  2.10s/batch]
+gold_trace eval stage2_epoch7:  21%|██        | 4/19 [00:08<00:32,  2.14s/batch]
+gold_trace eval stage2_epoch7:  26%|██▋       | 5/19 [00:10<00:31,  2.24s/batch]
+gold_trace eval stage2_epoch7:  32%|███▏      | 6/19 [00:13<00:30,  2.32s/batch]
+gold_trace eval stage2_epoch7:  37%|███▋      | 7/19 [00:16<00:29,  2.44s/batch]
+gold_trace eval stage2_epoch7:  42%|████▏     | 8/19 [00:18<00:27,  2.51s/batch]
+gold_trace eval stage2_epoch7:  47%|████▋     | 9/19 [00:21<00:26,  2.63s/batch]
+gold_trace eval stage2_epoch7:  53%|█████▎    | 10/19 [00:24<00:24,  2.76s/batch]
+gold_trace eval stage2_epoch7:  58%|█████▊    | 11/19 [00:27<00:23,  2.91s/batch]
+gold_trace eval stage2_epoch7:  63%|██████▎   | 12/19 [00:31<00:21,  3.05s/batch]
+gold_trace eval stage2_epoch7:  68%|██████▊   | 13/19 [00:34<00:18,  3.13s/batch]
+gold_trace eval stage2_epoch7:  74%|███████▎  | 14/19 [00:38<00:16,  3.35s/batch]
+gold_trace eval stage2_epoch7:  79%|███████▉  | 15/19 [00:42<00:13,  3.42s/batch]
+gold_trace eval stage2_epoch7:  84%|████████▍ | 16/19 [00:45<00:10,  3.45s/batch]
+gold_trace eval stage2_epoch7:  89%|████████▉ | 17/19 [00:49<00:07,  3.69s/batch]
+gold_trace eval stage2_epoch7:  95%|█████████▍| 18/19 [00:53<00:03,  3.72s/batch]
+gold_trace eval stage2_epoch7: 100%|██████████| 19/19 [00:57<00:00,  3.83s/batch]
+
+
+gold_trace eval stage2_epoch7:   0%|          | 0/20 [00:00<?, ?batch/s]
+gold_trace eval stage2_epoch7:   5%|▌         | 1/20 [00:02<00:40,  2.14s/batch]
+gold_trace eval stage2_epoch7:  10%|█         | 2/20 [00:51<08:56, 29.78s/batch]
+gold_trace eval stage2_epoch7:  40%|████      | 8/20 [01:06<01:24,  7.00s/batch]
+
+
+oracle_evidence eval stage2_epoch7:   0%|          | 0/19 [00:00<?, ?batch/s]
+oracle_evidence eval stage2_epoch7:   5%|▌         | 1/19 [00:00<00:10,  1.73batch/s]
+oracle_evidence eval stage2_epoch7:  11%|█         | 2/19 [00:01<00:12,  1.41batch/s]
+oracle_evidence eval stage2_epoch7:  16%|█▌        | 3/19 [00:02<00:11,  1.37batch/s]
+oracle_evidence eval stage2_epoch7:  21%|██        | 4/19 [00:02<00:09,  1.52batch/s]
+oracle_evidence eval stage2_epoch7:  26%|██▋       | 5/19 [00:03<00:08,  1.56batch/s]
+oracle_evidence eval stage2_epoch7:  32%|███▏      | 6/19 [00:04<00:09,  1.33batch/s]
+oracle_evidence eval stage2_epoch7:  37%|███▋      | 7/19 [00:04<00:08,  1.41batch/s]
+oracle_evidence eval stage2_epoch7:  42%|████▏     | 8/19 [00:05<00:08,  1.30batch/s]
+oracle_evidence eval stage2_epoch7:  47%|████▋     | 9/19 [00:06<00:07,  1.30batch/s]
+oracle_evidence eval stage2_epoch7:  53%|█████▎    | 10/19 [00:07<00:07,  1.26batch/s]
+oracle_evidence eval stage2_epoch7:  58%|█████▊    | 11/19 [00:08<00:06,  1.32batch/s]
+oracle_evidence eval stage2_epoch7:  63%|██████▎   | 12/19 [00:08<00:05,  1.30batch/s]
+oracle_evidence eval stage2_epoch7:  68%|██████▊   | 13/19 [00:09<00:04,  1.34batch/s]
+oracle_evidence eval stage2_epoch7:  74%|███████▎  | 14/19 [00:10<00:03,  1.33batch/s]
+oracle_evidence eval stage2_epoch7:  79%|███████▉  | 15/19 [00:11<00:03,  1.25batch/s]
+oracle_evidence eval stage2_epoch7:  84%|████████▍ | 16/19 [00:12<00:02,  1.25batch/s]
+oracle_evidence eval stage2_epoch7:  89%|████████▉ | 17/19 [00:12<00:01,  1.25batch/s]
+oracle_evidence eval stage2_epoch7:  95%|█████████▍| 18/19 [00:13<00:00,  1.28batch/s]
+oracle_evidence eval stage2_epoch7: 100%|██████████| 19/19 [00:14<00:00,  1.29batch/s]
+
+
+oracle_evidence eval stage2_epoch7:   0%|          | 0/20 [00:00<?, ?batch/s]
+oracle_evidence eval stage2_epoch7:   5%|▌         | 1/20 [00:00<00:12,  1.54batch/s]
+oracle_evidence eval stage2_epoch7:  10%|█         | 2/20 [00:01<00:12,  1.40batch/s]
+oracle_evidence eval stage2_epoch7:  15%|█▌        | 3/20 [00:02<00:14,  1.20batch/s]
+oracle_evidence eval stage2_epoch7:  20%|██        | 4/20 [00:03<00:12,  1.33batch/s]
+oracle_evidence eval stage2_epoch7:  25%|██▌       | 5/20 [00:04<00:13,  1.11batch/s]
+oracle_evidence eval stage2_epoch7:  30%|███       | 6/20 [00:04<00:12,  1.15batch/s]
+oracle_evidence eval stage2_epoch7:  35%|███▌      | 7/20 [00:05<00:10,  1.22batch/s]
+oracle_evidence eval stage2_epoch7:  40%|████      | 8/20 [00:06<00:09,  1.29batch/s]
+oracle_evidence eval stage2_epoch7:  45%|████▌     | 9/20 [00:07<00:08,  1.34batch/s]
+oracle_evidence eval stage2_epoch7:  50%|█████     | 10/20 [00:07<00:07,  1.37batch/s]
+oracle_evidence eval stage2_epoch7:  55%|█████▌    | 11/20 [00:08<00:06,  1.45batch/s]
+oracle_evidence eval stage2_epoch7:  60%|██████    | 12/20 [00:09<00:05,  1.39batch/s]
+oracle_evidence eval stage2_epoch7:  65%|██████▌   | 13/20 [00:09<00:04,  1.44batch/s]
+oracle_evidence eval stage2_epoch7:  70%|███████   | 14/20 [00:10<00:04,  1.38batch/s]
+oracle_evidence eval stage2_epoch7:  75%|███████▌  | 15/20 [00:11<00:03,  1.41batch/s]
+oracle_evidence eval stage2_epoch7:  80%|████████  | 16/20 [00:12<00:03,  1.31batch/s]
+oracle_evidence eval stage2_epoch7:  85%|████████▌ | 17/20 [00:12<00:02,  1.29batch/s]
+oracle_evidence eval stage2_epoch7:  90%|█████████ | 18/20 [00:13<00:01,  1.19batch/s]
+oracle_evidence eval stage2_epoch7:  95%|█████████▌| 19/20 [00:15<00:00,  1.09batch/s]
+oracle_evidence eval stage2_epoch7: 100%|██████████| 20/20 [00:15<00:00,  1.18batch/s]
+
+complete protocol=graph_free_trace_joint actual_optimizer_steps=302 output=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/PriorityDistillGRIP/v0_1_6_joint_trace_answer_2026-09-02/results/runs/wsl3090_v017_joint_seed43_20260903

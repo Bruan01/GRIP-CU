@@ -1,0 +1,3 @@
+# Keep diagnostic metrics/predictions; ignore only local execution artifacts.
+runs/**/checkpoints/**/adapter_model.pt
+logs/
