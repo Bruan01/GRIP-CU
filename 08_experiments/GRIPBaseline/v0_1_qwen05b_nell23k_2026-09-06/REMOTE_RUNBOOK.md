@@ -11,7 +11,9 @@ cd /mnt/c/Users/Administrator/Desktop/实验/GRIP-CU
 git fetch origin
 git checkout wsl/nell23k-smoke-20260829
 git pull --ff-only origin wsl/nell23k-smoke-20260829
+git submodule update --init --recursive
 git rev-parse HEAD
+git -C 13_base_method/grip-exp rev-parse HEAD
 ```
 
 The reported commit must be the commit that added this experiment. Keep any

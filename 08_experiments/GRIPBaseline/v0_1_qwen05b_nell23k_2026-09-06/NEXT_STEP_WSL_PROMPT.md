@@ -3,8 +3,9 @@
 ```text
 请在当前 WSL2 + RTX 3090 服务器上执行，不要修改任何源代码。先进入
 /mnt/c/Users/Administrator/Desktop/实验/GRIP-CU，拉取
-origin/wsl/nell23k-smoke-20260829 的最新提交，并确认 git rev-parse HEAD
-与本实验新增代码的 commit 一致。保持仓库中与本实验无关的未跟踪文件不动。
+origin/wsl/nell23k-smoke-20260829 的最新提交，并执行
+`git submodule update --init --recursive`，确认顶层与子模块的 commit 都与本实验
+新增代码一致。保持仓库中与本实验无关的未跟踪文件不动。
 
 阅读以下文件：
 - 08_experiments/GRIPBaseline/v0_1_qwen05b_nell23k_2026-09-06/README.md
