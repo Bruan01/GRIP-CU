@@ -3,9 +3,11 @@
 from .candidates import (
     Candidate,
     build_adjacency,
+    generate_hallucinated_negatives,
     generate_hard_negatives,
     generate_random_negatives,
     known_triples,
+    parse_listed_relations,
 )
 from .losses import adapter_contrastive_loss, candidate_infonce_loss, margin_ranking_loss
 from .metrics import hits_at_k, reciprocal_rank, summarize_candidate_scores
@@ -14,9 +16,11 @@ from .scoring import normalized_continuation_log_likelihood
 __all__ = [
     "Candidate",
     "build_adjacency",
+    "generate_hallucinated_negatives",
     "generate_hard_negatives",
     "generate_random_negatives",
     "known_triples",
+    "parse_listed_relations",
     "adapter_contrastive_loss",
     "candidate_infonce_loss",
     "margin_ranking_loss",

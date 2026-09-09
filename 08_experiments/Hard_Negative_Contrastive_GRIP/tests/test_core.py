@@ -10,13 +10,21 @@ sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
 from hard_negative_grip import (  # noqa: E402
     adapter_contrastive_loss,
     candidate_infonce_loss,
+    generate_hallucinated_negatives,
     generate_hard_negatives,
     generate_random_negatives,
     hits_at_k,
     margin_ranking_loss,
+    parse_listed_relations,
     reciprocal_rank,
     summarize_candidate_scores,
     normalized_continuation_log_likelihood,
+)
+from hard_negative_grip.official_lists import (  # noqa: E402
+    listed_relations_from_sample,
+    rewrite_question_with_official_list,
+    sample_official_candidates,
+    train_relation_insertion_order,
 )
 
 
@@ -48,15 +56,133 @@ def test_candidate_families_are_filtered_and_deterministic() -> None:
         (candidate.head, candidate.relation, candidate.tail) not in set(all_known)
         for candidate in first
     )
-    assert {candidate.kind for candidate in first} == {
-        "uniform_relation",
-        "tail_range_relation",
-        "path_relation",
-    }
+    assert {"uniform_relation", "tail_range_relation", "path_relation"}.issubset(
+        {candidate.kind for candidate in first}
+    )
     assert all(
         candidate.kind != "path_relation" or candidate.structural_distance is not None
         for candidate in first
     )
+
+
+def test_listed_and_surface_families_match_decision_errors() -> None:
+    graph = [
+        ("alice", "athleteplaysforteam", "bob"),
+        ("carol", "athleteplayssport", "dave"),
+        ("erin", "personleadsorganization", "frank"),
+        ("gina", "visits", "hank"),
+    ]
+    question = (
+        "What is the relation between word node alice and word node bob? "
+        "Selected from the following candidate answers: athleteplaysforteam; "
+        "athleteplayssport; visits; owns."
+    )
+    assert parse_listed_relations(question) == [
+        "athleteplaysforteam",
+        "athleteplayssport",
+        "visits",
+        "owns",
+    ]
+    hard = generate_hard_negatives(
+        positive_relation="athleteplaysforteam",
+        head="alice",
+        tail="bob",
+        relations=[
+            "athleteplaysforteam",
+            "athleteplayssport",
+            "personleadsorganization",
+            "visits",
+            "owns",
+        ],
+        graph_triples=graph,
+        all_known_triples=graph,
+        num_per_kind=2,
+        path_hops=2,
+        listed_relations=parse_listed_relations(question),
+    )
+    listed = {
+        candidate.relation
+        for candidate in hard
+        if candidate.kind == "listed_relation"
+    }
+    surface = {
+        candidate.relation
+        for candidate in hard
+        if candidate.kind == "surface_relation"
+    }
+    assert listed == {"athleteplayssport", "visits", "owns"}
+    assert "athleteplaysforteam" not in listed
+    assert "athleteplayssport" in surface
+    assert "owns" not in surface
+
+
+def test_hallucinated_family_is_oov_and_prefix_preserving() -> None:
+    hard = generate_hard_negatives(
+        positive_relation="concept:animalistypeofanimal",
+        head="cat",
+        tail="mammal",
+        relations=[
+            "concept:animalistypeofanimal",
+            "concept:animaleatfood",
+            "concept:teamplayssport",
+            "concept:worksfor",
+        ],
+        graph_triples=[
+            ("cat", "concept:animalistypeofanimal", "mammal"),
+            ("dog", "concept:animaleatfood", "kibble"),
+            ("lakers", "concept:teamplayssport", "basketball"),
+        ],
+        num_per_kind=2,
+        listed_relations=["concept:animalistypeofanimal", "concept:worksfor"],
+    )
+    hallucinated = [
+        candidate
+        for candidate in hard
+        if candidate.kind == "hallucinated_relation"
+    ]
+    vocab = {
+        "concept:animalistypeofanimal",
+        "concept:animaleatfood",
+        "concept:teamplayssport",
+        "concept:worksfor",
+    }
+    assert hallucinated
+    assert all(item.relation not in vocab for item in hallucinated)
+    assert all(item.relation.startswith("concept:animal") for item in hallucinated)
+    isolated = generate_hallucinated_negatives(
+        "concept:animalistypeofanimal",
+        head="cat",
+        tail="mammal",
+        relations=sorted(vocab),
+        num_negatives=2,
+    )
+    assert isolated == hallucinated
+
+
+def test_official_list_replay_is_seeded_and_rewrites_eval_questions() -> None:
+    import numpy as np
+
+    order = train_relation_insertion_order(
+        [("h", "rel_a", "t"), ("h", "rel_b", "t"), ("h", "rel_a", "u"), ("h", "rel_c", "t")]
+    )
+    assert order == ["rel_a", "rel_b", "rel_c"]
+    np.random.seed(2026)
+    first = sample_official_candidates("rel_b", order, way=3)
+    np.random.seed(2026)
+    second = sample_official_candidates("rel_b", order, way=3)
+    assert first == second
+    assert set(first) == {"rel_a", "rel_b", "rel_c"}
+    sample = {
+        "split": "validation",
+        "source_node": "alice",
+        "target_node": "bob",
+        "question": "old",
+        "candidate_relations": ["rel_b"],
+    }
+    rewritten = rewrite_question_with_official_list(sample, first)
+    assert rewritten["candidate_relations"] == first
+    assert listed_relations_from_sample(rewritten) == first
+    assert "Selected from the following candidate answers:" in rewritten["question"]
 
 
 def test_tail_range_relation_shares_tails_with_positive() -> None:

@@ -5,7 +5,11 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from hard_negative_grip import generate_hard_negatives, generate_random_negatives
+from hard_negative_grip import (
+    generate_hard_negatives,
+    generate_random_negatives,
+)
+from hard_negative_grip.official_lists import listed_relations_from_sample
 
 
 def _triples(record: dict) -> list[tuple[str, str, str]]:
@@ -34,6 +38,9 @@ def audit_record(record: dict, num_per_kind: int, path_hops: int, seed: int) -> 
         "uniform_relation": 0,
         "tail_range_relation": 0,
         "path_relation": 0,
+        "listed_relation": 0,
+        "surface_relation": 0,
+        "hallucinated_relation": 0,
         "random": 0,
     }
     protected = set(all_known)
@@ -57,6 +64,7 @@ def audit_record(record: dict, num_per_kind: int, path_hops: int, seed: int) -> 
             all_known_triples=all_known,
             num_per_kind=num_per_kind,
             path_hops=path_hops,
+            listed_relations=listed_relations_from_sample(sample),
         )
         random_negatives = generate_random_negatives(
             positive_relation=positive_relation,

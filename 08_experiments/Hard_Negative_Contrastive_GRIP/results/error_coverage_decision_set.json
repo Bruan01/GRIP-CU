@@ -1,0 +1,23 @@
+{
+  "predictions": "quick01_storage_quick/predictions_correct.jsonl",
+  "n_predictions": 640,
+  "wrong": 334,
+  "totals": {
+    "in_list": 174,
+    "offlist_invocab": 70,
+    "true_oov": 90,
+    "correct": 306
+  },
+  "note": "listed_relation below is built from the 10-way in the generation prompt (the list the model actually saw), not from the official aligned lists. official_listed uses process.py seed=2026.",
+  "coverage_of_wrong_prediction": {
+    "eval_listed": {"in_list": "174/174", "offlist_invocab": "0/70", "true_oov": "0/90"},
+    "official_listed": {"in_list": "9/174", "offlist_invocab": "8/70", "true_oov": "0/90"},
+    "listed_relation": {"in_list": "174/174", "offlist_invocab": "0/70", "true_oov": "0/90"},
+    "surface_relation": {"in_list": "14/174", "offlist_invocab": "17/70", "true_oov": "0/90"},
+    "hallucinated_relation": {"in_list": "0/174", "offlist_invocab": "0/70", "true_oov": "0/90"},
+    "tail_range_relation": {"in_list": "11/174", "offlist_invocab": "7/70", "true_oov": "0/90"},
+    "path_relation": {"in_list": "12/174", "offlist_invocab": "18/70", "true_oov": "0/90"},
+    "uniform_relation": {"in_list": "0/174", "offlist_invocab": "0/70", "true_oov": "0/90"},
+    "random": {"in_list": "0/174", "offlist_invocab": "0/70", "true_oov": "0/90"}
+  }
+}

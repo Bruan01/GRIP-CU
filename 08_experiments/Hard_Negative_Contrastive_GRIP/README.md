@@ -21,11 +21,13 @@ This is a working title, not a novelty claim. The literature review in `RESEARCH
 - `configs/`: frozen pilot configurations and planned sweeps.
 - `src/hard_negative_grip/`: dependency-light candidate generation and contrastive losses.
 - `tests/`: unit tests for deterministic sampling, leakage prevention, and losses.
-- `results/`: reserved for run artifacts; no results are claimed yet.
+- `results/`: H2 gate scores. The 2026-09-09 storage-adapter rerun is the current verdict (`results/h2_gate_verdict.md`).
 
 ## Initial status
 
-This directory contains the first design and a small, testable implementation of the objective. It does not yet contain a completed GPU training result. The first execution target is a NELL23K smoke run using the cached Qwen2.5-0.5B setup in the existing RecurrentGRIP experiment snapshot.
+Design, candidate audit, and a zero-training H2 gate are in place. There is still no contrastive training run. H2 was re-scored on 2026-09-09 with the MLP storage adapter from `quick01_storage_quick` (`scripts/score_h2_gate.py --recipe storage`). `path_local` is not harder than uniform; `tail_range` shows only a weak signal.
+
+Val/test 10-way lists are now aligned to the official GRIP processor (`scripts/align_official_nell23k_lists.py`). The primary negative family is `listed_relation` (the 9 prompt distractors). Structure families missed the model's decision set; a-priori `hallucinated_relation` strings retrieve 0/90 true-OOV errors. Do not start B2–B10 training from the structure-family H2 result.
 
 ## Quick checks
 
@@ -34,6 +36,15 @@ From the project directory:
 ```bash
 PYTHONPATH=src pytest -q
 python -m compileall -q src tests
+python scripts/align_official_nell23k_lists.py --output_file data/nell23k/recurrent_relation_prediction.aligned.json --report_file data/nell23k/official_alignment_report_smoke.json
+PYTHONPATH=src python scripts/audit_candidates.py data/nell23k/recurrent_relation_prediction.aligned.json --output_file results_nell23k_audit_aligned.json
+```
+
+Re-run the storage H2 gate from the RecurrentGRIP snapshot `grip-exp` directory:
+
+```bash
+PYTHONPATH=. .venv/bin/python ../../Hard_Negative_Contrastive_GRIP/scripts/score_h2_gate.py --recipe storage --control correct
+PYTHONPATH=. .venv/bin/python ../../Hard_Negative_Contrastive_GRIP/scripts/score_h2_gate.py --recipe storage --control none
 ```
 
 ## Existing code reused

@@ -55,7 +55,23 @@ A relation `r-` whose observed tail set overlaps `r+`'s tail set. Such relations
 
 A relation observed on an edge incident to an entity within `k` hops of `h` in the undirected training graph. Candidates are ordered by graph distance then stable relation ID; `structural_distance` records the closest such edge. The default is `k=2`.
 
-All families share the same open-world caveat: `(h, r-, t)` absent from the graph is a conservative negative, not a proof of falsity. The known-fact filter and false-negative audit are mandatory.
+N2 and N3 are **legacy structure families**. On quick01 they almost never equal the model's actual wrong answer (in-list 6–7%, true OOV 0%). Keep them only as controls.
+
+### N4: Listed relation (primary decision-set family)
+
+The 9 non-gold options in the question's 10-way list. This is the closed set the model is asked to choose from. Val/test lists must come from the official GRIP processor (`process.py`, `numpy.random` after `seed=2026`), not RecurrentGRIP's per-subset RNG. Train questions have no paper list and keep the RecurrentGRIP 10-way.
+
+Using the list the model actually saw covers **174/174** in-list generation errors. Official lists cover only **9/174** of the already-run quick01 dump, because that dump used RecurrentGRIP lists.
+
+### N5: Surface relation
+
+In-vocabulary near-form relations (long shared prefix / high string ratio). Targets the 70/334 errors that emit a real NELL relation outside the 10-way. Top-4 surface hits **17/70**.
+
+### N6: Hallucinated relation
+
+Out-of-vocabulary prefix-preserving strings. This matches the *class* of the 90/334 true-OOV errors, but an a-priori splice generator retrieves **0/90** exact strings. Do not treat N6 as a retrieval method for observed hallucinations. True OOV is a decoding problem (constrain generation to the 10-way, or mine the model's own rollouts), not a graph-structure negative family.
+
+All in-vocabulary families share the same open-world caveat: `(h, r-, t)` absent from the graph is a conservative negative, not a proof of falsity. The known-fact filter and false-negative audit are mandatory.
 
 ## 5. Candidate scoring
 
@@ -100,6 +116,7 @@ Use the existing RecurrentGRIP preparation protocol:
 - validation and test triples remain evaluation questions;
 - all train/validation/test triples are protected during candidate construction;
 - 10-way candidates are retained for the existing relation-prediction format;
+- val/test 10-way lists are rewritten to the official GRIP protocol (`scripts/align_official_nell23k_lists.py`); train lists stay RecurrentGRIP;
 - one graph means shuffled-adapter evaluation is unavailable; use `none` and defer shuffled adapter claims.
 
 The first smoke configuration should use 64/32/64 train/validation/test QA, one seed, Qwen2.5-0.5B, and a hard timeout of 45 minutes. Expand to 512/128/512 only after the candidate audit and baseline pass.

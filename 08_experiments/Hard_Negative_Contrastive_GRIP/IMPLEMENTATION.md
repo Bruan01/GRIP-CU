@@ -21,14 +21,17 @@ The new project should be imported by `PYTHONPATH=src` and should not edit the b
 
 ### Stage A: data and candidate audit
 
+Rewrite val/test 10-way lists with `scripts/align_official_nell23k_lists.py` before generating negatives, so `listed_relation` is taken from the same closed set used at evaluation.
+
 For each training QA triple, call `generate_hard_negatives` with:
 
 - the graph triples used for context;
 - all train, validation, and test triples as `all_known_triples`;
 - the graph entity and relation vocabularies;
+- the question's 10-way list as `listed_relations`;
 - a fixed `num_per_kind` and `path_hops`.
 
-Persist candidate provenance alongside each question. Reject or flag a query if it has no candidate in a required family. Do not silently fill a missing family with a random candidate.
+`listed_relation` uses the full 9 distractors. Persist candidate provenance alongside each question. Reject or flag a query if it has no candidate in a required family. Do not silently fill a missing family with a random candidate.
 
 ### Stage B: answer continuation scoring
 

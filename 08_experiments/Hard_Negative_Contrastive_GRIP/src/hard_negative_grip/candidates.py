@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from collections import defaultdict, deque
 from dataclasses import dataclass
+from difflib import SequenceMatcher
 from math import inf
 import random
+import re
 from typing import Iterable, Literal
 
 
@@ -12,6 +14,9 @@ RelationNegativeKind = Literal[
     "uniform_relation",
     "tail_range_relation",
     "path_relation",
+    "listed_relation",
+    "surface_relation",
+    "hallucinated_relation",
     "random",
 ]
 
@@ -73,6 +78,35 @@ def _relation_tail_sets(graph_triples: Iterable[Triple]) -> dict[str, set[str]]:
     return dict(tail_sets)
 
 
+def parse_listed_relations(question: str) -> list[str]:
+    """Parse the 10-way candidate list embedded in a NELL23K question."""
+    match = re.search(r"candidate answers:\s*(.+)$", question, flags=re.IGNORECASE | re.DOTALL)
+    if not match:
+        return []
+    return [item.strip().rstrip(".") for item in match.group(1).split(";") if item.strip()]
+
+
+def _relation_body(relation: str) -> str:
+    if ":" in relation:
+        return relation.split(":", 1)[1]
+    return relation
+
+
+def _namespace_prefix(relation: str) -> str:
+    if ":" in relation:
+        return relation.split(":", 1)[0] + ":"
+    return ""
+
+
+def _lcp_len(left: str, right: str) -> int:
+    length = 0
+    for a, b in zip(left, right):
+        if a != b:
+            break
+        length += 1
+    return length
+
+
 def _valid_negative_relations(
     relations: Iterable[str],
     positive_relation: str,
@@ -113,6 +147,71 @@ def generate_random_negatives(
     ]
 
 
+def _surface_key(positive_relation: str, other: str) -> tuple[int, float, str]:
+    """Rank in-vocabulary near-form relations. Higher LCP, then higher ratio."""
+    positive_body = _relation_body(positive_relation)
+    other_body = _relation_body(other)
+    return (
+        _lcp_len(positive_body, other_body),
+        SequenceMatcher(None, positive_body, other_body).ratio(),
+        other,
+    )
+
+
+def generate_hallucinated_negatives(
+    positive_relation: str,
+    *,
+    head: str,
+    tail: str,
+    relations: Iterable[str],
+    num_negatives: int = 4,
+    min_stem: int = 4,
+    suffix_lengths: tuple[int, ...] = (4, 6, 8, 10, 12),
+) -> list[Candidate]:
+    """Prefix-preserving out-of-vocabulary near-form strings.
+
+    Keep a long prefix of the positive relation body and complete it with the
+    morphological suffix of another in-vocabulary relation. Longer stems are
+    preferred so the family matches drift such as ``animalistypeofanimal`` →
+    ``animalistypedegree``. In-vocabulary splices are skipped; those belong to
+    ``surface_relation``.
+    """
+    if num_negatives < 0:
+        raise ValueError("num_negatives must be non-negative")
+    if num_negatives == 0:
+        return []
+    namespace = _namespace_prefix(positive_relation)
+    positive_body = _relation_body(positive_relation)
+    vocab = set(relations)
+    others = sorted(vocab - {positive_relation})
+    output: list[Candidate] = []
+    seen = {positive_relation}
+    max_stem = min(len(positive_body) - 1, 18)
+    for length in range(max_stem, min_stem - 1, -1):
+        stem = positive_body[:length]
+        for other in others:
+            other_body = _relation_body(other)
+            for suffix_len in suffix_lengths:
+                if len(other_body) < suffix_len:
+                    continue
+                candidate = namespace + stem + other_body[-suffix_len:]
+                if candidate in seen or candidate in vocab:
+                    continue
+                seen.add(candidate)
+                output.append(
+                    Candidate(
+                        "hallucinated_relation",
+                        candidate,
+                        head,
+                        positive_relation,
+                        tail,
+                    )
+                )
+                if len(output) >= num_negatives:
+                    return output
+    return output
+
+
 def generate_hard_negatives(
     positive_relation: str,
     *,
@@ -123,21 +222,28 @@ def generate_hard_negatives(
     all_known_triples: Iterable[Triple] = (),
     num_per_kind: int = 4,
     path_hops: int = 2,
+    listed_relations: Iterable[str] = (),
+    listed_limit: int | None = None,
+    min_surface_lcp: int = 6,
+    min_surface_ratio: float = 0.45,
 ) -> list[Candidate]:
     """Generate deterministic, filtered relation-level hard negatives.
 
-    Families (all relations are wrong alternatives to ``positive_relation``
-    and satisfy that ``(head, relation, tail)`` is not a known fact):
+    Families (wrong alternatives to ``positive_relation``; in-vocabulary
+    families also require that ``(head, relation, tail)`` is not a known fact):
 
     - ``uniform_relation``: deterministic sorted relation, the low-structure
       relation control (original N1).
     - ``tail_range_relation``: a relation whose observed tail set overlaps the
-      positive relation's tail set, so the two relations are type-confusable
-      (redefined N2).
-    - ``path_relation``: a relation observed on an edge incident to an entity
-      within ``path_hops`` of ``head``, i.e. locally active near the query
-      (redefined N3). ``structural_distance`` is the smallest graph distance
-      from ``head`` to an endpoint of an edge carrying that relation.
+      positive relation's tail set (legacy N2; kept as a control).
+    - ``path_relation``: a relation observed near ``head`` (legacy N3).
+    - ``listed_relation``: distractors from the question's 10-way list — the
+      closed decision set used at evaluation. Not capped by ``num_per_kind``
+      unless ``listed_limit`` is set.
+    - ``surface_relation``: in-vocabulary near-form relations, matching
+      out-of-list but in-vocabulary generation errors.
+    - ``hallucinated_relation``: out-of-vocabulary prefix-preserving strings,
+      matching near-form hallucinations.
     """
     if num_per_kind < 0:
         raise ValueError("num_per_kind must be non-negative")
@@ -148,6 +254,7 @@ def generate_hard_negatives(
     valid = _valid_negative_relations(
         relations, positive_relation, head, tail, protected
     )
+    valid_set = set(valid)
     output: list[Candidate] = []
     if num_per_kind == 0:
         return output
@@ -187,4 +294,39 @@ def generate_hard_negatives(
                 structural_distance=distance,
             )
         )
+
+    seen_listed: set[str] = set()
+    listed_cap = listed_limit if listed_limit is not None else inf
+    for relation in listed_relations:
+        if len(seen_listed) >= listed_cap:
+            break
+        if relation == positive_relation or relation in seen_listed:
+            continue
+        if relation not in valid_set:
+            continue
+        seen_listed.add(relation)
+        output.append(Candidate("listed_relation", relation, head, positive_relation, tail))
+
+    surface_ranked = sorted(
+        (_surface_key(positive_relation, relation) for relation in valid),
+        reverse=True,
+    )
+    surface_count = 0
+    for lcp, ratio, relation in surface_ranked:
+        if lcp < min_surface_lcp and ratio < min_surface_ratio:
+            continue
+        output.append(Candidate("surface_relation", relation, head, positive_relation, tail))
+        surface_count += 1
+        if surface_count >= num_per_kind:
+            break
+
+    output.extend(
+        generate_hallucinated_negatives(
+            positive_relation,
+            head=head,
+            tail=tail,
+            relations=relations,
+            num_negatives=num_per_kind,
+        )
+    )
     return output

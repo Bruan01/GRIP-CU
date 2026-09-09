@@ -1,23 +1,26 @@
 """Zero-training H2 gate: score candidate continuations under an existing adapter.
 
-This script does NOT train anything. It loads the already-trained NELL23K
-graph adapter produced by the RecurrentGRIP pilot run and scores, for each
-question in the candidate audit, the normalized log-likelihood of the positive
-relation and every generated negative relation continuation.
+This script does NOT train anything. It scores, for each question in the
+candidate audit, the normalized log-likelihood of the positive relation and
+every generated negative relation continuation.
 
 ``--control correct`` scores under the trained graph adapter; ``--control none``
-scores under the base language model with the adapter disabled. Comparing the
-two separates "the negative family design is wrong" from "the adapter did not
-learn the graph".
+scores under the base language model with the adapter disabled.
+
+``--recipe storage`` (default) loads the MLP-LoRA storage adapter from
+``quick01_storage_quick``, which actually stores the graph in parameters
+(correct 47.8% > none 22.5%). ``--recipe pilot`` loads the original failed
+attention-layer adapter used in the first H2 gate (correct 4.5% < none 22.7%).
 
 Output answers one question: are the structure-aware negative families
 (tail_range, path_local) *harder* than the controls (uniform, random)?
 Harder means the model assigns the wrong relation a higher continuation score,
 i.e. it is more confusable with the positive answer.
 
-The prompt prefix (system + user question + assistant "<answer>") is identical
-across all candidates of a question, so any score difference is attributable to
-the relation continuation only.
+The prompt prefix matches GRIP training/eval: system + "Given the context graph
+titled ..." user turn + assistant "<answer>". The prefix is identical across
+all candidates of a question, so any score difference is attributable to the
+relation continuation only.
 """
 
 from __future__ import annotations
@@ -38,20 +41,46 @@ VERSION_DIR = Path(
 )
 GRIP_EXP = VERSION_DIR / "grip-exp"
 HNG = Path("/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP")
-ADAPTER_DIR = (
-    VERSION_DIR
-    / "results/runs/pilot_20260902_031653_nell23k_qwen05b_pilot/adapters/nell23k"
+ALIGNED = HNG / "data/nell23k/recurrent_relation_prediction.aligned.json"
+PREPARED = (
+    ALIGNED
+    if ALIGNED.is_file()
+    else GRIP_EXP / "outputs/data/nell23k/recurrent_relation_prediction.json"
 )
-PREPARED = GRIP_EXP / "outputs/data/nell23k/recurrent_relation_prediction.json"
 AUDIT = HNG / "results_nell23k_audit.json"
-OUTPUT = HNG / "results" / "h2_gate_results.json"
+
+RECIPES = {
+    "storage": {
+        "adapter_dir": VERSION_DIR / "results/runs/quick01_storage_quick/adapter",
+        "loader": "mlp_storage",
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "target_modules": ["down_proj", "up_proj", "gate_proj"],
+        "default_output": HNG / "results" / "h2_gate_results_storage.json",
+        "default_output_none": HNG / "results" / "h2_gate_results_storage_noadapter.json",
+    },
+    "pilot": {
+        "adapter_dir": (
+            VERSION_DIR
+            / "results/runs/pilot_20260902_031653_nell23k_qwen05b_pilot/adapters/nell23k"
+        ),
+        "loader": "recurrent",
+        "lora_r": 4,
+        "lora_alpha": 32,
+        "target_modules": ["q_proj", "k_proj", "v_proj"],
+        "default_output": HNG / "results" / "h2_gate_results.json",
+        "default_output_none": HNG / "results" / "h2_gate_results_noadapter.json",
+    },
+}
 
 sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
-from constants import SYSTEM_PROMPT  # noqa: E402
-from grip.recurrent import build_recurrent_peft_model  # noqa: E402
+from constants import HF_DECODER_ONLY_LLMS, SYSTEM_PROMPT, TORCH_DTYPE  # noqa: E402
+from grip.tasks.recurrent_tasks.task_dataset import QUESTION_TEMPLATE  # noqa: E402
 from hard_negative_grip.scoring import normalized_continuation_log_likelihood  # noqa: E402
+from models.utils import get_hf_llm_tokenizer  # noqa: E402
+from peft import PeftModel  # noqa: E402
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -59,16 +88,57 @@ def load_jsonl(path: Path) -> list[dict]:
 
 
 def build_prefix(tokenizer, title: str, question: str) -> torch.Tensor:
-    """Tokenize the question prefix ending right after the literal '<answer>'."""
+    """Tokenize the GRIP eval prefix ending right after the literal '<answer>'."""
+    user_content = QUESTION_TEMPLATE.format(title=title, question=question)
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": question},
+        {"role": "user", "content": user_content},
     ]
     base = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
     prefix_str = base + "<answer>"
     return torch.tensor(
         tokenizer(prefix_str, add_special_tokens=False).input_ids, dtype=torch.long
     )
+
+
+def load_storage_model(adapter_dir: Path):
+    """Load the paper-recipe MLP LoRA adapter without merging, so it can be disabled."""
+    base_model, tokenizer = get_hf_llm_tokenizer(
+        model_name=HF_DECODER_ONLY_LLMS["qwen-0.5b"],
+        model_source="local",
+        model_cache_dir=str(GRIP_EXP / "model_cache"),
+        local_files_only=True,
+        dtype=TORCH_DTYPE["bfloat16"],
+        peft=False,
+        device_map=None,
+    )
+    model = PeftModel.from_pretrained(
+        base_model,
+        str(adapter_dir),
+        is_trainable=False,
+    )
+    return model, tokenizer
+
+
+def load_pilot_model(adapter_dir: Path, recipe: dict):
+    from grip.recurrent import build_recurrent_peft_model
+
+    model, tokenizer, _ = build_recurrent_peft_model(
+        model_name="qwen-0.5b",
+        model_source="auto",
+        model_cache_dir=str(GRIP_EXP / "model_cache"),
+        local_files_only=False,
+        dtype="bfloat16",
+        lora_r=recipe["lora_r"],
+        lora_alpha=recipe["lora_alpha"],
+        target_modules=recipe["target_modules"],
+        executor_layer_index=12,
+        recurrent_depth_train=2,
+        adapter_name="scratch",
+    )
+    model.load_adapter(str(adapter_dir), adapter_name="eval_correct", is_trainable=False)
+    model.set_adapter("eval_correct")
+    return model, tokenizer
 
 
 def score_question(
@@ -112,37 +182,47 @@ def score_question(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--control", choices=["correct", "none"], default="correct")
-    parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--recipe", choices=sorted(RECIPES), default="storage")
+    parser.add_argument("--adapter_dir", type=Path, default=None)
+    parser.add_argument("--audit", type=Path, default=AUDIT)
+    parser.add_argument("--prepared", type=Path, default=None)
+    parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args()
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"[gate] loading model on {device} (control={args.control}) ...", flush=True)
-    model, tokenizer, _ = build_recurrent_peft_model(
-        model_name="qwen-0.5b",
-        model_source="auto",
-        model_cache_dir=str(GRIP_EXP / "model_cache"),
-        local_files_only=False,
-        dtype="bfloat16",
-        lora_r=4,
-        lora_alpha=32,
-        target_modules=["q_proj", "k_proj", "v_proj"],
-        executor_layer_index=12,
-        recurrent_depth_train=2,
-        adapter_name="scratch",
-    )
-    model.load_adapter(str(ADAPTER_DIR), adapter_name="eval_correct", is_trainable=False)
-    adapter_context = nullcontext()
-    if args.control == "correct":
-        model.set_adapter("eval_correct")
+    recipe = RECIPES[args.recipe]
+    adapter_dir = Path(args.adapter_dir) if args.adapter_dir else recipe["adapter_dir"]
+    if args.output is not None:
+        output = args.output
+    elif args.control == "none":
+        output = recipe["default_output_none"]
     else:
+        output = recipe["default_output"]
+
+    if not adapter_dir.is_dir():
+        raise FileNotFoundError(f"adapter directory not found: {adapter_dir}")
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(
+        f"[gate] loading {args.recipe} model on {device} "
+        f"(control={args.control}, adapter={adapter_dir}) ...",
+        flush=True,
+    )
+    if recipe["loader"] == "mlp_storage":
+        model, tokenizer = load_storage_model(adapter_dir)
+    else:
+        model, tokenizer = load_pilot_model(adapter_dir, recipe)
+
+    adapter_context = nullcontext()
+    if args.control == "none":
         adapter_context = model.disable_adapter()
     model.to(device)
     model.eval()
     print("[gate] model + adapter loaded", flush=True)
 
-    prepared = load_jsonl(PREPARED)[0]["recurrent_questions"]
+    prepared_path = Path(args.prepared) if args.prepared else PREPARED
+    prepared = load_jsonl(prepared_path)[0]["recurrent_questions"]
     question_map = {q["question_id"]: q for q in prepared}
-    audit_records = json.loads(AUDIT.read_text(encoding="utf-8"))
+    audit_records = json.loads(args.audit.read_text(encoding="utf-8"))
     audit_rows = audit_records[0]["rows"] if isinstance(audit_records, list) else audit_records
 
     title = "nell23k"
@@ -175,6 +255,11 @@ def main() -> None:
                 "uniform_relation": unique_rels([c for c in hard if c["kind"] == "uniform_relation"]),
                 "tail_range_relation": unique_rels([c for c in hard if c["kind"] == "tail_range_relation"]),
                 "path_relation": unique_rels([c for c in hard if c["kind"] == "path_relation"]),
+                "listed_relation": unique_rels([c for c in hard if c["kind"] == "listed_relation"]),
+                "surface_relation": unique_rels([c for c in hard if c["kind"] == "surface_relation"]),
+                "hallucinated_relation": unique_rels(
+                    [c for c in hard if c["kind"] == "hallucinated_relation"]
+                ),
                 "random": unique_rels(random_cands),
             }
 
@@ -220,7 +305,15 @@ def main() -> None:
                 print(f"[gate] scored {i + 1}/{len(audit_rows)} questions", flush=True)
 
     summary: dict[str, dict] = {}
-    order = ["uniform_relation", "tail_range_relation", "path_relation", "random"]
+    order = [
+        "uniform_relation",
+        "tail_range_relation",
+        "path_relation",
+        "listed_relation",
+        "surface_relation",
+        "hallucinated_relation",
+        "random",
+    ]
     for family in order:
         scores = family_scores.get(family, [])
         margins = family_margins.get(family, [])
@@ -236,7 +329,8 @@ def main() -> None:
         }
 
     result = {
-        "adapter_dir": str(ADAPTER_DIR),
+        "adapter_dir": str(adapter_dir),
+        "recipe": args.recipe,
         "control": args.control,
         "device": str(device),
         "questions_scored": len(rows_out),
@@ -244,9 +338,9 @@ def main() -> None:
         "family_summary": summary,
         "per_question": rows_out,
     }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("[gate] wrote", args.output, flush=True)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("[gate] wrote", output, flush=True)
     print("\n=== H2 family summary ===", flush=True)
     for family in order:
         s = summary.get(family, {})
