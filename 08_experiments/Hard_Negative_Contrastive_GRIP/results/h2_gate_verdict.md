@@ -62,7 +62,32 @@
 - tail_range：弱阳性，先诊断「尾实体集合重叠是否真的对应类型混淆」，再决定是否重定义；不要直接投入对比训练。
 - 旧结论里「base model 也证伪所以设计本身不成立」那一句不成立——base model 看不见图结构，不能用来否证结构负样本。真正干净的否证对象只剩 path_local；tail_range 仍是未决的弱信号。
 
-不建议现在跑 B2–B10。下一步若继续，只做零训练诊断：用 aligned 10-way 的 `listed_relation` 对 uniform 打分，不再把 path_local / tail_range 当主硬负样本。
+不建议现在跑结构负样本的 B2–B10。下一步若继续，只做零训练诊断：用 aligned 10-way 的 `listed_relation` 对 uniform 打分，不再把 path_local / tail_range 当主硬负样本。
+
+## 附录 3：aligned listed vs uniform（2026-09-09）
+
+这是卫生检查，不是方法验证。题目：官方 10-way 写进 prompt 之后，列表内干扰项是不是比随便抽的关系更难。
+
+| 家族 | adapter 负分数 | adapter margin | adapter Hits@1 | base 负分数 | base margin |
+|---|---|---|---|---|---|
+| uniform | -1.650 | 1.353 | 96.9% | -4.592 | 3.730 |
+| listed | **-0.957** | **0.661** | **51.3%** | **-1.237** | **0.375** |
+| surface | -1.878 | 1.580 | 92.4% | -4.497 | 3.629 |
+| hallucinated | -5.245 | 4.949 | 100% | -4.873 | 4.011 |
+| tail_range | -1.634 | 1.327 | 94.7% | -4.633 | 3.733 |
+| path | -1.697 | 1.409 | 91.8% | -4.726 | 3.870 |
+
+listed 比 uniform 更难：adapter **159/160 = 99.4%**（train 64/64，val 31/32，test 64/64）；base **160/160**。
+
+读法：
+
+1. 检查通过：负样本终于打进决策集合。listed Hits@1 从 uniform 的 97% 掉到 51%，这才像「真会搞混」。
+2. **这不是创新。** 关掉 adapter 之后 listed 仍然 160/160 更难、Hits@1 更差（38%）。难，主要是因为选项印在题目上，不是因为图结构。
+3. adapter 有一点判别力：listed Hits@1 从 base 的 38% 升到 51%。对比训练如果有用，是把剩下那一半列表内混淆再压下去。
+4. 拼出来的幻觉字符串极容易（adapter 负分数 -5.2），不是模型会走的续写；surface 也不比 uniform 难。
+5. 仍然不要跑 path/tail_range 的 B2–B10。若要方法结果，下一步是 **GRIP + listed 对比训练 vs 原版 GRIP**，看生成 EM，而不是再打一次续写分。
+
+原始数据：`results/h2_gate_results_storage_aligned.json`、`results/h2_gate_results_storage_aligned_noadapter.json`。
 
 ## 附录：换到 MLP storage 方法后，困难样本有没有打中真实错误
 
@@ -103,6 +128,8 @@ H2 续写硬度按生成对错切开（storage adapter）：答对的题 tail_ra
 
 ## 原始数据
 
+- storage aligned listed（当前卫生检查）: `results/h2_gate_results_storage_aligned.json`
+- storage aligned base: `results/h2_gate_results_storage_aligned_noadapter.json`
 - storage correct adapter: `results/h2_gate_results_storage.json`
 - storage base model: `results/h2_gate_results_storage_noadapter.json`
 - 旧 pilot（坏 adapter，仅对照）: `results/h2_gate_results.json`、`results/h2_gate_results_noadapter.json`

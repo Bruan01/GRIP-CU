@@ -12,10 +12,10 @@ scores under the base language model with the adapter disabled.
 (correct 47.8% > none 22.5%). ``--recipe pilot`` loads the original failed
 attention-layer adapter used in the first H2 gate (correct 4.5% < none 22.7%).
 
-Output answers one question: are the structure-aware negative families
-(tail_range, path_local) *harder* than the controls (uniform, random)?
-Harder means the model assigns the wrong relation a higher continuation score,
-i.e. it is more confusable with the positive answer.
+Output answers one question: is ``listed_relation`` (the official 10-way
+distractors) *harder* than the uniform control? Harder means the model assigns
+the wrong relation a higher continuation score, i.e. it is more confusable
+with the positive answer. Structure families are scored only as legacy controls.
 
 The prompt prefix matches GRIP training/eval: system + "Given the context graph
 titled ..." user turn + assistant "<answer>". The prefix is identical across
@@ -47,7 +47,8 @@ PREPARED = (
     if ALIGNED.is_file()
     else GRIP_EXP / "outputs/data/nell23k/recurrent_relation_prediction.json"
 )
-AUDIT = HNG / "results_nell23k_audit.json"
+AUDIT_ALIGNED = HNG / "results_nell23k_audit_aligned.json"
+AUDIT = AUDIT_ALIGNED if AUDIT_ALIGNED.is_file() else HNG / "results_nell23k_audit.json"
 
 RECIPES = {
     "storage": {
@@ -328,14 +329,50 @@ def main() -> None:
             "hits1": sum(hits) / len(hits),
         }
 
+    def paired_harder(left: str, right: str) -> dict:
+        harder = 0
+        n = 0
+        by_split: dict[str, list[int]] = defaultdict(lambda: [0, 0])
+        for row in rows_out:
+            left_family = row["families"].get(left, {})
+            right_family = row["families"].get(right, {})
+            if "mean_negative_score" not in left_family or "mean_negative_score" not in right_family:
+                continue
+            n += 1
+            win = int(left_family["mean_negative_score"] > right_family["mean_negative_score"])
+            harder += win
+            split_counts = by_split[str(row.get("split"))]
+            split_counts[0] += win
+            split_counts[1] += 1
+        return {
+            "harder_count": harder,
+            "n": n,
+            "rate": (harder / n) if n else None,
+            "by_split": {
+                split: {"harder_count": wins, "n": total, "rate": (wins / total) if total else None}
+                for split, (wins, total) in by_split.items()
+            },
+        }
+
+    pairwise = {
+        "listed_vs_uniform": paired_harder("listed_relation", "uniform_relation"),
+        "surface_vs_uniform": paired_harder("surface_relation", "uniform_relation"),
+        "hallucinated_vs_uniform": paired_harder("hallucinated_relation", "uniform_relation"),
+        "tail_range_vs_uniform": paired_harder("tail_range_relation", "uniform_relation"),
+        "path_vs_uniform": paired_harder("path_relation", "uniform_relation"),
+    }
+
     result = {
         "adapter_dir": str(adapter_dir),
         "recipe": args.recipe,
         "control": args.control,
         "device": str(device),
+        "prepared": str(prepared_path),
+        "audit": str(args.audit),
         "questions_scored": len(rows_out),
         "note": "Harder negatives have HIGHER mean_negative_score and LOWER margin/hits1.",
         "family_summary": summary,
+        "pairwise_harder_than_uniform": pairwise,
         "per_question": rows_out,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -352,6 +389,11 @@ def main() -> None:
             f"margin={s['mean_margin']:.4f} hits1={s['hits1']:.4f} n={s['count']}",
             flush=True,
         )
+    print("\n=== paired harder than uniform ===", flush=True)
+    for name, stats in pairwise.items():
+        rate = stats["rate"]
+        rate_s = f"{rate:.4f}" if rate is not None else "n/a"
+        print(f"{name:28s} {stats['harder_count']}/{stats['n']} = {rate_s}", flush=True)
 
 
 if __name__ == "__main__":

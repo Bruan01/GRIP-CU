@@ -2,7 +2,7 @@
 
 日期: 2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
 范围: `GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP`
-结论先行: 项目仍处于「设计 + 候选审计 + 零训练打分」阶段，无对比训练结果。结构负样本（path / tail_range）不在模型决策集合里。val/test 10-way 已对齐官方 GRIP；主负样本改为 `listed_relation`（评测列表内 9 个干扰项）。先验幻觉字符串召回不了真 OOV。不要开 B2–B10。
+结论先行: 结构负样本不在决策集合里。官方 10-way 对齐后，listed vs uniform 卫生检查通过（adapter 159/160 更难），但这是选项印在题目上的预期结果，不是创新。没有对比训练，不要开 path/tail_range 的 B2–B10。
 
 ---
 
@@ -135,15 +135,15 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 4. **不要指望先验幻觉字符串召回真 OOV。** 90 个真 OOV 里编辑距离 ≤2 的词表近邻只有 8 个，stem+suffix 精确命中 0。这是解码问题：要么生成时约束在 10-way 上，要么用模型自己的 rollout 错误当负样本。结构家族和拼字符串都打不中。
 5. path / tail_range 不再当主硬负样本。
 
-**仍然不要开 B2–B10。** 下一步若做零训练打分，只打 `listed` vs uniform（同一份 aligned 10-way 前缀），看列表内干扰项是否真的更难。
+**仍然不要开结构负样本的 B2–B10。** aligned listed vs uniform 已打完：adapter 159/160、base 160/160 认为 listed 更难。这是预期内的卫生检查，不是创新点。若要方法结果，下一步是 GRIP + listed 对比训练，看生成 EM。
 
 ---
 
 ## 4. 建议
 
-1. **不要开 B2–B10 训练。**
-2. 负样本主家族改为 aligned 10-way 的 `listed_relation`；`surface` 为辅；OOV 不走结构负样本。
-3. 路线 B（adapter 身份对比）的前置「adapter 为何比 base 差」已被 quick01 解决；那是 RecurrentGRIP 机制线，不是本实验的负样本线。
+1. **不要开 path/tail_range 的 B2–B10。**
+2. aligned listed 卫生检查已通过；这不能当论文贡献。
+3. 若继续，只训「原版 GRIP vs GRIP + listed 对比」，看生成 EM 涨不涨。OOV 另说。
 
 ---
 
@@ -157,7 +157,8 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 | `results_nell23k_audit_aligned.json` | 对齐后的候选审计（listed 每题 9 个） |
 | `results/error_coverage_decision_set.json` | quick01 334 个错误上的家族覆盖率 |
 | `scripts/score_h2_gate.py` | 零训练打分脚本，`--recipe storage/pilot`，`--control correct/none` |
-| `results/h2_gate_results_storage.json` | MLP storage adapter 逐题逐家族分数 |
+| `results/h2_gate_results_storage_aligned.json` | 官方 10-way 对齐后 storage adapter 分数（listed vs uniform） |
+| `results/h2_gate_results_storage_aligned_noadapter.json` | 同一套 aligned 题目的 base-model 分数 |
 | `results/h2_gate_results_storage_noadapter.json` | 关掉同一 adapter 的 base-model 分数 |
 | `results/h2_gate_results.json` | 旧 pilot adapter 分数（仅对照） |
 | `results/h2_gate_results_noadapter.json` | 旧 base-model 分数（仅对照） |
