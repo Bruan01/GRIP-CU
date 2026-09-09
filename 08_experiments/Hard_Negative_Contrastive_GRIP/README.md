@@ -19,15 +19,45 @@ This is a working title, not a novelty claim. The literature review in `RESEARCH
 - `IMPLEMENTATION.md`: integration contract with the existing GRIP/RecurrentGRIP snapshot.
 - `experiment_template.md`: per-run record template.
 - `configs/`: frozen pilot configurations and planned sweeps.
-- `src/hard_negative_grip/`: dependency-light candidate generation and contrastive losses.
-- `tests/`: unit tests for deterministic sampling, leakage prevention, and losses.
+- `src/hard_negative_grip/`: candidate generation, contrastive losses, and the listed Stage-2 trainer.
+- `scripts/train_listed_contrastive.py`: shared Stage 1, then original GRIP vs listed contrast.
+- `tests/`: unit tests for deterministic sampling, leakage prevention, losses, and listed training pieces.
 - `results/`: H2 gate scores. The 2026-09-09 storage-adapter rerun is the current verdict (`results/h2_gate_verdict.md`).
 
 ## Initial status
 
-Design, candidate audit, and a zero-training H2 gate are in place. There is still no contrastive training run. H2 was re-scored on 2026-09-09 with the MLP storage adapter from `quick01_storage_quick` (`scripts/score_h2_gate.py --recipe storage`). `path_local` is not harder than uniform; `tail_range` shows only a weak signal.
+Design, candidate audit, and a zero-training H2 gate are in place. The first training comparison is original GRIP vs GRIP + listed 10-way contrastive: shared Stage 1 graph storage, then two Stage 2 forks. H2 was re-scored on 2026-09-09 with the MLP storage adapter from `quick01_storage_quick` (`scripts/score_h2_gate.py --recipe storage`). `path_local` is not harder than uniform; `tail_range` shows only a weak signal.
 
-Val/test 10-way lists are aligned to the official GRIP processor. The 2026-09-09 aligned H2 check passed: `listed_relation` is harder than uniform on 159/160 adapter questions and 160/160 base-model questions. That is a prompt-list effect, not a novelty result. Do not start path/tail_range B2–B10 training. A method result would require GRIP + listed contrastive training vs original GRIP on generation EM.
+Val/test 10-way lists are aligned to the official GRIP processor. The 2026-09-09 aligned H2 check passed: `listed_relation` is harder than uniform on 159/160 adapter questions and 160/160 base-model questions. That is a prompt-list effect, not a novelty result. Do not start path/tail_range B2–B10 training. The method gate is generation EM of GRIP + listed contrast vs original GRIP.
+
+## Listed vs original GRIP training
+
+Shared Stage 1 uses the `quick01_storage_quick` recipe (Qwen2.5-0.5B, MLP LoRA r=4/alpha=8, full `down/up/gate_proj`). Stage 2 then forks from that adapter:
+
+- `b1`: generation loss only (original GRIP)
+- `listed`: generation + InfoNCE over the prompt's 9 distractors
+
+Both Stage 2 arms use the full QA epoch budget (no S2 early stop). Primary metric is greedy generation exact match.
+
+```bash
+# smoke: 64 train / 32 val / 64 test, aligned official 10-way
+SCALE=smoke bash configs/run_listed_vs_b1.sh
+
+# same recipe on the 512/128/512 pilot split
+SCALE=pilot bash configs/run_listed_vs_b1.sh
+```
+
+Or call the trainer directly from the RecurrentGRIP `grip-exp` directory after Stage 1:
+
+```bash
+PYTHONPATH=.:../../Hard_Negative_Contrastive_GRIP/src \
+  .venv/bin/python ../../Hard_Negative_Contrastive_GRIP/scripts/train_listed_contrastive.py \
+  --input_file ../../Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction.aligned.json \
+  --output_dir ../../Hard_Negative_Contrastive_GRIP/results/runs/listed_vs_b1_smoke \
+  --stage all
+```
+
+`--stage` can be `s1`, then `b1` / `listed` in parallel with `--s1_adapter`, then `compare`.
 
 ## Quick checks
 
