@@ -21,6 +21,13 @@ from .scoring import normalized_continuation_log_likelihood
 EXTRA_KEYS = ("listed_relations", "positive_relation", "prefix_text")
 
 
+def unwrap_for_scoring(model, accelerator=None):
+    """Avoid Accelerate wrapping, which materializes full fp32 logits."""
+    if accelerator is not None:
+        return accelerator.unwrap_model(model)
+    return model
+
+
 def format_answer_prefix(
     tokenizer,
     *,
@@ -128,7 +135,8 @@ class ListedContrastiveTrainer(Trainer):
 
     def _listed_candidate_loss(self, model, prefixes, positives, listed_lists) -> torch.Tensor:
         tokenizer = self.processing_class
-        device = next(model.parameters()).device
+        scorer = unwrap_for_scoring(model, getattr(self, "accelerator", None))
+        device = next(scorer.parameters()).device
         losses = []
         for prefix, positive, listed in zip(prefixes, positives, listed_lists):
             if not prefix or not positive:
@@ -138,37 +146,36 @@ class ListedContrastiveTrainer(Trainer):
                 continue
             relations = [positive] + negatives
             prefix_ids = tokenizer(prefix, add_special_tokens=False).input_ids
-            rows: list[list[int]] = []
-            lengths: list[int] = []
+            scores = []
             for relation in relations:
                 continuation = tokenizer(relation, add_special_tokens=False).input_ids
                 if not continuation:
                     continuation = [tokenizer.unk_token_id or 0]
-                rows.append(prefix_ids + continuation)
-                lengths.append(len(prefix_ids) + len(continuation))
-            max_len = max(len(row) for row in rows)
-            input_ids = torch.full(
-                (len(rows), max_len), tokenizer.pad_token_id, dtype=torch.long, device=device
-            )
-            attention_mask = torch.zeros_like(input_ids)
-            for i, row in enumerate(rows):
-                input_ids[i, : len(row)] = torch.tensor(row, dtype=torch.long, device=device)
-                attention_mask[i, : len(row)] = 1
-            outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-            self.candidate_forwards += 1
-            scores = normalized_continuation_log_likelihood(
-                outputs.logits,
-                input_ids,
-                torch.full((len(rows),), len(prefix_ids), dtype=torch.long, device=device),
-                torch.tensor(lengths, dtype=torch.long, device=device),
-            )
+                row = prefix_ids + continuation
+                input_ids = torch.tensor([row], dtype=torch.long, device=device)
+                attention_mask = torch.ones_like(input_ids)
+                outputs = scorer(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    use_cache=False,
+                )
+                self.candidate_forwards += 1
+                score = normalized_continuation_log_likelihood(
+                    outputs.logits,
+                    input_ids,
+                    torch.tensor([len(prefix_ids)], dtype=torch.long, device=device),
+                    torch.tensor([len(row)], dtype=torch.long, device=device),
+                )
+                scores.append(score.float().reshape(()))
+                del outputs
+            stacked = torch.stack(scores)
             losses.append(
                 candidate_infonce_loss(
-                    scores[:1],
-                    scores[1:].unsqueeze(0),
+                    stacked[:1],
+                    stacked[1:].unsqueeze(0),
                     temperature=self.temperature,
                 )
             )
         if not losses:
-            return next(model.parameters()).new_zeros(())
+            return next(scorer.parameters()).new_zeros(())
         return torch.stack(losses).mean()

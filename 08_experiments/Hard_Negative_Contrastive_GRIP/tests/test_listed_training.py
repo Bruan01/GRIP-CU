@@ -11,6 +11,7 @@ from hard_negative_grip.listed_training import (  # noqa: E402
     ListedQADataset,
     format_answer_prefix,
     listed_negatives,
+    unwrap_for_scoring,
 )
 
 
@@ -103,3 +104,12 @@ def test_listed_collator_does_not_tensorize_prompt_lists() -> None:
     assert batch["prefix_text"] == ["PRE<answer>", "PRE2<answer>"]
     for key in EXTRA_KEYS:
         assert key in batch
+
+
+def test_unwrap_for_scoring_uses_accelerator_when_present() -> None:
+    class _Accelerator:
+        def unwrap_model(self, model):
+            return f"unwrapped:{model}"
+
+    assert unwrap_for_scoring("wrapped", _Accelerator()) == "unwrapped:wrapped"
+    assert unwrap_for_scoring("plain") == "plain"

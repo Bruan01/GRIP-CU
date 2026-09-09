@@ -61,6 +61,7 @@ mkdir -p "$RUN_DIR"
 
 export PYTHONPATH="$CODE_DIR:$HNG/src${PYTHONPATH:+:$PYTHONPATH}"
 export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 cd "$CODE_DIR"
 
 COMMON=(

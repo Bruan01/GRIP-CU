@@ -15,6 +15,7 @@ import argparse
 import json
 import sys
 import time
+from copy import copy
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -105,12 +106,19 @@ def save_adapter(model, tokenizer, adapter_dir: Path, metadata: dict) -> None:
     )
 
 
-def training_arguments(output_dir: Path, args: argparse.Namespace, epochs: float, dataset_len: int) -> TrainingArguments:
+def training_arguments(
+    output_dir: Path,
+    args: argparse.Namespace,
+    epochs: float,
+    dataset_len: int,
+    *,
+    gradient_checkpointing: bool = False,
+) -> TrainingArguments:
     batch = args.per_device_train_batch_size
     accum = args.gradient_accumulation_steps
     if batch * accum > dataset_len:
         accum = max(1, dataset_len // batch)
-    return TrainingArguments(
+    kwargs = dict(
         output_dir=str(output_dir),
         overwrite_output_dir=True,
         num_train_epochs=epochs,
@@ -133,7 +141,11 @@ def training_arguments(output_dir: Path, args: argparse.Namespace, epochs: float
         label_names=["labels"],
         ddp_find_unused_parameters=False,
         lr_scheduler_type="linear",
+        gradient_checkpointing=gradient_checkpointing,
     )
+    if gradient_checkpointing:
+        kwargs["gradient_checkpointing_kwargs"] = {"use_reentrant": False}
+    return TrainingArguments(**kwargs)
 
 
 def load_base_lora(args: argparse.Namespace):
@@ -257,14 +269,31 @@ def train_stage2(
     model, tokenizer = load_adapter(args, s1_adapter, trainable=True)
     texts, metas = build_qa_assets(record, tokenizer)
     dataset = ListedQADataset(texts, metas, tokenizer)
+    stage_args = copy(args)
+    use_checkpointing = lambda_candidate > 0
+    if use_checkpointing:
+        # 10-way continuation logits are vocab-sized; keep one QA example and
+        # one candidate sequence in memory, but match B1's effective batch.
+        effective = args.per_device_train_batch_size * args.gradient_accumulation_steps
+        stage_args.per_device_train_batch_size = 1
+        stage_args.gradient_accumulation_steps = max(int(effective), 1)
+        if hasattr(model, "enable_input_require_grads"):
+            model.enable_input_require_grads()
+        if hasattr(model, "config"):
+            model.config.use_cache = False
     print(
         f"[{variant}] qa samples: {len(dataset)} listed_mean="
         f"{sum(len(m['listed_relations']) for m in metas) / len(metas):.1f} "
-        f"lambda={lambda_candidate}",
+        f"lambda={lambda_candidate} batch={stage_args.per_device_train_batch_size} "
+        f"accum={stage_args.gradient_accumulation_steps}",
         flush=True,
     )
     training_args = training_arguments(
-        output_dir / f"trainer_{variant}", args, args.involve_qa_epochs, len(dataset)
+        output_dir / f"trainer_{variant}",
+        stage_args,
+        args.involve_qa_epochs,
+        len(dataset),
+        gradient_checkpointing=use_checkpointing,
     )
     # Full QA epoch budget; do not early-stop on the mixed contrastive loss.
     trainer = ListedContrastiveTrainer(
@@ -291,6 +320,9 @@ def train_stage2(
             "candidate_forwards": trainer.candidate_forwards,
             "last_generation_loss": trainer.last_generation_loss,
             "last_candidate_loss": trainer.last_candidate_loss,
+            "per_device_train_batch_size": stage_args.per_device_train_batch_size,
+            "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
+            "gradient_checkpointing": use_checkpointing,
             "seconds": round(time.time() - started, 1),
             "s1_adapter": str(s1_adapter),
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
