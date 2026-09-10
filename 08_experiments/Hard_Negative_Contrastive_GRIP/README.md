@@ -22,7 +22,8 @@ This is a working title, not a novelty claim. The literature review in `RESEARCH
 - `src/hard_negative_grip/`: candidate generation, contrastive losses, and the listed Stage-2 trainer.
 - `scripts/train_listed_contrastive.py`: shared Stage 1, then original GRIP vs listed contrast.
 - `tests/`: unit tests for deterministic sampling, leakage prevention, losses, and listed training pieces.
-- `results/`: H2 gate scores. The 2026-09-09 storage-adapter rerun is the current verdict (`results/h2_gate_verdict.md`).
+- `汇报_进展与实验结果.md`: briefing of design, audits, H2 gates, and the 2026-09-09 listed-vs-B1 smoke training.
+- `results/`: H2 gate scores and the listed-vs-B1 smoke run. The current H2 verdict is `results/h2_gate_verdict.md`.
 
 ## Initial status
 

@@ -1,8 +1,9 @@
 # Hard-Negative Contrastive GRIP — 进展评估与 H2 验证报告
 
-日期: 2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
+日期: 2026-09-10（补 smoke 训练）；2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
 范围: `GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP`
-结论先行: 结构负样本不在决策集合里。官方 10-way 对齐后，listed vs uniform 卫生检查通过（adapter 159/160 更难），但这是选项印在题目上的预期结果，不是创新。没有对比训练，不要开 path/tail_range 的 B2–B10。
+对外汇报稿: `汇报_进展与实验结果.md`
+结论先行: 结构负样本不在决策集合里。官方 10-way 对齐后，listed vs uniform 卫生检查通过（adapter 159/160 更难），但这是选项印在题目上的预期结果，不是创新。2026-09-09 的 smoke 对比训练未过 H1 门：listed EM 43.8% vs B1 51.0%（−7.3 pp）。列表内误选 26→1，列表外乱生成 21→53。不要开 path/tail_range 的 B2–B10。
 
 ---
 
@@ -21,12 +22,12 @@
 | 决策集合覆盖 `results/error_coverage_decision_set.json` | ✅ | listed 覆盖 174/174 列表内错误；官方列表只能套中 quick01 的 9/174；OOV 0/90 |
 | H2 零训练打分（storage adapter） | ✅ | 2026-09-09 重跑；详见 `results/h2_gate_verdict.md` |
 
-### 1.2 未完成（Stage B–E，论文的命门）
+### 1.2 训练与评测进度
 
-- ❌ 没有任何一次对比训练/评测跑过。
-- ❌ B0–B10 十一个变体一个都没跑。
-- ❌ Stage C（自定义 loss 接入 Trainer）、D（adapter 对比）、E（评测）均只有文档，未接入代码。
-- ✅ Stage B 的打分脚本已接到 quick01 MLP adapter（`scripts/score_h2_gate.py --recipe storage`）。
+- ✅ Stage B 打分脚本已接到 quick01 MLP adapter（`scripts/score_h2_gate.py --recipe storage`）。
+- ✅ Stage C 的 listed Trainer 已接入；2026-09-09 跑完 smoke：共享 Stage 1，再 fork B1 vs listed（`results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke`）。
+- ❌ Pilot（512/128/512）未跑。B2–B10 结构家族变体按 H2 证据不应开。
+- ❌ Stage D（adapter 身份对比）未做。Stage E 目前只有 greedy EM + 列表内/外错误切分。
 
 ### 1.3 关键前置问题（基线，已修正）
 
@@ -143,7 +144,8 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 
 1. **不要开 path/tail_range 的 B2–B10。**
 2. aligned listed 卫生检查已通过；这不能当论文贡献。
-3. 若继续，只训「原版 GRIP vs GRIP + listed 对比」，看生成 EM 涨不涨。OOV 另说。
+3. 2026-09-09 smoke 已训完：listed EM 43.8% vs B1 51.0%（−7.3 pp）。对比把列表内误选 26→1，同时把列表外乱生成 21→53。H1 未过门。细节见 `汇报_进展与实验结果.md` §4.5。
+4. 不要把 64 题 smoke 写成论文结论。若继续，先诊断 OOV / 降 λ / 约束解码，而不是直接上 pilot。
 
 ---
 
@@ -163,4 +165,6 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 | `results/h2_gate_results.json` | 旧 pilot adapter 分数（仅对照） |
 | `results/h2_gate_results_noadapter.json` | 旧 base-model 分数（仅对照） |
 | `results/h2_gate_verdict.md` | 重跑对照与判读 |
+| `results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke/` | smoke：共享 S1 + B1 vs listed，含 `comparison.json` |
+| `汇报_进展与实验结果.md` | 对外汇报稿（含训练过程与数字） |
 | 本文件 | 整体进展与评估报告 |
