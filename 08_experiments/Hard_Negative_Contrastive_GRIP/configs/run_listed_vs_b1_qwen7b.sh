@@ -2,10 +2,11 @@
 # Listed vs original GRIP on Qwen2.5-7B, paper LoRA/batch recipe.
 #
 # Same contrastive paradigm as run_listed_vs_b1.sh: shared Stage 1 graph
-# storage, then B1 (generation only) vs listed 10-way InfoNCE.
-# Data stays the aligned NELL23K relation-prediction split because listed
-# contrast needs the prompt's 10-way distractors. The paper's 16k generated
-# context/reason/summary tasks do not carry those lists.
+# storage, then B1 (generation only) vs listed InfoNCE.
+# Training defaults to grip_nell23k_tasks.json (Qwen2.5-7B generated
+# context + summarization + QA). Relation-like QA items sample 9 in-vocab
+# negatives because those prompts have no official 10-way list. Val/test
+# EM still uses the aligned NELL23K relation-prediction split.
 #
 # SCALE=smoke|pilot. One 24GB 3090; Stage 2 runs sequentially.
 set -euo pipefail

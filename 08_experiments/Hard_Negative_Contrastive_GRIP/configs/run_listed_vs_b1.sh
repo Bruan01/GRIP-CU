@@ -37,16 +37,25 @@ esac
 
 case "$SCALE" in
   smoke)
-    INPUT_FILE="${INPUT_FILE:-$HNG/data/nell23k/recurrent_relation_prediction.aligned.json}"
+    ALIGNED_EVAL="${ALIGNED_EVAL:-$HNG/data/nell23k/recurrent_relation_prediction.aligned.json}"
     ;;
   pilot)
-    INPUT_FILE="${INPUT_FILE:-$HNG/data/nell23k/recurrent_relation_prediction_pilot.aligned.json}"
+    ALIGNED_EVAL="${ALIGNED_EVAL:-$HNG/data/nell23k/recurrent_relation_prediction_pilot.aligned.json}"
     ;;
   *)
     echo "error: SCALE must be smoke or pilot, got: $SCALE" >&2
     exit 1
     ;;
 esac
+PAPER_TASKS="$HNG/grip_nell23k_tasks.json"
+if [[ "$MODEL_NAME" == "qwen-7b" ]]; then
+  # Paper 7B generated context+QA. Val/test EM stays on the aligned 10-way split.
+  INPUT_FILE="${INPUT_FILE:-$PAPER_TASKS}"
+  EVAL_FILE="${EVAL_FILE:-$ALIGNED_EVAL}"
+else
+  INPUT_FILE="${INPUT_FILE:-$ALIGNED_EVAL}"
+  EVAL_FILE="${EVAL_FILE:-$INPUT_FILE}"
+fi
 
 if [[ ! "$RUN_ID" =~ ^[A-Za-z0-9_.-]+$ ]]; then
   echo "error: RUN_ID may contain only letters, numbers, dot, underscore, and hyphen" >&2
@@ -57,7 +66,11 @@ if [[ ! -x "$PYTHON" ]]; then
   exit 1
 fi
 if [[ ! -f "$INPUT_FILE" ]]; then
-  echo "error: aligned input not found: $INPUT_FILE" >&2
+  echo "error: training input not found: $INPUT_FILE" >&2
+  exit 1
+fi
+if [[ ! -f "$EVAL_FILE" ]]; then
+  echo "error: eval file not found: $EVAL_FILE" >&2
   exit 1
 fi
 MODEL_CACHE="$CODE_DIR/model_cache"
@@ -88,6 +101,7 @@ mkdir -p "$RUN_DIR"
   echo "per_device_train_batch_size=$PER_DEVICE_TRAIN_BATCH_SIZE"
   echo "gradient_accumulation_steps=$GRADIENT_ACCUMULATION_STEPS"
   echo "input_file=$INPUT_FILE"
+  echo "eval_file=$EVAL_FILE"
   date --iso-8601=seconds
   nvidia-smi || true
 } > "$RUN_DIR/environment.txt" 2>&1
@@ -100,6 +114,7 @@ cd "$CODE_DIR"
 COMMON=(
   "$PYTHON" "$HNG/scripts/train_listed_contrastive.py"
   --input_file "$INPUT_FILE"
+  --eval_file "$EVAL_FILE"
   --output_dir "$RUN_DIR"
   --model_name "$MODEL_NAME"
   --model_cache_dir "$MODEL_CACHE"

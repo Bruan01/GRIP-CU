@@ -1,12 +1,9 @@
-"""Train original GRIP vs GRIP + listed 10-way contrastive on aligned NELL23K.
+"""Train original GRIP vs GRIP + listed contrastive.
 
-Stage 1 (graph context) is shared. Stage 2 then forks:
-
-- ``b1``: generation loss only (Original GRIP)
-- ``listed``: generation + InfoNCE over the prompt's 9 distractors
-
-Evaluation is greedy generation exact match on validation/test. This is the
-method gate, not a paper result by itself.
+Default input is the aligned NELL23K relation-prediction split. Passing
+``grip_nell23k_tasks.json`` trains Stage 1 on paper context+summarization and
+Stage 2 on generated QA; relation-like items sample in-vocab negatives.
+Val/test EM always uses an aligned graph record (``--eval_file``).
 """
 
 from __future__ import annotations
@@ -49,8 +46,15 @@ from hard_negative_grip.listed_training import (  # noqa: E402
     format_answer_prefix,
     listed_negatives,
 )
+from hard_negative_grip.task_file import (  # noqa: E402
+    LISTED_NEGATIVE_K,
+    build_qa_assets_from_task_texts,
+    is_grip_task_file,
+    load_graph_record,
+    load_json_payload,
+)
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
-from utils import load_list_json, set_random_seed  # noqa: E402
+from utils import set_random_seed  # noqa: E402
 
 ALIGNED_SMOKE = HNG / "data/nell23k/recurrent_relation_prediction.aligned.json"
 
@@ -58,6 +62,13 @@ ALIGNED_SMOKE = HNG / "data/nell23k/recurrent_relation_prediction.aligned.json"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input_file", type=Path, default=ALIGNED_SMOKE)
+    parser.add_argument(
+        "--eval_file",
+        type=Path,
+        default=None,
+        help="Aligned relation-prediction record for val/test EM. "
+        "Required in practice when --input_file is a paper task JSON.",
+    )
     parser.add_argument("--output_dir", type=Path, required=True)
     parser.add_argument(
         "--stage",
@@ -89,6 +100,12 @@ def parse_args() -> argparse.Namespace:
         "--s1_gradient_checkpointing",
         action="store_true",
         help="Enable checkpointing for Stage 1. Needed for Qwen2.5-7B on 24GB.",
+    )
+    parser.add_argument(
+        "--listed_negative_k",
+        type=int,
+        default=LISTED_NEGATIVE_K,
+        help="Negatives sampled per relation-like paper QA item (task-file path only).",
     )
     return parser.parse_args()
 
@@ -193,7 +210,7 @@ def load_adapter(args: argparse.Namespace, adapter_dir: Path, *, trainable: bool
     return model, tokenizer
 
 
-def build_context_dataset(record: dict, tokenizer) -> TaskDataset:
+def build_context_dataset_from_graph(record: dict, tokenizer) -> TaskDataset:
     context_samples = GenGraphContextTask(
         graph_list=[record["graph"]],
         title_list=[record.get("title", "nell23k")],
@@ -202,6 +219,12 @@ def build_context_dataset(record: dict, tokenizer) -> TaskDataset:
         format_as_instruction=False,
     )()[0]
     return TaskDataset(context_samples=context_samples, qa_samples=[], tokenizer=tokenizer)
+
+
+def build_context_dataset_from_texts(context_samples: list[str], tokenizer) -> TaskDataset:
+    if not context_samples:
+        raise ValueError("task file contains no context samples")
+    return TaskDataset(context_samples=list(context_samples), qa_samples=[], tokenizer=tokenizer)
 
 
 def build_qa_assets(record: dict, tokenizer) -> tuple[list[str], list[dict]]:
@@ -235,9 +258,20 @@ def build_qa_assets(record: dict, tokenizer) -> tuple[list[str], list[dict]]:
     return texts, metas
 
 
-def train_stage1(args: argparse.Namespace, record: dict, output_dir: Path) -> Path:
+def train_stage1(
+    args: argparse.Namespace,
+    output_dir: Path,
+    *,
+    context_samples: list[str] | None = None,
+    record: dict | None = None,
+) -> Path:
     model, tokenizer = load_base_lora(args)
-    dataset = build_context_dataset(record, tokenizer)
+    if context_samples is not None:
+        dataset = build_context_dataset_from_texts(context_samples, tokenizer)
+    elif record is not None:
+        dataset = build_context_dataset_from_graph(record, tokenizer)
+    else:
+        raise ValueError("Stage 1 needs context_samples or a graph record")
     use_checkpointing = bool(args.s1_gradient_checkpointing)
     if use_checkpointing:
         prepare_lora_checkpointing(model)
@@ -289,15 +323,20 @@ def train_stage1(args: argparse.Namespace, record: dict, output_dir: Path) -> Pa
 
 def train_stage2(
     args: argparse.Namespace,
-    record: dict,
     s1_adapter: Path,
     output_dir: Path,
     *,
     lambda_candidate: float,
     variant: str,
+    record: dict | None = None,
+    texts: list[str] | None = None,
+    metas: list[dict] | None = None,
 ) -> Path:
     model, tokenizer = load_adapter(args, s1_adapter, trainable=True)
-    texts, metas = build_qa_assets(record, tokenizer)
+    if texts is None or metas is None:
+        if record is None:
+            raise ValueError("Stage 2 needs QA texts or a graph record")
+        texts, metas = build_qa_assets(record, tokenizer)
     dataset = ListedQADataset(texts, metas, tokenizer)
     stage_args = copy(args)
     use_checkpointing = lambda_candidate > 0
@@ -492,6 +531,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
     payload = {
         "stage": args.stage,
         "input_file": str(args.input_file),
+        "eval_file": str(args.eval_file) if args.eval_file else None,
         "output_dir": str(output_dir),
         "s1_adapter": str(args.s1_adapter) if args.s1_adapter else None,
         "model_name": args.model_name,
@@ -508,10 +548,14 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "temperature": args.temperature,
         "seed": args.seed,
         "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
+        "listed_negative_k": args.listed_negative_k,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
             "Stage 1 is shared graph-context storage. Stage 2 then forks: "
-            "b1 = original GRIP generation loss; listed = generation + 10-way InfoNCE. "
+            "b1 = original GRIP generation loss; listed = generation + InfoNCE. "
+            "A paper task JSON trains S1 on context+summarization and S2 on generated QA; "
+            "relation-like QA items sample in-vocab negatives because those prompts have "
+            "no official 10-way list. Val/test EM still uses the aligned relation-prediction split. "
             "Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the "
             "generation objective is compute-matched."
         ),
@@ -521,14 +565,41 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
     )
 
 
+def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list[str] | None, list[str] | None, list[dict] | None, dict]:
+    payload = load_json_payload(args.input_file)
+    if is_grip_task_file(payload):
+        eval_path = args.eval_file or ALIGNED_SMOKE
+        eval_record = load_graph_record(eval_path)
+        args.eval_file = eval_path
+        context_samples = list(payload["context_samples"])
+        qa_texts, qa_metas = build_qa_assets_from_task_texts(
+            list(payload["qa_samples"]),
+            seed=args.seed,
+            listed_negative_k=args.listed_negative_k,
+        )
+        listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
+        print(
+            f"[data] paper task file context={len(context_samples)} "
+            f"qa={len(qa_texts)} listed_relation_qa={listed_n} "
+            f"eval={eval_path}",
+            flush=True,
+        )
+        return None, context_samples, qa_texts, qa_metas, eval_record
+    eval_path = args.eval_file or args.input_file
+    eval_record = load_graph_record(eval_path)
+    args.eval_file = eval_path
+    record = load_graph_record(args.input_file)
+    return record, None, None, None, eval_record
+
+
 def main() -> None:
     args = parse_args()
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
-    write_run_config(output_dir, args)
     s1_adapter = Path(args.s1_adapter) if args.s1_adapter else (output_dir / "s1_adapter")
 
     if args.stage == "compare":
+        write_run_config(output_dir, args)
         write_comparison(
             output_dir,
             input_file=args.input_file,
@@ -539,35 +610,49 @@ def main() -> None:
         return
 
     set_random_seed(args.seed)
-    records = load_list_json(str(args.input_file))
-    if not records:
-        raise ValueError(f"no records in {args.input_file}")
-    record = records[0]
+    record, context_samples, qa_texts, qa_metas, eval_record = resolve_training_assets(args)
+    write_run_config(output_dir, args)
 
     if args.stage in {"s1", "all"}:
-        s1_adapter = train_stage1(args, record, output_dir)
+        s1_adapter = train_stage1(
+            args,
+            output_dir,
+            context_samples=context_samples,
+            record=record,
+        )
 
     summaries = {}
     if args.stage in {"b1", "all"}:
         if not Path(s1_adapter).is_dir():
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
         b1_adapter = train_stage2(
-            args, record, Path(s1_adapter), output_dir, lambda_candidate=0.0, variant="b1"
+            args,
+            Path(s1_adapter),
+            output_dir,
+            lambda_candidate=0.0,
+            variant="b1",
+            record=record,
+            texts=qa_texts,
+            metas=qa_metas,
         )
-        summaries["b1"] = evaluate_variant(args, record, b1_adapter, output_dir / "b1")
+        summaries["b1"] = evaluate_variant(args, eval_record, b1_adapter, output_dir / "b1")
 
     if args.stage in {"listed", "all"}:
         if not Path(s1_adapter).is_dir():
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
         listed_adapter = train_stage2(
             args,
-            record,
             Path(s1_adapter),
             output_dir,
             lambda_candidate=args.lambda_candidate,
             variant="listed",
+            record=record,
+            texts=qa_texts,
+            metas=qa_metas,
         )
-        summaries["listed"] = evaluate_variant(args, record, listed_adapter, output_dir / "listed")
+        summaries["listed"] = evaluate_variant(
+            args, eval_record, listed_adapter, output_dir / "listed"
+        )
 
     b1_ready = (output_dir / "b1" / "summary.json").is_file()
     listed_ready = (output_dir / "listed" / "summary.json").is_file()
