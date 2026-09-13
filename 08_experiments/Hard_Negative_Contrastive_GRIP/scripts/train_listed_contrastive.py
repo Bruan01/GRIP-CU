@@ -85,6 +85,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--gen_max_length", type=int, default=32)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument(
+        "--s1_gradient_checkpointing",
+        action="store_true",
+        help="Enable checkpointing for Stage 1. Needed for Qwen2.5-7B on 24GB.",
+    )
     return parser.parse_args()
 
 
@@ -146,6 +151,13 @@ def training_arguments(
     if gradient_checkpointing:
         kwargs["gradient_checkpointing_kwargs"] = {"use_reentrant": False}
     return TrainingArguments(**kwargs)
+
+
+def prepare_lora_checkpointing(model) -> None:
+    if hasattr(model, "enable_input_require_grads"):
+        model.enable_input_require_grads()
+    if hasattr(model, "config"):
+        model.config.use_cache = False
 
 
 def load_base_lora(args: argparse.Namespace):
@@ -226,8 +238,22 @@ def build_qa_assets(record: dict, tokenizer) -> tuple[list[str], list[dict]]:
 def train_stage1(args: argparse.Namespace, record: dict, output_dir: Path) -> Path:
     model, tokenizer = load_base_lora(args)
     dataset = build_context_dataset(record, tokenizer)
-    print(f"[s1] context samples: {len(dataset)}", flush=True)
-    training_args = training_arguments(output_dir / "trainer_s1", args, args.num_train_epochs, len(dataset))
+    use_checkpointing = bool(args.s1_gradient_checkpointing)
+    if use_checkpointing:
+        prepare_lora_checkpointing(model)
+    print(
+        f"[s1] context samples: {len(dataset)} model={args.model_name} "
+        f"batch={args.per_device_train_batch_size} accum={args.gradient_accumulation_steps} "
+        f"checkpointing={use_checkpointing}",
+        flush=True,
+    )
+    training_args = training_arguments(
+        output_dir / "trainer_s1",
+        args,
+        args.num_train_epochs,
+        len(dataset),
+        gradient_checkpointing=use_checkpointing,
+    )
     trainer, model = load_trainer(
         model=model,
         tokenizer=tokenizer,
@@ -246,8 +272,12 @@ def train_stage1(args: argparse.Namespace, record: dict, output_dir: Path) -> Pa
         adapter_dir,
         {
             "stage": "s1",
+            "model_name": args.model_name,
             "seconds": round(time.time() - started, 1),
             "context_samples": len(dataset),
+            "per_device_train_batch_size": args.per_device_train_batch_size,
+            "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
+            "gradient_checkpointing": use_checkpointing,
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
         },
     )
@@ -277,10 +307,7 @@ def train_stage2(
         effective = args.per_device_train_batch_size * args.gradient_accumulation_steps
         stage_args.per_device_train_batch_size = 1
         stage_args.gradient_accumulation_steps = max(int(effective), 1)
-        if hasattr(model, "enable_input_require_grads"):
-            model.enable_input_require_grads()
-        if hasattr(model, "config"):
-            model.config.use_cache = False
+        prepare_lora_checkpointing(model)
     print(
         f"[{variant}] qa samples: {len(dataset)} listed_mean="
         f"{sum(len(m['listed_relations']) for m in metas) / len(metas):.1f} "
@@ -315,6 +342,7 @@ def train_stage2(
         {
             "stage": "s2",
             "variant": variant,
+            "model_name": args.model_name,
             "lambda_candidate": lambda_candidate,
             "qa_samples": len(dataset),
             "candidate_forwards": trainer.candidate_forwards,
@@ -409,6 +437,7 @@ def write_comparison(
     input_file: Path,
     s1_adapter: Path,
     lambda_candidate: float,
+    model_name: str,
 ) -> dict:
     b1_path = output_dir / "b1" / "summary.json"
     listed_path = output_dir / "listed" / "summary.json"
@@ -421,6 +450,7 @@ def write_comparison(
     comparison = {
         "input_file": str(input_file),
         "s1_adapter": str(s1_adapter),
+        "model_name": model_name,
         "lambda_candidate": lambda_candidate,
         "b1": b1,
         "listed": listed,
@@ -477,6 +507,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "lambda_candidate": args.lambda_candidate,
         "temperature": args.temperature,
         "seed": args.seed,
+        "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
             "Stage 1 is shared graph-context storage. Stage 2 then forks: "
@@ -503,6 +534,7 @@ def main() -> None:
             input_file=args.input_file,
             s1_adapter=s1_adapter,
             lambda_candidate=args.lambda_candidate,
+            model_name=args.model_name,
         )
         return
 
@@ -545,6 +577,7 @@ def main() -> None:
             input_file=args.input_file,
             s1_adapter=s1_adapter,
             lambda_candidate=args.lambda_candidate,
+            model_name=args.model_name,
         )
 
 

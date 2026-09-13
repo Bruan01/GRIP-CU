@@ -15,9 +15,25 @@ VERSION_DIR="$(cd "$HNG/../RecurrentGRIP/v1_1_nell23k_first_2026-08-29" && pwd)"
 CODE_DIR="$VERSION_DIR/grip-exp"
 PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
 SCALE="${SCALE:-smoke}"
+MODEL_NAME="${MODEL_NAME:-qwen-0.5b}"
 PARALLEL_S2="${PARALLEL_S2:-1}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
-RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_listed_vs_b1_${SCALE}}"
+MODEL_TAG="${MODEL_NAME//./}"
+RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_listed_vs_b1_${MODEL_TAG}_${SCALE}}"
+
+case "$MODEL_NAME" in
+  qwen-7b)
+    # Paper 7B recipe on one 24GB 3090: batch 1, effective 512.
+    PER_DEVICE_TRAIN_BATCH_SIZE="${PER_DEVICE_TRAIN_BATCH_SIZE:-1}"
+    GRADIENT_ACCUMULATION_STEPS="${GRADIENT_ACCUMULATION_STEPS:-512}"
+    S1_CHECKPOINT_FLAG=(--s1_gradient_checkpointing)
+    ;;
+  *)
+    PER_DEVICE_TRAIN_BATCH_SIZE="${PER_DEVICE_TRAIN_BATCH_SIZE:-8}"
+    GRADIENT_ACCUMULATION_STEPS="${GRADIENT_ACCUMULATION_STEPS:-64}"
+    S1_CHECKPOINT_FLAG=()
+    ;;
+esac
 
 case "$SCALE" in
   smoke)
@@ -44,6 +60,20 @@ if [[ ! -f "$INPUT_FILE" ]]; then
   echo "error: aligned input not found: $INPUT_FILE" >&2
   exit 1
 fi
+MODEL_CACHE="$CODE_DIR/model_cache"
+if [[ "$MODEL_NAME" == "qwen-7b" ]]; then
+  MODEL_DIR="$MODEL_CACHE/Qwen--Qwen2.5-7B-Instruct"
+  if ! PYTHONPATH="$CODE_DIR" "$PYTHON" -c "
+from pathlib import Path
+from models.utils import _is_complete_model_dir
+raise SystemExit(0 if _is_complete_model_dir(Path(r'$MODEL_DIR')) else 1)
+"; then
+    echo "error: Qwen2.5-7B cache missing or incomplete: $MODEL_DIR" >&2
+    echo "Download first:" >&2
+    echo "  cd $CODE_DIR && PYTHONPATH=. $PYTHON scripts/download_model.py --model_name qwen-7b --model_cache_dir model_cache" >&2
+    exit 1
+  fi
+fi
 if [[ -e "$RUN_DIR" ]]; then
   echo "error: run directory already exists; choose a new RUN_ID: $RUN_DIR" >&2
   exit 1
@@ -54,6 +84,9 @@ mkdir -p "$RUN_DIR"
   echo "run_id=$RUN_ID"
   echo "run_dir=$RUN_DIR"
   echo "scale=$SCALE"
+  echo "model_name=$MODEL_NAME"
+  echo "per_device_train_batch_size=$PER_DEVICE_TRAIN_BATCH_SIZE"
+  echo "gradient_accumulation_steps=$GRADIENT_ACCUMULATION_STEPS"
   echo "input_file=$INPUT_FILE"
   date --iso-8601=seconds
   nvidia-smi || true
@@ -68,16 +101,17 @@ COMMON=(
   "$PYTHON" "$HNG/scripts/train_listed_contrastive.py"
   --input_file "$INPUT_FILE"
   --output_dir "$RUN_DIR"
-  --model_name qwen-0.5b
-  --model_cache_dir "$CODE_DIR/model_cache"
+  --model_name "$MODEL_NAME"
+  --model_cache_dir "$MODEL_CACHE"
   --lora_r 4
   --lora_alpha 8
   --target_modules down_proj up_proj gate_proj
   --num_train_epochs 1
   --involve_qa_epochs 10
   --s1_stop_loss_threshold 0.15
-  --per_device_train_batch_size 8
-  --gradient_accumulation_steps 64
+  --per_device_train_batch_size "$PER_DEVICE_TRAIN_BATCH_SIZE"
+  --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS"
+  "${S1_CHECKPOINT_FLAG[@]}"
   --learning_rate 1e-3
   --weight_decay 1e-4
   --max_grad_norm 1.0
@@ -89,7 +123,10 @@ COMMON=(
 
 NGPU=0
 if command -v nvidia-smi >/dev/null 2>&1; then
-  NGPU="$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ')"
+  NGPU="$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ' || true)"
+fi
+if [[ -z "$NGPU" || "$NGPU" == "0" ]]; then
+  NGPU="$("$PYTHON" -c "import torch; print(torch.cuda.device_count())" 2>/dev/null || echo 0)"
 fi
 if [[ -z "$NGPU" ]]; then
   NGPU=0

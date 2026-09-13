@@ -33,7 +33,7 @@ Val/test 10-way lists are aligned to the official GRIP processor. The 2026-09-09
 
 ## Listed vs original GRIP training
 
-Shared Stage 1 uses the `quick01_storage_quick` recipe (Qwen2.5-0.5B, MLP LoRA r=4/alpha=8, full `down/up/gate_proj`). Stage 2 then forks from that adapter:
+Shared Stage 1 uses the `quick01_storage_quick` recipe (MLP LoRA r=4/alpha=8, full `down/up/gate_proj`). Default model is Qwen2.5-0.5B; `run_listed_vs_b1_qwen7b.sh` switches the same listed-vs-B1 fork to Qwen2.5-7B with the paper 24GB recipe (`batch=1`, `accum=512`). Stage 2 then forks from that adapter:
 
 - `b1`: generation loss only (original GRIP)
 - `listed`: generation + InfoNCE over the prompt's 9 distractors
@@ -46,6 +46,9 @@ SCALE=smoke bash configs/run_listed_vs_b1.sh
 
 # same recipe on the 512/128/512 pilot split
 SCALE=pilot bash configs/run_listed_vs_b1.sh
+
+# same listed-vs-B1 fork on Qwen2.5-7B (download the 7B cache first)
+SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
 ```
 
 Or call the trainer directly from the RecurrentGRIP `grip-exp` directory after Stage 1:
