@@ -13,4 +13,6 @@ set -euo pipefail
 
 export MODEL_NAME="${MODEL_NAME:-qwen-7b}"
 export SCALE="${SCALE:-smoke}"
+# One 24GB 3090: do not fork Stage 2 onto a second GPU.
+export PARALLEL_S2="${PARALLEL_S2:-0}"
 exec bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/run_listed_vs_b1.sh"

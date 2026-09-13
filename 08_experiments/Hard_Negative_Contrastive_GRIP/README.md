@@ -49,6 +49,10 @@ SCALE=pilot bash configs/run_listed_vs_b1.sh
 
 # same listed-vs-B1 fork on Qwen2.5-7B, trained on grip_nell23k_tasks.json
 SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
+
+# resume Stage 2 from a finished Stage-1 adapter (single GPU, sequential)
+RUN_DIR=results/runs/<run> RESUME_S1_ADAPTER=$RUN_DIR/s1_adapter \
+  SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
 ```
 
 Or call the trainer directly from the RecurrentGRIP `grip-exp` directory after Stage 1:

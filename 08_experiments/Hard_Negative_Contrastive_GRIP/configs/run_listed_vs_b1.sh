@@ -17,6 +17,7 @@ PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
 SCALE="${SCALE:-smoke}"
 MODEL_NAME="${MODEL_NAME:-qwen-0.5b}"
 PARALLEL_S2="${PARALLEL_S2:-1}"
+RESUME_S1_ADAPTER="${RESUME_S1_ADAPTER:-}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 MODEL_TAG="${MODEL_NAME//./}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_listed_vs_b1_${MODEL_TAG}_${SCALE}}"
@@ -87,7 +88,11 @@ raise SystemExit(0 if _is_complete_model_dir(Path(r'$MODEL_DIR')) else 1)
     exit 1
   fi
 fi
-if [[ -e "$RUN_DIR" ]]; then
+if [[ -n "$RESUME_S1_ADAPTER" && ! -d "$RESUME_S1_ADAPTER" ]]; then
+  echo "error: missing Stage-1 adapter: $RESUME_S1_ADAPTER" >&2
+  exit 1
+fi
+if [[ -e "$RUN_DIR" && -z "$RESUME_S1_ADAPTER" ]]; then
   echo "error: run directory already exists; choose a new RUN_ID: $RUN_DIR" >&2
   exit 1
 fi
@@ -102,9 +107,10 @@ mkdir -p "$RUN_DIR"
   echo "gradient_accumulation_steps=$GRADIENT_ACCUMULATION_STEPS"
   echo "input_file=$INPUT_FILE"
   echo "eval_file=$EVAL_FILE"
+  echo "resume_s1_adapter=${RESUME_S1_ADAPTER:-}"
   date --iso-8601=seconds
   nvidia-smi || true
-} > "$RUN_DIR/environment.txt" 2>&1
+} >> "$RUN_DIR/environment.txt" 2>&1
 
 export PYTHONPATH="$CODE_DIR:$HNG/src${PYTHONPATH:+:$PYTHONPATH}"
 export TOKENIZERS_PARALLELISM=false
@@ -138,12 +144,12 @@ COMMON=(
 
 NGPU=0
 if command -v nvidia-smi >/dev/null 2>&1; then
-  NGPU="$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ' || true)"
+  NGPU="$(nvidia-smi -L 2>/dev/null | grep -c '^GPU ' || true)"
 fi
-if [[ -z "$NGPU" || "$NGPU" == "0" ]]; then
+if [[ -z "$NGPU" || "$NGPU" == "0" || ! "$NGPU" =~ ^[0-9]+$ ]]; then
   NGPU="$("$PYTHON" -c "import torch; print(torch.cuda.device_count())" 2>/dev/null || echo 0)"
 fi
-if [[ -z "$NGPU" ]]; then
+if [[ -z "$NGPU" || ! "$NGPU" =~ ^[0-9]+$ ]]; then
   NGPU=0
 fi
 
@@ -154,7 +160,12 @@ run_stage() {
   "${COMMON[@]}" --stage "$stage" "$@" 2>&1 | tee -a "$RUN_DIR/run.log"
 }
 
-if [[ "$NGPU" -ge 2 && "$PARALLEL_S2" == "1" ]]; then
+if [[ -n "$RESUME_S1_ADAPTER" ]]; then
+  echo "[launch] resume Stage 2 sequentially from $RESUME_S1_ADAPTER ngpu=$NGPU" | tee -a "$RUN_DIR/run.log"
+  run_stage b1 --s1_adapter "$RESUME_S1_ADAPTER"
+  run_stage listed --s1_adapter "$RESUME_S1_ADAPTER"
+  run_stage compare --s1_adapter "$RESUME_S1_ADAPTER"
+elif [[ "$NGPU" -ge 2 && "$PARALLEL_S2" == "1" ]]; then
   run_stage s1
   echo "[launch] forking Stage 2 onto GPU 0 (b1) and GPU 1 (listed)" | tee -a "$RUN_DIR/run.log"
   CUDA_VISIBLE_DEVICES=0 "${COMMON[@]}" --stage b1 --s1_adapter "$RUN_DIR/s1_adapter" \
