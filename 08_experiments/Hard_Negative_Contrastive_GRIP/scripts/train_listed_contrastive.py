@@ -9,6 +9,7 @@ Val/test EM always uses an aligned graph record (``--eval_file``).
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import sys
 import time
@@ -107,7 +108,19 @@ def parse_args() -> argparse.Namespace:
         default=LISTED_NEGATIVE_K,
         help="Negatives sampled per relation-like paper QA item (task-file path only).",
     )
+    parser.add_argument(
+        "--skip_train",
+        action="store_true",
+        help="Skip Stage-2 training when the variant adapter already exists and only evaluate.",
+    )
     return parser.parse_args()
+
+
+def release_cuda() -> None:
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.ipc_collect()
 
 
 def flatten_adapter(adapter_dir: Path) -> None:
@@ -197,6 +210,10 @@ def load_base_lora(args: argparse.Namespace):
 
 
 def load_adapter(args: argparse.Namespace, adapter_dir: Path, *, trainable: bool):
+    # Load on CPU first. A second 7B `device_map=auto` load after training can
+    # offload layers to meta/CPU while PEFT still copies the resized 2GB
+    # embedding adapter onto CUDA, which trips NVML in CUDACachingAllocator.
+    release_cuda()
     model_id = HF_DECODER_ONLY_LLMS[args.model_name]
     base_model, tokenizer = get_hf_llm_tokenizer(
         model_name=model_id,
@@ -205,8 +222,11 @@ def load_adapter(args: argparse.Namespace, adapter_dir: Path, *, trainable: bool
         local_files_only=True,
         dtype=TORCH_DTYPE["bfloat16"],
         peft=False,
+        device_map=None,
     )
     model = PeftModel.from_pretrained(base_model, str(adapter_dir), is_trainable=trainable)
+    if torch.cuda.is_available():
+        model.to("cuda")
     return model, tokenizer
 
 
@@ -315,8 +335,9 @@ def train_stage1(
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
         },
     )
+    del trainer
     del model
-    torch.cuda.empty_cache()
+    release_cuda()
     print(f"[s1] saved {adapter_dir}", flush=True)
     return adapter_dir
 
@@ -331,7 +352,8 @@ def train_stage2(
     record: dict | None = None,
     texts: list[str] | None = None,
     metas: list[dict] | None = None,
-) -> Path:
+) -> tuple[Path, object, object]:
+    """Train a Stage-2 fork and keep the model in memory for evaluation."""
     model, tokenizer = load_adapter(args, s1_adapter, trainable=True)
     if texts is None or metas is None:
         if record is None:
@@ -395,10 +417,10 @@ def train_stage2(
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
         },
     )
-    del model
-    torch.cuda.empty_cache()
+    del trainer
+    release_cuda()
     print(f"[{variant}] saved {adapter_dir}", flush=True)
-    return adapter_dir
+    return adapter_dir, model, tokenizer
 
 
 def _parse_target(answer: object) -> list[str]:
@@ -421,6 +443,8 @@ def evaluate_adapter(model, tokenizer, record: dict, max_new_tokens: int) -> lis
     )
     device = next(model.parameters()).device
     rows: list[dict] = []
+    if hasattr(model, "config"):
+        model.config.use_cache = True
     model.eval()
     with torch.no_grad():
         for index in range(len(dataset)):
@@ -507,24 +531,35 @@ def write_comparison(
     return comparison
 
 
-def evaluate_variant(args: argparse.Namespace, record: dict, adapter_dir: Path, output_dir: Path) -> dict:
+def evaluate_variant(
+    args: argparse.Namespace,
+    record: dict,
+    adapter_dir: Path,
+    output_dir: Path,
+    model=None,
+    tokenizer=None,
+) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
-    model, tokenizer = load_adapter(args, adapter_dir, trainable=False)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    rows = evaluate_adapter(model, tokenizer, record, args.gen_max_length)
-    summary = em_summary(rows)
-    pred_path = output_dir / "predictions_correct.jsonl"
-    with pred_path.open("w", encoding="utf-8") as stream:
-        for row in rows:
-            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
-    (output_dir / "summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
-    del model
-    torch.cuda.empty_cache()
-    print(f"[eval] {adapter_dir} EM={summary['all']['em']:.4f} n={summary['all']['count']}", flush=True)
-    return summary
+    owns_model = model is None
+    if owns_model:
+        model, tokenizer = load_adapter(args, adapter_dir, trainable=False)
+    try:
+        rows = evaluate_adapter(model, tokenizer, record, args.gen_max_length)
+        summary = em_summary(rows)
+        pred_path = output_dir / "predictions_correct.jsonl"
+        with pred_path.open("w", encoding="utf-8") as stream:
+            for row in rows:
+                stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+        (output_dir / "summary.json").write_text(
+            json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        print(f"[eval] {adapter_dir} EM={summary['all']['em']:.4f} n={summary['all']['count']}", flush=True)
+        return summary
+    finally:
+        if owns_model:
+            del model
+            del tokenizer
+            release_cuda()
 
 
 def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
@@ -549,6 +584,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "seed": args.seed,
         "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
         "listed_negative_k": args.listed_negative_k,
+        "skip_train": bool(args.skip_train),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
             "Stage 1 is shared graph-context storage. Stage 2 then forks: "
@@ -625,34 +661,59 @@ def main() -> None:
     if args.stage in {"b1", "all"}:
         if not Path(s1_adapter).is_dir():
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
-        b1_adapter = train_stage2(
-            args,
-            Path(s1_adapter),
-            output_dir,
-            lambda_candidate=0.0,
-            variant="b1",
-            record=record,
-            texts=qa_texts,
-            metas=qa_metas,
+        b1_adapter = output_dir / "b1" / "adapter"
+        model = tokenizer = None
+        if args.skip_train:
+            if not b1_adapter.is_dir():
+                raise FileNotFoundError(f"missing b1 adapter: {b1_adapter}")
+            print(f"[b1] skip train; evaluate {b1_adapter}", flush=True)
+        else:
+            b1_adapter, model, tokenizer = train_stage2(
+                args,
+                Path(s1_adapter),
+                output_dir,
+                lambda_candidate=0.0,
+                variant="b1",
+                record=record,
+                texts=qa_texts,
+                metas=qa_metas,
+            )
+        summaries["b1"] = evaluate_variant(
+            args, eval_record, b1_adapter, output_dir / "b1", model=model, tokenizer=tokenizer
         )
-        summaries["b1"] = evaluate_variant(args, eval_record, b1_adapter, output_dir / "b1")
+        del model, tokenizer
+        release_cuda()
 
     if args.stage in {"listed", "all"}:
         if not Path(s1_adapter).is_dir():
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
-        listed_adapter = train_stage2(
-            args,
-            Path(s1_adapter),
-            output_dir,
-            lambda_candidate=args.lambda_candidate,
-            variant="listed",
-            record=record,
-            texts=qa_texts,
-            metas=qa_metas,
-        )
+        listed_adapter = output_dir / "listed" / "adapter"
+        model = tokenizer = None
+        if args.skip_train:
+            if not listed_adapter.is_dir():
+                raise FileNotFoundError(f"missing listed adapter: {listed_adapter}")
+            print(f"[listed] skip train; evaluate {listed_adapter}", flush=True)
+        else:
+            listed_adapter, model, tokenizer = train_stage2(
+                args,
+                Path(s1_adapter),
+                output_dir,
+                lambda_candidate=args.lambda_candidate,
+                variant="listed",
+                record=record,
+                texts=qa_texts,
+                metas=qa_metas,
+            )
         summaries["listed"] = evaluate_variant(
-            args, eval_record, listed_adapter, output_dir / "listed"
+            args,
+            eval_record,
+            listed_adapter,
+            output_dir / "listed",
+            model=model,
+            tokenizer=tokenizer,
         )
+        del model, tokenizer
+        release_cuda()
 
     b1_ready = (output_dir / "b1" / "summary.json").is_file()
     listed_ready = (output_dir / "listed" / "summary.json").is_file()

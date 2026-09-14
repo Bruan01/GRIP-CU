@@ -17,6 +17,7 @@ PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
 SCALE="${SCALE:-smoke}"
 MODEL_NAME="${MODEL_NAME:-qwen-0.5b}"
 PARALLEL_S2="${PARALLEL_S2:-1}"
+SKIP_TRAIN="${SKIP_TRAIN:-0}"
 RESUME_S1_ADAPTER="${RESUME_S1_ADAPTER:-}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 MODEL_TAG="${MODEL_NAME//./}"
@@ -108,6 +109,7 @@ mkdir -p "$RUN_DIR"
   echo "input_file=$INPUT_FILE"
   echo "eval_file=$EVAL_FILE"
   echo "resume_s1_adapter=${RESUME_S1_ADAPTER:-}"
+  echo "skip_train=${SKIP_TRAIN:-0}"
   date --iso-8601=seconds
   nvidia-smi || true
 } >> "$RUN_DIR/environment.txt" 2>&1
@@ -157,13 +159,26 @@ run_stage() {
   local stage="$1"
   shift
   echo "[launch] stage=$stage $*" | tee -a "$RUN_DIR/run.log"
+  set +e
   "${COMMON[@]}" --stage "$stage" "$@" 2>&1 | tee -a "$RUN_DIR/run.log"
+  local rc=${PIPESTATUS[0]}
+  set -e
+  echo "[launch] Stage $stage finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$RUN_DIR/run.log"
+  return "$rc"
 }
 
 if [[ -n "$RESUME_S1_ADAPTER" ]]; then
-  echo "[launch] resume Stage 2 sequentially from $RESUME_S1_ADAPTER ngpu=$NGPU" | tee -a "$RUN_DIR/run.log"
-  run_stage b1 --s1_adapter "$RESUME_S1_ADAPTER"
-  run_stage listed --s1_adapter "$RESUME_S1_ADAPTER"
+  echo "[launch] resume Stage 2 sequentially from $RESUME_S1_ADAPTER ngpu=$NGPU skip_train=$SKIP_TRAIN" | tee -a "$RUN_DIR/run.log"
+  b1_args=(--s1_adapter "$RESUME_S1_ADAPTER")
+  listed_args=(--s1_adapter "$RESUME_S1_ADAPTER")
+  if [[ "$SKIP_TRAIN" == "1" && -d "$RUN_DIR/b1/adapter" ]]; then
+    b1_args+=(--skip_train)
+  fi
+  if [[ "$SKIP_TRAIN" == "1" && -d "$RUN_DIR/listed/adapter" ]]; then
+    listed_args+=(--skip_train)
+  fi
+  run_stage b1 "${b1_args[@]}"
+  run_stage listed "${listed_args[@]}"
   run_stage compare --s1_adapter "$RESUME_S1_ADAPTER"
 elif [[ "$NGPU" -ge 2 && "$PARALLEL_S2" == "1" ]]; then
   run_stage s1
