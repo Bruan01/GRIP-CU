@@ -363,8 +363,8 @@ def train_stage2(
     stage_args = copy(args)
     use_checkpointing = lambda_candidate > 0
     if use_checkpointing:
-        # 10-way continuation logits are vocab-sized; keep one QA example and
-        # one candidate sequence in memory, but match B1's effective batch.
+        # Candidate scoring is one padded 10-way forward. Keep the original
+        # effective batch; microbatch stays 1 on 24GB Qwen2.5-7B.
         effective = args.per_device_train_batch_size * args.gradient_accumulation_steps
         stage_args.per_device_train_batch_size = 1
         stage_args.gradient_accumulation_steps = max(int(effective), 1)

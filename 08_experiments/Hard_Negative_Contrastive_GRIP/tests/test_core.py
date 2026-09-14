@@ -314,3 +314,28 @@ def test_normalized_continuation_scoring_ignores_prefix() -> None:
         torch.tensor([2, 2]),
     )
     assert torch.allclose(scores[0], scores[1])
+
+
+def test_packed_continuation_scores_match_full_sequence_scores() -> None:
+    from hard_negative_grip.scoring import (
+        continuation_mean_log_likelihood,
+        pack_token_rows,
+        slice_continuation_states,
+    )
+
+    rows = [[9, 8, 1, 2], [7, 6, 3]]
+    input_ids, mask, seq_lens = pack_token_rows(rows, pad_id=0, device=torch.device("cpu"))
+    assert tuple(input_ids.shape) == (2, 4)
+    assert mask[1, 3] == 0
+    hidden_size = 3
+    vocab = 10
+    hidden = torch.randn(2, 4, hidden_size)
+    lm_head = torch.nn.Linear(hidden_size, vocab)
+    full_logits = lm_head(hidden)
+    prefix = torch.tensor([2, 2])
+    full_scores = normalized_continuation_log_likelihood(full_logits, input_ids, prefix, seq_lens)
+    answer_hidden, answer_ids, answer_lens = slice_continuation_states(
+        hidden, input_ids, prefix, seq_lens
+    )
+    sliced_scores = continuation_mean_log_likelihood(lm_head(answer_hidden), answer_ids, answer_lens)
+    assert torch.allclose(full_scores, sliced_scores, atol=1e-5)
