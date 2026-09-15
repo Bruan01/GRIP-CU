@@ -1,0 +1,67 @@
+{
+  "dataset": "NELL23K",
+  "graph": {
+    "nodes": 20799,
+    "edges": 24321,
+    "relations": 198
+  },
+  "splits": {
+    "train": {
+      "available": 24321,
+      "selected": 1,
+      "distance_counts": {
+        "1": 1
+      }
+    },
+    "validation": {
+      "available": 4951,
+      "selected": 4951,
+      "distance_counts": {
+        "3": 2262,
+        "2": 661,
+        "unreachable": 370,
+        "1": 645,
+        "7": 78,
+        "4": 410,
+        "9": 13,
+        "6": 103,
+        "5": 381,
+        "8": 16,
+        "10": 3,
+        "11": 2,
+        "13": 1,
+        "0": 4,
+        "12": 2
+      }
+    },
+    "test": {
+      "available": 4944,
+      "selected": 4944,
+      "distance_counts": {
+        "3": 2260,
+        "unreachable": 377,
+        "1": 614,
+        "2": 670,
+        "6": 109,
+        "5": 360,
+        "4": 427,
+        "13": 2,
+        "7": 79,
+        "8": 22,
+        "9": 13,
+        "10": 6,
+        "0": 2,
+        "12": 2,
+        "11": 1
+      }
+    }
+  },
+  "source_sha256": {
+    "train.txt": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+    "valid.txt": "a40951319088c26e46dc6711b55b06c58be924aa7eea2f671d89c3ccec0bcabb",
+    "test.txt": "9d48fa18ac395e4960521bcb1563883624e9d695fec6a4c44f2fb657194440c2",
+    "entity2text.json": "86397d9291c0559bcb3a52f11454000cfc6259a26ad855e2feccd35c74444195"
+  },
+  "seed": 2026,
+  "num_candidates": 10
+}

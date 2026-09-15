@@ -66,6 +66,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Merge b1/ and listed/ summaries under --output_dir; skip model load.",
     )
+    parser.add_argument(
+        "--progress_every",
+        type=int,
+        default=16,
+        help="Print generate/closed-set progress every N examples.",
+    )
+    parser.add_argument(
+        "--eval_name",
+        default="",
+        help="Optional label for the comparison note (smoke, pilot, or full).",
+    )
     return parser.parse_args()
 
 
@@ -89,7 +100,9 @@ def closed_set_summary(rows: list[dict]) -> dict:
     return summary
 
 
-def evaluate_closed_set(model, tokenizer, record: dict) -> list[dict]:
+def evaluate_closed_set(
+    model, tokenizer, record: dict, progress_every: int = 16
+) -> list[dict]:
     samples = [
         item for item in record["recurrent_questions"] if item["split"] in {"validation", "test"}
     ]
@@ -131,7 +144,10 @@ def evaluate_closed_set(model, tokenizer, record: dict) -> list[dict]:
                     "gold_score": score_map[gold],
                 }
             )
-            if index == 1 or index % 16 == 0 or index == len(samples):
+            if index == 1 or (
+                progress_every > 0
+                and (index % progress_every == 0 or index == len(samples))
+            ):
                 hits = sum(bool(row["correct"]) for row in rows)
                 print(
                     f"[closed_set] {index}/{len(samples)} hits@1={hits / len(rows):.4f}",
@@ -156,15 +172,20 @@ def load_optional_json(path: Path) -> dict | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def write_decode_comparison(output_dir: Path) -> dict:
+def write_decode_comparison(
+    output_dir: Path, eval_file: Path | None = None, eval_name: str = ""
+) -> dict:
     b1_gen = load_optional_json(output_dir / "b1" / "summary.json")
     listed_gen = load_optional_json(output_dir / "listed" / "summary.json")
     b1_closed = load_optional_json(output_dir / "b1" / "summary_closed_set.json")
     listed_closed = load_optional_json(output_dir / "listed" / "summary_closed_set.json")
     if b1_closed is None or listed_closed is None:
         raise FileNotFoundError(f"need closed-set summaries under {output_dir}/b1 and listed")
+    slice_name = eval_name or "eval"
     comparison = {
         "output_dir": str(output_dir),
+        "eval_file": None if eval_file is None else str(eval_file),
+        "eval_name": slice_name,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "b1_generate": b1_gen,
         "listed_generate": listed_gen,
@@ -186,8 +207,8 @@ def write_decode_comparison(output_dir: Path) -> dict:
         ),
         "note": (
             "Closed-set EM is argmax over the official 10-way continuations. "
-            "A paper signal needs listed closed-set > B1 generate on the test split, "
-            "not only on this smoke/pilot slice."
+            "A paper signal needs listed closed-set > B1 generate on the official "
+            f"NELL23K test split. Current slice: {slice_name}."
         ),
     }
     write_json(output_dir / "comparison_closed_set.json", comparison)
@@ -208,7 +229,13 @@ def evaluate_one(args: argparse.Namespace) -> None:
     model, tokenizer = load_adapter(load_args, args.adapter_dir, trainable=False)
     try:
         if args.decode in {"generate", "both"}:
-            rows = evaluate_adapter(model, tokenizer, record, args.gen_max_length)
+            rows = evaluate_adapter(
+                model,
+                tokenizer,
+                record,
+                args.gen_max_length,
+                progress_every=args.progress_every,
+            )
             summary = em_summary(rows)
             write_jsonl(args.output_dir / "predictions_correct.jsonl", rows)
             write_json(args.output_dir / "summary.json", summary)
@@ -218,7 +245,9 @@ def evaluate_one(args: argparse.Namespace) -> None:
                 flush=True,
             )
         if args.decode in {"closed_set", "both"}:
-            rows = evaluate_closed_set(model, tokenizer, record)
+            rows = evaluate_closed_set(
+                model, tokenizer, record, progress_every=args.progress_every
+            )
             summary = closed_set_summary(rows)
             write_jsonl(args.output_dir / "predictions_closed_set.jsonl", rows)
             write_json(args.output_dir / "summary_closed_set.json", summary)
@@ -236,7 +265,7 @@ def evaluate_one(args: argparse.Namespace) -> None:
 def main() -> None:
     args = parse_args()
     if args.compare:
-        write_decode_comparison(args.output_dir)
+        write_decode_comparison(args.output_dir, args.eval_file, args.eval_name)
         return
     evaluate_one(args)
 

@@ -1,0 +1,31 @@
+{
+  "seed": 2026,
+  "protocol": "process_raw_data.py --datasets nell23k --seed 2026",
+  "raw_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/data/raw_datasets/nell23k",
+  "input_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.json",
+  "output_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json",
+  "records": [
+    {
+      "graph_id": "nell23k",
+      "train_kept": 1,
+      "eval_rewritten": 9895,
+      "eval_missing": 0,
+      "identical_10way": 0,
+      "by_split": {
+        "validation": {
+          "rewritten": 4951,
+          "identical": 0,
+          "missing": 0,
+          "mean_jaccard": 0.07731951313445573
+        },
+        "test": {
+          "rewritten": 4944,
+          "identical": 0,
+          "missing": 0,
+          "mean_jaccard": 0.07638408795641581
+        }
+      },
+      "mean_jaccard": 0.07685213141841724
+    }
+  ]
+}

@@ -67,6 +67,13 @@ PYTHONPATH=.:../../Hard_Negative_Contrastive_GRIP/src \
 
 `--stage` can be `s1`, then `b1` / `listed` in parallel with `--s1_adapter`, then `compare`.
 
+Full official NELL23K val/test decode on saved 7B adapters (no retraining):
+
+```bash
+bash configs/prepare_full_nell23k_eval.sh
+bash configs/run_full_decode_eval.sh
+```
+
 ## Quick checks
 
 From the project directory:

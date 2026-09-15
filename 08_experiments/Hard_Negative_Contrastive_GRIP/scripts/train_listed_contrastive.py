@@ -429,7 +429,13 @@ def _parse_target(answer: object) -> list[str]:
     return [str(value) for value in answer]
 
 
-def evaluate_adapter(model, tokenizer, record: dict, max_new_tokens: int) -> list[dict]:
+def evaluate_adapter(
+    model,
+    tokenizer,
+    record: dict,
+    max_new_tokens: int,
+    progress_every: int = 0,
+) -> list[dict]:
     samples = [
         item for item in record["recurrent_questions"] if item["split"] in {"validation", "test"}
     ]
@@ -474,6 +480,15 @@ def evaluate_adapter(model, tokenizer, record: dict, max_new_tokens: int) -> lis
                     "in_list": parsed in listed,
                 }
             )
+            done = index + 1
+            if progress_every > 0 and (
+                done == 1 or done % progress_every == 0 or done == len(dataset)
+            ):
+                hits = sum(bool(row["correct"]) for row in rows)
+                print(
+                    f"[generate] {done}/{len(dataset)} EM={hits / len(rows):.4f}",
+                    flush=True,
+                )
     return rows
 
 
