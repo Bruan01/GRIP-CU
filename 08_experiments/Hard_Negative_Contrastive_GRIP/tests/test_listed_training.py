@@ -14,6 +14,8 @@ from hard_negative_grip.listed_training import (  # noqa: E402
     ListedQADataset,
     format_answer_prefix,
     listed_negatives,
+    pack_decision_set_rows,
+    pick_closed_set_answer,
     unwrap_for_scoring,
 )
 
@@ -168,3 +170,21 @@ def test_listed_candidates_are_scored_in_one_forward() -> None:
     assert trainer.candidate_forwards == 2
     assert scores.shape == (2,)
     assert scores[0] > scores[1] - 1e-5
+
+
+def test_pick_closed_set_answer_uses_argmax_and_prompt_order_ties() -> None:
+    relations = ["owns", "visits", "likes"]
+    assert pick_closed_set_answer(relations, [1.0, 3.0, 2.0]) == "visits"
+    assert pick_closed_set_answer(relations, [2.0, 2.0, 1.0]) == "owns"
+
+
+def test_pack_decision_set_rows_share_one_prefix() -> None:
+    class _Tok:
+        def __call__(self, text, add_special_tokens=False):
+            return {"input_ids": [len(text)]}
+
+    rows, prefix_lens = pack_decision_set_rows(_Tok(), "PRE<answer>", ["owns", "visits"])
+    assert prefix_lens == [1, 1]
+    assert rows[0][0] == rows[1][0] == len("PRE<answer>")
+    assert rows[0][1] == len("owns")
+    assert rows[1][1] == len("visits")

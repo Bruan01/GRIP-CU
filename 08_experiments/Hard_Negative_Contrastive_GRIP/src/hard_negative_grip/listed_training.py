@@ -87,13 +87,80 @@ def unwrap_causal_lm(model, accelerator=None):
     return None
 
 
-def _encode_without_specials(tokenizer, text: str) -> list[int]:
+def encode_without_specials(tokenizer, text: str) -> list[int]:
     encoded = tokenizer(text, add_special_tokens=False)
     ids = list(encoded["input_ids"])
     if ids:
         return ids
     unk = getattr(tokenizer, "unk_token_id", None)
     return [0 if unk is None else unk]
+
+
+def pack_decision_set_rows(
+    tokenizer,
+    prefix_text: str,
+    relations: list[str],
+) -> tuple[list[list[int]], list[int]]:
+    """Tokenize one shared prefix plus each listed continuation."""
+    if not prefix_text:
+        raise ValueError("prefix_text must be non-empty")
+    if not relations:
+        raise ValueError("relations must be non-empty")
+    prefix_ids = encode_without_specials(tokenizer, prefix_text)
+    rows = [prefix_ids + encode_without_specials(tokenizer, relation) for relation in relations]
+    return rows, [len(prefix_ids)] * len(relations)
+
+
+def pick_closed_set_answer(relations: list[str], scores: list[float]) -> str:
+    """Argmax over listed continuations; earlier prompt order wins ties."""
+    if not relations:
+        raise ValueError("relations must be non-empty")
+    if len(relations) != len(scores):
+        raise ValueError("relations and scores must have the same length")
+    best_index = 0
+    best_score = scores[0]
+    for index, score in enumerate(scores):
+        if score > best_score:
+            best_index = index
+            best_score = score
+    return relations[best_index]
+
+
+def score_candidate_rows(scorer, tokenizer, rows, prefix_lens, device, accelerator=None):
+    """Score packed answer continuations with one forward pass."""
+    pad_id = tokenizer.pad_token_id
+    if pad_id is None:
+        pad_id = 0
+    input_ids, attention_mask, seq_lens = pack_token_rows(
+        rows, pad_id=int(pad_id), device=device
+    )
+    prefix_lengths = torch.tensor(prefix_lens, dtype=torch.long, device=device)
+    causal = unwrap_causal_lm(scorer, accelerator)
+    if causal is not None:
+        hidden = causal.model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            use_cache=False,
+        )[0]
+        answer_hidden, answer_ids, answer_lens = slice_continuation_states(
+            hidden, input_ids, prefix_lengths, seq_lens
+        )
+        logits = causal.lm_head(answer_hidden)
+        del hidden, answer_hidden
+        return continuation_mean_log_likelihood(logits, answer_ids, answer_lens)
+    outputs = scorer(
+        input_ids=input_ids,
+        attention_mask=attention_mask,
+        use_cache=False,
+    )
+    scores = normalized_continuation_log_likelihood(
+        outputs.logits,
+        input_ids,
+        prefix_lengths,
+        seq_lens,
+    )
+    del outputs
+    return scores
 
 
 class ListedQADataset(torch.utils.data.Dataset):
@@ -121,9 +188,9 @@ class ListedQADataset(torch.utils.data.Dataset):
         prefix_ids: list[int] = []
         relation_ids: list[list[int]] = []
         if prefix and positive:
-            prefix_ids = _encode_without_specials(tokenizer, prefix)
-            relation_ids = [_encode_without_specials(tokenizer, positive)]
-            relation_ids.extend(_encode_without_specials(tokenizer, rel) for rel in listed)
+            prefix_ids = encode_without_specials(tokenizer, prefix)
+            relation_ids = [encode_without_specials(tokenizer, positive)]
+            relation_ids.extend(encode_without_specials(tokenizer, rel) for rel in listed)
         return {
             "input_ids": list(encoded["input_ids"]),
             "attention_mask": list(encoded["attention_mask"]),
@@ -266,47 +333,22 @@ class ListedContrastiveTrainer(Trainer):
         ids = [list(row) for row in (relation_ids or []) if row]
         pids = list(prefix_ids or [])
         if (not pids or len(ids) < 2) and prefix and positive:
-            pids = _encode_without_specials(tokenizer, prefix)
+            pids = encode_without_specials(tokenizer, prefix)
             negatives = [rel for rel in (listed or []) if rel and rel != positive]
             if negatives:
-                ids = [_encode_without_specials(tokenizer, positive)]
-                ids.extend(_encode_without_specials(tokenizer, rel) for rel in negatives)
+                ids = [encode_without_specials(tokenizer, positive)]
+                ids.extend(encode_without_specials(tokenizer, rel) for rel in negatives)
         if not pids or len(ids) < 2:
             return None, 0
         return [pids + continuation for continuation in ids], len(pids)
 
     def _score_candidate_rows(self, scorer, tokenizer, rows, prefix_lens, device) -> torch.Tensor:
-        pad_id = tokenizer.pad_token_id
-        if pad_id is None:
-            pad_id = 0
-        input_ids, attention_mask, seq_lens = pack_token_rows(
-            rows, pad_id=int(pad_id), device=device
-        )
-        prefix_lengths = torch.tensor(prefix_lens, dtype=torch.long, device=device)
         self.candidate_forwards += len(rows)
-        causal = unwrap_causal_lm(scorer, getattr(self, "accelerator", None))
-        if causal is not None:
-            hidden = causal.model(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                use_cache=False,
-            )[0]
-            answer_hidden, answer_ids, answer_lens = slice_continuation_states(
-                hidden, input_ids, prefix_lengths, seq_lens
-            )
-            logits = causal.lm_head(answer_hidden)
-            del hidden, answer_hidden
-            return continuation_mean_log_likelihood(logits, answer_ids, answer_lens)
-        outputs = scorer(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            use_cache=False,
+        return score_candidate_rows(
+            scorer,
+            tokenizer,
+            rows,
+            prefix_lens,
+            device,
+            accelerator=getattr(self, "accelerator", None),
         )
-        scores = normalized_continuation_log_likelihood(
-            outputs.logits,
-            input_ids,
-            prefix_lengths,
-            seq_lens,
-        )
-        del outputs
-        return scores
