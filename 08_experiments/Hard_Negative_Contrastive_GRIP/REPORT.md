@@ -1,15 +1,15 @@
 # Hard-Negative Contrastive GRIP — 进展评估与 H2 验证报告
 
-日期: 2026-09-10（补 smoke 训练）；2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
+日期: 2026-09-16（补 7B 全量评测）；2026-09-10（0.5B smoke）；2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
 范围: `GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP`
 对外汇报稿: `汇报_进展与实验结果.md`
-结论先行: 结构负样本不在决策集合里。官方 10-way 对齐后，listed vs uniform 卫生检查通过（adapter 159/160 更难），但这是选项印在题目上的预期结果，不是创新。2026-09-09 的 smoke 对比训练未过 H1 门：listed EM 43.8% vs B1 51.0%（−7.3 pp）。列表内误选 26→1，列表外乱生成 21→53。不要开 path/tail_range 的 B2–B10。
+结论先行: 结构负样本不在决策集合里，不要开 path/tail_range 的 B2–B10。listed 比 uniform 更难只是选项印在题目上，不是创新。0.5B smoke 未过 H1（EM 43.8% vs 51.0%，−7.3 pp）。Qwen2.5-7B 在官方 NELL23K 全量测试上过门：自由生成 EM 84.91%→89.12%（+4.21 pp），闭集 86.93%→92.05%（+5.12 pp）。本质是 Stage 2 加 InfoNCE，不是新负采样；H5 算力对照仍缺。
 
 ---
 
 ## 1. 项目现状
 
-### 1.1 已完成（约 20–30%）
+### 1.1 已完成（方法门禁已过；H4 / H5 未做）
 
 | 模块 | 状态 | 说明 |
 |---|---|---|
@@ -25,9 +25,12 @@
 ### 1.2 训练与评测进度
 
 - ✅ Stage B 打分脚本已接到 quick01 MLP adapter（`scripts/score_h2_gate.py --recipe storage`）。
-- ✅ Stage C 的 listed Trainer 已接入；2026-09-09 跑完 smoke：共享 Stage 1，再 fork B1 vs listed（`results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke`）。
-- ❌ Pilot（512/128/512）未跑。B2–B10 结构家族变体按 H2 证据不应开。
-- ❌ Stage D（adapter 身份对比）未做。Stage E 目前只有 greedy EM + 列表内/外错误切分。
+- ✅ Stage C 的 listed Trainer 已接入。
+- ✅ 2026-09-09：0.5B smoke，共享 Stage 1，再 fork B1 vs listed（`results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke`）。生成 EM 未过门。
+- ✅ 2026-09-13～14：Qwen2.5-7B 在 `grip_nell23k_tasks.json` 上同样分叉（`results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/`）。关系类 QA 从训练词表抽 9 个负样本。
+- ✅ 2026-09-15：同一份 7B adapter 在 smoke 96 / pilot 640 / 官方全量 9895 题上做自由生成 + 闭集打分。全量主结果在 `results/runs/20260915_140500_qwen7b_full_decode/`。
+- ❌ 0.5B 的 pilot **训练**未跑；7B 只是在 pilot 切片上解码。
+- ❌ B2–B10 结构家族按 H2 证据不应开。Stage D（adapter 身份对比）未做。H5 算力匹配未做。
 
 ### 1.3 关键前置问题（基线，已修正）
 
@@ -59,7 +62,7 @@ no adapter       22.5%
 
 ### 2.3 结论
 
-创新点真实但**不构成独立卖点**，且必须建立在「结构负样本确实更难」这一前提上。第 3 节重测后，这个前提对 path_local 不成立，对 tail_range 只有弱信号。
+结构负样本这条方法线**不构成独立卖点**：path_local 失败，tail_range 弱。当前能写的贡献是诊断（错误在决策集合，不在图结构负样本）加上一条薄扩展（生成 loss + 候选 InfoNCE）。7B 全量数字让这条扩展过了 H1 门，但审稿人仍可收成「加了排序损失」。C 会 / Findings 够格；A/B 需要 H5、第二数据集或 adapter 机制实验。详见汇报稿 §0、§4.6、§4.7。
 
 ---
 
@@ -136,26 +139,43 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 4. **不要指望先验幻觉字符串召回真 OOV。** 90 个真 OOV 里编辑距离 ≤2 的词表近邻只有 8 个，stem+suffix 精确命中 0。这是解码问题：要么生成时约束在 10-way 上，要么用模型自己的 rollout 错误当负样本。结构家族和拼字符串都打不中。
 5. path / tail_range 不再当主硬负样本。
 
-**仍然不要开结构负样本的 B2–B10。** aligned listed vs uniform 已打完：adapter 159/160、base 160/160 认为 listed 更难。这是预期内的卫生检查，不是创新点。若要方法结果，下一步是 GRIP + listed 对比训练，看生成 EM。
+**仍然不要开结构负样本的 B2–B10。** aligned listed vs uniform 已打完：adapter 159/160、base 160/160 认为 listed 更难。这是预期内的卫生检查，不是创新点。
 
 ---
 
-## 4. 建议
+## 4. listed vs B1 训练与评测
+
+细节和完整表格见 `汇报_进展与实验结果.md` §4.5–4.7。这里只保留判定。
+
+| 实验 | 模型 | 评测 | 生成 EM | 闭集 EM | 判定 |
+|---|---|---|---|---|---|
+| 2026-09-09 smoke 训练 | 0.5B | 96 题 | 43.8% vs B1 51.0%（−7.3 pp） | 未做 | H1 未过门；列表内 26→1，OOV 21→53 |
+| 2026-09-13 7B 训练后 smoke 解码 | 7B | 96 题 | 90.63% vs 86.46%（+4.17 pp） | 91.67% vs 87.50% | 方向反转，样本太小 |
+| 2026-09-15 pilot 解码 | 7B | 640 题 | 90.31% vs 84.53%（+5.78 pp） | 92.50% vs 86.25% | 同向 |
+| **2026-09-15 官方全量** | **7B** | **测试 4944** | **89.12% vs 84.91%（+4.21 pp）** | **92.05% vs 86.93%（+5.12 pp）** | **H1 过门** |
+| 同上 | 7B | 全量 9895 | 88.82% vs 85.02%（+3.80 pp） | 91.71% vs 86.90% | 验证/测试同向；OOV 322→425，列表内 1160→681 |
+
+7B 训练负样本来自论文 QA 词表抽样，不是官方测试 10-way，故不是测试泄露，但也不是严格的 listed 同分布训练。listed 多 329,700 次候选前向，H5 未闭合。
+
+---
+
+## 5. 建议
 
 1. **不要开 path/tail_range 的 B2–B10。**
-2. aligned listed 卫生检查已通过；这不能当论文贡献。
-3. 2026-09-09 smoke 已训完：listed EM 43.8% vs B1 51.0%（−7.3 pp）。对比把列表内误选 26→1，同时把列表外乱生成 21→53。H1 未过门。细节见 `汇报_进展与实验结果.md` §4.5。
-4. 不要把 64 题 smoke 写成论文结论。若继续，先诊断 OOV / 降 λ / 约束解码，而不是直接上 pilot。
+2. aligned listed 卫生检查不能当论文贡献。
+3. 不要把 0.5B 64 题掉点写成论文阴性，也不要把 7B 涨点说成结构硬负样本成功。
+4. 下一步优先做 H5 算力匹配，其次全量错误分析 / 闭集解码，再考虑第二数据集或 CLEGR adapter 对比。
+5. 对外数字以汇报稿 §0 和 §4.7 为准。
 
 ---
 
-## 5. 产物清单
+## 6. 产物清单
 
 | 文件 | 内容 |
 |---|---|
 | `scripts/align_official_nell23k_lists.py` | 把 val/test 10-way 重写成官方 `process.py` seed=2026 列表 |
 | `scripts/audit_error_coverage.py` | 负样本家族 vs 真实生成错误（列表内 / 词表内列表外 / OOV） |
-| `data/nell23k/*.aligned.json` | 对齐后的 smoke / pilot 题目 |
+| `data/nell23k/*.aligned.json` | 对齐后的 smoke / pilot / full 题目 |
 | `results_nell23k_audit_aligned.json` | 对齐后的候选审计（listed 每题 9 个） |
 | `results/error_coverage_decision_set.json` | quick01 334 个错误上的家族覆盖率 |
 | `scripts/score_h2_gate.py` | 零训练打分脚本，`--recipe storage/pilot`，`--control correct/none` |
@@ -165,6 +185,9 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 | `results/h2_gate_results.json` | 旧 pilot adapter 分数（仅对照） |
 | `results/h2_gate_results_noadapter.json` | 旧 base-model 分数（仅对照） |
 | `results/h2_gate_verdict.md` | 重跑对照与判读 |
-| `results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke/` | smoke：共享 S1 + B1 vs listed，含 `comparison.json` |
-| `汇报_进展与实验结果.md` | 对外汇报稿（含训练过程与数字） |
+| `results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke/` | 0.5B smoke：共享 S1 + B1 vs listed |
+| `results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/` | 7B 训练：论文任务文件上的 S1 + B1 / listed adapter |
+| `results/runs/20260915_101030_qwen7b_pilot_decode/` | 7B adapter 在 640 题切片上的生成 + 闭集 |
+| `results/runs/20260915_140500_qwen7b_full_decode/` | 7B 官方 9895 题主结果，`comparison_closed_set.json` |
+| `汇报_进展与实验结果.md` | 对外汇报稿（含 7B 全量数字） |
 | 本文件 | 整体进展与评估报告 |

@@ -22,14 +22,15 @@ This is a working title, not a novelty claim. The literature review in `RESEARCH
 - `src/hard_negative_grip/`: candidate generation, contrastive losses, and the listed Stage-2 trainer.
 - `scripts/train_listed_contrastive.py`: shared Stage 1, then original GRIP vs listed contrast.
 - `tests/`: unit tests for deterministic sampling, leakage prevention, losses, and listed training pieces.
-- `汇报_进展与实验结果.md`: briefing of design, audits, H2 gates, and the 2026-09-09 listed-vs-B1 smoke training.
-- `results/`: H2 gate scores and the listed-vs-B1 smoke run. The current H2 verdict is `results/h2_gate_verdict.md`.
+- `汇报_进展与实验结果.md`: briefing, including Qwen2.5-7B official full val/test decode.
+- `REPORT.md`: internal status and H2 verdict; 7B numbers summarized in §4.
+- `results/`: H2 gates, 0.5B smoke, 7B training adapters, and full/pilot decode summaries. H2 write-up: `results/h2_gate_verdict.md`.
 
 ## Initial status
 
-Design, candidate audit, and a zero-training H2 gate are in place. The first training comparison is original GRIP vs GRIP + listed 10-way contrastive: shared Stage 1 graph storage, then two Stage 2 forks. H2 was re-scored on 2026-09-09 with the MLP storage adapter from `quick01_storage_quick` (`scripts/score_h2_gate.py --recipe storage`). `path_local` is not harder than uniform; `tail_range` shows only a weak signal.
+H2: `path_local` is not harder than uniform; `tail_range` is a weak signal. Do not train B2–B10 on those families. Official 10-way alignment passed listed-vs-uniform as a hygiene check (159/160), not a novelty result.
 
-Val/test 10-way lists are aligned to the official GRIP processor. The 2026-09-09 aligned H2 check passed: `listed_relation` is harder than uniform on 159/160 adapter questions and 160/160 base-model questions. That is a prompt-list effect, not a novelty result. Do not start path/tail_range B2–B10 training. The method gate is generation EM of GRIP + listed contrast vs original GRIP.
+Method gate: Qwen2.5-7B listed contrast vs original GRIP on official NELL23K val/test (9895). Generation test EM 84.91% → 89.12%; closed-set 86.93% → 92.05%. The 0.5B 96-question smoke still fails (43.8% vs 51.0%). Compute-matched H5 is not done. Details: `汇报_进展与实验结果.md`.
 
 ## Listed vs original GRIP training
 
