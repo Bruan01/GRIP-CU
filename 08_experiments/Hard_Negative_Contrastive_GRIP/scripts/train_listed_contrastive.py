@@ -56,8 +56,10 @@ from hard_negative_grip.official_lists import (  # noqa: E402
 from hard_negative_grip.task_file import (  # noqa: E402
     LISTED_NEGATIVE_K,
     LISTED_NEGATIVE_SOURCES,
+    assistant_gold,
     build_qa_assets_from_task_texts,
     is_grip_task_file,
+    is_relation_gold,
     load_graph_record,
     load_json_payload,
 )
@@ -552,6 +554,21 @@ def write_comparison(
         )
     b1 = json.loads(b1_path.read_text(encoding="utf-8"))
     listed = json.loads(listed_path.read_text(encoding="utf-8"))
+    frozen_path = output_dir / "b1" / "FROZEN_FROM.json"
+    b1_source = None
+    if frozen_path.is_file():
+        b1_source = json.loads(frozen_path.read_text(encoding="utf-8"))
+    note = (
+        "A method result requires listed EM > B1 on generation. "
+        "A listed win here is still a thin GRIP extension, not a new negative-sampling theory."
+    )
+    if b1_source:
+        note = (
+            "Listed is this run. B1 is the frozen generation-only adapter "
+            f"from {b1_source.get('source', 'another run')} "
+            "(lambda=0 never used InfoNCE negatives). "
+            "A method result requires listed EM > B1 on generation."
+        )
     comparison = {
         "input_file": str(input_file),
         "s1_adapter": str(s1_adapter),
@@ -560,10 +577,8 @@ def write_comparison(
         "b1": b1,
         "listed": listed,
         "listed_minus_b1_em": listed["all"]["em"] - b1["all"]["em"],
-        "note": (
-            "A method result requires listed EM > B1 on generation. "
-            "A listed win here is still a thin GRIP extension, not a new negative-sampling theory."
-        ),
+        "b1_source": b1_source,
+        "note": note,
     }
     (output_dir / "comparison.json").write_text(
         json.dumps(comparison, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -672,16 +687,27 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             relation_order=relation_order,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
-        matched_n = sum(1 for meta in qa_metas if meta.get("matched_train_relation"))
+        relation_n = sum(
+            1 for text in qa_texts if is_relation_gold(assistant_gold(text), text)
+        )
+        skipped_n = relation_n - listed_n
+        exact_n = sum(
+            1
+            for meta in qa_metas
+            if meta["listed_relations"]
+            and meta.get("matched_train_relation") == meta.get("positive_relation")
+        )
+        alias_n = listed_n - exact_n
         vocab_n = len(relation_order) if relation_order is not None else len(
             {meta["positive_relation"] for meta in qa_metas if meta["listed_relations"]}
         )
         print(
             f"[data] paper task file context={len(context_samples)} "
-            f"qa={len(qa_texts)} listed_relation_qa={listed_n} "
+            f"qa={len(qa_texts)} relation_qa={relation_n} "
+            f"listed_relation_qa={listed_n} skipped_unmatched={skipped_n} "
+            f"exact_match={exact_n} alias_match={alias_n} "
             f"listed_negative_source={args.listed_negative_source} "
-            f"vocab={vocab_n} matched_train_relation={matched_n} "
-            f"listed_negative_seed={listed_seed} eval={eval_path}",
+            f"vocab={vocab_n} listed_negative_seed={listed_seed} eval={eval_path}",
             flush=True,
         )
         return None, context_samples, qa_texts, qa_metas, eval_record
@@ -699,7 +725,8 @@ def main() -> None:
     s1_adapter = Path(args.s1_adapter) if args.s1_adapter else (output_dir / "s1_adapter")
 
     if args.stage == "compare":
-        write_run_config(output_dir, args)
+        if not (output_dir / "run_config.json").is_file():
+            write_run_config(output_dir, args)
         write_comparison(
             output_dir,
             input_file=args.input_file,

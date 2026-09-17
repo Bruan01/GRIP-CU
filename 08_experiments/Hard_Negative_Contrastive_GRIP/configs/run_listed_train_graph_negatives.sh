@@ -4,7 +4,8 @@
 #
 # Does not change the loss. Reuses the 20260913 Stage-1 adapter and leaves B1
 # untouched (lambda=0 never used the old 370-vocab negatives). Retrains listed
-# only, then smoke-evaluates that adapter.
+# only. The trainer then smoke-evaluates listed; this script attaches the
+# frozen 20260913 B1 smoke summary so comparison.json is listed vs that B1.
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -59,6 +60,8 @@ mkdir -p "$RUN_DIR"
   "$PYTHON" -c "import torch; print('cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
 } >> "$RUN_DIR/environment.txt" 2>&1
 
+LISTED_RUN="$RUN_DIR" B1_RUN="$OLD_RUN" bash "$HNG/configs/attach_frozen_b1.sh"
+
 export PYTHONPATH="$CODE_DIR:$HNG/src${PYTHONPATH:+:$PYTHONPATH}"
 export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
@@ -97,4 +100,8 @@ rc=${PIPESTATUS[0]}
 set -e
 echo "[launch] listed finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$RUN_DIR/run.log"
 echo "$RUN_DIR" > "$HNG/results/LAST_TRAIN_GRAPH_NEGATIVES_RUN.txt"
+if [[ "$rc" -eq 0 ]]; then
+  echo "[launch] compare listed vs frozen B1" | tee -a "$RUN_DIR/run.log"
+  LISTED_RUN="$RUN_DIR" B1_RUN="$OLD_RUN" bash "$HNG/configs/compare_listed_to_frozen_b1.sh" | tee -a "$RUN_DIR/run.log"
+fi
 exit "$rc"
