@@ -21,7 +21,9 @@ from hard_negative_grip import (  # noqa: E402
     normalized_continuation_log_likelihood,
 )
 from hard_negative_grip.official_lists import (  # noqa: E402
+    DEFAULT_RAW_NELL23K,
     listed_relations_from_sample,
+    load_train_relation_order,
     rewrite_question_with_official_list,
     sample_official_candidates,
     train_relation_insertion_order,
@@ -183,6 +185,16 @@ def test_official_list_replay_is_seeded_and_rewrites_eval_questions() -> None:
     assert rewritten["candidate_relations"] == first
     assert listed_relations_from_sample(rewritten) == first
     assert "Selected from the following candidate answers:" in rewritten["question"]
+
+
+def test_nell23k_train_graph_has_198_concept_relations() -> None:
+    train_file = DEFAULT_RAW_NELL23K / "train.txt"
+    if not train_file.is_file():
+        return
+    order = load_train_relation_order(DEFAULT_RAW_NELL23K)
+    assert len(order) == 198
+    assert len(set(order)) == 198
+    assert all(rel.startswith("concept:") for rel in order)
 
 
 def test_tail_range_relation_shares_tails_with_positive() -> None:

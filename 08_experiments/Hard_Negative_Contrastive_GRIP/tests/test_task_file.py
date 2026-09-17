@@ -11,7 +11,9 @@ from hard_negative_grip.task_file import (  # noqa: E402
     build_qa_assets_from_task_texts,
     is_grip_task_file,
     is_relation_gold,
+    match_train_relation,
     sample_listed_negatives,
+    train_relation_alias_index,
 )
 
 
@@ -69,7 +71,12 @@ def test_task_qa_assets_attach_negatives_only_to_relation_items() -> None:
         _qa("Who wrote The Deerslayer?", "James Fenimore Cooper"),
         _qa("which entity has the relation concept:worksfor to chrysler?", "concept_ceo_dieter_zetsche"),
     ]
-    out_texts, metas = build_qa_assets_from_task_texts(texts, seed=2026, listed_negative_k=1)
+    out_texts, metas = build_qa_assets_from_task_texts(
+        texts,
+        seed=2026,
+        listed_negative_k=1,
+        listed_negative_source="qa_vocab",
+    )
     assert out_texts == texts
     assert metas[0]["positive_relation"] == "concept:atdate"
     assert metas[0]["listed_relations"] == ["concept:worksfor"]
@@ -77,3 +84,69 @@ def test_task_qa_assets_attach_negatives_only_to_relation_items() -> None:
     assert metas[2]["listed_relations"] == []
     assert metas[3]["listed_relations"] == []
     assert metas[0]["prefix_text"].endswith("<answer>")
+
+
+def test_train_graph_negatives_use_process_py_and_exclude_aliased_gold() -> None:
+    import numpy as np
+    from hard_negative_grip.official_lists import official_negatives, sample_official_candidates
+
+    order = [
+        "concept:atdate",
+        "concept:worksfor",
+        "concept:haswife",
+        "concept:citycapitalofcountry",
+    ]
+    texts = [
+        _qa("what is the relation between a and b?", "concept:atdate"),
+        _qa("what is the relation between c and d?", "worksfor"),
+        _qa("Who wrote The Deerslayer?", "James Fenimore Cooper"),
+        _qa("what is the relation between e and f?", "not_a_train_relation"),
+    ]
+    stream = np.random.RandomState(2026)
+    expected_first = official_negatives("concept:atdate", order, way=4, rng=stream)
+    expected_second = official_negatives("concept:worksfor", order, way=4, rng=stream)
+
+    out_texts, metas = build_qa_assets_from_task_texts(
+        texts,
+        seed=2026,
+        listed_negative_k=3,
+        listed_negative_source="train_graph",
+        relation_order=order,
+    )
+    assert out_texts == texts
+    assert metas[0]["listed_relations"] == expected_first
+    assert "concept:atdate" not in metas[0]["listed_relations"]
+    assert metas[0]["matched_train_relation"] == "concept:atdate"
+    assert metas[1]["positive_relation"] == "worksfor"
+    assert metas[1]["matched_train_relation"] == "concept:worksfor"
+    assert metas[1]["listed_relations"] == expected_second
+    assert "concept:worksfor" not in metas[1]["listed_relations"]
+    assert "worksfor" not in metas[1]["listed_relations"]
+    assert metas[2]["listed_relations"] == []
+    assert metas[3]["listed_relations"] == []
+    assert metas[3]["matched_train_relation"] is None
+    assert all(rel in order for rel in metas[0]["listed_relations"] + metas[1]["listed_relations"])
+
+    np.random.seed(7)
+    global_first = sample_official_candidates("concept:atdate", order, way=4)
+    private_first = sample_official_candidates(
+        "concept:atdate", order, way=4, rng=np.random.RandomState(7)
+    )
+    assert global_first == private_first
+
+
+def test_train_graph_requires_relation_order() -> None:
+    texts = [_qa("what is the relation between a and b?", "concept:atdate")]
+    try:
+        build_qa_assets_from_task_texts(texts, seed=2026, listed_negative_source="train_graph")
+    except ValueError as exc:
+        assert "relation_order" in str(exc)
+    else:
+        raise AssertionError("expected ValueError")
+
+
+def test_match_train_relation_accepts_concept_alias() -> None:
+    index = train_relation_alias_index(["concept:atdate", "concept:worksfor"])
+    assert match_train_relation("concept:atdate", index) == "concept:atdate"
+    assert match_train_relation("worksfor", index) == "concept:worksfor"
+    assert match_train_relation("missing", index) is None

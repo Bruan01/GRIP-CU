@@ -27,6 +27,10 @@ QUESTION_TEMPLATE = (
 )
 WAY = 10
 SPLIT_FILE = {"validation": "valid.txt", "test": "test.txt"}
+DEFAULT_RAW_NELL23K = Path(
+    "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/"
+    "v1_1_nell23k_first_2026-08-29/grip-exp/data/raw_datasets/nell23k"
+)
 
 
 def load_triples(path: Path) -> list[tuple[str, str, str]]:
@@ -53,20 +57,43 @@ def train_relation_insertion_order(train_triples: Iterable[tuple[str, str, str]]
     return relations
 
 
+def load_train_relation_order(raw_dir: Path) -> list[str]:
+    """Train-graph relation vocabulary in ``process.py`` insertion order."""
+    return train_relation_insertion_order(load_triples(raw_dir / "train.txt"))
+
+
 def sample_official_candidates(
     gold: str,
     relation_order: list[str],
     *,
     way: int = WAY,
+    rng: np.random.RandomState | None = None,
 ) -> list[str]:
-    """Consume the global ``numpy.random`` stream exactly as ``process.py`` does."""
+    """Sample a 10-way list the way ``process.py`` does.
+
+    Eval uses the global ``numpy.random`` stream after ``seed=2026``. Training
+    listed negatives pass a private ``RandomState`` so they reuse the same
+    permutation rule without consuming the eval stream or val/test triples.
+    """
     if gold not in relation_order:
         raise ValueError(f"gold relation absent from train vocabulary: {gold}")
+    stream = np.random if rng is None else rng
     unique_rel_copy = relation_order.copy()
     unique_rel_copy.remove(gold)
-    negative = np.random.permutation(unique_rel_copy)[: way - 1]
-    shuffled = np.random.permutation(negative.tolist() + [gold])
+    negative = stream.permutation(unique_rel_copy)[: way - 1]
+    shuffled = stream.permutation(negative.tolist() + [gold])
     return [str(item) for item in shuffled]
+
+
+def official_negatives(
+    gold: str,
+    relation_order: list[str],
+    *,
+    way: int = WAY,
+    rng: np.random.RandomState | None = None,
+) -> list[str]:
+    """Return the 9 non-gold relations from ``sample_official_candidates``."""
+    return [rel for rel in sample_official_candidates(gold, relation_order, way=way, rng=rng) if rel != gold]
 
 
 def build_official_nell23k_lists(

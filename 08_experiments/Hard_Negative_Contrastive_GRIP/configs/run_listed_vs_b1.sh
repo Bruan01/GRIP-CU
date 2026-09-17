@@ -108,6 +108,7 @@ mkdir -p "$RUN_DIR"
   echo "gradient_accumulation_steps=$GRADIENT_ACCUMULATION_STEPS"
   echo "input_file=$INPUT_FILE"
   echo "eval_file=$EVAL_FILE"
+  echo "listed_negative_source=${LISTED_NEGATIVE_SOURCE:-train_graph}"
   echo "resume_s1_adapter=${RESUME_S1_ADAPTER:-}"
   echo "skip_train=${SKIP_TRAIN:-0}"
   date --iso-8601=seconds
@@ -142,6 +143,8 @@ COMMON=(
   --temperature 1.0
   --gen_max_length 32
   --seed 2026
+  --listed_negative_source "${LISTED_NEGATIVE_SOURCE:-train_graph}"
+  --raw_dir "${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
 )
 
 NGPU=0

@@ -6,8 +6,10 @@
 - ``qa_samples``: generated context/reasoning QA (Stage 2)
 
 Those QA prompts have no official 10-way list. Relation-like items get 9
-in-vocab negatives sampled from the task file itself so the listed fork can
-run InfoNCE. Evaluation still uses the aligned relation-prediction split.
+InfoNCE negatives. The default pool is the official train-graph relation
+vocabulary (198 on NELL23K), sampled with the same ``process.py`` rule as
+eval 10-way. ``qa_vocab`` keeps the older 370-relation QA-gold pool.
+Evaluation still uses the aligned relation-prediction split.
 """
 
 from __future__ import annotations
@@ -17,10 +19,16 @@ import random
 import re
 from pathlib import Path
 
+import numpy as np
+
+from .official_lists import official_negatives
+
 ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
 RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
 YES_NO = {"yes", "no"}
 LISTED_NEGATIVE_K = 9
+LISTED_NEGATIVE_SOURCES = ("train_graph", "qa_vocab")
+CONCEPT_PREFIX = "concept:"
 
 
 def is_grip_task_file(payload: object) -> bool:
@@ -100,6 +108,7 @@ def sample_listed_negatives(
     k: int = LISTED_NEGATIVE_K,
     rng: random.Random,
 ) -> list[str]:
+    """Legacy QA-vocab sampler. Prefer ``train_graph`` + ``official_negatives``."""
     positive = normalize_relation(gold)
     pool = [item for item in vocab if item != positive]
     if not pool:
@@ -109,27 +118,70 @@ def sample_listed_negatives(
     return rng.sample(pool, k)
 
 
+def train_relation_alias_index(relation_order: list[str]) -> dict[str, str]:
+    """Map official names and stripped ``concept:`` aliases onto train relations."""
+    index: dict[str, str] = {}
+    for rel in relation_order:
+        index.setdefault(rel, rel)
+        if rel.startswith(CONCEPT_PREFIX):
+            index.setdefault(rel[len(CONCEPT_PREFIX) :], rel)
+        else:
+            index.setdefault(f"{CONCEPT_PREFIX}{rel}", rel)
+    return index
+
+
+def match_train_relation(gold: str, alias_index: dict[str, str]) -> str | None:
+    return alias_index.get(normalize_relation(gold))
+
+
 def build_qa_assets_from_task_texts(
     qa_texts: list[str],
     *,
     seed: int,
     listed_negative_k: int = LISTED_NEGATIVE_K,
+    listed_negative_source: str = "train_graph",
+    relation_order: list[str] | None = None,
 ) -> tuple[list[str], list[dict]]:
     if not qa_texts:
         raise ValueError("task file contains no QA samples")
-    vocab = relation_vocab(qa_texts)
+    if listed_negative_source not in LISTED_NEGATIVE_SOURCES:
+        raise ValueError(
+            f"listed_negative_source must be one of {LISTED_NEGATIVE_SOURCES}, "
+            f"got {listed_negative_source!r}"
+        )
+    use_train_graph = listed_negative_source == "train_graph"
+    if use_train_graph:
+        if not relation_order:
+            raise ValueError("train_graph negatives require a non-empty relation_order")
+        alias_index = train_relation_alias_index(relation_order)
+        vocab: list[str] = list(relation_order)
+        stream = np.random.RandomState(seed)
+    else:
+        alias_index = {}
+        vocab = relation_vocab(qa_texts)
+        stream = None
     texts: list[str] = []
     metas: list[dict] = []
     for index, text in enumerate(qa_texts):
         gold = assistant_gold(text)
         listed: list[str] = []
-        if is_relation_gold(gold, text) and vocab:
-            listed = sample_listed_negatives(
-                gold,
-                vocab,
-                k=listed_negative_k,
-                rng=random.Random(seed + index),
-            )
+        matched = match_train_relation(gold, alias_index) if use_train_graph else None
+        if is_relation_gold(gold, text):
+            if use_train_graph:
+                if matched is not None:
+                    listed = official_negatives(
+                        matched,
+                        relation_order or [],
+                        way=listed_negative_k + 1,
+                        rng=stream,
+                    )
+            elif vocab:
+                listed = sample_listed_negatives(
+                    gold,
+                    vocab,
+                    k=listed_negative_k,
+                    rng=random.Random(seed + index),
+                )
         texts.append(text)
         metas.append(
             {
@@ -137,6 +189,8 @@ def build_qa_assets_from_task_texts(
                 "positive_relation": gold,
                 "listed_relations": listed,
                 "prefix_text": assistant_answer_prefix(text),
+                "listed_negative_source": listed_negative_source,
+                "matched_train_relation": matched,
             }
         )
     return texts, metas

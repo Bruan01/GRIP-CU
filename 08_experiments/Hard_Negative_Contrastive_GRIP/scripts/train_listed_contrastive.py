@@ -2,8 +2,10 @@
 
 Default input is the aligned NELL23K relation-prediction split. Passing
 ``grip_nell23k_tasks.json`` trains Stage 1 on paper context+summarization and
-Stage 2 on generated QA; relation-like items sample in-vocab negatives.
-Val/test EM always uses an aligned graph record (``--eval_file``).
+Stage 2 on generated QA; relation-like items sample 9 train-graph negatives
+with the official ``process.py`` rule. Pass ``--listed_negative_source qa_vocab``
+to reproduce the older 370-relation QA-gold pool. Val/test EM always uses an
+aligned graph record (``--eval_file``).
 """
 
 from __future__ import annotations
@@ -47,8 +49,13 @@ from hard_negative_grip.listed_training import (  # noqa: E402
     format_answer_prefix,
     listed_negatives,
 )
+from hard_negative_grip.official_lists import (  # noqa: E402
+    DEFAULT_RAW_NELL23K,
+    load_train_relation_order,
+)
 from hard_negative_grip.task_file import (  # noqa: E402
     LISTED_NEGATIVE_K,
+    LISTED_NEGATIVE_SOURCES,
     build_qa_assets_from_task_texts,
     is_grip_task_file,
     load_graph_record,
@@ -107,6 +114,26 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=LISTED_NEGATIVE_K,
         help="Negatives sampled per relation-like paper QA item (task-file path only).",
+    )
+    parser.add_argument(
+        "--listed_negative_source",
+        choices=list(LISTED_NEGATIVE_SOURCES),
+        default="train_graph",
+        help="train_graph = official 198 NELL23K train relations via process.py; "
+        "qa_vocab = the older 370-relation QA-gold pool.",
+    )
+    parser.add_argument(
+        "--raw_dir",
+        type=Path,
+        default=DEFAULT_RAW_NELL23K,
+        help="NELL23K raw split directory (train.txt) for train_graph negatives.",
+    )
+    parser.add_argument(
+        "--listed_negative_seed",
+        type=int,
+        default=None,
+        help="Private RandomState seed for train_graph negatives. Default: --seed. "
+        "Isolated from eval's global numpy stream; does not read val/test triples.",
     )
     parser.add_argument(
         "--skip_train",
@@ -599,16 +626,23 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "seed": args.seed,
         "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
         "listed_negative_k": args.listed_negative_k,
+        "listed_negative_source": args.listed_negative_source,
+        "listed_negative_seed": (
+            args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
+        ),
+        "raw_dir": str(args.raw_dir),
         "skip_train": bool(args.skip_train),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
             "Stage 1 is shared graph-context storage. Stage 2 then forks: "
             "b1 = original GRIP generation loss; listed = generation + InfoNCE. "
             "A paper task JSON trains S1 on context+summarization and S2 on generated QA; "
-            "relation-like QA items sample in-vocab negatives because those prompts have "
-            "no official 10-way list. Val/test EM still uses the aligned relation-prediction split. "
-            "Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the "
-            "generation objective is compute-matched."
+            "relation-like QA items sample 9 negatives from the official train-graph "
+            "relation vocabulary with the process.py permutation rule "
+            "(--listed_negative_source train_graph). qa_vocab restores the older "
+            "370-relation QA-gold pool. Prompts stay unchanged. Val/test EM still uses "
+            "the aligned relation-prediction split. Both Stage-2 arms use the full QA "
+            "epoch budget (no S2 early stop) so the generation objective is compute-matched."
         ),
     }
     (output_dir / "run_config.json").write_text(
@@ -623,16 +657,31 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         eval_record = load_graph_record(eval_path)
         args.eval_file = eval_path
         context_samples = list(payload["context_samples"])
+        relation_order = None
+        if args.listed_negative_source == "train_graph":
+            raw_dir = Path(args.raw_dir)
+            if not (raw_dir / "train.txt").is_file():
+                raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
+            relation_order = load_train_relation_order(raw_dir)
+        listed_seed = args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
         qa_texts, qa_metas = build_qa_assets_from_task_texts(
             list(payload["qa_samples"]),
-            seed=args.seed,
+            seed=listed_seed,
             listed_negative_k=args.listed_negative_k,
+            listed_negative_source=args.listed_negative_source,
+            relation_order=relation_order,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
+        matched_n = sum(1 for meta in qa_metas if meta.get("matched_train_relation"))
+        vocab_n = len(relation_order) if relation_order is not None else len(
+            {meta["positive_relation"] for meta in qa_metas if meta["listed_relations"]}
+        )
         print(
             f"[data] paper task file context={len(context_samples)} "
             f"qa={len(qa_texts)} listed_relation_qa={listed_n} "
-            f"eval={eval_path}",
+            f"listed_negative_source={args.listed_negative_source} "
+            f"vocab={vocab_n} matched_train_relation={matched_n} "
+            f"listed_negative_seed={listed_seed} eval={eval_path}",
             flush=True,
         )
         return None, context_samples, qa_texts, qa_metas, eval_record
