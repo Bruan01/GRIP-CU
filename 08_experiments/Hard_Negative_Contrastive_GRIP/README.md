@@ -55,7 +55,7 @@ SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
 bash configs/run_listed_train_graph_negatives.sh
 
 # after that run finishes, rewrite listed-vs-frozen-B1 comparison.json
-LISTED_RUN=results/runs/20260917_qwen7b_train_graph_negatives \
+LISTED_RUN=results/runs/20260918_qwen7b_train_graph_negatives \
   bash configs/compare_listed_to_frozen_b1.sh
 
 # resume Stage 2 from a finished Stage-1 adapter (single GPU, sequential)

@@ -29,7 +29,7 @@
 - ✅ 2026-09-09：0.5B smoke，共享 Stage 1，再 fork B1 vs listed（`results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke`）。生成 EM 未过门。
 - ✅ 2026-09-13～14：Qwen2.5-7B 在 `grip_nell23k_tasks.json` 上同样分叉（`results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/`）。关系类 QA 从训练词表抽 9 个负样本（370 种；实验 F/G）。
 - ✅ 2026-09-15：同一份 7B adapter 在 smoke 96 / pilot 640 / 官方全量 9895 题上做自由生成 + 闭集打分。全量主结果在 `results/runs/20260915_140500_qwen7b_full_decode/`。
-- ⏳ 2026-09-17：实验 H 把 listed 负样本换成官方 198 训练图关系（`process.py` 规则）。代码已切默认；listed 重训进行中。B1 / Stage 1 复用 20260913。训完后自动对照冻结 B1 的 smoke 生成 EM。
+- ⏳ 2026-09-18：实验 H 把 listed 负样本换成官方 198 训练图关系（`process.py` 规则）。20260917 第一次重训在 76/240 被掐掉，无 adapter；已在 tmux `expH-20260918` 重开。B1 / Stage 1 复用 20260913。训完后自动对照冻结 B1 的 smoke 生成 EM。
 - ❌ 0.5B 的 pilot **训练**未跑；7B 只是在 pilot 切片上解码。
 - ❌ B2–B10 结构家族按 H2 证据不应开。Stage D（adapter 身份对比）未做。H5 算力匹配未做。
 
