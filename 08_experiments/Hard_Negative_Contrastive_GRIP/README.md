@@ -41,6 +41,8 @@ Shared Stage 1 uses the `quick01_storage_quick` recipe (MLP LoRA r=4/alpha=8, fu
 
 Both Stage 2 arms use the full QA epoch budget (no S2 early stop). Primary metric is greedy generation exact match.
 
+Server jobs auto-enter a detached tmux session and write mid-run HuggingFace checkpoints (`--save_steps 10`, keep 2). Re-running the same `RUN_DIR` resumes from `trainer_*/checkpoint-*`. `SKIP_TMUX=1` is only for short debug. `FORCE_NEW=1` or `--no_resume` starts a directory/stage from scratch.
+
 ```bash
 # smoke: 64 train / 32 val / 64 test, aligned official 10-way
 SCALE=smoke bash configs/run_listed_vs_b1.sh
@@ -57,6 +59,9 @@ bash configs/run_listed_train_graph_negatives.sh
 # after that run finishes, rewrite listed-vs-frozen-B1 comparison.json
 LISTED_RUN=results/runs/20260918_qwen7b_train_graph_negatives \
   bash configs/compare_listed_to_frozen_b1.sh
+
+# resume the last listed retrain (same RUN_DIR, latest checkpoint)
+RESUME_LAST=1 bash configs/run_listed_train_graph_negatives.sh
 
 # resume Stage 2 from a finished Stage-1 adapter (single GPU, sequential)
 RUN_DIR=results/runs/<run> RESUME_S1_ADAPTER=$RUN_DIR/s1_adapter \

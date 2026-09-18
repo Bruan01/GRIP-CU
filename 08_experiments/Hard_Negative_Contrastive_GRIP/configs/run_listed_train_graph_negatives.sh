@@ -19,6 +19,15 @@ EVAL_FILE="${EVAL_FILE:-$HNG/data/nell23k/recurrent_relation_prediction.aligned.
 RAW_DIR="${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_qwen7b_train_graph_negatives}"
+LAST_RUN_FILE="$HNG/results/LAST_TRAIN_GRAPH_NEGATIVES_RUN.txt"
+if [[ "${RESUME_LAST:-0}" == "1" ]]; then
+  if [[ ! -f "$LAST_RUN_FILE" ]]; then
+    echo "error: RESUME_LAST=1 but missing $LAST_RUN_FILE" >&2
+    exit 1
+  fi
+  RUN_DIR="$(tr -d '\n' < "$LAST_RUN_FILE")"
+fi
+TMUX_SESSION="${TMUX_SESSION:-train-graph-neg-${RUN_ID}}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
@@ -40,10 +49,14 @@ if [[ ! -f "$RAW_DIR/train.txt" ]]; then
   echo "error: missing $RAW_DIR/train.txt" >&2
   exit 1
 fi
-if [[ -e "$RUN_DIR" ]]; then
-  echo "error: run directory already exists; choose a new RUN_ID: $RUN_DIR" >&2
+if [[ "${FORCE_NEW:-0}" == "1" && -e "$RUN_DIR" ]]; then
+  echo "error: FORCE_NEW=1 but run directory already exists: $RUN_DIR" >&2
   exit 1
 fi
+
+# shellcheck source=tmux_guard.sh
+source "$HNG/configs/tmux_guard.sh"
+tmux_guard_reexec "$0" "$@"
 
 mkdir -p "$RUN_DIR"
 {
@@ -55,6 +68,9 @@ mkdir -p "$RUN_DIR"
   echo "input_file=$INPUT_FILE"
   echo "eval_file=$EVAL_FILE"
   echo "raw_dir=$RAW_DIR"
+  echo "tmux_session=${TMUX_SESSION:-}"
+  echo "save_steps=${SAVE_STEPS:-10}"
+  echo "save_total_limit=${SAVE_TOTAL_LIMIT:-2}"
   echo "note=retrain listed only; B1 is the 20260913 adapter"
   date --iso-8601=seconds
   "$PYTHON" -c "import torch; print('cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
@@ -67,7 +83,15 @@ export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 cd "$CODE_DIR"
 
-echo "[launch] listed train_graph negatives from $S1_ADAPTER" | tee -a "$RUN_DIR/run.log"
+TRAIN_FLAGS=()
+if [[ "${NO_RESUME:-0}" == "1" ]]; then
+  TRAIN_FLAGS+=(--no_resume)
+fi
+if [[ -n "${RESUME_FROM_CHECKPOINT:-}" ]]; then
+  TRAIN_FLAGS+=(--resume_from_checkpoint "$RESUME_FROM_CHECKPOINT")
+fi
+
+echo "[launch] listed train_graph negatives from $S1_ADAPTER tmux=${TMUX_SESSION:-none}" | tee -a "$RUN_DIR/run.log"
 set +e
 "$PYTHON" "$HNG/scripts/train_listed_contrastive.py" \
   --input_file "$INPUT_FILE" \
@@ -95,11 +119,14 @@ set +e
   --seed 2026 \
   --listed_negative_source train_graph \
   --raw_dir "$RAW_DIR" \
+  --save_steps "${SAVE_STEPS:-10}" \
+  --save_total_limit "${SAVE_TOTAL_LIMIT:-2}" \
+  "${TRAIN_FLAGS[@]}" \
   2>&1 | tee -a "$RUN_DIR/run.log"
 rc=${PIPESTATUS[0]}
 set -e
 echo "[launch] listed finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$RUN_DIR/run.log"
-echo "$RUN_DIR" > "$HNG/results/LAST_TRAIN_GRAPH_NEGATIVES_RUN.txt"
+echo "$RUN_DIR" > "$LAST_RUN_FILE"
 if [[ "$rc" -eq 0 ]]; then
   echo "[launch] compare listed vs frozen B1" | tee -a "$RUN_DIR/run.log"
   LISTED_RUN="$RUN_DIR" B1_RUN="$OLD_RUN" bash "$HNG/configs/compare_listed_to_frozen_b1.sh" | tee -a "$RUN_DIR/run.log"

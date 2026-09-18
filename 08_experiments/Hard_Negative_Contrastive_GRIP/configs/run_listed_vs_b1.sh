@@ -22,6 +22,7 @@ RESUME_S1_ADAPTER="${RESUME_S1_ADAPTER:-}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 MODEL_TAG="${MODEL_NAME//./}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_listed_vs_b1_${MODEL_TAG}_${SCALE}}"
+TMUX_SESSION="${TMUX_SESSION:-listed-vs-b1-${RUN_ID}}"
 
 case "$MODEL_NAME" in
   qwen-7b)
@@ -93,10 +94,14 @@ if [[ -n "$RESUME_S1_ADAPTER" && ! -d "$RESUME_S1_ADAPTER" ]]; then
   echo "error: missing Stage-1 adapter: $RESUME_S1_ADAPTER" >&2
   exit 1
 fi
-if [[ -e "$RUN_DIR" && -z "$RESUME_S1_ADAPTER" ]]; then
-  echo "error: run directory already exists; choose a new RUN_ID: $RUN_DIR" >&2
+if [[ "${FORCE_NEW:-0}" == "1" && -e "$RUN_DIR" ]]; then
+  echo "error: FORCE_NEW=1 but run directory already exists: $RUN_DIR" >&2
   exit 1
 fi
+
+# shellcheck source=tmux_guard.sh
+source "$HNG/configs/tmux_guard.sh"
+tmux_guard_reexec "$0" "$@"
 
 mkdir -p "$RUN_DIR"
 {
@@ -111,6 +116,8 @@ mkdir -p "$RUN_DIR"
   echo "listed_negative_source=${LISTED_NEGATIVE_SOURCE:-train_graph}"
   echo "resume_s1_adapter=${RESUME_S1_ADAPTER:-}"
   echo "skip_train=${SKIP_TRAIN:-0}"
+  echo "tmux_session=${TMUX_SESSION:-}"
+  echo "save_steps=${SAVE_STEPS:-10}"
   date --iso-8601=seconds
   nvidia-smi || true
 } >> "$RUN_DIR/environment.txt" 2>&1
@@ -145,7 +152,15 @@ COMMON=(
   --seed 2026
   --listed_negative_source "${LISTED_NEGATIVE_SOURCE:-train_graph}"
   --raw_dir "${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
+  --save_steps "${SAVE_STEPS:-10}"
+  --save_total_limit "${SAVE_TOTAL_LIMIT:-2}"
 )
+if [[ "${NO_RESUME:-0}" == "1" ]]; then
+  COMMON+=(--no_resume)
+fi
+if [[ -n "${RESUME_FROM_CHECKPOINT:-}" ]]; then
+  COMMON+=(--resume_from_checkpoint "$RESUME_FROM_CHECKPOINT")
+fi
 
 NGPU=0
 if command -v nvidia-smi >/dev/null 2>&1; then

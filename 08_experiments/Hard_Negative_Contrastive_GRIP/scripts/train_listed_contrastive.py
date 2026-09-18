@@ -53,6 +53,11 @@ from hard_negative_grip.official_lists import (  # noqa: E402
     DEFAULT_RAW_NELL23K,
     load_train_relation_order,
 )
+from hard_negative_grip.run_protection import (  # noqa: E402
+    adapter_is_complete,
+    checkpoint_training_kwargs,
+    resolve_resume_checkpoint,
+)
 from hard_negative_grip.task_file import (  # noqa: E402
     LISTED_NEGATIVE_K,
     LISTED_NEGATIVE_SOURCES,
@@ -142,6 +147,29 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip Stage-2 training when the variant adapter already exists and only evaluate.",
     )
+    parser.add_argument(
+        "--save_steps",
+        type=int,
+        default=10,
+        help="Write a HuggingFace checkpoint every N optimizer steps. 0 disables mid-run saves.",
+    )
+    parser.add_argument(
+        "--save_total_limit",
+        type=int,
+        default=2,
+        help="Keep this many in-progress checkpoints under trainer_*/.",
+    )
+    parser.add_argument(
+        "--resume_from_checkpoint",
+        type=Path,
+        default=None,
+        help="Explicit trainer checkpoint directory. Default: latest checkpoint-* if present.",
+    )
+    parser.add_argument(
+        "--no_resume",
+        action="store_true",
+        help="Ignore existing trainer checkpoints and start the stage from scratch.",
+    )
     return parser.parse_args()
 
 
@@ -184,7 +212,6 @@ def training_arguments(
         accum = max(1, dataset_len // batch)
     kwargs = dict(
         output_dir=str(output_dir),
-        overwrite_output_dir=True,
         num_train_epochs=epochs,
         per_device_train_batch_size=batch,
         gradient_accumulation_steps=accum,
@@ -196,7 +223,6 @@ def training_arguments(
         max_grad_norm=args.max_grad_norm,
         logging_strategy="steps",
         logging_steps=1,
-        save_strategy="no",
         report_to="none",
         bf16=True,
         tf32=False,
@@ -206,6 +232,12 @@ def training_arguments(
         ddp_find_unused_parameters=False,
         lr_scheduler_type="linear",
         gradient_checkpointing=gradient_checkpointing,
+    )
+    kwargs.update(
+        checkpoint_training_kwargs(
+            int(getattr(args, "save_steps", 10)),
+            int(getattr(args, "save_total_limit", 2)),
+        )
     )
     if gradient_checkpointing:
         kwargs["gradient_checkpointing_kwargs"] = {"use_reentrant": False}
@@ -347,7 +379,16 @@ def train_stage1(
         min_epoch=1,
     )
     started = time.time()
-    trainer.train()
+    resume_from = resolve_resume_checkpoint(
+        output_dir / "trainer_s1",
+        resume_from_checkpoint=args.resume_from_checkpoint,
+        no_resume=bool(args.no_resume),
+    )
+    if resume_from:
+        print(f"[s1] resume from {resume_from}", flush=True)
+    else:
+        print("[s1] start fresh (no checkpoint)", flush=True)
+    trainer.train(resume_from_checkpoint=resume_from)
     adapter_dir = output_dir / "s1_adapter"
     save_adapter(
         model,
@@ -361,6 +402,7 @@ def train_stage1(
             "per_device_train_batch_size": args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
             "gradient_checkpointing": use_checkpointing,
+            "resumed_from": resume_from if resume_from else None,
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
         },
     )
@@ -423,7 +465,17 @@ def train_stage2(
         temperature=args.temperature,
     )
     started = time.time()
-    trainer.train()
+    trainer_dir = output_dir / f"trainer_{variant}"
+    resume_from = resolve_resume_checkpoint(
+        trainer_dir,
+        resume_from_checkpoint=args.resume_from_checkpoint,
+        no_resume=bool(args.no_resume),
+    )
+    if resume_from:
+        print(f"[{variant}] resume from {resume_from}", flush=True)
+    else:
+        print(f"[{variant}] start fresh (no checkpoint)", flush=True)
+    trainer.train(resume_from_checkpoint=resume_from)
     adapter_dir = output_dir / variant / "adapter"
     save_adapter(
         model,
@@ -443,6 +495,7 @@ def train_stage2(
             "gradient_checkpointing": use_checkpointing,
             "seconds": round(time.time() - started, 1),
             "s1_adapter": str(s1_adapter),
+            "resumed_from": resume_from if resume_from else None,
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
         },
     )
@@ -647,6 +700,12 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         ),
         "raw_dir": str(args.raw_dir),
         "skip_train": bool(args.skip_train),
+        "save_steps": int(args.save_steps),
+        "save_total_limit": int(args.save_total_limit),
+        "resume_from_checkpoint": (
+            str(args.resume_from_checkpoint) if args.resume_from_checkpoint else None
+        ),
+        "no_resume": bool(args.no_resume),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
             "Stage 1 is shared graph-context storage. Stage 2 then forks: "
@@ -741,12 +800,15 @@ def main() -> None:
     write_run_config(output_dir, args)
 
     if args.stage in {"s1", "all"}:
-        s1_adapter = train_stage1(
-            args,
-            output_dir,
-            context_samples=context_samples,
-            record=record,
-        )
+        if adapter_is_complete(Path(s1_adapter)) and not args.no_resume:
+            print(f"[s1] reuse existing {s1_adapter}", flush=True)
+        else:
+            s1_adapter = train_stage1(
+                args,
+                output_dir,
+                context_samples=context_samples,
+                record=record,
+            )
 
     summaries = {}
     if args.stage in {"b1", "all"}:
@@ -754,8 +816,8 @@ def main() -> None:
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
         b1_adapter = output_dir / "b1" / "adapter"
         model = tokenizer = None
-        if args.skip_train:
-            if not b1_adapter.is_dir():
+        if args.skip_train or (adapter_is_complete(b1_adapter) and not args.no_resume):
+            if not adapter_is_complete(b1_adapter):
                 raise FileNotFoundError(f"missing b1 adapter: {b1_adapter}")
             print(f"[b1] skip train; evaluate {b1_adapter}", flush=True)
         else:
@@ -780,8 +842,8 @@ def main() -> None:
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
         listed_adapter = output_dir / "listed" / "adapter"
         model = tokenizer = None
-        if args.skip_train:
-            if not listed_adapter.is_dir():
+        if args.skip_train or (adapter_is_complete(listed_adapter) and not args.no_resume):
+            if not adapter_is_complete(listed_adapter):
                 raise FileNotFoundError(f"missing listed adapter: {listed_adapter}")
             print(f"[listed] skip train; evaluate {listed_adapter}", flush=True)
         else:

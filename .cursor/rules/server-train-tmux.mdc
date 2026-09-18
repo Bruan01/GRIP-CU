@@ -1,0 +1,54 @@
+---
+description: 服务器上的训练/长 GPU 任务必须挂 tmux，并启用断点续传
+alwaysApply: true
+---
+
+# 服务器训练：tmux + 断点续传
+
+只要在这台服务器上启动训练（以及会长时间占 GPU 的评测），必须同时满足下面两条，不要把任务挂在当前 Cursor/SSH 前台。
+
+## 1. 必须进 tmux
+
+- 用项目里的启动脚本；它们会通过 `configs/tmux_guard.sh` 自动 `tmux new-session -d`。
+- 不要在当前对话终端直接跑 `python scripts/train_*.py` 或未包 tmux 的长训命令。
+- 启动后告诉用户 session 名、`tmux attach -t <name>`，以及 `run.log` 路径。
+- 已有同名 session 时不要再开一份抢 GPU；提示 attach，或换 `TMUX_SESSION`。
+- 不要杀掉正在跑的训练来“改挂 tmux”，除非用户明确要求重启。
+- 短调试（语法检查、单测、几步过拟合）可以 `SKIP_TMUX=1`；7B / 全量 / 过夜任务不行。
+
+推荐启动方式：
+
+```bash
+# listed 重训（同源 198 负样本）
+TMUX_SESSION=expH-$(date +%Y%m%d) \
+  RUN_DIR=... \
+  bash configs/run_listed_train_graph_negatives.sh
+
+# listed vs B1
+TMUX_SESSION=listed-vs-b1-$(date +%Y%m%d) \
+  SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
+```
+
+## 2. 必须能断点续传
+
+长训禁止 `save_strategy=no` 作为默认。训练脚本应：
+
+- 按 step 写 HuggingFace checkpoint（默认 `--save_steps 10`，`--save_total_limit 2`）。
+- 重启时自动从 `trainer_*/checkpoint-*` 续跑；不要因为 `RUN_DIR` 已存在就直接报错退出。
+- 终态 adapter 仍写到 `s1_adapter/` 或 `<variant>/adapter/`。
+- 续跑同一实验时固定 `RUN_DIR`（或 `RESUME_LAST=1`），不要每次新开时间戳目录导致无法接着训。
+- 终态 adapter 已存在时用 `--skip_train` 只评测，不要无故重训。
+- 用户明确要求重头开始时才用 `--no_resume` 或 `FORCE_NEW=1`。
+
+```bash
+# 接着上次被掐掉的 listed 重训
+RESUME_LAST=1 bash configs/run_listed_train_graph_negatives.sh
+
+# 或显式指定同一目录
+RUN_DIR=results/runs/20260918_qwen7b_train_graph_negatives \
+  bash configs/run_listed_train_graph_negatives.sh
+```
+
+## 3. 评测
+
+全量/pilot 解码同样挂 tmux。生成 JSONL 若已有断点续写接口就打开，不要中断后从头再解一遍。

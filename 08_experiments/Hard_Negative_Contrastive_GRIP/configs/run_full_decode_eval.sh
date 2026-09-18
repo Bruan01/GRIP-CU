@@ -13,6 +13,7 @@ FULL_EVAL="${FULL_EVAL:-$HNG/data/nell23k/recurrent_relation_prediction_full.ali
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 FULL_DIR="${FULL_DIR:-$HNG/results/runs/${RUN_ID}_qwen7b_full_decode}"
 PROGRESS_EVERY="${PROGRESS_EVERY:-64}"
+TMUX_SESSION="${TMUX_SESSION:-full-decode-${RUN_ID}}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
@@ -22,6 +23,11 @@ if [[ ! -d "$ADAPTER_RUN/b1/adapter" || ! -d "$ADAPTER_RUN/listed/adapter" ]]; t
   echo "error: missing 7B adapters under $ADAPTER_RUN" >&2
   exit 1
 fi
+
+# shellcheck source=tmux_guard.sh
+source "$HNG/configs/tmux_guard.sh"
+tmux_guard_reexec "$0" "$@"
+
 if [[ ! -f "$FULL_EVAL" ]]; then
   echo "[full-eval] missing $FULL_EVAL; preparing"
   bash "$HNG/configs/prepare_full_nell23k_eval.sh"

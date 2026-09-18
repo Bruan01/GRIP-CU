@@ -15,6 +15,7 @@ PILOT_EVAL="${PILOT_EVAL:-$HNG/data/nell23k/recurrent_relation_prediction_pilot.
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 PILOT_DIR="${PILOT_DIR:-$HNG/results/runs/${RUN_ID}_qwen7b_pilot_decode}"
 SKIP_PILOT="${SKIP_PILOT:-0}"
+TMUX_SESSION="${TMUX_SESSION:-decode-${RUN_ID}}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
@@ -28,6 +29,10 @@ if [[ ! -f "$SMOKE_EVAL" || ! -f "$PILOT_EVAL" ]]; then
   echo "error: missing aligned eval files" >&2
   exit 1
 fi
+
+# shellcheck source=tmux_guard.sh
+source "$HNG/configs/tmux_guard.sh"
+tmux_guard_reexec "$0" "$@"
 
 mkdir -p "$ADAPTER_RUN" "$PILOT_DIR"
 export PYTHONPATH="$CODE_DIR:$HNG/src:$HNG/scripts${PYTHONPATH:+:$PYTHONPATH}"
