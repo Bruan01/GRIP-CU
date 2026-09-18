@@ -19,10 +19,9 @@ import time
 from pathlib import Path
 
 import torch
-from peft import PeftModel
-from torch.utils.data import Dataset
-from transformers import TrainingArguments, AutoTokenizer, AutoModelForCausalLM
-from trl import DPOTrainer
+from datasets import Dataset as HFDataset
+from peft import LoraConfig, PeftModel, TaskType, get_peft_model
+from trl import DPOConfig, DPOTrainer
 
 # 复用项目路径
 HNG = Path(__file__).resolve().parents[1]
@@ -35,11 +34,11 @@ sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
 from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE  # noqa: E402
-from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
+from models.utils import get_hf_llm_tokenizer  # noqa: E402
 
 
-class DPODataset(Dataset):
-    """从 JSONL 加载 DPO 格式数据。"""
+class DPODataset:
+    """从 JSONL 加载 DPO 格式数据，返回 HF Dataset。"""
 
     def __init__(self, data_path: Path):
         self.entries = []
@@ -50,11 +49,8 @@ class DPODataset(Dataset):
                     self.entries.append(json.loads(line))
         print(f"[DPO] loaded {len(self.entries)} entries from {data_path}")
 
-    def __len__(self):
-        return len(self.entries)
-
-    def __getitem__(self, idx):
-        return self.entries[idx]
+    def to_hf_dataset(self) -> HFDataset:
+        return HFDataset.from_list(self.entries)
 
 
 def parse_args() -> argparse.Namespace:
@@ -77,11 +73,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gradient_accumulation_steps", type=int, default=1)
     parser.add_argument("--learning_rate", type=float, default=1e-5)
     parser.add_argument("--max_length", type=int, default=2048)
-    parser.add_argument("--max_prompt_length", type=int, default=1024)
     parser.add_argument("--save_steps", type=int, default=10)
     parser.add_argument("--save_total_limit", type=int, default=2)
     parser.add_argument("--seed", type=int, default=2026)
-    parser.add_argument("--no_resume", action="store_true")
     parser.add_argument("--resume_from_checkpoint", type=str, default=None)
     parser.add_argument("--skip_train", action="store_true")
     return parser.parse_args()
@@ -95,6 +89,24 @@ def release_cuda() -> None:
         torch.cuda.ipc_collect()
 
 
+def _attach_lora(model, lora_r, lora_alpha, target_modules):
+    """Attach LoRA with adapter_name='default' (required by trl DPOTrainer)."""
+    if target_modules is None:
+        target_modules = ["down_proj", "up_proj", "gate_proj"]
+    config = LoraConfig(
+        r=lora_r,
+        lora_alpha=lora_alpha,
+        target_modules=target_modules,
+        bias="none",
+        task_type=TaskType.CAUSAL_LM,
+    )
+    while isinstance(model, PeftModel):
+        model = model.unload() if hasattr(model, "unload") else model.base_model
+    model = get_peft_model(model, config, adapter_name="default")
+    model.print_trainable_parameters()
+    return model
+
+
 def load_model_with_adapter(args: argparse.Namespace):
     """加载模型。如果有 s2_adapter，先加载 adapter 再 merge 后挂新 LoRA。"""
     model_id = HF_DECODER_ONLY_LLMS[args.model_name]
@@ -102,7 +114,6 @@ def load_model_with_adapter(args: argparse.Namespace):
 
     if args.s2_adapter is not None:
         print(f"[load] loading s2 adapter from {args.s2_adapter}")
-        # 用 PeftModel 加载已有 adapter
         base, tokenizer = get_hf_llm_tokenizer(
             model_name=model_id,
             model_source="local",
@@ -113,15 +124,9 @@ def load_model_with_adapter(args: argparse.Namespace):
             device_map=None,
         )
         model = PeftModel.from_pretrained(base, str(args.s2_adapter), is_trainable=True)
-        # merge adapter 到 base，然后挂新的 LoRA 做 DPO
         model = model.merge_and_unload()
         print("[load] merged s2 adapter. now attaching new LoRA for DPO...")
-        model = get_lora_model(
-            model,
-            lora_r=args.lora_r,
-            lora_alpha=args.lora_alpha,
-            target_modules=args.target_modules,
-        )
+        model = _attach_lora(model, args.lora_r, args.lora_alpha, args.target_modules)
     else:
         print("[load] loading base model + fresh LoRA for DPO")
         model, tokenizer = get_hf_llm_tokenizer(
@@ -130,11 +135,9 @@ def load_model_with_adapter(args: argparse.Namespace):
             model_cache_dir=cache_dir,
             local_files_only=True,
             dtype=TORCH_DTYPE["bfloat16"],
-            peft=True,
-            lora_r=args.lora_r,
-            lora_alpha=args.lora_alpha,
-            target_modules=args.target_modules,
+            peft=False,
         )
+        model = _attach_lora(model, args.lora_r, args.lora_alpha, args.target_modules)
 
     if torch.cuda.is_available():
         model.to("cuda")
@@ -150,7 +153,6 @@ def main() -> None:
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # 保存配置
     config = vars(args)
     config["executed_at"] = time.strftime("%Y-%m-%dT%H:%M:%S")
     (output_dir / "dpo_config.json").write_text(
@@ -163,22 +165,18 @@ def main() -> None:
         print(f"[skip] adapter already exists: {adapter_dir}")
         return
 
-    # 加载模型
     release_cuda()
     model, tokenizer = load_model_with_adapter(args)
 
-    # 加载 DPO 数据集
-    dataset = DPODataset(args.dpo_data)
+    dataset = DPODataset(args.dpo_data).to_hf_dataset()
     if len(dataset) == 0:
         print("error: empty DPO dataset", file=sys.stderr)
         sys.exit(1)
 
-    # 确保 tokenizer 有 pad_token
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    # 构建 TrainingArguments
-    train_args = TrainingArguments(
+    train_args = DPOConfig(
         output_dir=str(output_dir),
         per_device_train_batch_size=args.per_device_train_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -198,26 +196,22 @@ def main() -> None:
         dataloader_pin_memory=False,
         ddp_find_unused_parameters=False,
         report_to="none",
+        beta=args.beta,
+        max_length=args.max_length,
     )
 
-    # DPOTrainer
     dpo_trainer = DPOTrainer(
         model=model,
         ref_model=None,
-        beta=args.beta,
         args=train_args,
         train_dataset=dataset,
         processing_class=tokenizer,
-        max_length=args.max_length,
-        max_prompt_length=args.max_prompt_length,
     )
 
-    # 训练
     print(f"[DPO] starting training — beta={args.beta}, max_steps={args.max_steps}, dataset={len(dataset)}")
     train_result = dpo_trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
     print(f"[DPO] training done: {train_result}")
 
-    # 保存 adapter
     adapter_dir.mkdir(parents=True, exist_ok=True)
     dpo_trainer.model.save_pretrained(adapter_dir)
     tokenizer.save_pretrained(adapter_dir)
