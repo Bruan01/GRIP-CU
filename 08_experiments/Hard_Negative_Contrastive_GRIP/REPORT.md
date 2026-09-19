@@ -30,7 +30,7 @@
 - ✅ 2026-09-13～14：Qwen2.5-7B 在 `grip_nell23k_tasks.json` 上同样分叉（`results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/`）。关系类 QA 从训练词表抽 9 个负样本（370 种；实验 F/G）。
 - ✅ 2026-09-15：同一份 7B adapter 在 smoke 96 / pilot 640 / 官方全量 9895 题上做自由生成 + 闭集打分。全量主结果在 `results/runs/20260915_140500_qwen7b_full_decode/`。
 - ✅ 2026-09-18：实验 H 把 listed 负样本换成官方 198 训练图关系（`process.py` 规则）。复用 20260913 Stage 1 / 冻结 B1，只重训 listed。240/240 步，约 13.5 小时，终态 `listed/adapter/`。smoke 生成 EM 88.54% vs 冻结 B1 86.46%（+2.08 pp）；test 打平，涨点全在 val。目录 `results/runs/20260918_qwen7b_train_graph_negatives/`。
-- ⏳ 2026-09-19：listed-only pilot 640 解码排队中（B1 复用 20260915，不重解）。GPU 被 DPO `dpo-7b-full-20260919-v2` 占用。
+- ⏳ 2026-09-19：listed-only pilot 640 解码进行中（B1 复用 20260915，不重解）。生成已出：86.72% vs B1 84.53%（+2.19 pp）；test +1.56 pp，不再是 smoke 上的打平。闭集还在跑。目录 `results/runs/20260919_qwen7b_pilot_listed_only/`。
 - ❌ 0.5B 的 pilot **训练**未跑；7B 只是在 pilot 切片上解码。
 - ❌ B2–B10 结构家族按 H2 证据不应开。Stage D（adapter 身份对比）未做。H5 算力匹配未做。
 
