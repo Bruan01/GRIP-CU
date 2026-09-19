@@ -3,9 +3,10 @@
 Default input is the aligned NELL23K relation-prediction split. Passing
 ``grip_nell23k_tasks.json`` trains Stage 1 on paper context+summarization and
 Stage 2 on generated QA; relation-like items sample 9 train-graph negatives
-with the official ``process.py`` rule. Pass ``--listed_negative_source qa_vocab``
-to reproduce the older 370-relation QA-gold pool. Val/test EM always uses an
-aligned graph record (``--eval_file``).
+with the official ``process.py`` rule. Pass ``--listed_negative_source embed_sim``
+to keep that 198-relation pool but prefer Stage-1 cosine-similar relations.
+``--listed_negative_source qa_vocab`` restores the older 370-relation QA-gold
+pool. Val/test EM always uses an aligned graph record (``--eval_file``).
 """
 
 from __future__ import annotations
@@ -49,6 +50,12 @@ from hard_negative_grip.listed_training import (  # noqa: E402
     ListedQADataset,
     format_answer_prefix,
     listed_negatives,
+)
+from hard_negative_grip.embed_negatives import (  # noqa: E402
+    DEFAULT_EMBED_POOL_SIZE,
+    DEFAULT_EMBED_TEMPERATURE,
+    align_embeddings,
+    load_relation_embeddings,
 )
 from hard_negative_grip.official_lists import (  # noqa: E402
     DEFAULT_RAW_NELL23K,
@@ -128,7 +135,26 @@ def parse_args() -> argparse.Namespace:
         choices=list(LISTED_NEGATIVE_SOURCES),
         default="train_graph",
         help="train_graph = official 198 NELL23K train relations via process.py; "
+        "embed_sim = same 198-relation pool, sampled by Stage-1 cosine similarity; "
         "qa_vocab = the older 370-relation QA-gold pool.",
+    )
+    parser.add_argument(
+        "--relation_embedding_file",
+        type=Path,
+        default=None,
+        help="NPZ from scripts/precompute_relation_embeddings.py. Required for embed_sim.",
+    )
+    parser.add_argument(
+        "--embed_pool_size",
+        type=int,
+        default=DEFAULT_EMBED_POOL_SIZE,
+        help="embed_sim: only sample from the top-N most similar train relations.",
+    )
+    parser.add_argument(
+        "--embed_sample_temperature",
+        type=float,
+        default=DEFAULT_EMBED_TEMPERATURE,
+        help="embed_sim: softmax temperature over cosine scores inside the pool.",
     )
     parser.add_argument(
         "--raw_dir",
@@ -707,6 +733,11 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "listed_negative_seed": (
             args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
         ),
+        "relation_embedding_file": (
+            str(args.relation_embedding_file) if args.relation_embedding_file else None
+        ),
+        "embed_pool_size": int(args.embed_pool_size),
+        "embed_sample_temperature": float(args.embed_sample_temperature),
         "raw_dir": str(args.raw_dir),
         "skip_train": bool(args.skip_train),
         "save_steps": int(args.save_steps),
@@ -722,7 +753,8 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             "A paper task JSON trains S1 on context+summarization and S2 on generated QA; "
             "relation-like QA items sample 9 negatives from the official train-graph "
             "relation vocabulary with the process.py permutation rule "
-            "(--listed_negative_source train_graph). qa_vocab restores the older "
+            "(--listed_negative_source train_graph). embed_sim keeps that vocabulary "
+            "but prefers Stage-1 cosine-similar relations. qa_vocab restores the older "
             "370-relation QA-gold pool. Prompts stay unchanged. Val/test EM still uses "
             "the aligned relation-prediction split. Both Stage-2 arms use the full QA "
             "epoch budget (no S2 early stop) so the generation objective is compute-matched."
@@ -741,11 +773,21 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         args.eval_file = eval_path
         context_samples = list(payload["context_samples"])
         relation_order = None
-        if args.listed_negative_source == "train_graph":
+        relation_embeddings = None
+        if args.listed_negative_source in {"train_graph", "embed_sim"}:
             raw_dir = Path(args.raw_dir)
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
             relation_order = load_train_relation_order(raw_dir)
+        if args.listed_negative_source == "embed_sim":
+            if args.relation_embedding_file is None:
+                raise ValueError("embed_sim requires --relation_embedding_file")
+            stored_relations, stored_embeddings = load_relation_embeddings(
+                Path(args.relation_embedding_file)
+            )
+            relation_embeddings = align_embeddings(
+                relation_order or [], stored_relations, stored_embeddings
+            )
         listed_seed = args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
         qa_texts, qa_metas = build_qa_assets_from_task_texts(
             list(payload["qa_samples"]),
@@ -753,6 +795,9 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             listed_negative_k=args.listed_negative_k,
             listed_negative_source=args.listed_negative_source,
             relation_order=relation_order,
+            relation_embeddings=relation_embeddings,
+            embed_pool_size=args.embed_pool_size,
+            embed_sample_temperature=args.embed_sample_temperature,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
         relation_n = sum(
@@ -775,7 +820,10 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             f"listed_relation_qa={listed_n} skipped_unmatched={skipped_n} "
             f"exact_match={exact_n} alias_match={alias_n} "
             f"listed_negative_source={args.listed_negative_source} "
-            f"vocab={vocab_n} listed_negative_seed={listed_seed} eval={eval_path}",
+            f"vocab={vocab_n} listed_negative_seed={listed_seed} "
+            f"embed_file={args.relation_embedding_file} "
+            f"embed_pool={args.embed_pool_size} embed_tau={args.embed_sample_temperature} "
+            f"eval={eval_path}",
             flush=True,
         )
         return None, context_samples, qa_texts, qa_metas, eval_record

@@ -150,3 +150,68 @@ def test_match_train_relation_accepts_concept_alias() -> None:
     assert match_train_relation("concept:atdate", index) == "concept:atdate"
     assert match_train_relation("worksfor", index) == "concept:worksfor"
     assert match_train_relation("missing", index) is None
+
+
+def test_embed_sim_negatives_use_train_vocab_and_prefer_neighbors() -> None:
+    import numpy as np
+
+    order = [
+        "concept:atdate",
+        "concept:worksfor",
+        "concept:haswife",
+        "concept:citycapitalofcountry",
+    ]
+    embeddings = np.array(
+        [
+            [1.0, 0.0],
+            [0.99, 0.01],
+            [0.0, 1.0],
+            [0.05, 0.99],
+        ]
+    )
+    texts = [
+        _qa("what is the relation between a and b?", "concept:atdate"),
+        _qa("what is the relation between c and d?", "worksfor"),
+        _qa("Who wrote The Deerslayer?", "James Fenimore Cooper"),
+        _qa("what is the relation between e and f?", "not_a_train_relation"),
+    ]
+    _, metas = build_qa_assets_from_task_texts(
+        texts,
+        seed=2026,
+        listed_negative_k=2,
+        listed_negative_source="embed_sim",
+        relation_order=order,
+        relation_embeddings=embeddings,
+        embed_pool_size=2,
+        embed_sample_temperature=0.05,
+    )
+    assert metas[0]["matched_train_relation"] == "concept:atdate"
+    assert "concept:atdate" not in metas[0]["listed_relations"]
+    assert set(metas[0]["listed_relations"]) == {
+        "concept:worksfor",
+        "concept:citycapitalofcountry",
+    }
+    assert metas[1]["matched_train_relation"] == "concept:worksfor"
+    assert "concept:worksfor" not in metas[1]["listed_relations"]
+    assert set(metas[1]["listed_relations"]) == {
+        "concept:atdate",
+        "concept:citycapitalofcountry",
+    }
+    assert metas[2]["listed_relations"] == []
+    assert metas[3]["listed_relations"] == []
+    assert all(rel in order for rel in metas[0]["listed_relations"] + metas[1]["listed_relations"])
+
+
+def test_embed_sim_requires_embeddings() -> None:
+    texts = [_qa("what is the relation between a and b?", "concept:atdate")]
+    try:
+        build_qa_assets_from_task_texts(
+            texts,
+            seed=2026,
+            listed_negative_source="embed_sim",
+            relation_order=["concept:atdate", "concept:worksfor"],
+        )
+    except ValueError as exc:
+        assert "relation_embeddings" in str(exc)
+    else:
+        raise AssertionError("expected ValueError")

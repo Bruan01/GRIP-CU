@@ -8,8 +8,10 @@
 Those QA prompts have no official 10-way list. Relation-like items get 9
 InfoNCE negatives. The default pool is the official train-graph relation
 vocabulary (198 on NELL23K), sampled with the same ``process.py`` rule as
-eval 10-way. ``qa_vocab`` keeps the older 370-relation QA-gold pool.
-Evaluation still uses the aligned relation-prediction split.
+eval 10-way. ``embed_sim`` keeps that same vocabulary but prefers
+cosine-similar relations from a Stage-1 embedding table. ``qa_vocab`` keeps
+the older 370-relation QA-gold pool. Evaluation still uses the aligned
+relation-prediction split.
 """
 
 from __future__ import annotations
@@ -21,13 +23,19 @@ from pathlib import Path
 
 import numpy as np
 
+from .embed_negatives import (
+    DEFAULT_EMBED_POOL_SIZE,
+    DEFAULT_EMBED_TEMPERATURE,
+    cosine_similarity_matrix,
+    sample_embed_negatives,
+)
 from .official_lists import official_negatives
 
 ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
 RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
 YES_NO = {"yes", "no"}
 LISTED_NEGATIVE_K = 9
-LISTED_NEGATIVE_SOURCES = ("train_graph", "qa_vocab")
+LISTED_NEGATIVE_SOURCES = ("train_graph", "embed_sim", "qa_vocab")
 CONCEPT_PREFIX = "concept:"
 
 
@@ -141,6 +149,9 @@ def build_qa_assets_from_task_texts(
     listed_negative_k: int = LISTED_NEGATIVE_K,
     listed_negative_source: str = "train_graph",
     relation_order: list[str] | None = None,
+    relation_embeddings=None,
+    embed_pool_size: int = DEFAULT_EMBED_POOL_SIZE,
+    embed_sample_temperature: float = DEFAULT_EMBED_TEMPERATURE,
 ) -> tuple[list[str], list[dict]]:
     if not qa_texts:
         raise ValueError("task file contains no QA samples")
@@ -149,25 +160,54 @@ def build_qa_assets_from_task_texts(
             f"listed_negative_source must be one of {LISTED_NEGATIVE_SOURCES}, "
             f"got {listed_negative_source!r}"
         )
-    use_train_graph = listed_negative_source == "train_graph"
+    use_train_graph = listed_negative_source in {"train_graph", "embed_sim"}
     if use_train_graph:
         if not relation_order:
             raise ValueError("train_graph negatives require a non-empty relation_order")
         alias_index = train_relation_alias_index(relation_order)
         vocab: list[str] = list(relation_order)
         stream = np.random.RandomState(seed)
+        similarity = None
+        if listed_negative_source == "embed_sim":
+            if relation_embeddings is None:
+                raise ValueError("embed_sim negatives require relation_embeddings")
+            similarity = cosine_similarity_matrix(relation_embeddings)
     else:
         alias_index = {}
         vocab = relation_vocab(qa_texts)
         stream = None
+        similarity = None
     texts: list[str] = []
     metas: list[dict] = []
+    cosine_values: list[float] = []
     for index, text in enumerate(qa_texts):
         gold = assistant_gold(text)
         listed: list[str] = []
         matched = match_train_relation(gold, alias_index) if use_train_graph else None
         if is_relation_gold(gold, text):
-            if use_train_graph:
+            if listed_negative_source == "embed_sim":
+                if matched is not None:
+                    listed = sample_embed_negatives(
+                        matched,
+                        relation_order or [],
+                        similarity,
+                        k=listed_negative_k,
+                        rng=stream,
+                        pool_size=embed_pool_size,
+                        temperature=embed_sample_temperature,
+                    )
+                    cosine_values.extend(
+                        [
+                            float(
+                                similarity[
+                                    relation_order.index(matched),
+                                    relation_order.index(rel),
+                                ]
+                            )
+                            for rel in listed
+                        ]
+                    )
+            elif use_train_graph:
                 if matched is not None:
                     listed = official_negatives(
                         matched,
@@ -192,5 +232,11 @@ def build_qa_assets_from_task_texts(
                 "listed_negative_source": listed_negative_source,
                 "matched_train_relation": matched,
             }
+        )
+    if listed_negative_source == "embed_sim" and cosine_values:
+        print(
+            f"[data] embed_sim pool={embed_pool_size} tau={embed_sample_temperature} "
+            f"sampled_negatives={len(cosine_values)} mean_cosine={float(np.mean(cosine_values)):.4f}",
+            flush=True,
         )
     return texts, metas

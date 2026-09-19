@@ -37,7 +37,7 @@ Method gate: Qwen2.5-7B listed contrast vs original GRIP on official NELL23K val
 Shared Stage 1 uses the `quick01_storage_quick` recipe (MLP LoRA r=4/alpha=8, full `down/up/gate_proj`). Default model is Qwen2.5-0.5B on the aligned relation-prediction split. `run_listed_vs_b1_qwen7b.sh` switches to Qwen2.5-7B, trains on `grip_nell23k_tasks.json` (paper context + summarization + generated QA), and keeps val/test EM on the aligned 10-way split. The 7B recipe on one 24GB 3090 is `batch=1`, `accum=512`. Stage 2 then forks from that adapter:
 
 - `b1`: generation loss only (original GRIP)
-- `listed`: generation + InfoNCE over 9 distractors. Default pool is the official 198 train-graph relations, sampled with the `process.py` rule. `LISTED_NEGATIVE_SOURCE=qa_vocab` restores the older 370-relation QA-gold pool used by the 20260913 run.
+- `listed`: generation + InfoNCE over 9 distractors. Default pool is the official 198 train-graph relations, sampled with the `process.py` rule. `LISTED_NEGATIVE_SOURCE=embed_sim` keeps that vocabulary but prefers Stage-1 cosine neighbors. `LISTED_NEGATIVE_SOURCE=qa_vocab` restores the older 370-relation QA-gold pool used by the 20260913 run.
 
 Both Stage 2 arms use the full QA epoch budget (no S2 early stop). Primary metric is greedy generation exact match.
 
@@ -55,6 +55,9 @@ SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
 
 # retrain listed only, homologous 198 train-graph negatives, reuse 20260913 Stage 1
 bash configs/run_listed_train_graph_negatives.sh
+
+# retrain listed only, same 198 vocab, negatives prefer Stage-1 cosine neighbors
+bash configs/run_listed_embed_negatives.sh
 
 # listed-only larger-slice decode; reuse frozen 20260915 B1 predictions
 SCALE=pilot bash configs/run_listed_only_decode.sh
