@@ -42,6 +42,7 @@ from grip.tasks.recurrent_tasks.task_dataset import (  # noqa: E402
 from grip.tasks.train_tasks.gen_context import GenGraphContextTask  # noqa: E402
 from grip.tasks.train_tasks.task_dataset import TaskDataset  # noqa: E402
 from grip.training.train import load_trainer  # noqa: E402
+from hard_negative_grip.decode_io import append_jsonl  # noqa: E402
 from hard_negative_grip.listed_training import (  # noqa: E402
     ListedContrastiveTrainer,
     ListedDataCollator,
@@ -517,10 +518,13 @@ def evaluate_adapter(
     record: dict,
     max_new_tokens: int,
     progress_every: int = 0,
+    skip_question_ids: set[str] | None = None,
+    pred_path: Path | None = None,
 ) -> list[dict]:
     samples = [
         item for item in record["recurrent_questions"] if item["split"] in {"validation", "test"}
     ]
+    skip = skip_question_ids or set()
     dataset = GRIPEvalDataset(
         questions=[item["question"] for item in samples],
         answers=[item["answer"] for item in samples],
@@ -536,6 +540,9 @@ def evaluate_adapter(
     model.eval()
     with torch.no_grad():
         for index in range(len(dataset)):
+            qid = str(samples[index].get("question_id") or "")
+            if qid and qid in skip:
+                continue
             input_ids, question, answer = dataset[index]
             input_ids = input_ids.to(device)
             generated = model.generate(
@@ -562,6 +569,8 @@ def evaluate_adapter(
                     "in_list": parsed in listed,
                 }
             )
+            if pred_path is not None:
+                append_jsonl(pred_path, rows[-1])
             done = index + 1
             if progress_every > 0 and (
                 done == 1 or done % progress_every == 0 or done == len(dataset)

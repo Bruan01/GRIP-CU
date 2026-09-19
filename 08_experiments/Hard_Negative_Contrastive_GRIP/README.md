@@ -56,6 +56,15 @@ SCALE=smoke bash configs/run_listed_vs_b1_qwen7b.sh
 # retrain listed only, homologous 198 train-graph negatives, reuse 20260913 Stage 1
 bash configs/run_listed_train_graph_negatives.sh
 
+# listed-only larger-slice decode; reuse frozen 20260915 B1 predictions
+SCALE=pilot bash configs/run_listed_only_decode.sh
+
+# queue that decode behind another GPU job
+WAIT_FOR_PATTERN=dpo-full-20260919_000258 \
+  SCALE=pilot TMUX_SESSION=expH-pilot-decode \
+  RUN_DIR=results/runs/20260919_qwen7b_pilot_listed_only \
+  bash configs/run_listed_only_decode.sh
+
 # after that run finishes, rewrite listed-vs-frozen-B1 comparison.json
 LISTED_RUN=results/runs/20260918_qwen7b_train_graph_negatives \
   bash configs/compare_listed_to_frozen_b1.sh

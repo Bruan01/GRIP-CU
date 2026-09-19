@@ -28,6 +28,14 @@ sys.path.insert(0, str(HNG / "scripts"))
 from constants import SYSTEM_PROMPT  # noqa: E402
 from evaluation.recurrent_metrics import exact_match  # noqa: E402
 from grip.tasks.recurrent_tasks.task_dataset import QUESTION_TEMPLATE  # noqa: E402
+from hard_negative_grip.decode_io import (  # noqa: E402
+    append_jsonl,
+    eval_samples,
+    load_jsonl,
+    merge_resumed_rows,
+    predictions_complete,
+    write_jsonl,
+)
 from hard_negative_grip.listed_training import (  # noqa: E402
     format_answer_prefix,
     pack_decision_set_rows,
@@ -77,6 +85,11 @@ def parse_args() -> argparse.Namespace:
         default="",
         help="Optional label for the comparison note (smoke, pilot, or full).",
     )
+    parser.add_argument(
+        "--no_resume",
+        action="store_true",
+        help="Ignore existing prediction JSONL and decode from scratch.",
+    )
     return parser.parse_args()
 
 
@@ -101,11 +114,17 @@ def closed_set_summary(rows: list[dict]) -> dict:
 
 
 def evaluate_closed_set(
-    model, tokenizer, record: dict, progress_every: int = 16
+    model,
+    tokenizer,
+    record: dict,
+    progress_every: int = 16,
+    skip_question_ids: set[str] | None = None,
+    pred_path: Path | None = None,
 ) -> list[dict]:
     samples = [
         item for item in record["recurrent_questions"] if item["split"] in {"validation", "test"}
     ]
+    skip = skip_question_ids or set()
     title = record.get("title", "nell23k")
     device = next(model.parameters()).device
     if hasattr(model, "config"):
@@ -114,6 +133,9 @@ def evaluate_closed_set(
     rows: list[dict] = []
     with torch.no_grad():
         for index, sample in enumerate(samples, start=1):
+            qid = str(sample.get("question_id") or "")
+            if qid and qid in skip:
+                continue
             gold = str(sample["answer"])
             relations = list(listed_relations_from_sample(sample))
             if gold not in relations:
@@ -144,6 +166,8 @@ def evaluate_closed_set(
                     "gold_score": score_map[gold],
                 }
             )
+            if pred_path is not None:
+                append_jsonl(pred_path, rows[-1])
             if index == 1 or (
                 progress_every > 0
                 and (index % progress_every == 0 or index == len(samples))
@@ -160,12 +184,6 @@ def write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def write_jsonl(path: Path, rows: list[dict]) -> None:
-    with path.open("w", encoding="utf-8") as stream:
-        for row in rows:
-            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
-
-
 def load_optional_json(path: Path) -> dict | None:
     if not path.is_file():
         return None
@@ -179,9 +197,20 @@ def write_decode_comparison(
     listed_gen = load_optional_json(output_dir / "listed" / "summary.json")
     b1_closed = load_optional_json(output_dir / "b1" / "summary_closed_set.json")
     listed_closed = load_optional_json(output_dir / "listed" / "summary_closed_set.json")
-    if b1_closed is None or listed_closed is None:
-        raise FileNotFoundError(f"need closed-set summaries under {output_dir}/b1 and listed")
+    frozen = load_optional_json(output_dir / "b1" / "FROZEN_FROM.json")
+    if listed_gen is None and listed_closed is None:
+        raise FileNotFoundError(f"need listed generate or closed-set summaries under {output_dir}")
     slice_name = eval_name or "eval"
+    note = (
+        "Closed-set EM is argmax over the official 10-way continuations. "
+        "A paper signal needs listed closed-set > B1 generate on the official "
+        f"NELL23K test split. Current slice: {slice_name}."
+    )
+    if frozen:
+        note += (
+            " B1 predictions were copied from "
+            f"{frozen.get('source', 'a previous decode')} and were not re-decoded."
+        )
     comparison = {
         "output_dir": str(output_dir),
         "eval_file": None if eval_file is None else str(eval_file),
@@ -197,59 +226,137 @@ def write_decode_comparison(
             else listed_gen["all"]["em"] - b1_gen["all"]["em"]
         ),
         "listed_closed_set_minus_b1_generate_em": (
-            None if b1_gen is None else listed_closed["all"]["em"] - b1_gen["all"]["em"]
+            None
+            if b1_gen is None or listed_closed is None
+            else listed_closed["all"]["em"] - b1_gen["all"]["em"]
         ),
         "listed_closed_set_minus_b1_closed_set_em": (
-            listed_closed["all"]["em"] - b1_closed["all"]["em"]
+            None
+            if b1_closed is None or listed_closed is None
+            else listed_closed["all"]["em"] - b1_closed["all"]["em"]
         ),
         "listed_closed_set_minus_listed_generate_em": (
-            None if listed_gen is None else listed_closed["all"]["em"] - listed_gen["all"]["em"]
+            None
+            if listed_gen is None or listed_closed is None
+            else listed_closed["all"]["em"] - listed_gen["all"]["em"]
         ),
-        "note": (
-            "Closed-set EM is argmax over the official 10-way continuations. "
-            "A paper signal needs listed closed-set > B1 generate on the official "
-            f"NELL23K test split. Current slice: {slice_name}."
-        ),
+        "b1_source": frozen,
+        "note": note,
     }
-    write_json(output_dir / "comparison_closed_set.json", comparison)
-    print("\n=== closed-set comparison ===", flush=True)
-    print(json.dumps(comparison, ensure_ascii=False, indent=2), flush=True)
+    wrote = False
+    if b1_gen is not None and listed_gen is not None:
+        write_json(output_dir / "comparison.json", comparison)
+        print("\n=== generate comparison ===", flush=True)
+        print(json.dumps(comparison, ensure_ascii=False, indent=2), flush=True)
+        wrote = True
+    if b1_closed is not None and listed_closed is not None:
+        write_json(output_dir / "comparison_closed_set.json", comparison)
+        print("\n=== closed-set comparison ===", flush=True)
+        print(json.dumps(comparison, ensure_ascii=False, indent=2), flush=True)
+        wrote = True
+    if not wrote:
+        raise FileNotFoundError(
+            f"need matching b1/listed generate or closed-set summaries under {output_dir}"
+        )
     return comparison
+
+
+def _resume_rows(path: Path, samples: list[dict], no_resume: bool) -> tuple[list[dict], set[str]]:
+    if no_resume:
+        return [], set()
+    kept, missing = merge_resumed_rows(samples, load_jsonl(path))
+    skip_ids = {str(row.get("question_id")) for row in kept if row.get("question_id")}
+    print(
+        f"[resume] {path.name}: {len(kept)}/{len(samples)} done, {len(missing)} remaining",
+        flush=True,
+    )
+    return kept, skip_ids
 
 
 def evaluate_one(args: argparse.Namespace) -> None:
     if args.adapter_dir is None:
         raise ValueError("--adapter_dir is required unless --compare is set")
     record = load_graph_record(args.eval_file)
+    samples = eval_samples(record)
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    need_generate = args.decode in {"generate", "both"}
+    need_closed = args.decode in {"closed_set", "both"}
+    gen_path = args.output_dir / "predictions_correct.jsonl"
+    closed_path = args.output_dir / "predictions_closed_set.jsonl"
+    generate_done = (not need_generate) or (
+        not args.no_resume and predictions_complete(gen_path, len(samples))
+    )
+    closed_done = (not need_closed) or (
+        not args.no_resume and predictions_complete(closed_path, len(samples))
+    )
+    if generate_done and closed_done:
+        if need_generate:
+            rows = load_jsonl(gen_path)
+            summary = em_summary(rows)
+            write_json(args.output_dir / "summary.json", summary)
+            print(
+                f"[eval generate] resume complete EM={summary['all']['em']:.4f} "
+                f"n={summary['all']['count']}",
+                flush=True,
+            )
+        if need_closed:
+            rows = load_jsonl(closed_path)
+            summary = closed_set_summary(rows)
+            write_json(args.output_dir / "summary_closed_set.json", summary)
+            print(
+                f"[eval closed_set] resume complete EM={summary['all']['em']:.4f} "
+                f"hits@1={summary['hits@1']:.4f} n={summary['all']['count']}",
+                flush=True,
+            )
+        return
+
     load_args = SimpleNamespace(
         model_name=args.model_name,
         model_cache_dir=args.model_cache_dir,
     )
     model, tokenizer = load_adapter(load_args, args.adapter_dir, trainable=False)
     try:
-        if args.decode in {"generate", "both"}:
-            rows = evaluate_adapter(
-                model,
-                tokenizer,
-                record,
-                args.gen_max_length,
-                progress_every=args.progress_every,
-            )
+        if need_generate:
+            kept, skip_ids = _resume_rows(gen_path, samples, args.no_resume)
+            if args.no_resume and gen_path.exists():
+                gen_path.unlink()
+            new_rows = []
+            if len(kept) < len(samples):
+                new_rows = evaluate_adapter(
+                    model,
+                    tokenizer,
+                    record,
+                    args.gen_max_length,
+                    progress_every=args.progress_every,
+                    skip_question_ids=skip_ids,
+                    pred_path=gen_path,
+                )
+            rows, _missing = merge_resumed_rows(samples, kept + new_rows)
             summary = em_summary(rows)
-            write_jsonl(args.output_dir / "predictions_correct.jsonl", rows)
+            write_jsonl(gen_path, rows)
             write_json(args.output_dir / "summary.json", summary)
             print(
                 f"[eval generate] {args.adapter_dir} EM={summary['all']['em']:.4f} "
                 f"n={summary['all']['count']}",
                 flush=True,
             )
-        if args.decode in {"closed_set", "both"}:
-            rows = evaluate_closed_set(
-                model, tokenizer, record, progress_every=args.progress_every
-            )
+        if need_closed:
+            kept, skip_ids = _resume_rows(closed_path, samples, args.no_resume)
+            if args.no_resume and closed_path.exists():
+                closed_path.unlink()
+            new_rows = []
+            if len(kept) < len(samples):
+                new_rows = evaluate_closed_set(
+                    model,
+                    tokenizer,
+                    record,
+                    progress_every=args.progress_every,
+                    skip_question_ids=skip_ids,
+                    pred_path=closed_path,
+                )
+            rows, _missing = merge_resumed_rows(samples, kept + new_rows)
             summary = closed_set_summary(rows)
-            write_jsonl(args.output_dir / "predictions_closed_set.jsonl", rows)
+            write_jsonl(closed_path, rows)
             write_json(args.output_dir / "summary_closed_set.json", summary)
             print(
                 f"[eval closed_set] {args.adapter_dir} EM={summary['all']['em']:.4f} "

@@ -21,6 +21,12 @@ cp -f "$B1_RUN/b1/summary.json" "$LISTED_RUN/b1/summary.json"
 if [[ -f "$B1_RUN/b1/predictions_correct.jsonl" ]]; then
   cp -f "$B1_RUN/b1/predictions_correct.jsonl" "$LISTED_RUN/b1/predictions_correct.jsonl"
 fi
+if [[ -f "$B1_RUN/b1/summary_closed_set.json" ]]; then
+  cp -f "$B1_RUN/b1/summary_closed_set.json" "$LISTED_RUN/b1/summary_closed_set.json"
+fi
+if [[ -f "$B1_RUN/b1/predictions_closed_set.jsonl" ]]; then
+  cp -f "$B1_RUN/b1/predictions_closed_set.jsonl" "$LISTED_RUN/b1/predictions_closed_set.jsonl"
+fi
 cat > "$LISTED_RUN/b1/FROZEN_FROM.json" <<EOF
 {
   "source": "$B1_RUN",
@@ -28,4 +34,4 @@ cat > "$LISTED_RUN/b1/FROZEN_FROM.json" <<EOF
   "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
 }
 EOF
-echo "[attach] froze B1 smoke summary from $B1_RUN into $LISTED_RUN/b1"
+echo "[attach] froze B1 summaries from $B1_RUN into $LISTED_RUN/b1"

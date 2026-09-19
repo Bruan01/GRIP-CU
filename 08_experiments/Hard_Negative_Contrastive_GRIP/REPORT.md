@@ -1,9 +1,9 @@
 # Hard-Negative Contrastive GRIP — 进展评估与 H2 验证报告
 
-日期: 2026-09-16（补 7B 全量评测）；2026-09-10（0.5B smoke）；2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
+日期: 2026-09-19（补实验 H smoke）；2026-09-16（补 7B 全量评测）；2026-09-10（0.5B smoke）；2026-09-09（H2 用 MLP storage adapter 重测）；2026-09-03（初稿）
 范围: `GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP`
 对外汇报稿: `汇报_进展与实验结果.md`
-结论先行: 结构负样本不在决策集合里，不要开 path/tail_range 的 B2–B10。listed 比 uniform 更难只是选项印在题目上，不是创新。0.5B smoke 未过 H1（EM 43.8% vs 51.0%，−7.3 pp）。Qwen2.5-7B 在官方 NELL23K 全量测试上过门：自由生成 EM 84.91%→89.12%（+4.21 pp），闭集 86.93%→92.05%（+5.12 pp）。本质是 Stage 2 加 InfoNCE，不是新负采样；H5 算力对照仍缺。
+结论先行: 结构负样本不在决策集合里，不要开 path/tail_range 的 B2–B10。listed 比 uniform 更难只是选项印在题目上，不是创新。0.5B smoke 未过 H1（EM 43.8% vs 51.0%，−7.3 pp）。Qwen2.5-7B 在官方 NELL23K 全量测试上过门：自由生成 EM 84.91%→89.12%（+4.21 pp），闭集 86.93%→92.05%（+5.12 pp）。那是 370 QA 词表 listed（实验 G）。同源 198 训练图负样本（实验 H）smoke 上仍高于冻结 B1，但只有 +2.08 pp，且增益全在验证集；论文主结果在更大切片出来前仍是 G。本质是 Stage 2 加 InfoNCE，不是新负采样；H5 算力对照仍缺。
 
 ---
 
@@ -29,7 +29,8 @@
 - ✅ 2026-09-09：0.5B smoke，共享 Stage 1，再 fork B1 vs listed（`results/runs/20260909_listed_vs_b1_smoke_listed_vs_b1_smoke`）。生成 EM 未过门。
 - ✅ 2026-09-13～14：Qwen2.5-7B 在 `grip_nell23k_tasks.json` 上同样分叉（`results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/`）。关系类 QA 从训练词表抽 9 个负样本（370 种；实验 F/G）。
 - ✅ 2026-09-15：同一份 7B adapter 在 smoke 96 / pilot 640 / 官方全量 9895 题上做自由生成 + 闭集打分。全量主结果在 `results/runs/20260915_140500_qwen7b_full_decode/`。
-- ⏳ 2026-09-18：实验 H 把 listed 负样本换成官方 198 训练图关系（`process.py` 规则）。20260917 第一次重训在 76/240 被掐掉，无 adapter；已在 tmux `expH-20260918` 重开。B1 / Stage 1 复用 20260913。训完后自动对照冻结 B1 的 smoke 生成 EM。
+- ✅ 2026-09-18：实验 H 把 listed 负样本换成官方 198 训练图关系（`process.py` 规则）。复用 20260913 Stage 1 / 冻结 B1，只重训 listed。240/240 步，约 13.5 小时，终态 `listed/adapter/`。smoke 生成 EM 88.54% vs 冻结 B1 86.46%（+2.08 pp）；test 打平，涨点全在 val。目录 `results/runs/20260918_qwen7b_train_graph_negatives/`。
+- ⏳ 2026-09-19：listed-only pilot 640 解码排队中（B1 复用 20260915，不重解）。GPU 被 DPO `dpo-7b-full-20260919-v2` 占用。
 - ❌ 0.5B 的 pilot **训练**未跑；7B 只是在 pilot 切片上解码。
 - ❌ B2–B10 结构家族按 H2 证据不应开。Stage D（adapter 身份对比）未做。H5 算力匹配未做。
 
@@ -153,10 +154,11 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 | 2026-09-09 smoke 训练 | 0.5B | 96 题 | 43.8% vs B1 51.0%（−7.3 pp） | 未做 | H1 未过门；列表内 26→1，OOV 21→53 |
 | 2026-09-13 7B 训练后 smoke 解码 | 7B | 96 题 | 90.63% vs 86.46%（+4.17 pp） | 91.67% vs 87.50% | 方向反转，样本太小 |
 | 2026-09-15 pilot 解码 | 7B | 640 题 | 90.31% vs 84.53%（+5.78 pp） | 92.50% vs 86.25% | 同向 |
-| **2026-09-15 官方全量** | **7B** | **测试 4944** | **89.12% vs 84.91%（+4.21 pp）** | **92.05% vs 86.93%（+5.12 pp）** | **H1 过门** |
+| **2026-09-15 官方全量** | **7B** | **测试 4944** | **89.12% vs 84.91%（+4.21 pp）** | **92.05% vs 86.93%（+5.12 pp）** | **H1 过门（370 词表 listed）** |
 | 同上 | 7B | 全量 9895 | 88.82% vs 85.02%（+3.80 pp） | 91.71% vs 86.90% | 验证/测试同向；OOV 322→425，列表内 1160→681 |
+| **2026-09-18 实验 H smoke** | **7B** | **96 题** | **88.54% vs 冻结 B1 86.46%（+2.08 pp）** | 未做 | 门禁仍过，但弱于 370 listed；test 64 题打平（55/64），val +6.25 pp。列表内 10→4，OOV 3→7 |
 
-7B 训练负样本来自论文 QA 词表抽样，不是官方测试 10-way，故不是测试泄露，但也不是严格的 listed 同分布训练。listed 多 329,700 次候选前向，H5 未闭合。
+7B 实验 F/G 训练负样本来自论文 QA 词表抽样，不是官方测试 10-way，故不是测试泄露，但也不是严格的 listed 同分布训练。实验 H 改成官方 198 训练图关系后，smoke 上 listed 仍高于同一份冻结 B1，但净增益从 +4.17 pp 掉到 +2.08 pp，且全部来自验证集 2 题。同源负样本更会压列表内混淆（10→4，370 版是 7），OOV 变差（3→7）。96 题不能当方法结论。listed 多出来的候选前向 H5 仍未闭合。
 
 ---
 
@@ -165,8 +167,8 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 1. **不要开 path/tail_range 的 B2–B10。**
 2. aligned listed 卫生检查不能当论文贡献。
 3. 不要把 0.5B 64 题掉点写成论文阴性，也不要把 7B 涨点说成结构硬负样本成功。
-4. 下一步优先做 H5 算力匹配，其次全量错误分析 / 闭集解码，再考虑第二数据集或 CLEGR adapter 对比。
-5. 对外数字以汇报稿 §0 和 §4.7 为准。
+4. **实验 H smoke 不能当方法结论。** listed > B1 仍成立，但只多对 2 题、全在 val；论文主结果仍是实验 G 的 370 词表全量。下一步是 listed-only 的 pilot 640 / 全量解码（B1 用 20260915 冻结预测，不重解）。
+5. 对外数字以汇报稿 §0 和 §4.7 为准；H 的限制写在 §4.8。
 
 ---
 
@@ -190,5 +192,8 @@ quick01 640 题错误切成三类后，各家族打中**模型真实错答**的�
 | `results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/` | 7B 训练：论文任务文件上的 S1 + B1 / listed adapter |
 | `results/runs/20260915_101030_qwen7b_pilot_decode/` | 7B adapter 在 640 题切片上的生成 + 闭集 |
 | `results/runs/20260915_140500_qwen7b_full_decode/` | 7B 官方 9895 题主结果，`comparison_closed_set.json` |
-| `汇报_进展与实验结果.md` | 对外汇报稿（含 7B 全量数字） |
+| `汇报_进展与实验结果.md` | 对外汇报稿（含 7B 全量数字与实验 H smoke） |
+| `results/runs/20260917_qwen7b_train_graph_negatives/` | 实验 H 第一次 listed 重训：76/240 中断，无 adapter |
+| `results/runs/20260918_qwen7b_train_graph_negatives/` | **实验 H**：同源 198 训练图负样本，终态 listed adapter + smoke vs 冻结 B1 |
+| `configs/run_listed_only_decode.sh` | listed-only 更大切片解码；B1 复用 20260915 预测 |
 | 本文件 | 整体进展与评估报告 |
