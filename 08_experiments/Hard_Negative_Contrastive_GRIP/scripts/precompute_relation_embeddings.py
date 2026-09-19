@@ -27,8 +27,8 @@ sys.path.insert(0, str(HNG / "src"))
 sys.path.insert(0, str(HNG / "scripts"))
 
 from hard_negative_grip.embed_negatives import (  # noqa: E402
-    cosine_similarity_matrix,
     l2_normalize,
+    mean_offdiag_cosine,
     save_relation_embeddings,
     top_neighbors,
 )
@@ -137,17 +137,14 @@ def main() -> None:
         "dim": int(embeddings.shape[1]),
     }
     save_relation_embeddings(args.output, relations, embeddings, metadata)
-    similarity = cosine_similarity_matrix(embeddings)
-    offdiag = similarity.copy()
-    np.fill_diagonal(offdiag, np.nan)
     neighbors = {
-        rel: top_neighbors(rel, relations, similarity, k=args.neighbor_k)
+        rel: top_neighbors(rel, relations, embeddings, k=args.neighbor_k)
         for rel in relations[: min(12, len(relations))]
     }
     audit = {
         "output": str(args.output),
         "n_relations": len(relations),
-        "mean_offdiag_cosine": float(np.nanmean(offdiag)),
+        "mean_offdiag_cosine": mean_offdiag_cosine(embeddings),
         "neighbors_preview": neighbors,
         "metadata": metadata,
     }

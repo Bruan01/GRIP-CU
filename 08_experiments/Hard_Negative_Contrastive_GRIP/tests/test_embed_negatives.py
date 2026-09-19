@@ -8,8 +8,10 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
 
 from hard_negative_grip.embed_negatives import (  # noqa: E402
-    align_embeddings,
+    RelationNeighborIndex,
     cosine_similarity_matrix,
+    l2_normalize,
+    mean_offdiag_cosine,
     load_relation_embeddings,
     sample_embed_negatives,
     save_relation_embeddings,
@@ -28,8 +30,7 @@ def test_cosine_ranks_nearer_vectors_first() -> None:
             [0.0, 1.0],
         ]
     )
-    similarity = cosine_similarity_matrix(embeddings)
-    neighbors = top_neighbors("gold", relations, similarity, k=2)
+    neighbors = top_neighbors("gold", relations, embeddings, k=2)
     assert [row["relation"] for row in neighbors] == ["near", "far"]
     assert neighbors[0]["cosine"] > neighbors[1]["cosine"]
 
@@ -46,11 +47,10 @@ def test_embed_negatives_prefer_similar_and_exclude_gold() -> None:
             [0.1, 0.99],
         ]
     )
-    similarity = cosine_similarity_matrix(embeddings)
     sampled = sample_embed_negatives(
         "gold",
         relations,
-        similarity,
+        embeddings,
         k=2,
         rng=np.random.RandomState(2026),
         pool_size=3,
@@ -59,7 +59,7 @@ def test_embed_negatives_prefer_similar_and_exclude_gold() -> None:
     again = sample_embed_negatives(
         "gold",
         relations,
-        similarity,
+        embeddings,
         k=2,
         rng=np.random.RandomState(2026),
         pool_size=3,
@@ -71,6 +71,29 @@ def test_embed_negatives_prefer_similar_and_exclude_gold() -> None:
     assert set(sampled).issubset({"near_a", "near_b", "mid"})
     assert "far_a" not in sampled
     assert "far_b" not in sampled
+
+
+def test_neighbor_index_caches_unique_golds_not_gram_matrix() -> None:
+    relations = [f"rel_{i}" for i in range(32)]
+    rng = np.random.RandomState(0)
+    embeddings = rng.normal(size=(32, 8))
+    index = RelationNeighborIndex(relations, embeddings, pool_size=5)
+    first = index.pool("rel_0")
+    second = index.pool("rel_0")
+    assert first is second
+    assert len(index._pools) == 1
+    index.pool("rel_1")
+    assert set(index._pools) == {"rel_0", "rel_1"}
+    sampled = index.sample("rel_0", k=3, rng=np.random.RandomState(1))
+    assert len(sampled) == 3
+    assert "rel_0" not in sampled
+
+
+def test_mean_offdiag_matches_dense_gram_without_materializing_it() -> None:
+    embeddings = l2_normalize(np.array([[1.0, 0.0], [0.6, 0.8], [0.0, 1.0]]))
+    dense = cosine_similarity_matrix(embeddings)
+    np.fill_diagonal(dense, np.nan)
+    assert np.isclose(mean_offdiag_cosine(embeddings), np.nanmean(dense))
 
 
 def test_weighted_sample_is_deterministic() -> None:

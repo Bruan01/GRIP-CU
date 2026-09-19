@@ -1,9 +1,16 @@
 """Embed the train-graph relation vocabulary and sample similar negatives.
 
 Vocabulary A is the official NELL23K train-relation insertion order (198).
-Embeddings are L2-normalized vectors, one per relation. Training listed
+Each relation is one L2-normalized vector of size ``d``. Training listed
 negatives then prefer cosine-similar relations instead of a uniform
 ``process.py`` permutation.
+
+``k=9`` is the InfoNCE set size (official 10-way = 1 gold + 9 distractors).
+It does not grow with ``|A|``. Similarity never materializes an ``n x n``
+matrix: one gold is one matvec ``E @ e_gold`` (``O(n d)``), then keep a
+``top-M`` pool and sample ``k`` from it. Unique golds are cached, so 3253
+QA items with 198 golds cost 198 matvecs, not 3253. For ``n=10_000`` cache
+``n x d`` embeddings plus ``|golds| x M`` neighbors, not ``n x n``.
 """
 
 from __future__ import annotations
@@ -27,9 +34,24 @@ def l2_normalize(embeddings: np.ndarray, *, eps: float = 1e-12) -> np.ndarray:
 
 
 def cosine_similarity_matrix(embeddings: np.ndarray) -> np.ndarray:
-    """Return cosine similarities. Input may be unnormalized."""
+    """Dense ``n x n`` cosine table. Tests / tiny vocabs only; do not use at 10k."""
     normalized = l2_normalize(embeddings)
     return normalized @ normalized.T
+
+
+def cosine_row(normalized: np.ndarray, gold_index: int) -> np.ndarray:
+    """Cosine of one gold against the whole table. ``O(n d)``, no ``n x n``."""
+    return normalized @ normalized[gold_index]
+
+
+def mean_offdiag_cosine(normalized: np.ndarray) -> float:
+    """Mean pairwise cosine without forming the Gram matrix. ``O(n d)``."""
+    n = int(normalized.shape[0])
+    if n < 2:
+        return 0.0
+    col_sum = normalized.sum(axis=0)
+    total = float(col_sum @ col_sum)
+    return (total - n) / (n * (n - 1))
 
 
 def align_embeddings(
@@ -88,10 +110,60 @@ def weighted_sample_without_replacement(
     return chosen
 
 
+def top_neighbor_pool(
+    gold: str,
+    relation_order: list[str],
+    embeddings: np.ndarray,
+    *,
+    pool_size: int,
+) -> list[tuple[str, float]]:
+    """Return the ``pool_size`` nearest relations to ``gold``.
+
+    One matvec against the embedding table, then ``argpartition``. Does not
+    allocate an ``n x n`` similarity matrix.
+    """
+    if gold not in relation_order:
+        raise ValueError(f"gold relation absent from train vocabulary: {gold}")
+    if pool_size <= 0:
+        return []
+    gold_index = relation_order.index(gold)
+    normalized = l2_normalize(embeddings)
+    scores = cosine_row(normalized, gold_index)
+    scores = scores.copy()
+    scores[gold_index] = -np.inf
+    n = len(relation_order)
+    take = min(pool_size, n - 1)
+    if take <= 0:
+        return []
+    if take >= n - 1:
+        candidate_idx = [i for i in range(n) if i != gold_index]
+    else:
+        candidate_idx = np.argpartition(-scores, take - 1)[:take].tolist()
+    ranked = sorted(
+        ((float(scores[i]), relation_order[i]) for i in candidate_idx),
+        key=lambda item: (-item[0], item[1]),
+    )
+    return [(rel, sim) for sim, rel in ranked[:take]]
+
+
+def sample_from_pool(
+    pool: list[tuple[str, float]],
+    *,
+    k: int,
+    rng: np.random.RandomState,
+    temperature: float = DEFAULT_EMBED_TEMPERATURE,
+) -> list[str]:
+    if k <= 0 or not pool:
+        return []
+    items = [rel for rel, _ in pool]
+    weights = softmax(np.array([sim for _, sim in pool], dtype=np.float64), temperature)
+    return weighted_sample_without_replacement(items, weights, k=k, rng=rng)
+
+
 def sample_embed_negatives(
     gold: str,
     relation_order: list[str],
-    similarity: np.ndarray,
+    embeddings: np.ndarray,
     *,
     k: int,
     rng: np.random.RandomState,
@@ -99,61 +171,68 @@ def sample_embed_negatives(
     temperature: float = DEFAULT_EMBED_TEMPERATURE,
 ) -> list[str]:
     """Sample ``k`` negatives, preferring cosine-similar train relations."""
-    if gold not in relation_order:
-        raise ValueError(f"gold relation absent from train vocabulary: {gold}")
-    if k <= 0:
-        return []
-    gold_index = relation_order.index(gold)
-    scores = []
-    for index, rel in enumerate(relation_order):
-        if index == gold_index:
-            continue
-        scores.append((float(similarity[gold_index, index]), rel))
-    if not scores:
-        return []
-    scores.sort(key=lambda item: (-item[0], item[1]))
-    pool = scores[: min(pool_size, len(scores))]
-    items = [rel for _, rel in pool]
-    weights = softmax(np.array([sim for sim, _ in pool], dtype=np.float64), temperature)
-    return weighted_sample_without_replacement(items, weights, k=k, rng=rng)
+    pool = top_neighbor_pool(
+        gold, relation_order, embeddings, pool_size=pool_size
+    )
+    return sample_from_pool(pool, k=k, rng=rng, temperature=temperature)
 
 
 def top_neighbors(
     gold: str,
     relation_order: list[str],
-    similarity: np.ndarray,
+    embeddings: np.ndarray,
     *,
     k: int = DEFAULT_NEIGHBOR_K,
 ) -> list[dict]:
-    if gold not in relation_order:
-        raise ValueError(f"gold relation absent from train vocabulary: {gold}")
-    gold_index = relation_order.index(gold)
-    ranked = sorted(
-        (
-            (float(similarity[gold_index, index]), rel)
-            for index, rel in enumerate(relation_order)
-            if index != gold_index
-        ),
-        key=lambda item: (-item[0], item[1]),
-    )
-    return [{"relation": rel, "cosine": sim} for sim, rel in ranked[:k]]
+    pool = top_neighbor_pool(gold, relation_order, embeddings, pool_size=k)
+    return [{"relation": rel, "cosine": sim} for rel, sim in pool]
 
 
-def sampled_cosine_stats(
-    gold: str,
-    negatives: list[str],
-    relation_order: list[str],
-    similarity: np.ndarray,
-) -> dict:
-    gold_index = relation_order.index(gold)
-    values = [
-        float(similarity[gold_index, relation_order.index(rel)])
-        for rel in negatives
-        if rel in relation_order
-    ]
-    if not values:
-        return {"count": 0, "mean_cosine": 0.0}
-    return {"count": len(values), "mean_cosine": float(np.mean(values))}
+class RelationNeighborIndex:
+    """Cache top-M neighbors per gold. Storage is ``|golds| x M``, not ``n x n``."""
+
+    def __init__(
+        self,
+        relation_order: list[str],
+        embeddings: np.ndarray,
+        *,
+        pool_size: int = DEFAULT_EMBED_POOL_SIZE,
+    ) -> None:
+        self.relation_order = list(relation_order)
+        self.normalized = l2_normalize(embeddings)
+        if self.normalized.shape[0] != len(self.relation_order):
+            raise ValueError(
+                f"embeddings ({self.normalized.shape[0]}) != vocab ({len(self.relation_order)})"
+            )
+        self.pool_size = int(pool_size)
+        self._pools: dict[str, list[tuple[str, float]]] = {}
+
+    def pool(self, gold: str) -> list[tuple[str, float]]:
+        cached = self._pools.get(gold)
+        if cached is not None:
+            return cached
+        built = top_neighbor_pool(
+            gold,
+            self.relation_order,
+            self.normalized,
+            pool_size=self.pool_size,
+        )
+        self._pools[gold] = built
+        return built
+
+    def sample(
+        self,
+        gold: str,
+        *,
+        k: int,
+        rng: np.random.RandomState,
+        temperature: float = DEFAULT_EMBED_TEMPERATURE,
+    ) -> list[str]:
+        return sample_from_pool(self.pool(gold), k=k, rng=rng, temperature=temperature)
+
+    def sampled_cosines(self, gold: str, negatives: list[str]) -> list[float]:
+        lookup = {rel: sim for rel, sim in self.pool(gold)}
+        return [float(lookup[rel]) for rel in negatives if rel in lookup]
 
 
 def save_relation_embeddings(

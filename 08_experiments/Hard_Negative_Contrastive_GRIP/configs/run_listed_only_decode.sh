@@ -50,7 +50,7 @@ if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
   exit 1
 fi
-if [[ ! -d "$LISTED_ADAPTER" ]]; then
+if [[ ! -d "$LISTED_ADAPTER" && -z "${WAIT_FOR_PATTERN:-}" ]]; then
   echo "error: missing listed adapter: $LISTED_ADAPTER" >&2
   exit 1
 fi
@@ -102,6 +102,10 @@ echo "$RUN_DIR" > "$LAST_RUN_FILE"
 } | tee -a "$RUN_DIR/environment.txt"
 
 wait_for_gpu_holder
+if [[ ! -d "$LISTED_ADAPTER" ]]; then
+  echo "error: GPU holder exited but listed adapter is missing: $LISTED_ADAPTER" >&2
+  exit 1
+fi
 
 LISTED_RUN="$RUN_DIR" B1_RUN="$B1_DECODE_RUN" bash "$HNG/configs/attach_frozen_b1.sh"
 

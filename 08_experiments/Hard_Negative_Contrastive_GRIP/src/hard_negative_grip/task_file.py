@@ -26,15 +26,14 @@ import numpy as np
 from .embed_negatives import (
     DEFAULT_EMBED_POOL_SIZE,
     DEFAULT_EMBED_TEMPERATURE,
-    cosine_similarity_matrix,
-    sample_embed_negatives,
+    RelationNeighborIndex,
 )
 from .official_lists import official_negatives
 
 ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
 RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
 YES_NO = {"yes", "no"}
-LISTED_NEGATIVE_K = 9
+LISTED_NEGATIVE_K = 9  # official 10-way = 1 gold + 9 distractors; independent of |A|
 LISTED_NEGATIVE_SOURCES = ("train_graph", "embed_sim", "qa_vocab")
 CONCEPT_PREFIX = "concept:"
 
@@ -161,22 +160,25 @@ def build_qa_assets_from_task_texts(
             f"got {listed_negative_source!r}"
         )
     use_train_graph = listed_negative_source in {"train_graph", "embed_sim"}
+    neighbor_index = None
     if use_train_graph:
         if not relation_order:
             raise ValueError("train_graph negatives require a non-empty relation_order")
         alias_index = train_relation_alias_index(relation_order)
         vocab: list[str] = list(relation_order)
         stream = np.random.RandomState(seed)
-        similarity = None
         if listed_negative_source == "embed_sim":
             if relation_embeddings is None:
                 raise ValueError("embed_sim negatives require relation_embeddings")
-            similarity = cosine_similarity_matrix(relation_embeddings)
+            neighbor_index = RelationNeighborIndex(
+                relation_order,
+                relation_embeddings,
+                pool_size=embed_pool_size,
+            )
     else:
         alias_index = {}
         vocab = relation_vocab(qa_texts)
         stream = None
-        similarity = None
     texts: list[str] = []
     metas: list[dict] = []
     cosine_values: list[float] = []
@@ -186,27 +188,14 @@ def build_qa_assets_from_task_texts(
         matched = match_train_relation(gold, alias_index) if use_train_graph else None
         if is_relation_gold(gold, text):
             if listed_negative_source == "embed_sim":
-                if matched is not None:
-                    listed = sample_embed_negatives(
+                if matched is not None and neighbor_index is not None:
+                    listed = neighbor_index.sample(
                         matched,
-                        relation_order or [],
-                        similarity,
                         k=listed_negative_k,
                         rng=stream,
-                        pool_size=embed_pool_size,
                         temperature=embed_sample_temperature,
                     )
-                    cosine_values.extend(
-                        [
-                            float(
-                                similarity[
-                                    relation_order.index(matched),
-                                    relation_order.index(rel),
-                                ]
-                            )
-                            for rel in listed
-                        ]
-                    )
+                    cosine_values.extend(neighbor_index.sampled_cosines(matched, listed))
             elif use_train_graph:
                 if matched is not None:
                     listed = official_negatives(
