@@ -32,6 +32,8 @@ H2: `path_local` is not harder than uniform; `tail_range` is a weak signal. Do n
 
 Method gate: Qwen2.5-7B listed contrast vs original GRIP on official NELL23K val/test (9895). Generation test EM 84.91% → 89.12%; closed-set 86.93% → 92.05%. The 0.5B 96-question smoke still fails (43.8% vs 51.0%). Compute-matched H5 is not done. Details: `汇报_进展与实验结果.md`.
 
+Negative sampling: the official 10-way distractors are uniform draws over the 198 train relations. Homologous uniform negatives (experiment H) beat Stage-1 cosine-pool negatives (experiment I, +0.82 pp on the full 9895), and an offline audit shows why — the cosine top-40 pool captures less of the true distractor mass than uniform sampling does. Partial PCA whitening (experiment I2) repairs the degenerate embedding geometry (mean pairwise cosine 0.8776 → −0.0049, effective negatives 39.1/40 → 15.5) but cannot raise the coverage ceiling of a restricted pool. Details: `汇报_进展与实验结果.md` §4.9–4.10.
+
 ## Listed vs original GRIP training
 
 Shared Stage 1 uses the `quick01_storage_quick` recipe (MLP LoRA r=4/alpha=8, full `down/up/gate_proj`). Default model is Qwen2.5-0.5B on the aligned relation-prediction split. `run_listed_vs_b1_qwen7b.sh` switches to Qwen2.5-7B, trains on `grip_nell23k_tasks.json` (paper context + summarization + generated QA), and keeps val/test EM on the aligned 10-way split. The 7B recipe on one 24GB 3090 is `batch=1`, `accum=512`. Stage 2 then forks from that adapter:
@@ -58,6 +60,14 @@ bash configs/run_listed_train_graph_negatives.sh
 
 # retrain listed only, same 198 vocab, negatives prefer Stage-1 cosine neighbors
 bash configs/run_listed_embed_negatives.sh
+
+# same as above but the relation table is first passed through a linear transform
+# (default partial PCA whitening); pool/temperature/seed stay unchanged
+bash configs/run_listed_whiten_negatives.sh
+
+# offline (no GPU): which transform, if any, makes the negatives useful
+python scripts/whiten_relation_embeddings.py --mode pca_whiten --k 197 --alpha 0.5
+python scripts/audit_relation_geometry.py --markdown results/relation_geometry_audit.md
 
 # listed-only larger-slice decode; reuse frozen 20260915 B1 predictions
 SCALE=pilot bash configs/run_listed_only_decode.sh
