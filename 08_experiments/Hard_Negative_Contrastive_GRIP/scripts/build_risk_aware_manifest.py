@@ -95,7 +95,7 @@ def stable_weights(
 ) -> dict[str, float]:
     logits = [
         float(scores[relation]) / temperature
-        + math.log(max(1.0 - max(risk_floor, risks.get(relation, 0.0)), 1e-8))
+        + math.log(max(1.0 - risks.get(relation, 0.0), risk_floor))
         for relation in candidates
     ]
     maximum = max(logits)
