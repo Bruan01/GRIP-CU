@@ -75,6 +75,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     is_relation_gold,
     load_graph_record,
     load_json_payload,
+    load_score_hard_manifest,
 )
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
 from utils import set_random_seed  # noqa: E402
@@ -143,6 +144,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help="NPZ from scripts/precompute_relation_embeddings.py. Required for embed_sim.",
+    )
+    parser.add_argument(
+        "--score_hard_manifest",
+        type=Path,
+        default=None,
+        help="Immutable JSONL manifest from mine_score_hard_negatives.py; required for score_hard.",
     )
     parser.add_argument(
         "--embed_pool_size",
@@ -736,6 +743,9 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "relation_embedding_file": (
             str(args.relation_embedding_file) if args.relation_embedding_file else None
         ),
+        "score_hard_manifest": (
+            str(args.score_hard_manifest) if args.score_hard_manifest else None
+        ),
         "embed_pool_size": int(args.embed_pool_size),
         "embed_sample_temperature": float(args.embed_sample_temperature),
         "raw_dir": str(args.raw_dir),
@@ -774,11 +784,16 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         context_samples = list(payload["context_samples"])
         relation_order = None
         relation_embeddings = None
-        if args.listed_negative_source in {"train_graph", "embed_sim"}:
+        score_hard_manifest = None
+        if args.listed_negative_source in {"train_graph", "embed_sim", "score_hard"}:
             raw_dir = Path(args.raw_dir)
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
             relation_order = load_train_relation_order(raw_dir)
+        if args.listed_negative_source == "score_hard":
+            if args.score_hard_manifest is None:
+                raise ValueError("score_hard requires --score_hard_manifest")
+            score_hard_manifest = load_score_hard_manifest(args.score_hard_manifest)
         if args.listed_negative_source == "embed_sim":
             if args.relation_embedding_file is None:
                 raise ValueError("embed_sim requires --relation_embedding_file")
@@ -798,6 +813,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             relation_embeddings=relation_embeddings,
             embed_pool_size=args.embed_pool_size,
             embed_sample_temperature=args.embed_sample_temperature,
+            score_hard_manifest=score_hard_manifest,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
         relation_n = sum(
