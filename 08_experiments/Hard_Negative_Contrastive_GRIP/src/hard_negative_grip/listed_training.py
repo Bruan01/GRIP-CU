@@ -225,6 +225,7 @@ class ListedContrastiveTrainer(Trainer):
         *args,
         lambda_candidate: float = 0.0,
         temperature: float = 1.0,
+        memory_size: int = 0,
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
@@ -232,9 +233,14 @@ class ListedContrastiveTrainer(Trainer):
             raise ValueError("lambda_candidate must be non-negative")
         if temperature <= 0:
             raise ValueError("temperature must be positive")
+        if memory_size < 0:
+            raise ValueError("memory_size must be non-negative")
         self.lambda_candidate = lambda_candidate
         self.temperature = temperature
+        self.memory_size = memory_size
+        self.relation_memory: list[list[int]] = []
         self.candidate_forwards = 0
+        self.memory_forwards = 0
         self.last_generation_loss = 0.0
         self.last_candidate_loss = 0.0
 
@@ -291,6 +297,8 @@ class ListedContrastiveTrainer(Trainer):
                 prefix=prefix,
                 positive=positive,
                 listed=listed,
+                memory=self.relation_memory,
+                memory_size=self.memory_size,
             )
             if packed_ids is None:
                 group_sizes.append(0)
@@ -316,6 +324,13 @@ class ListedContrastiveTrainer(Trainer):
                     temperature=self.temperature,
                 )
             )
+        if self.memory_size > 0:
+            fresh = []
+            for relation_ids in relation_ids_batch:
+                for row in relation_ids[1:]:
+                    if row and tuple(row) not in {tuple(item) for item in self.relation_memory + fresh}:
+                        fresh.append(list(row))
+            self.relation_memory = (self.relation_memory + fresh)[-self.memory_size:]
         if not losses:
             return next(scorer.parameters()).new_zeros(())
         return torch.stack(losses).mean()
@@ -329,6 +344,8 @@ class ListedContrastiveTrainer(Trainer):
         prefix,
         positive,
         listed,
+        memory,
+        memory_size,
     ) -> tuple[list[list[int]] | None, int]:
         ids = [list(row) for row in (relation_ids or []) if row]
         pids = list(prefix_ids or [])
@@ -338,6 +355,14 @@ class ListedContrastiveTrainer(Trainer):
             if negatives:
                 ids = [encode_without_specials(tokenizer, positive)]
                 ids.extend(encode_without_specials(tokenizer, rel) for rel in negatives)
+        if memory_size > 0 and memory:
+            seen = {tuple(row) for row in ids}
+            for row in memory:
+                if tuple(row) not in seen:
+                    ids.append(list(row))
+                    seen.add(tuple(row))
+                if len(ids) >= 2 + len(memory):
+                    break
         if not pids or len(ids) < 2:
             return None, 0
         return [pids + continuation for continuation in ids], len(pids)

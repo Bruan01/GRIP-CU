@@ -146,8 +146,9 @@ COMMON=(
   --learning_rate 1e-3
   --weight_decay 1e-4
   --max_grad_norm 1.0
-  --lambda_candidate 1.0
-  --temperature 1.0
+  --lambda_candidate "${LAMBDA_CANDIDATE:-1.0}"
+  --memory_size "${MEMORY_SIZE:-0}"
+  --temperature "${TEMPERATURE:-1.0}"
   --gen_max_length 32
   --seed 2026
   --listed_negative_source "${LISTED_NEGATIVE_SOURCE:-train_graph}"

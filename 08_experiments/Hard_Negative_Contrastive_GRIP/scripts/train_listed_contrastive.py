@@ -117,6 +117,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight_decay", type=float, default=1e-4)
     parser.add_argument("--max_grad_norm", type=float, default=1.0)
     parser.add_argument("--lambda_candidate", type=float, default=1.0)
+    parser.add_argument(
+        "--memory_size",
+        type=int,
+        default=0,
+        help="A2 cross-batch relation memory size. 0 disables memory.",
+    )
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--gen_max_length", type=int, default=32)
     parser.add_argument("--seed", type=int, default=2026)
@@ -497,6 +503,7 @@ def train_stage2(
         data_collator=ListedDataCollator(tokenizer=tokenizer),
         lambda_candidate=lambda_candidate,
         temperature=args.temperature,
+        memory_size=args.memory_size,
     )
     started = time.time()
     trainer_dir = output_dir / f"trainer_{variant}"
@@ -520,6 +527,8 @@ def train_stage2(
             "variant": variant,
             "model_name": args.model_name,
             "lambda_candidate": lambda_candidate,
+            "memory_size": args.memory_size,
+            "memory_forwards": trainer.memory_forwards,
             "qa_samples": len(dataset),
             "candidate_forwards": trainer.candidate_forwards,
             "last_generation_loss": trainer.last_generation_loss,
@@ -732,6 +741,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "gradient_accumulation_steps": args.gradient_accumulation_steps,
         "learning_rate": args.learning_rate,
         "lambda_candidate": args.lambda_candidate,
+        "memory_size": args.memory_size,
         "temperature": args.temperature,
         "seed": args.seed,
         "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
