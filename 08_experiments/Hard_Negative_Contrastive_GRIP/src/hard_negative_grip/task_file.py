@@ -95,6 +95,19 @@ def normalize_relation(label: str) -> str:
     return label.strip().rstrip(".")
 
 
+def canonical_rollout_candidate(value: str) -> str:
+    """Keep relation-shaped rollout output, including OOV concept labels."""
+    value = str(value or "").strip()
+    value = value.replace("<answer>", "").replace("</answer>", "").strip()
+    if not value or value.lower() in {"yes", "no", "i don't know"}:
+        return ""
+    if not value.lower().startswith("concept:"):
+        return ""
+    if "\n" in value or "<" in value or ">" in value:
+        return ""
+    return value
+
+
 def is_relation_gold(gold: str, text: str) -> bool:
     label = normalize_relation(gold)
     if not label or label.lower() in YES_NO:

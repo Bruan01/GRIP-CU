@@ -6,15 +6,16 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).parents[1] / "scripts"))
 
 from hard_negative_grip.score_hard import select_score_hard_negatives  # noqa: E402
 from hard_negative_grip.task_file import (  # noqa: E402
     build_qa_assets_from_task_texts,
+    canonical_rollout_candidate,
     known_pair_relations,
     load_score_hard_manifest,
     question_entity_pair,
 )
-from mine_rollout_hard_negatives import canonical_candidate  # noqa: E402
 
 
 def _qa(question: str, answer: str) -> str:
@@ -86,10 +87,11 @@ def test_question_entity_pair_strips_word_node_prefix() -> None:
 
 
 def test_rollout_candidate_strips_answer_tag() -> None:
-    assert canonical_candidate("concept:mutualproxyfor</answer>") == "concept:mutualproxyfor"
-    assert canonical_candidate("concept:mutualproxyfor") == "concept:mutualproxyfor"
+    assert canonical_rollout_candidate("concept:mutualproxyfor</answer>") == "concept:mutualproxyfor"
+    assert canonical_rollout_candidate("concept:mutualproxyfor") == "concept:mutualproxyfor"
 
 
+def test_rollout_hard_manifest_keeps_oov_negative(tmp_path: Path) -> None:
     manifest = tmp_path / "manifest.jsonl"
     row = {
         "question_id": "task_qa:0",

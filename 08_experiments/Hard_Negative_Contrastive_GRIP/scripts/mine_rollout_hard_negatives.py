@@ -36,6 +36,7 @@ from hard_negative_grip.official_lists import load_train_relation_order  # noqa:
 from hard_negative_grip.task_file import (  # noqa: E402
     assistant_answer_prefix,
     assistant_gold,
+    canonical_rollout_candidate,
     is_relation_gold,
     known_pair_relations,
     load_json_payload,
@@ -95,17 +96,7 @@ def encode(tokenizer, text: str) -> list[int]:
 
 
 def canonical_candidate(value: str) -> str:
-    value = str(value or "").strip()
-    value = value.replace("<answer>", "").replace("</answer>", "").strip()
-    if not value or value.lower() in {"yes", "no", "i don't know"}:
-        return ""
-    # Keep only relation-shaped outputs. This includes malformed concept:
-    # labels, which are precisely the OOV errors this miner is meant to expose.
-    if not value.lower().startswith("concept:"):
-        return ""
-    if "\n" in value or "<" in value or ">" in value:
-        return ""
-    return value
+    return canonical_rollout_candidate(value)
 
 
 def generate_one(model, tokenizer, prefix: str, max_new_tokens: int) -> tuple[str, str]:
