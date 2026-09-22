@@ -5,8 +5,9 @@ Default input is the aligned NELL23K relation-prediction split. Passing
 Stage 2 on generated QA; relation-like items sample 9 train-graph negatives
 with the official ``process.py`` rule. Pass ``--listed_negative_source embed_sim``
 to keep that 198-relation pool but prefer Stage-1 cosine-similar relations.
-``--listed_negative_source qa_vocab`` restores the older 370-relation QA-gold
-pool. Val/test EM always uses an aligned graph record (``--eval_file``).
+Pass ``rollout_hard`` to use one actual frozen-B1 free-generation error plus
+uniform train-graph fallbacks. ``--listed_negative_source qa_vocab`` restores
+ the older 370-relation QA-gold pool. Val/test EM always uses an aligned graph record (``--eval_file``).
 """
 
 from __future__ import annotations
@@ -795,7 +796,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         relation_order = None
         relation_embeddings = None
         score_hard_manifest = None
-        if args.listed_negative_source in {"train_graph", "embed_sim", "score_hard"}:
+        if args.listed_negative_source in {"train_graph", "embed_sim", "score_hard", "rollout_hard"}:
             raw_dir = Path(args.raw_dir)
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")

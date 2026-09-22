@@ -35,7 +35,13 @@ ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
 RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
 YES_NO = {"yes", "no"}
 LISTED_NEGATIVE_K = 9  # official 10-way = 1 gold + 9 distractors; independent of |A|
-LISTED_NEGATIVE_SOURCES = ("train_graph", "embed_sim", "score_hard", "qa_vocab")
+LISTED_NEGATIVE_SOURCES = (
+    "train_graph",
+    "embed_sim",
+    "score_hard",
+    "rollout_hard",
+    "qa_vocab",
+)
 CONCEPT_PREFIX = "concept:"
 
 
@@ -208,6 +214,7 @@ def normalize_manifest_row(
     question_id: str,
     gold: str,
     relation_order: list[str],
+    allow_out_of_vocab: bool = False,
 ) -> list[str]:
     """Validate a mined row and return its fixed decision-set negatives."""
     if str(row.get("question_id")) != question_id:
@@ -220,8 +227,10 @@ def normalize_manifest_row(
     negatives = [str(rel) for rel in row.get("negative_relations", [])]
     if negatives != merge_negative_sources(hard, uniform):
         raise ValueError(f"manifest negative provenance mismatch for {question_id!r}")
-    if any(rel not in allowed for rel in negatives):
+    if not allow_out_of_vocab and any(rel not in allowed for rel in negatives):
         raise ValueError(f"manifest contains relation outside train vocabulary for {question_id!r}")
+    if any(not rel.strip() for rel in negatives):
+        raise ValueError(f"manifest contains an empty negative for {question_id!r}")
     if gold in negatives or len(negatives) != len(set(negatives)):
         raise ValueError(f"manifest contains gold/duplicate negative for {question_id!r}")
     return negatives
@@ -247,11 +256,18 @@ def build_qa_assets_from_task_texts(
             f"listed_negative_source must be one of {LISTED_NEGATIVE_SOURCES}, "
             f"got {listed_negative_source!r}"
         )
-    use_train_graph = listed_negative_source in {"train_graph", "embed_sim", "score_hard"}
+    use_train_graph = listed_negative_source in {
+        "train_graph",
+        "embed_sim",
+        "score_hard",
+        "rollout_hard",
+    }
     neighbor_index = None
     score_hard_manifest = score_hard_manifest or {}
     if listed_negative_source == "score_hard" and not score_hard_manifest:
         raise ValueError("score_hard negatives require a non-empty manifest")
+    if listed_negative_source == "rollout_hard" and not score_hard_manifest:
+        raise ValueError("rollout_hard negatives require a non-empty manifest")
     if use_train_graph:
         if not relation_order:
             raise ValueError("train_graph negatives require a non-empty relation_order")
@@ -279,16 +295,19 @@ def build_qa_assets_from_task_texts(
         listed: list[str] = []
         matched = match_train_relation(gold, alias_index) if use_train_graph else None
         if is_relation_gold(gold, text):
-            if listed_negative_source == "score_hard":
+            if listed_negative_source in {"score_hard", "rollout_hard"}:
                 if matched is not None:
                     row = score_hard_manifest.get(question_id)
                     if row is None:
-                        raise ValueError(f"score_hard manifest has no row for {question_id!r}")
+                        raise ValueError(
+                            f"{listed_negative_source} manifest has no row for {question_id!r}"
+                        )
                     listed = normalize_manifest_row(
                         row,
                         question_id=question_id,
                         gold=gold,
                         relation_order=relation_order or [],
+                        allow_out_of_vocab=listed_negative_source == "rollout_hard",
                     )
             elif listed_negative_source == "embed_sim":
                 if matched is not None and neighbor_index is not None:
@@ -325,7 +344,7 @@ def build_qa_assets_from_task_texts(
                 "matched_train_relation": matched,
             }
         )
-    if listed_negative_source == "score_hard":
+    if listed_negative_source in {"score_hard", "rollout_hard"}:
         expected_ids = {
             f"task_qa:{index}"
             for index, text in enumerate(qa_texts)
@@ -334,7 +353,9 @@ def build_qa_assets_from_task_texts(
         }
         missing_ids = expected_ids.difference(score_hard_manifest)
         if missing_ids:
-            raise ValueError(f"score_hard manifest is missing {len(missing_ids)} question rows")
+            raise ValueError(
+                f"{listed_negative_source} manifest is missing {len(missing_ids)} question rows"
+            )
     if listed_negative_source == "embed_sim" and cosine_values:
         print(
             f"[data] embed_sim pool={embed_pool_size} tau={embed_sample_temperature} "

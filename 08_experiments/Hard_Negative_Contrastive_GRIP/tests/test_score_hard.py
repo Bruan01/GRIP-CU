@@ -82,3 +82,27 @@ def test_score_hard_manifest_is_used_verbatim(tmp_path: Path) -> None:
 def test_question_entity_pair_strips_word_node_prefix() -> None:
     text = _qa("What is the relation between word node a and word node b?", "concept:gold")
     assert question_entity_pair(text) == ("a", "b")
+
+
+def test_rollout_hard_manifest_keeps_oov_negative(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    row = {
+        "question_id": "task_qa:0",
+        "positive_relation": "concept:gold",
+        "hard_negative_relations": ["concept:unseenrelation"],
+        "uniform_negative_relations": ["concept:uniform"],
+        "negative_relations": ["concept:unseenrelation", "concept:uniform"],
+    }
+    manifest.write_text(json.dumps(row) + "\n", encoding="utf-8")
+    loaded = load_score_hard_manifest(manifest)
+    _, metas = build_qa_assets_from_task_texts(
+        [_qa("What is the relation between a and b?", "concept:gold")],
+        seed=2026,
+        listed_negative_source="rollout_hard",
+        relation_order=["concept:gold", "concept:uniform"],
+        score_hard_manifest=loaded,
+    )
+    assert metas[0]["listed_relations"] == [
+        "concept:unseenrelation",
+        "concept:uniform",
+    ]
