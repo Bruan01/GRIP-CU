@@ -48,6 +48,10 @@ if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
   exit 1
 fi
+if ! CUDA_VISIBLE_DEVICES="$CUDA_VISIBLE_DEVICES" "$PYTHON" -c 'import torch; raise SystemExit(0 if torch.cuda.is_available() and torch.cuda.device_count() > 0 else 1)'; then
+  echo "error: PyTorch cannot see a CUDA device; refusing to run CPU experiment" >&2
+  exit 1
+fi
 for required in "$TASK_FILE" "$RAW_DIR/train.txt" "$RAW_DIR/valid.txt" "$RAW_DIR/test.txt" "$S1_ADAPTER" "$EVAL_FILE"; do
   if [[ ! -e "$required" ]]; then
     echo "error: missing required path: $required" >&2
