@@ -96,9 +96,10 @@ def encode(tokenizer, text: str) -> list[int]:
 
 def canonical_candidate(value: str) -> str:
     value = str(value or "").strip()
+    value = value.replace("<answer>", "").replace("</answer>", "").strip()
     if not value or value.lower() in {"yes", "no", "i don't know"}:
         return ""
-    # Keep only relation-shaped outputs.  This includes malformed concept:
+    # Keep only relation-shaped outputs. This includes malformed concept:
     # labels, which are precisely the OOV errors this miner is meant to expose.
     if not value.lower().startswith("concept:"):
         return ""

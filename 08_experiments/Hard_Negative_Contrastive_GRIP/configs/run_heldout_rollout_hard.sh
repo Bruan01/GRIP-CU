@@ -4,6 +4,8 @@
 # one transferred rollout error plus eight uniform train-graph negatives.
 set -euo pipefail
 
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
+
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 VERSION_DIR="$(cd "$HNG/../RecurrentGRIP/v1_1_nell23k_first_2026-08-29" && pwd)"
 CODE_DIR="$VERSION_DIR/grip-exp"
@@ -24,7 +26,7 @@ case "$SCALE" in
   smoke)
     EVAL_FILE="${EVAL_FILE:-$HNG/data/nell23k/recurrent_relation_prediction.aligned.json}"
     MAX_TRAIN_SAMPLES="${MAX_TRAIN_SAMPLES:-96}"
-    MAX_HOLDOUT_SAMPLES="${MAX_HOLDOUT_SAMPLES:-64}"
+    MAX_HOLDOUT_SAMPLES="${MAX_HOLDOUT_SAMPLES:-512}"
     ;;
   pilot)
     EVAL_FILE="${EVAL_FILE:-$HNG/data/nell23k/recurrent_relation_prediction_pilot.aligned.json}"
