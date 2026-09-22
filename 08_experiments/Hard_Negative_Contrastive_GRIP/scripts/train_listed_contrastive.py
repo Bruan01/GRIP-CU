@@ -610,6 +610,7 @@ def evaluate_adapter(
                     "response": parsed,
                     "correct": exact_match(parsed, target),
                     "in_list": parsed in listed,
+                    "candidate_valid": parsed in listed,
                 }
             )
             if pred_path is not None:
@@ -633,8 +634,11 @@ def em_summary(rows: list[dict]) -> dict:
     all_values = [bool(row["correct"]) for row in rows]
     in_list_wrong = [row for row in rows if not row["correct"] and row.get("in_list")]
     oov_wrong = [row for row in rows if not row["correct"] and not row.get("in_list")]
+    candidate_valid = [bool(row.get("candidate_valid", row.get("in_list"))) for row in rows]
     summary = {
         "all": {"count": len(all_values), "em": (sum(all_values) / len(all_values)) if all_values else 0.0},
+        "candidate_valid_rate": (sum(candidate_valid) / len(candidate_valid)) if candidate_valid else 0.0,
+        "candidate_invalid": len(candidate_valid) - sum(candidate_valid),
         "wrong_in_list": len(in_list_wrong),
         "wrong_out_of_list": len(oov_wrong),
     }

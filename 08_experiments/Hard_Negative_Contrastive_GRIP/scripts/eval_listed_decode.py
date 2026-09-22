@@ -95,6 +95,11 @@ def parse_args() -> argparse.Namespace:
 
 def closed_set_summary(rows: list[dict]) -> dict:
     summary = em_summary(rows)
+    candidate_valid = [bool(row.get("candidate_valid", row.get("in_list"))) for row in rows]
+    summary["candidate_valid_rate"] = (
+        sum(candidate_valid) / len(candidate_valid) if candidate_valid else 0.0
+    )
+    summary["candidate_invalid"] = len(candidate_valid) - sum(candidate_valid)
     ranking_rows = []
     for row in rows:
         gold = row["target"][0]
@@ -162,6 +167,7 @@ def evaluate_closed_set(
                     "response": predicted,
                     "correct": exact_match(predicted, target),
                     "in_list": predicted in relations,
+                    "candidate_valid": predicted in relations,
                     "scores": score_map,
                     "gold_score": score_map[gold],
                 }
