@@ -801,9 +801,11 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
             relation_order = load_train_relation_order(raw_dir)
-        if args.listed_negative_source == "score_hard":
+        if args.listed_negative_source in {"score_hard", "rollout_hard"}:
             if args.score_hard_manifest is None:
-                raise ValueError("score_hard requires --score_hard_manifest")
+                raise ValueError(
+                    f"{args.listed_negative_source} requires --score_hard_manifest"
+                )
             score_hard_manifest = load_score_hard_manifest(args.score_hard_manifest)
         if args.listed_negative_source == "embed_sim":
             if args.relation_embedding_file is None:
