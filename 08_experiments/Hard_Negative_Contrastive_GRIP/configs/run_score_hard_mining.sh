@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Score-hard negative mining with a frozen B1 adapter.
 # The default smoke run mines 64 relation QA items; set LIMIT=0 for all items.
+# After a complete LIMIT=0 run, freeze the table with run_freeze_confusion_db.sh
+# instead of rescoring. The 20260921 LIMIT=0 table is already complete (3253).
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

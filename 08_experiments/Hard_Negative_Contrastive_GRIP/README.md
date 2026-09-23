@@ -69,6 +69,10 @@ bash configs/run_listed_whiten_negatives.sh
 python scripts/whiten_relation_embeddings.py --mode pca_whiten --k 197 --alpha 0.5
 python scripts/audit_relation_geometry.py --markdown results/relation_geometry_audit.md
 
+# freeze the existing 3253×198 B1 score table as an immutable confusion DB
+# (offline; do not rescore). Re-mine with LIMIT=0 only if that JSONL is incomplete.
+bash configs/run_freeze_confusion_db.sh
+
 # listed-only larger-slice decode; reuse frozen 20260915 B1 predictions
 SCALE=pilot bash configs/run_listed_only_decode.sh
 

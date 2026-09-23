@@ -30,6 +30,10 @@ sys.path.insert(0, str(HNG / "src"))
 from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE  # noqa: E402
 from hard_negative_grip.listed_training import score_candidate_rows  # noqa: E402
 from hard_negative_grip.official_lists import load_train_relation_order  # noqa: E402
+from hard_negative_grip.confusion_db import (  # noqa: E402
+    annotate_score_row,
+    scorer_metadata,
+)
 from hard_negative_grip.score_hard import (  # noqa: E402
     merge_negative_sources,
     rank_scores,
@@ -159,6 +163,12 @@ def main() -> None:
     relation_order = load_train_relation_order(args.raw_dir)
     alias_index = train_relation_alias_index(relation_order)
     known_relations = known_pair_relations(args.raw_dir)
+    metadata = scorer_metadata(
+        vocab_size=len(relation_order),
+        seed=args.seed,
+        b1_adapter=str(args.b1_adapter),
+        candidate_batch_size=args.candidate_batch_size,
+    )
     model, tokenizer = load_b1(args)
     rng = random.Random(args.seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -182,10 +192,11 @@ def main() -> None:
                 continue
             if args.limit and processed >= args.limit:
                 break
+            prefix_text = assistant_answer_prefix(text)
             scores = score_relations(
                 model,
                 tokenizer,
-                assistant_answer_prefix(text),
+                prefix_text,
                 relation_order,
                 args.candidate_batch_size,
             )
@@ -203,29 +214,34 @@ def main() -> None:
             )
             negatives = merge_negative_sources(hard, uniform)
             ranked = sorted(scores, key=lambda rel: (-scores[rel], rel))
-            row = {
-                "question_id": question_id,
-                "split": "train",
-                "positive_relation": gold,
-                "matched_train_relation": matched,
-                "negative_relations": negatives,
-                "hard_negative_relations": hard,
-                "uniform_negative_relations": uniform,
-                "positive_score": gold_score,
-                "positive_rank": gold_rank,
-                "hard_negative_scores": [
-                    {"relation": rel, "score": float(scores[rel])} for rel in hard
-                ],
-                "all_candidate_scores": [
-                    {"relation": rel, "score": float(scores[rel]), "rank": rank + 1}
-                    for rank, rel in enumerate(ranked)
-                ],
-                "known_pair_relations": sorted(excluded_relations),
-                "entity_pair": list(pair) if pair else None,
-                "teacher": "frozen_b1",
-                "negative_source": "b1_score_plus_uniform",
-                "seed": args.seed,
-            }
+            row = annotate_score_row(
+                {
+                    "question_id": question_id,
+                    "split": "train",
+                    "positive_relation": gold,
+                    "matched_train_relation": matched,
+                    "negative_relations": negatives,
+                    "hard_negative_relations": hard,
+                    "uniform_negative_relations": uniform,
+                    "positive_score": gold_score,
+                    "positive_rank": gold_rank,
+                    "hard_negative_scores": [
+                        {"relation": rel, "score": float(scores[rel])} for rel in hard
+                    ],
+                    "all_candidate_scores": [
+                        {"relation": rel, "score": float(scores[rel]), "rank": rank + 1}
+                        for rank, rel in enumerate(ranked)
+                    ],
+                    "known_pair_relations": sorted(excluded_relations),
+                    "entity_pair": list(pair) if pair else None,
+                    "teacher": "frozen_b1",
+                    "negative_source": "b1_score_plus_uniform",
+                    "seed": args.seed,
+                },
+                prefix_text=prefix_text,
+                relation_order=relation_order,
+                metadata=metadata,
+            )
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
             stream.flush()
             completed_ids.add(question_id)
