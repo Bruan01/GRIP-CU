@@ -62,18 +62,31 @@ def pack_token_rows(
     pad_id: int,
     device: torch.device,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """Right-pad token rows into a dense batch on ``device``."""
+    """Right-pad token rows into a dense batch on ``device``.
+
+    Padding is built on CPU, then moved once. Token ids and the mean-logprob
+    definition are unchanged.
+    """
     if not rows:
         raise ValueError("rows must be non-empty")
-    seq_lens = torch.tensor([len(row) for row in rows], dtype=torch.long, device=device)
-    max_len = int(seq_lens.max().item())
-    input_ids = torch.full((len(rows), max_len), pad_id, dtype=torch.long, device=device)
-    attention_mask = torch.zeros((len(rows), max_len), dtype=torch.long, device=device)
+    lengths = [len(row) for row in rows]
+    max_len = max(lengths)
+    batch = len(rows)
+    input_ids = torch.full((batch, max_len), pad_id, dtype=torch.long)
+    attention_mask = torch.zeros((batch, max_len), dtype=torch.long)
     for index, row in enumerate(rows):
-        end = len(row)
-        input_ids[index, :end] = torch.tensor(row, dtype=torch.long, device=device)
-        attention_mask[index, :end] = 1
-    return input_ids, attention_mask, seq_lens
+        end = lengths[index]
+        if end:
+            input_ids[index, :end] = torch.as_tensor(row, dtype=torch.long)
+            attention_mask[index, :end] = 1
+    seq_lens = torch.tensor(lengths, dtype=torch.long)
+    if device.type == "cpu":
+        return input_ids, attention_mask, seq_lens
+    return (
+        input_ids.to(device, non_blocking=True),
+        attention_mask.to(device, non_blocking=True),
+        seq_lens.to(device, non_blocking=True),
+    )
 
 
 def continuation_mean_log_likelihood(
@@ -146,6 +159,36 @@ def encode_without_specials(tokenizer, text: str) -> list[int]:
     return [0 if unk is None else unk]
 
 
+def encode_many_without_specials(tokenizer, texts: Sequence[str]) -> list[list[int]]:
+    """Batch-tokenize strings without specials; fall back to one-by-one.
+
+    HuggingFace tokenizers accept a list and return the same ids as separate
+    calls. Toy tokenizers in tests often accept only a string, so TypeError
+    (or a non-batched return) falls back to ``encode_without_specials``.
+    Padding is disabled so batched ids stay identical to per-string calls.
+    """
+    if not texts:
+        return []
+    try:
+        encoded = tokenizer(list(texts), add_special_tokens=False, padding=False)
+        ids_batch = encoded["input_ids"]
+    except TypeError:
+        return [encode_without_specials(tokenizer, text) for text in texts]
+    if hasattr(ids_batch, "tolist"):
+        ids_batch = ids_batch.tolist()
+    if not isinstance(ids_batch, list) or len(ids_batch) != len(texts):
+        return [encode_without_specials(tokenizer, text) for text in texts]
+    if ids_batch and isinstance(ids_batch[0], int):
+        return [encode_without_specials(tokenizer, text) for text in texts]
+    unk = getattr(tokenizer, "unk_token_id", None)
+    fallback = 0 if unk is None else unk
+    rows: list[list[int]] = []
+    for ids in ids_batch:
+        ids = list(ids)
+        rows.append(ids if ids else [fallback])
+    return rows
+
+
 def pack_decision_set_rows(
     tokenizer,
     prefix_text: str,
@@ -157,7 +200,8 @@ def pack_decision_set_rows(
     if not relations:
         raise ValueError("relations must be non-empty")
     prefix_ids = encode_without_specials(tokenizer, prefix_text)
-    rows = [prefix_ids + encode_without_specials(tokenizer, relation) for relation in relations]
+    relation_ids = encode_many_without_specials(tokenizer, relations)
+    rows = [prefix_ids + ids for ids in relation_ids]
     return rows, [len(prefix_ids)] * len(relations)
 
 
@@ -310,9 +354,8 @@ def score_candidates(
         rows.extend(packed_rows)
         prefix_lens.extend(packed_prefix)
         group_sizes.append(len(answers))
-        token_lengths.append(
-            [len(encode_without_specials(tokenizer, answer)) for answer in answers]
-        )
+        prefix_len = packed_prefix[0]
+        token_lengths.append([len(row) - prefix_len for row in packed_rows])
     packed_scores, packed_lens = score_packed_candidate_rows(
         scorer,
         tokenizer,

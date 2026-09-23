@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Small-scale offline full-vocabulary scoring with the frozen B1 adapter.
-# Default LIMIT=100 matchable relation QA. Do not use this launcher for the
-# full Stage-2 dump; that path is configs/run_offline_score_full.sh.
+# Production offline full-vocabulary confusion mining with the frozen B1 adapter.
+# LIMIT=0 scores every matchable Stage-2 relation QA. Resume, sharding, and
+# candidate batching do not change the mean-logprob definition. Default
+# candidate_batch_size=8 matches the Prompt-3 dump in bf16; 16/32 are faster
+# but packed attention can move scores by one ulp.
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -11,13 +13,15 @@ PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
 INPUT_FILE="${INPUT_FILE:-$HNG/grip_nell23k_tasks.json}"
 RAW_DIR="${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
 B1_ADAPTER="${B1_ADAPTER:-$HNG/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/b1/adapter}"
-LIMIT="${LIMIT:-100}"
+LIMIT="${LIMIT:-0}"
 TEMPERATURE="${TEMPERATURE:-1.0}"
 CANDIDATE_BATCH_SIZE="${CANDIDATE_BATCH_SIZE:-8}"
+NUM_SHARDS="${NUM_SHARDS:-1}"
+SHARD_ID="${SHARD_ID:-0}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
-RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_offline_score_limit${LIMIT}}"
+RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_offline_confusion_shard${SHARD_ID}of${NUM_SHARDS}}"
 OUTPUT_DIR="${OUTPUT_DIR:-$RUN_DIR}"
-TMUX_SESSION="${TMUX_SESSION:-offline-score-${RUN_ID}}"
+TMUX_SESSION="${TMUX_SESSION:-offline-confusion-${RUN_ID}-s${SHARD_ID}}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
@@ -43,6 +47,9 @@ mkdir -p "$OUTPUT_DIR"
   echo "limit=$LIMIT"
   echo "temperature=$TEMPERATURE"
   echo "candidate_batch_size=$CANDIDATE_BATCH_SIZE"
+  echo "num_shards=$NUM_SHARDS"
+  echo "shard_id=$SHARD_ID"
+  echo "resume=${RESUME:-}"
   echo "tmux_session=${TMUX_SESSION:-}"
   date --iso-8601=seconds
 } >> "$OUTPUT_DIR/environment.txt"
@@ -52,7 +59,18 @@ export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 cd "$CODE_DIR"
 
-echo "[launch] offline relation scoring limit=$LIMIT tmux=${TMUX_SESSION:-none}" | tee -a "$OUTPUT_DIR/run.log"
+extra=()
+if [[ -n "${RESUME:-}" ]]; then
+  extra+=(--resume)
+fi
+if [[ -n "${COMPARE_REFERENCE:-}" ]]; then
+  extra+=(--compare_reference "$COMPARE_REFERENCE")
+fi
+if [[ "${BENCHMARK:-0}" == "1" ]]; then
+  extra+=(--benchmark --benchmark_qa "${BENCHMARK_QA:-2}")
+fi
+
+echo "[launch] offline confusion mining limit=$LIMIT shard=$SHARD_ID/$NUM_SHARDS tmux=${TMUX_SESSION:-none}" | tee -a "$OUTPUT_DIR/run.log"
 set +e
 "$PYTHON" "$HNG/scripts/score_relation_candidates_offline.py" \
   --task_file "$INPUT_FILE" \
@@ -64,10 +82,12 @@ set +e
   --limit "$LIMIT" \
   --candidate_batch_size "$CANDIDATE_BATCH_SIZE" \
   --temperature "$TEMPERATURE" \
+  --num_shards "$NUM_SHARDS" \
+  --shard_id "$SHARD_ID" \
   --progress_every "${PROGRESS_EVERY:-5}" \
-  ${RESUME:+--resume} \
+  "${extra[@]}" \
   2>&1 | tee -a "$OUTPUT_DIR/run.log"
 rc=${PIPESTATUS[0]}
 set -e
-echo "[launch] offline relation scoring finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$OUTPUT_DIR/run.log"
+echo "[launch] offline confusion mining finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$OUTPUT_DIR/run.log"
 exit "$rc"

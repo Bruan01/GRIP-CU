@@ -74,8 +74,41 @@ python scripts/audit_relation_geometry.py --markdown results/relation_geometry_a
 bash configs/run_freeze_confusion_db.sh
 
 # small-scale live dump of the same scorer: 100 relation QA × 198 relations
-# (tmux). Raise LIMIT up to 1000; do not use this for the full set.
+# (tmux). Raise LIMIT for a larger slice; use the full launcher for Stage 2.
 LIMIT=100 bash configs/run_offline_score_small.sh
+
+# production offline confusion mining (full matchable Stage-2 relation QA)
+# Default candidate_batch_size=8 matches Prompt-3 scores in bf16.
+LIMIT=0 CANDIDATE_BATCH_SIZE=8 \
+  RUN_DIR=results/runs/20260923_offline_confusion_full \
+  TMUX_SESSION=offline-confusion-full \
+  bash configs/run_offline_score_full.sh
+
+# resume the same RUN_DIR after an interrupt
+RESUME=1 LIMIT=0 CANDIDATE_BATCH_SIZE=8 \
+  RUN_DIR=results/runs/20260923_offline_confusion_full \
+  TMUX_SESSION=offline-confusion-full \
+  bash configs/run_offline_score_full.sh
+
+# two-machine QA sharding (merge after both finish)
+NUM_SHARDS=2 SHARD_ID=0 LIMIT=0 CANDIDATE_BATCH_SIZE=8 \
+  RUN_DIR=results/runs/20260923_offline_confusion_shard0of2 \
+  TMUX_SESSION=offline-confusion-s0 \
+  bash configs/run_offline_score_full.sh
+NUM_SHARDS=2 SHARD_ID=1 LIMIT=0 CANDIDATE_BATCH_SIZE=8 \
+  RUN_DIR=results/runs/20260923_offline_confusion_shard1of2 \
+  TMUX_SESSION=offline-confusion-s1 \
+  bash configs/run_offline_score_full.sh
+python scripts/merge_confusion_shards.py \
+  results/runs/20260923_offline_confusion_shard0of2 \
+  results/runs/20260923_offline_confusion_shard1of2 \
+  --output_dir results/runs/20260923_offline_confusion_merged
+
+# batch-size benchmark (2 QA, sizes 1/8/16/32)
+BENCHMARK=1 LIMIT=2 \
+  RUN_DIR=results/runs/20260923_offline_confusion_benchmark \
+  TMUX_SESSION=offline-confusion-bench \
+  bash configs/run_offline_score_full.sh
 
 # listed-only larger-slice decode; reuse frozen 20260915 B1 predictions
 SCALE=pilot bash configs/run_listed_only_decode.sh

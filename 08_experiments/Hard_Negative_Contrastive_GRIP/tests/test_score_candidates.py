@@ -246,6 +246,16 @@ def test_padding_does_not_enter_candidate_score() -> None:
     assert abs(packed["candidate_score"][0][1] - separate_long["candidate_score"][0][0]) < 1e-6
 
 
+def test_encode_many_matches_per_string_ids() -> None:
+    tokenizer = CharTokenizer()
+    answers = ["r", "owns", "concept:worksfor"]
+    from hard_negative_grip.scoring import encode_many_without_specials
+
+    batched = encode_many_without_specials(tokenizer, answers)
+    singles = [encode_without_specials(tokenizer, answer) for answer in answers]
+    assert batched == singles
+
+
 def test_candidate_token_length_is_answer_only() -> None:
     tokenizer = CharTokenizer()
     model = ForwardOnlyLM()
