@@ -73,6 +73,10 @@ python scripts/audit_relation_geometry.py --markdown results/relation_geometry_a
 # (offline; do not rescore). Re-mine with LIMIT=0 only if that JSONL is incomplete.
 bash configs/run_freeze_confusion_db.sh
 
+# small-scale live dump of the same scorer: 100 relation QA × 198 relations
+# (tmux). Raise LIMIT up to 1000; do not use this for the full set.
+LIMIT=100 bash configs/run_offline_score_small.sh
+
 # listed-only larger-slice decode; reuse frozen 20260915 B1 predictions
 SCALE=pilot bash configs/run_listed_only_decode.sh
 
