@@ -15,11 +15,11 @@ from transformers import DataCollatorForLanguageModeling, Trainer
 
 from .losses import candidate_infonce_loss
 from .official_lists import listed_relations_from_sample
-from .scoring import (
-    continuation_mean_log_likelihood,
-    normalized_continuation_log_likelihood,
-    pack_token_rows,
-    slice_continuation_states,
+from .scoring import (  # re-exported for tests and eval scripts
+    encode_without_specials,
+    pack_decision_set_rows,
+    score_candidate_rows,
+    unwrap_for_scoring,
 )
 
 
@@ -30,13 +30,6 @@ EXTRA_KEYS = (
     "prefix_ids",
     "relation_ids",
 )
-
-
-def unwrap_for_scoring(model, accelerator=None):
-    """Avoid Accelerate wrapping, which materializes full fp32 logits."""
-    if accelerator is not None:
-        return accelerator.unwrap_model(model)
-    return model
 
 
 def format_answer_prefix(
@@ -77,40 +70,6 @@ class ListedDataCollator:
         return batch
 
 
-def unwrap_causal_lm(model, accelerator=None):
-    """Return the CausalLM that owns ``model`` / ``lm_head``, if present."""
-    inner = unwrap_for_scoring(model, accelerator)
-    if hasattr(inner, "get_base_model"):
-        inner = inner.get_base_model()
-    if hasattr(inner, "model") and hasattr(inner, "lm_head"):
-        return inner
-    return None
-
-
-def encode_without_specials(tokenizer, text: str) -> list[int]:
-    encoded = tokenizer(text, add_special_tokens=False)
-    ids = list(encoded["input_ids"])
-    if ids:
-        return ids
-    unk = getattr(tokenizer, "unk_token_id", None)
-    return [0 if unk is None else unk]
-
-
-def pack_decision_set_rows(
-    tokenizer,
-    prefix_text: str,
-    relations: list[str],
-) -> tuple[list[list[int]], list[int]]:
-    """Tokenize one shared prefix plus each listed continuation."""
-    if not prefix_text:
-        raise ValueError("prefix_text must be non-empty")
-    if not relations:
-        raise ValueError("relations must be non-empty")
-    prefix_ids = encode_without_specials(tokenizer, prefix_text)
-    rows = [prefix_ids + encode_without_specials(tokenizer, relation) for relation in relations]
-    return rows, [len(prefix_ids)] * len(relations)
-
-
 def pick_closed_set_answer(relations: list[str], scores: list[float]) -> str:
     """Argmax over listed continuations; earlier prompt order wins ties."""
     if not relations:
@@ -124,43 +83,6 @@ def pick_closed_set_answer(relations: list[str], scores: list[float]) -> str:
             best_index = index
             best_score = score
     return relations[best_index]
-
-
-def score_candidate_rows(scorer, tokenizer, rows, prefix_lens, device, accelerator=None):
-    """Score packed answer continuations with one forward pass."""
-    pad_id = tokenizer.pad_token_id
-    if pad_id is None:
-        pad_id = 0
-    input_ids, attention_mask, seq_lens = pack_token_rows(
-        rows, pad_id=int(pad_id), device=device
-    )
-    prefix_lengths = torch.tensor(prefix_lens, dtype=torch.long, device=device)
-    causal = unwrap_causal_lm(scorer, accelerator)
-    if causal is not None:
-        hidden = causal.model(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            use_cache=False,
-        )[0]
-        answer_hidden, answer_ids, answer_lens = slice_continuation_states(
-            hidden, input_ids, prefix_lengths, seq_lens
-        )
-        logits = causal.lm_head(answer_hidden)
-        del hidden, answer_hidden
-        return continuation_mean_log_likelihood(logits, answer_ids, answer_lens)
-    outputs = scorer(
-        input_ids=input_ids,
-        attention_mask=attention_mask,
-        use_cache=False,
-    )
-    scores = normalized_continuation_log_likelihood(
-        outputs.logits,
-        input_ids,
-        prefix_lengths,
-        seq_lens,
-    )
-    del outputs
-    return scores
 
 
 class ListedQADataset(torch.utils.data.Dataset):

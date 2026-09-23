@@ -38,10 +38,9 @@ from hard_negative_grip.decode_io import (  # noqa: E402
 )
 from hard_negative_grip.listed_training import (  # noqa: E402
     format_answer_prefix,
-    pack_decision_set_rows,
     pick_closed_set_answer,
-    score_candidate_rows,
 )
+from hard_negative_grip.scoring import score_candidates  # noqa: E402
 from hard_negative_grip.metrics import summarize_candidate_scores  # noqa: E402
 from hard_negative_grip.official_lists import listed_relations_from_sample  # noqa: E402
 from hard_negative_grip.task_file import load_graph_record  # noqa: E402
@@ -152,9 +151,8 @@ def evaluate_closed_set(
                 system_prompt=SYSTEM_PROMPT,
                 question_template=QUESTION_TEMPLATE,
             )
-            token_rows, prefix_lens = pack_decision_set_rows(tokenizer, prefix, relations)
-            scores = score_candidate_rows(model, tokenizer, token_rows, prefix_lens, device)
-            score_list = [float(value) for value in scores.tolist()]
+            scored = score_candidates(model, tokenizer, prefix, relations, device=device)
+            score_list = [float(value) for value in scored["candidate_score"][0]]
             predicted = pick_closed_set_answer(relations, score_list)
             score_map = {relation: score for relation, score in zip(relations, score_list)}
             target = [gold]

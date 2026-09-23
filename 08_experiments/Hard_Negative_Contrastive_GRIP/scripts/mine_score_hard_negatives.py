@@ -28,8 +28,8 @@ sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
 from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE  # noqa: E402
-from hard_negative_grip.listed_training import score_candidate_rows  # noqa: E402
 from hard_negative_grip.official_lists import load_train_relation_order  # noqa: E402
+from hard_negative_grip.scoring import score_candidates  # noqa: E402
 from hard_negative_grip.confusion_db import (  # noqa: E402
     annotate_score_row,
     scorer_metadata,
@@ -79,15 +79,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def encode_without_specials(tokenizer, text: str) -> list[int]:
-    encoded = tokenizer(text, add_special_tokens=False)
-    ids = list(encoded["input_ids"])
-    if ids:
-        return ids
-    unk = getattr(tokenizer, "unk_token_id", None)
-    return [0 if unk is None else unk]
-
-
 def load_b1(args: argparse.Namespace):
     model_id = HF_DECODER_ONLY_LLMS[args.model_name]
     base_model, tokenizer = get_hf_llm_tokenizer(
@@ -113,21 +104,13 @@ def score_relations(
     relations: list[str],
     batch_size: int,
 ) -> dict[str, float]:
-    prefix_ids = encode_without_specials(tokenizer, prefix)
     device = next(model.parameters()).device
     scores: list[float] = []
     with torch.no_grad():
         for start in range(0, len(relations), batch_size):
             chunk = relations[start : start + batch_size]
-            rows = [prefix_ids + encode_without_specials(tokenizer, rel) for rel in chunk]
-            values = score_candidate_rows(
-                model,
-                tokenizer,
-                rows,
-                [len(prefix_ids)] * len(rows),
-                device,
-            )
-            scores.extend(float(value) for value in values.detach().cpu())
+            scored = score_candidates(model, tokenizer, prefix, chunk, device=device)
+            scores.extend(float(value) for value in scored["candidate_score"][0])
     return dict(zip(relations, scores))
 
 

@@ -11,7 +11,14 @@ from .candidates import (
 )
 from .losses import adapter_contrastive_loss, candidate_infonce_loss, margin_ranking_loss
 from .metrics import hits_at_k, reciprocal_rank, summarize_candidate_scores
-from .scoring import normalized_continuation_log_likelihood
+from .scoring import (
+    encode_without_specials,
+    normalized_continuation_log_likelihood,
+    pack_decision_set_rows,
+    score_candidate_rows,
+    score_candidates,
+    unwrap_for_scoring,
+)
 
 __all__ = [
     "Candidate",
@@ -28,4 +35,8 @@ __all__ = [
     "reciprocal_rank",
     "summarize_candidate_scores",
     "normalized_continuation_log_likelihood",
+    "pack_decision_set_rows",
+    "score_candidate_rows",
+    "score_candidates",
+    "unwrap_for_scoring",
 ]
