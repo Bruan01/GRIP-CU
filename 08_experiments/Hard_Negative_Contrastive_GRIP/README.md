@@ -104,6 +104,13 @@ python scripts/merge_confusion_shards.py \
   results/runs/20260923_offline_confusion_shard1of2 \
   --output_dir results/runs/20260923_offline_confusion_merged
 
+# CPU-only QA-level confusion structure from saved scores (no LLM, no training)
+bash configs/run_confusion_analysis.sh
+
+# CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)
+# MIN_SUPPORT filters figures only; relation_pair_statistics.csv stays complete.
+MIN_SUPPORT=10 bash configs/run_confusion_vocab.sh
+
 # batch-size benchmark (2 QA, sizes 1/8/16/32)
 BENCHMARK=1 LIMIT=2 \
   RUN_DIR=results/runs/20260923_offline_confusion_benchmark \
