@@ -122,6 +122,12 @@ python scripts/audit_confusion_db.py \
   --output_dir results/runs/20260923_offline_confusion_train_filter/audit \
   --filter_splits train
 
+# freeze Random-K / Top-K Hard / Coverage-Adaptive K from the train-only dump
+# Coverage-Adaptive K uses each QA's negative_mass, not a global K=9.
+# Do not train yet; the three JSONL manifests are the control-variable lists.
+TMUX_SESSION=shared-pool-samplers-20260926 \
+  bash configs/run_freeze_shared_pool_samplers.sh
+
 
 # CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)
 # MIN_SUPPORT filters figures only; relation_pair_statistics.csv stays complete.
