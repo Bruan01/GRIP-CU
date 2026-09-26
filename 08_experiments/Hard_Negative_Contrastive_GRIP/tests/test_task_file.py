@@ -12,7 +12,11 @@ from hard_negative_grip.task_file import (  # noqa: E402
     is_grip_task_file,
     is_relation_gold,
     match_train_relation,
+    original_question_ids_from_payload,
     sample_listed_negatives,
+    sample_question_ids,
+    subset_task_payload,
+    task_qa_id,
     train_relation_alias_index,
 )
 
@@ -215,3 +219,74 @@ def test_embed_sim_requires_embeddings() -> None:
         assert "relation_embeddings" in str(exc)
     else:
         raise AssertionError("expected ValueError")
+
+
+def test_naive_prefix_slice_would_miss_frozen_manifest_ids() -> None:
+    texts = [
+        _qa("what is the relation between a and b?", "concept:gold"),
+        _qa("what is the relation between c and d?", "concept:other"),
+        _qa("what is the relation between e and f?", "concept:gold"),
+    ]
+    manifest = {
+        "task_qa:2": {
+            "question_id": "task_qa:2",
+            "positive_relation": "concept:gold",
+            "hard_negative_relations": ["concept:hard"],
+            "uniform_negative_relations": [],
+            "negative_relations": ["concept:hard"],
+        }
+    }
+    try:
+        build_qa_assets_from_task_texts(
+            texts[:1],
+            seed=2026,
+            listed_negative_source="score_hard",
+            relation_order=["concept:gold", "concept:hard"],
+            score_hard_manifest=manifest,
+        )
+    except ValueError as exc:
+        assert "task_qa:0" in str(exc)
+    else:
+        raise AssertionError("positional remapping should fail to find task_qa:2")
+
+
+def test_score_hard_subset_keeps_original_task_qa_ids() -> None:
+    texts = [
+        _qa("what is the relation between a and b?", "concept:gold"),
+        _qa("what is the relation between c and d?", "concept:other"),
+        _qa("what is the relation between e and f?", "concept:gold"),
+    ]
+    payload = {"context_samples": ["ctx"], "qa_samples": texts}
+    subset = subset_task_payload(payload, question_ids=["task_qa:2"])
+    assert subset["original_question_ids"] == ["task_qa:2"]
+    assert original_question_ids_from_payload(subset, 1) == ["task_qa:2"]
+    manifest = {
+        "task_qa:2": {
+            "question_id": "task_qa:2",
+            "positive_relation": "concept:gold",
+            "hard_negative_relations": ["concept:hard"],
+            "uniform_negative_relations": [],
+            "negative_relations": ["concept:hard"],
+        }
+    }
+    _, metas = build_qa_assets_from_task_texts(
+        subset["qa_samples"],
+        seed=2026,
+        listed_negative_source="score_hard",
+        relation_order=["concept:gold", "concept:hard"],
+        score_hard_manifest=manifest,
+        question_ids=subset["original_question_ids"],
+    )
+    assert metas[0]["question_id"] == "task_qa:2"
+    assert metas[0]["listed_relations"] == ["concept:hard"]
+
+
+def test_sample_question_ids_is_seed_reproducible_and_sorted() -> None:
+    ids = [task_qa_id(index) for index in range(10)]
+    first = sample_question_ids(ids, max_samples=3, seed=2026)
+    second = sample_question_ids(ids, max_samples=3, seed=2026)
+    third = sample_question_ids(ids, max_samples=3, seed=7)
+    assert first == second
+    assert first == sorted(first, key=lambda item: int(item.split(":")[1]))
+    assert first != third
+    assert sample_question_ids(ids, max_samples=0, seed=2026) == ids

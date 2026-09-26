@@ -77,6 +77,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     load_graph_record,
     load_json_payload,
     load_score_hard_manifest,
+    original_question_ids_from_payload,
 )
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
 from utils import set_random_seed  # noqa: E402
@@ -821,8 +822,10 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
                 relation_order or [], stored_relations, stored_embeddings
             )
         listed_seed = args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
+        qa_samples = list(payload["qa_samples"])
+        question_ids = original_question_ids_from_payload(payload, len(qa_samples))
         qa_texts, qa_metas = build_qa_assets_from_task_texts(
-            list(payload["qa_samples"]),
+            qa_samples,
             seed=listed_seed,
             listed_negative_k=args.listed_negative_k,
             listed_negative_source=args.listed_negative_source,
@@ -831,6 +834,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             embed_pool_size=args.embed_pool_size,
             embed_sample_temperature=args.embed_sample_temperature,
             score_hard_manifest=score_hard_manifest,
+            question_ids=question_ids,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
         relation_n = sum(
@@ -854,6 +858,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             f"exact_match={exact_n} alias_match={alias_n} "
             f"listed_negative_source={args.listed_negative_source} "
             f"vocab={vocab_n} listed_negative_seed={listed_seed} "
+            f"question_ids={'original' if question_ids is not None else 'positional'} "
             f"embed_file={args.relation_embedding_file} "
             f"embed_pool={args.embed_pool_size} embed_tau={args.embed_sample_temperature} "
             f"eval={eval_path}",

@@ -90,6 +90,29 @@ def test_listed_qa_dataset_keeps_the_decision_set() -> None:
     assert item["relation_ids"][0] == [len("likes"), 7, 8]
 
 
+def test_listed_qa_dataset_accepts_variable_negative_k() -> None:
+    dataset = ListedQADataset(
+        ["short", "longer negatives"],
+        [
+            {
+                "listed_relations": ["a"],
+                "positive_relation": "gold",
+                "prefix_text": "PRE<answer>",
+            },
+            {
+                "listed_relations": ["b", "c", "d"],
+                "positive_relation": "gold",
+                "prefix_text": "PRE<answer>",
+            },
+        ],
+        _FakeEncodeTokenizer(),
+    )
+    assert len(dataset[0]["relation_ids"]) == 2
+    assert len(dataset[1]["relation_ids"]) == 4
+    assert dataset[0]["listed_relations"] == ["a"]
+    assert dataset[1]["listed_relations"] == ["b", "c", "d"]
+
+
 def test_listed_collator_does_not_tensorize_prompt_lists() -> None:
     collator = ListedDataCollator.__new__(ListedDataCollator)
     collator.inner = lambda features: {"input_ids": [feature["input_ids"] for feature in features]}

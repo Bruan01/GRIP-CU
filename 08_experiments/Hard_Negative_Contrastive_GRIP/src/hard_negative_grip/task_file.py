@@ -161,6 +161,90 @@ def match_train_relation(gold: str, alias_index: dict[str, str]) -> str | None:
     return alias_index.get(normalize_relation(gold))
 
 
+def task_qa_id(index: int) -> str:
+    if int(index) != index or index < 0:
+        raise ValueError(f"QA index must be a non-negative integer, got {index!r}")
+    return f"task_qa:{int(index)}"
+
+
+def parse_task_qa_id(qa_id: str) -> int:
+    prefix, _, rest = str(qa_id).partition(":")
+    if prefix != "task_qa" or not rest.isdigit():
+        raise ValueError(f"invalid qa_id {qa_id!r}")
+    return int(rest)
+
+
+def original_question_ids_from_payload(payload: dict, n_texts: int) -> list[str] | None:
+    """Keep frozen-manifest IDs when a task file is a subset of paper QA."""
+    raw_ids = payload.get("original_question_ids")
+    raw_indices = payload.get("original_qa_indices")
+    if raw_ids is None and raw_indices is None:
+        return None
+    if raw_ids is not None:
+        ids = [str(item) for item in raw_ids]
+        if len(ids) != n_texts:
+            raise ValueError(
+                f"original_question_ids has {len(ids)} entries, expected {n_texts}"
+            )
+        for question_id in ids:
+            parse_task_qa_id(question_id)
+        if raw_indices is not None:
+            derived = [task_qa_id(int(index)) for index in raw_indices]
+            if derived != ids:
+                raise ValueError("original_question_ids do not match original_qa_indices")
+        return ids
+    ids = [task_qa_id(int(index)) for index in raw_indices]
+    if len(ids) != n_texts:
+        raise ValueError(
+            f"original_qa_indices has {len(ids)} entries, expected {n_texts}"
+        )
+    return ids
+
+
+def sample_question_ids(
+    question_ids: list[str],
+    *,
+    max_samples: int,
+    seed: int,
+) -> list[str]:
+    """Deterministically sample frozen-manifest IDs; keep original index order."""
+    if max_samples < 0:
+        raise ValueError(f"max_samples must be non-negative, got {max_samples}")
+    unique: list[str] = []
+    seen: set[str] = set()
+    for question_id in question_ids:
+        parse_task_qa_id(question_id)
+        if question_id in seen:
+            raise ValueError(f"duplicate question_id {question_id!r}")
+        seen.add(question_id)
+        unique.append(str(question_id))
+    if max_samples == 0 or max_samples >= len(unique):
+        return sorted(unique, key=parse_task_qa_id)
+    chosen = random.Random(seed).sample(unique, max_samples)
+    return sorted(chosen, key=parse_task_qa_id)
+
+
+def subset_task_payload(payload: dict, *, question_ids: list[str]) -> dict:
+    """Keep selected paper QA rows without renumbering ``task_qa:N`` identities."""
+    if not is_grip_task_file(payload):
+        raise ValueError("payload is not a GRIP task file")
+    qa_samples = list(payload["qa_samples"])
+    indices = [parse_task_qa_id(question_id) for question_id in question_ids]
+    if len(indices) != len(set(indices)):
+        raise ValueError("question_ids contain duplicates")
+    for index, question_id in zip(indices, question_ids):
+        if index >= len(qa_samples):
+            raise ValueError(
+                f"{question_id} is outside the task file ({len(qa_samples)} QA samples)"
+            )
+    output = dict(payload)
+    output["qa_samples"] = [qa_samples[index] for index in indices]
+    output["original_qa_indices"] = indices
+    output["original_question_ids"] = [task_qa_id(index) for index in indices]
+    output["subset_n_qa"] = len(indices)
+    return output
+
+
 def load_score_hard_manifest(path: Path) -> dict[str, dict]:
     """Load and index the immutable score-hard JSONL manifest by question ID."""
     rows: dict[str, dict] = {}
@@ -273,6 +357,7 @@ def build_qa_assets_from_task_texts(
     embed_pool_size: int = DEFAULT_EMBED_POOL_SIZE,
     embed_sample_temperature: float = DEFAULT_EMBED_TEMPERATURE,
     score_hard_manifest: dict[str, dict] | None = None,
+    question_ids: list[str] | None = None,
 ) -> tuple[list[str], list[dict]]:
     if not qa_texts:
         raise ValueError("task file contains no QA samples")
@@ -313,11 +398,23 @@ def build_qa_assets_from_task_texts(
         alias_index = {}
         vocab = relation_vocab(qa_texts)
         stream = None
+    if question_ids is not None and len(question_ids) != len(qa_texts):
+        raise ValueError(
+            f"question_ids has {len(question_ids)} entries, expected {len(qa_texts)}"
+        )
+    resolved_ids: list[str]
+    if question_ids is None:
+        resolved_ids = [task_qa_id(index) for index in range(len(qa_texts))]
+    else:
+        resolved_ids = []
+        for question_id in question_ids:
+            parse_task_qa_id(question_id)
+            resolved_ids.append(str(question_id))
     texts: list[str] = []
     metas: list[dict] = []
     cosine_values: list[float] = []
     for index, text in enumerate(qa_texts):
-        question_id = f"task_qa:{index}"
+        question_id = resolved_ids[index]
         gold = assistant_gold(text)
         listed: list[str] = []
         matched = match_train_relation(gold, alias_index) if use_train_graph else None
@@ -373,7 +470,7 @@ def build_qa_assets_from_task_texts(
         )
     if listed_negative_source in {"score_hard", "rollout_hard"}:
         expected_ids = {
-            f"task_qa:{index}"
+            resolved_ids[index]
             for index, text in enumerate(qa_texts)
             if is_relation_gold(assistant_gold(text), text)
             and match_train_relation(assistant_gold(text), alias_index) is not None

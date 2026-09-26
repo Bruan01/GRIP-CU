@@ -82,6 +82,7 @@ def test_known_pair_relations_rejects_unknown_split(tmp_path: Path) -> None:
         raise AssertionError("unknown filter split was accepted")
 
 
+def test_score_hard_manifest_attaches_listed_negatives(tmp_path: Path) -> None:
     manifest = tmp_path / "manifest.jsonl"
     row = {
         "question_id": "task_qa:0",
@@ -101,6 +102,7 @@ def test_known_pair_relations_rejects_unknown_split(tmp_path: Path) -> None:
     )
     assert texts[0].endswith("<answer>concept:gold</answer>")
     assert metas[0]["listed_relations"] == ["concept:hard", "concept:uniform"]
+    assert metas[0]["question_id"] == "task_qa:0"
 
 
 def test_question_entity_pair_strips_word_node_prefix() -> None:

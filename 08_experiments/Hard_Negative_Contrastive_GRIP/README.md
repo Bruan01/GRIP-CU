@@ -124,9 +124,16 @@ python scripts/audit_confusion_db.py \
 
 # freeze Random-K / Top-K Hard / Coverage-Adaptive K from the train-only dump
 # Coverage-Adaptive K uses each QA's negative_mass, not a global K=9.
-# Do not train yet; the three JSONL manifests are the control-variable lists.
+# The three JSONL manifests are the control-variable lists; do not resample live.
 TMUX_SESSION=shared-pool-samplers-20260926 \
   bash configs/run_freeze_shared_pool_samplers.sh
+
+# listed-only 64/32/64 smoke on those frozen manifests.
+# Train 64 paper-task QA (keep original task_qa:N IDs); eval aligned val 32 / test 64.
+# Same S1 + frozen B1 for Random-K vs Top-K Hard vs Coverage-Adaptive K.
+# The launcher first writes wiring.json, then trains listed only. Do not jump to full.
+SCALE=smoke TMUX_SESSION=shared-pool-sampler-smoke-20260926 \
+  bash configs/run_shared_pool_sampler_smoke.sh
 
 
 # CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)

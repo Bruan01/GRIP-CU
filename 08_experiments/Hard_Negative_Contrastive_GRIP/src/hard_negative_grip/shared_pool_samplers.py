@@ -24,7 +24,16 @@ from .confusion_analysis import (
     write_json,
     write_jsonl,
 )
+from .official_lists import load_train_relation_order
 from .score_hard import merge_negative_sources
+from .task_file import (
+    assistant_gold,
+    build_qa_assets_from_task_texts,
+    is_grip_task_file,
+    load_json_payload,
+    load_score_hard_manifest,
+    original_question_ids_from_payload,
+)
 
 SAMPLER_VARIANTS = ("random_k", "top_k_hard", "coverage_adaptive_k")
 DEFAULT_K_FIXED = 9
@@ -495,3 +504,98 @@ def render_sampler_report(
         ]
     )
     return "\n".join(lines) + "\n"
+
+
+def verify_listed_manifest_wiring(
+    *,
+    task_path: Path,
+    manifest_paths: dict[str, Path],
+    raw_dir: Path,
+    expected_n: int | None = None,
+    variants: tuple[str, ...] = SAMPLER_VARIANTS,
+) -> dict:
+    """Attach frozen sampler manifests to a task subset without loading a model."""
+    payload = load_json_payload(task_path)
+    if not is_grip_task_file(payload):
+        raise ValueError(f"{task_path} is not a GRIP task file")
+    qa_texts = list(payload["qa_samples"])
+    question_ids = original_question_ids_from_payload(payload, len(qa_texts))
+    if question_ids is None:
+        raise ValueError(
+            f"{task_path} is missing original_question_ids; "
+            "a naive prefix slice would attach the wrong frozen negatives"
+        )
+    if expected_n is not None and len(qa_texts) != expected_n:
+        raise ValueError(f"{task_path} has {len(qa_texts)} QA rows, expected {expected_n}")
+    relation_order = load_train_relation_order(raw_dir)
+    golds = {question_id: assistant_gold(text) for question_id, text in zip(question_ids, qa_texts)}
+    variants_out: dict[str, dict] = {}
+    for variant in variants:
+        path = manifest_paths[variant]
+        manifest = load_score_hard_manifest(path)
+        missing = [question_id for question_id in question_ids if question_id not in manifest]
+        if missing:
+            raise ValueError(f"{path} is missing {len(missing)} subset rows, e.g. {missing[0]}")
+        mismatches = [
+            question_id
+            for question_id in question_ids
+            if str(manifest[question_id]["positive_relation"]) != golds[question_id]
+        ]
+        if mismatches:
+            question_id = mismatches[0]
+            raise ValueError(
+                f"{path} gold mismatch for {question_id}: "
+                f"manifest={manifest[question_id]['positive_relation']!r} "
+                f"task={golds[question_id]!r}"
+            )
+        _, metas = build_qa_assets_from_task_texts(
+            qa_texts,
+            seed=DEFAULT_SEED,
+            listed_negative_source="score_hard",
+            relation_order=relation_order,
+            score_hard_manifest=manifest,
+            question_ids=question_ids,
+        )
+        listed_counts = [len(meta["listed_relations"]) for meta in metas]
+        empty = [meta["question_id"] for meta, count in zip(metas, listed_counts) if count < 1]
+        if empty:
+            raise ValueError(f"{path} attached no negatives for {empty[0]}")
+        attached = {
+            meta["question_id"]: list(meta["listed_relations"]) for meta in metas
+        }
+        variants_out[variant] = {
+            "manifest": str(path),
+            "manifest_sha256": file_sha256(path),
+            "n_qa": len(metas),
+            "n_listed": sum(1 for count in listed_counts if count > 0),
+            "k_min": min(listed_counts),
+            "k_max": max(listed_counts),
+            "k_mean": float(sum(listed_counts) / len(listed_counts)),
+            "question_ids": list(question_ids),
+            "negatives_by_id": attached,
+        }
+    first_ids = variants_out[variants[0]]["question_ids"]
+    for variant in variants[1:]:
+        if variants_out[variant]["question_ids"] != first_ids:
+            raise ValueError(f"{variant} question IDs drifted from {variants[0]}")
+    return {
+        "task_file": str(task_path),
+        "n_qa": len(qa_texts),
+        "question_ids": list(question_ids),
+        "variants": {
+            variant: {
+                key: value
+                for key, value in payload.items()
+                if key != "negatives_by_id"
+            }
+            for variant, payload in variants_out.items()
+        },
+        "same_question_ids": True,
+        "note": (
+            "CPU wiring check only. Listed-contrastive reads these frozen "
+            "negative lists via --listed_negative_source score_hard."
+        ),
+        "_negatives_by_id": {
+            variant: payload["negatives_by_id"] for variant, payload in variants_out.items()
+        },
+    }
