@@ -67,6 +67,9 @@ from hard_negative_grip.run_protection import (  # noqa: E402
     checkpoint_training_kwargs,
     resolve_resume_checkpoint,
 )
+from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
+    assert_score_hard_listed_training_budget,
+)
 from hard_negative_grip.task_file import (  # noqa: E402
     LISTED_NEGATIVE_K,
     LISTED_NEGATIVE_SOURCES,
@@ -211,6 +214,12 @@ def parse_args() -> argparse.Namespace:
         "--no_resume",
         action="store_true",
         help="Ignore existing trainer checkpoints and start the stage from scratch.",
+    )
+    parser.add_argument(
+        "--allow_underfit_listed",
+        action="store_true",
+        help="Bypass the score_hard paper-task budget gate. Do not use this to "
+        "revive the retired 64-QA / 10-step shared-pool smoke.",
     )
     return parser.parse_args()
 
@@ -467,6 +476,16 @@ def train_stage2(
     metas: list[dict] | None = None,
 ) -> tuple[Path, object, object]:
     """Train a Stage-2 fork and keep the model in memory for evaluation."""
+    if texts is not None and lambda_candidate > 0:
+        assert_score_hard_listed_training_budget(
+            len(texts),
+            listed_negative_source=args.listed_negative_source,
+            skip_train=False,
+            allow_underfit=bool(getattr(args, "allow_underfit_listed", False)),
+            batch=args.per_device_train_batch_size,
+            requested_accum=args.gradient_accumulation_steps,
+            epochs=args.involve_qa_epochs,
+        )
     model, tokenizer = load_adapter(args, s1_adapter, trainable=True)
     if texts is None or metas is None:
         if record is None:
@@ -772,6 +791,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             str(args.resume_from_checkpoint) if args.resume_from_checkpoint else None
         ),
         "no_resume": bool(args.no_resume),
+        "allow_underfit_listed": bool(args.allow_underfit_listed),
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
             "Stage 1 is shared graph-context storage. Stage 2 then forks: "
@@ -893,6 +913,34 @@ def main() -> None:
     set_random_seed(args.seed)
     record, context_samples, qa_texts, qa_metas, eval_record = resolve_training_assets(args)
     write_run_config(output_dir, args)
+
+    if qa_texts is not None:
+        listed_adapter = output_dir / "listed" / "adapter"
+        will_train_listed = (
+            args.stage in {"listed", "all"}
+            and not args.skip_train
+            and (args.no_resume or not adapter_is_complete(listed_adapter))
+        )
+        budget = assert_score_hard_listed_training_budget(
+            len(qa_texts),
+            listed_negative_source=args.listed_negative_source,
+            skip_train=not will_train_listed,
+            allow_underfit=bool(args.allow_underfit_listed),
+            batch=args.per_device_train_batch_size,
+            requested_accum=args.gradient_accumulation_steps,
+            epochs=args.involve_qa_epochs,
+        )
+        if budget is not None:
+            (output_dir / "budget.json").write_text(
+                json.dumps(budget, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            print(
+                f"[budget] listed n={budget['n_samples']} "
+                f"accum={budget['effective_accum']} "
+                f"steps={budget['total_steps']}",
+                flush=True,
+            )
 
     if args.stage in {"s1", "all"}:
         if adapter_is_complete(Path(s1_adapter)) and not args.no_resume:

@@ -33,6 +33,7 @@ from .task_file import (
     load_json_payload,
     load_score_hard_manifest,
     original_question_ids_from_payload,
+    task_qa_id,
 )
 
 SAMPLER_VARIANTS = ("random_k", "top_k_hard", "coverage_adaptive_k")
@@ -41,6 +42,11 @@ DEFAULT_K_MIN = 1
 DEFAULT_K_MAX = 20
 DEFAULT_SEED = 2026
 DEFAULT_TAU_SOURCE = "median_top9_negative_mass"
+DEFAULT_LISTED_BATCH = 1
+DEFAULT_LISTED_ACCUM = 512
+DEFAULT_LISTED_EPOCHS = 10
+DEFAULT_MIN_TRAIN_QA = 3253
+RETIRED_UNDERFIT_TRAIN = "64-QA / 10-step listed smoke"
 
 
 def file_sha256(path: Path) -> str:
@@ -125,6 +131,97 @@ def sample_top_k(ranked: list[dict], k: int) -> list[dict]:
     if k < 0:
         raise ValueError(f"k must be non-negative, got {k}")
     return list(ranked[: min(k, len(ranked))])
+
+
+def listed_update_budget(
+    n_samples: int,
+    *,
+    batch: int = DEFAULT_LISTED_BATCH,
+    requested_accum: int = DEFAULT_LISTED_ACCUM,
+    epochs: float = DEFAULT_LISTED_EPOCHS,
+) -> dict:
+    """Match ``training_arguments``: clamp accum when the slice is smaller than it."""
+    if n_samples < 0:
+        raise ValueError(f"n_samples must be non-negative, got {n_samples}")
+    if batch < 1:
+        raise ValueError(f"batch must be >= 1, got {batch}")
+    if requested_accum < 1:
+        raise ValueError(f"requested_accum must be >= 1, got {requested_accum}")
+    if epochs <= 0:
+        raise ValueError(f"epochs must be positive, got {epochs}")
+    effective_accum = requested_accum
+    if batch * requested_accum > n_samples:
+        effective_accum = max(1, n_samples // batch)
+    steps_per_epoch = max(n_samples // (batch * effective_accum), 1) if n_samples else 0
+    total_steps = int(epochs * steps_per_epoch)
+    clamped = effective_accum != requested_accum
+    too_small = n_samples <= DEFAULT_MIN_TRAIN_QA
+    return {
+        "n_samples": n_samples,
+        "batch": batch,
+        "requested_accum": requested_accum,
+        "effective_accum": effective_accum,
+        "epochs": float(epochs),
+        "steps_per_epoch": steps_per_epoch,
+        "total_steps": total_steps,
+        "accum_clamped": clamped,
+        "underfit": bool(clamped or too_small),
+    }
+
+
+def refuse_underfit_listed_budget(
+    n_samples: int,
+    *,
+    batch: int = DEFAULT_LISTED_BATCH,
+    requested_accum: int = DEFAULT_LISTED_ACCUM,
+    epochs: float = DEFAULT_LISTED_EPOCHS,
+) -> dict:
+    """Block the retired 64-QA protocol before a listed GPU job starts."""
+    budget = listed_update_budget(
+        n_samples,
+        batch=batch,
+        requested_accum=requested_accum,
+        epochs=epochs,
+    )
+    if budget["underfit"]:
+        if budget["accum_clamped"]:
+            raise ValueError(
+                f"{n_samples} QA clamps accum {requested_accum} -> {budget['effective_accum']} "
+                f"and yields {budget['total_steps']} update steps. That is {RETIRED_UNDERFIT_TRAIN}, "
+                "not listed training. Wire the frozen manifests onto the full paper task file, "
+                f"then train Random-K with accum={requested_accum}."
+            )
+        raise ValueError(
+            f"{n_samples} QA is a matchable-only or smoke slice "
+            f"({budget['total_steps']} update steps). Train Random-K on the full paper "
+            f"task file with accum={requested_accum}."
+        )
+    return budget
+
+
+def assert_score_hard_listed_training_budget(
+    n_samples: int,
+    *,
+    listed_negative_source: str,
+    skip_train: bool = False,
+    allow_underfit: bool = False,
+    batch: int = DEFAULT_LISTED_BATCH,
+    requested_accum: int = DEFAULT_LISTED_ACCUM,
+    epochs: float = DEFAULT_LISTED_EPOCHS,
+) -> dict | None:
+    """Refuse shared-pool listed training that is not the paper-task budget.
+
+    Other negative sources keep their smoke/pilot launchers. ``skip_train`` and
+    ``allow_underfit`` are only for evaluating an already-finished adapter.
+    """
+    if skip_train or allow_underfit or listed_negative_source != "score_hard":
+        return None
+    return refuse_underfit_listed_budget(
+        n_samples,
+        batch=batch,
+        requested_accum=requested_accum,
+        epochs=epochs,
+    )
 
 
 def propose_coverage_tau(topn_masses: list[float]) -> float:
@@ -385,6 +482,20 @@ def freeze_shared_pool_samplers(
             ),
         },
         "do_not_train_from": "results/runs/20260923_offline_confusion_full",
+        "training_protocol": {
+            "wire_first": True,
+            "next_variant": "random_k",
+            "train_qa": "full paper task file; listed negatives from frozen Random-K IDs",
+            "min_train_qa": DEFAULT_MIN_TRAIN_QA,
+            "expected_paper_qa": 12014,
+            "accum": DEFAULT_LISTED_ACCUM,
+            "epochs": DEFAULT_LISTED_EPOCHS,
+            "expected_listed_steps": 230,
+            "do_not_train": RETIRED_UNDERFIT_TRAIN,
+            "do_not_train_matchable_only": 3253,
+            "do_not_rescore": "3253x198",
+            "do_not_expand_underfit_overnight": True,
+        },
     }
     write_json(policy_path, policy)
 
@@ -501,6 +612,18 @@ def render_sampler_report(
             "- Coverage-Adaptive K: smallest top-K whose cumulative `negative_mass`",
             "  reaches `tau`, clamped to `[k_min, k_max]`.",
             "",
+            "## Training protocol",
+            "",
+            f"- Do not train `{policy['training_protocol']['do_not_train']}`.",
+            "- Do not train the 3253-QA matchable-only slice.",
+            "- CPU-wire the frozen manifests onto the full paper task file before any listed GPU job.",
+            "- The next listed run is Random-K on that full task file "
+            f"(~{policy['training_protocol'].get('expected_paper_qa', 12014)} QA, "
+            f"`accum={policy['training_protocol']['accum']}`, "
+            f"`epochs={policy['training_protocol']['epochs']}`, "
+            f"~{policy['training_protocol'].get('expected_listed_steps', 230)} steps).",
+            "- Do not rescore the 3253×198 dump. Do not turn the 64-QA shot into an overnight run.",
+            "",
         ]
     )
     return "\n".join(lines) + "\n"
@@ -512,19 +635,24 @@ def verify_listed_manifest_wiring(
     manifest_paths: dict[str, Path],
     raw_dir: Path,
     expected_n: int | None = None,
+    expected_listed: int | None = None,
     variants: tuple[str, ...] = SAMPLER_VARIANTS,
 ) -> dict:
-    """Attach frozen sampler manifests to a task subset without loading a model."""
+    """Attach frozen sampler manifests to a task file without loading a model."""
     payload = load_json_payload(task_path)
     if not is_grip_task_file(payload):
         raise ValueError(f"{task_path} is not a GRIP task file")
     qa_texts = list(payload["qa_samples"])
     question_ids = original_question_ids_from_payload(payload, len(qa_texts))
+    identity = "original"
     if question_ids is None:
-        raise ValueError(
-            f"{task_path} is missing original_question_ids; "
-            "a naive prefix slice would attach the wrong frozen negatives"
-        )
+        if len(qa_texts) <= DEFAULT_MIN_TRAIN_QA:
+            raise ValueError(
+                f"{task_path} is missing original_question_ids; "
+                "a naive prefix slice would attach the wrong frozen negatives"
+            )
+        question_ids = [task_qa_id(index) for index in range(len(qa_texts))]
+        identity = "positional"
     if expected_n is not None and len(qa_texts) != expected_n:
         raise ValueError(f"{task_path} has {len(qa_texts)} QA rows, expected {expected_n}")
     relation_order = load_train_relation_order(raw_dir)
@@ -533,13 +661,15 @@ def verify_listed_manifest_wiring(
     for variant in variants:
         path = manifest_paths[variant]
         manifest = load_score_hard_manifest(path)
-        missing = [question_id for question_id in question_ids if question_id not in manifest]
-        if missing:
-            raise ValueError(f"{path} is missing {len(missing)} subset rows, e.g. {missing[0]}")
+        if identity == "original":
+            missing = [question_id for question_id in question_ids if question_id not in manifest]
+            if missing:
+                raise ValueError(f"{path} is missing {len(missing)} subset rows, e.g. {missing[0]}")
         mismatches = [
             question_id
             for question_id in question_ids
-            if str(manifest[question_id]["positive_relation"]) != golds[question_id]
+            if question_id in manifest
+            and str(manifest[question_id]["positive_relation"]) != golds[question_id]
         ]
         if mismatches:
             question_id = mismatches[0]
@@ -557,20 +687,35 @@ def verify_listed_manifest_wiring(
             question_ids=question_ids,
         )
         listed_counts = [len(meta["listed_relations"]) for meta in metas]
-        empty = [meta["question_id"] for meta, count in zip(metas, listed_counts) if count < 1]
-        if empty:
-            raise ValueError(f"{path} attached no negatives for {empty[0]}")
+        missing_attached = [
+            question_id
+            for question_id, count in zip(question_ids, listed_counts)
+            if question_id in manifest and count < 1
+        ]
+        if missing_attached:
+            raise ValueError(f"{path} attached no negatives for {missing_attached[0]}")
+        n_listed = sum(1 for count in listed_counts if count > 0)
+        if expected_listed is not None and n_listed != expected_listed:
+            raise ValueError(
+                f"{path} attached listed negatives for {n_listed} QA rows, "
+                f"expected {expected_listed}"
+            )
+        listed_only = [count for count in listed_counts if count > 0]
+        if not listed_only:
+            raise ValueError(f"{path} attached no listed negatives")
         attached = {
-            meta["question_id"]: list(meta["listed_relations"]) for meta in metas
+            meta["question_id"]: list(meta["listed_relations"])
+            for meta in metas
+            if meta["listed_relations"]
         }
         variants_out[variant] = {
             "manifest": str(path),
             "manifest_sha256": file_sha256(path),
             "n_qa": len(metas),
-            "n_listed": sum(1 for count in listed_counts if count > 0),
-            "k_min": min(listed_counts),
-            "k_max": max(listed_counts),
-            "k_mean": float(sum(listed_counts) / len(listed_counts)),
+            "n_listed": n_listed,
+            "k_min": min(listed_only),
+            "k_max": max(listed_only),
+            "k_mean": float(sum(listed_only) / len(listed_only)),
             "question_ids": list(question_ids),
             "negatives_by_id": attached,
         }
@@ -578,24 +723,42 @@ def verify_listed_manifest_wiring(
     for variant in variants[1:]:
         if variants_out[variant]["question_ids"] != first_ids:
             raise ValueError(f"{variant} question IDs drifted from {variants[0]}")
+    listed_counts_first = variants_out[variants[0]]["n_listed"]
     return {
         "task_file": str(task_path),
         "n_qa": len(qa_texts),
+        "n_listed": listed_counts_first,
+        "question_id_source": identity,
         "question_ids": list(question_ids),
         "variants": {
             variant: {
                 key: value
                 for key, value in payload.items()
-                if key != "negatives_by_id"
+                if key not in {"negatives_by_id", "question_ids"}
             }
             for variant, payload in variants_out.items()
         },
         "same_question_ids": True,
         "note": (
             "CPU wiring check only. Listed-contrastive reads these frozen "
-            "negative lists via --listed_negative_source score_hard."
+            "negative lists via --listed_negative_source score_hard. "
+            "Do not train the retired 64-QA / 10-step protocol; train Random-K "
+            "on the full paper task file after this check."
         ),
         "_negatives_by_id": {
             variant: payload["negatives_by_id"] for variant, payload in variants_out.items()
         },
     }
+
+
+def compact_wiring_payload(payload: dict) -> dict:
+    """Drop the 12k-ID list from logs / wiring.json; keep counts and K stats."""
+    compact = {
+        key: value
+        for key, value in payload.items()
+        if key not in {"question_ids", "_negatives_by_id"}
+    }
+    ids = payload.get("question_ids") or []
+    compact["question_id_head"] = list(ids[:3])
+    compact["question_id_tail"] = list(ids[-3:]) if ids else []
+    return compact

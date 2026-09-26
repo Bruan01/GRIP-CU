@@ -128,12 +128,15 @@ python scripts/audit_confusion_db.py \
 TMUX_SESSION=shared-pool-samplers-20260926 \
   bash configs/run_freeze_shared_pool_samplers.sh
 
-# listed-only 64/32/64 smoke on those frozen manifests.
-# Train 64 paper-task QA (keep original task_qa:N IDs); eval aligned val 32 / test 64.
-# Same S1 + frozen B1 for Random-K vs Top-K Hard vs Coverage-Adaptive K.
-# The launcher first writes wiring.json, then trains listed only. Do not jump to full.
-SCALE=smoke TMUX_SESSION=shared-pool-sampler-smoke-20260926 \
-  bash configs/run_shared_pool_sampler_smoke.sh
+# CPU-wire those frozen lists onto the full paper task file. Does not train.
+bash configs/run_wire_shared_pool_samplers.sh
+
+# listed-only Random-K on the full paper task file (experiment-H budget:
+# ~12014 QA, accum=512, ~230 steps). Same S1 + frozen B1. Do not train the
+# retired 64-QA / 10-step smoke, do not train the 3253-QA matchable-only
+# slice, and do not rescore 3253x198.
+TMUX_SESSION=shared-pool-random-k-full-20260926 \
+  bash configs/run_shared_pool_random_k_full.sh
 
 
 # CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)

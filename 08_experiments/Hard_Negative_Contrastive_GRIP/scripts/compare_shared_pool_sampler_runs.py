@@ -76,9 +76,11 @@ def main() -> None:
             "coverage_adaptive_k_minus_top_k_hard": adaptive_em - top_em,
         },
         "note": (
-            "Smoke only. Look for a direction: Top-K Hard or Coverage-Adaptive K "
-            "should beat Random-K before expanding to pilot/full. 64/32/64 is not "
-            "a paper number."
+            "Compare listed EM against frozen B1 on the same eval split. "
+            "The retired 64-QA / 10-step smoke is not a training budget. "
+            "A direction among Random-K / Top-K Hard / Coverage-Adaptive K "
+            "needs Random-K on the full paper task file (~12014 QA, accum=512, "
+            "~230 steps), not a 3253-QA matchable-only slice."
         ),
     }
     output = args.output or (args.run_dir / "comparison.json")

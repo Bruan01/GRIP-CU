@@ -9,10 +9,13 @@ sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
 
 from hard_negative_grip.offline_scoring import build_qa_score_rows  # noqa: E402
 from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
+    assert_score_hard_listed_training_budget,
     decide_coverage_k,
     freeze_shared_pool_samplers,
+    listed_update_budget,
     propose_coverage_tau,
     rank_valid_pool,
+    refuse_underfit_listed_budget,
     sample_qa_variants,
     sample_random_k,
     sample_top_k,
@@ -249,7 +252,14 @@ def test_freeze_writes_three_shared_pool_manifests(tmp_path: Path) -> None:
     policy = json.loads((output_dir / "policy.json").read_text(encoding="utf-8"))
     assert policy["coverage_tau_source"] == "median_top9_negative_mass"
     assert 0.0 < policy["coverage_tau"] <= 1.0
-    assert (output_dir / "FROZEN_SAMPLERS.md").is_file()
+    assert policy["training_protocol"]["next_variant"] == "random_k"
+    assert policy["training_protocol"]["do_not_train"] == "64-QA / 10-step listed smoke"
+    assert policy["training_protocol"]["expected_paper_qa"] == 12014
+    assert policy["training_protocol"]["do_not_train_matchable_only"] == 3253
+    report = (output_dir / "FROZEN_SAMPLERS.md").read_text(encoding="utf-8")
+    assert "Training protocol" in report
+    assert "Do not train" in report
+    assert "12014 QA" in report
 
 
 def test_freeze_rejects_all_split_dump(tmp_path: Path) -> None:
@@ -276,3 +286,62 @@ def test_freeze_rejects_all_split_dump(tmp_path: Path) -> None:
         assert "train-only" in str(exc)
     else:
         raise AssertionError("all-split dump should be rejected")
+
+
+def test_listed_update_budget_marks_64qa_as_underfit() -> None:
+    smoke = listed_update_budget(64)
+    assert smoke["effective_accum"] == 64
+    assert smoke["total_steps"] == 10
+    assert smoke["underfit"] is True
+    matchable_only = listed_update_budget(3253)
+    assert matchable_only["effective_accum"] == 512
+    assert matchable_only["total_steps"] == 60
+    assert matchable_only["underfit"] is True
+    paper = listed_update_budget(12014)
+    assert paper["effective_accum"] == 512
+    assert paper["total_steps"] == 230
+    assert paper["underfit"] is False
+    try:
+        refuse_underfit_listed_budget(64)
+    except ValueError as exc:
+        assert "64-QA / 10-step" in str(exc)
+    else:
+        raise AssertionError("64-QA budget should be refused")
+    try:
+        refuse_underfit_listed_budget(3253)
+    except ValueError as exc:
+        assert "matchable-only" in str(exc)
+    else:
+        raise AssertionError("3253-QA slice should be refused")
+    refuse_underfit_listed_budget(12014)
+    assert (
+        assert_score_hard_listed_training_budget(
+            64,
+            listed_negative_source="train_graph",
+        )
+        is None
+    )
+    assert (
+        assert_score_hard_listed_training_budget(
+            64,
+            listed_negative_source="score_hard",
+            skip_train=True,
+        )
+        is None
+    )
+    try:
+        assert_score_hard_listed_training_budget(
+            64,
+            listed_negative_source="score_hard",
+        )
+    except ValueError as exc:
+        assert "64-QA / 10-step" in str(exc)
+    else:
+        raise AssertionError("score_hard 64-QA training should be refused")
+    paper = assert_score_hard_listed_training_budget(
+        12014,
+        listed_negative_source="score_hard",
+    )
+    assert paper is not None
+    assert paper["total_steps"] == 230
+    assert paper["underfit"] is False
