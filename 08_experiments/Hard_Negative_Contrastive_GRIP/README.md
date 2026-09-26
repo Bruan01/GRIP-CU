@@ -104,8 +104,24 @@ python scripts/merge_confusion_shards.py \
   results/runs/20260923_offline_confusion_shard1of2 \
   --output_dir results/runs/20260923_offline_confusion_merged
 
-# CPU-only QA-level confusion structure from saved scores (no LLM, no training)
-bash configs/run_confusion_analysis.sh
+# CPU-only train-only relabeling of an existing score dump; does not rescore
+CODE_DIR=../RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp
+python scripts/relabel_confusion_scores.py \
+  --scores results/runs/20260923_offline_confusion_full/candidate_scores.jsonl \
+  --raw_dir "$CODE_DIR/data/raw_datasets/nell23k" \
+  --output_dir results/runs/20260923_offline_confusion_train_filter \
+  --filter_splits train
+
+# audit the relabeled dump; filter_splits is also read from metadata.json
+python scripts/audit_confusion_db.py \
+  --scores results/runs/20260923_offline_confusion_train_filter/candidate_scores.jsonl \
+  --qa_summary results/runs/20260923_offline_confusion_train_filter/qa_summary.jsonl \
+  --metadata results/runs/20260923_offline_confusion_train_filter/metadata.json \
+  --task_file grip_nell23k_tasks.json \
+  --raw_dir "$CODE_DIR/data/raw_datasets/nell23k" \
+  --output_dir results/runs/20260923_offline_confusion_train_filter/audit \
+  --filter_splits train
+
 
 # CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)
 # MIN_SUPPORT filters figures only; relation_pair_statistics.csv stays complete.

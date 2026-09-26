@@ -59,7 +59,29 @@ def test_known_pair_relations_reads_all_splits(tmp_path: Path) -> None:
     }
 
 
-def test_score_hard_manifest_is_used_verbatim(tmp_path: Path) -> None:
+def test_known_pair_relations_reads_selected_splits(tmp_path: Path) -> None:
+    (tmp_path / "train.txt").write_text("a rel_train b\n", encoding="utf-8")
+    (tmp_path / "valid.txt").write_text("a rel_valid b\n", encoding="utf-8")
+    (tmp_path / "test.txt").write_text("a rel_test b\n", encoding="utf-8")
+    assert known_pair_relations(tmp_path, splits=("train",)) == {
+        ("a", "b"): {"rel_train"}
+    }
+    assert known_pair_relations(tmp_path, splits=("train", "test")) == {
+        ("a", "b"): {"rel_train", "rel_test"}
+    }
+
+
+def test_known_pair_relations_rejects_unknown_split(tmp_path: Path) -> None:
+    for name in ("train.txt", "valid.txt", "test.txt"):
+        (tmp_path / name).write_text("", encoding="utf-8")
+    try:
+        known_pair_relations(tmp_path, splits=("dev",))
+    except ValueError as exc:
+        assert "unknown filter split" in str(exc)
+    else:
+        raise AssertionError("unknown filter split was accepted")
+
+
     manifest = tmp_path / "manifest.jsonl"
     row = {
         "question_id": "task_qa:0",

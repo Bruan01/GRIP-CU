@@ -16,6 +16,7 @@ from hard_negative_grip.offline_scoring import (  # noqa: E402
     pairwise_confusion,
     summarize_run,
     validate_candidate_rows,
+    relabel_qa_score_group,
 )
 
 
@@ -145,7 +146,32 @@ def test_validate_candidate_rows_accepts_toy_and_rejects_bad_mass() -> None:
     assert any("negative_mass" in item for item in failures)
 
 
-def test_summarize_run_counts_inverted_gold_rank() -> None:
+def test_relabel_group_changes_only_filter_derived_fields() -> None:
+    rows, _summary = _toy_rows()
+    rebuilt, summary = relabel_qa_score_group(
+        rows,
+        relation_order=["concept:gold", "concept:true", "concept:hard", "concept:easy"],
+        known_relations=["concept:gold"],
+    )
+    source_by_rel = {row["candidate_relation"]: row for row in rows}
+    rebuilt_by_rel = {row["candidate_relation"]: row for row in rebuilt}
+    for relation, source in source_by_rel.items():
+        result = rebuilt_by_rel[relation]
+        for field in (
+            "candidate_score",
+            "gold_score",
+            "score_gap",
+            "pairwise_confusion",
+            "candidate_rank_all",
+            "candidate_token_length",
+        ):
+            assert result[field] == source[field]
+    assert rebuilt_by_rel["concept:true"]["is_valid_negative"] is True
+    assert rebuilt_by_rel["concept:true"]["invalid_reason"] is None
+    assert sum(float(row["negative_mass"]) for row in rebuilt if row["is_valid_negative"]) == 1.0
+    assert summary["number_of_valid_negatives"] == 3
+
+
     summaries = [
         {"gold_rank": 1, "number_of_negatives_above_gold": 0},
         {"gold_rank": 3, "number_of_negatives_above_gold": 2},

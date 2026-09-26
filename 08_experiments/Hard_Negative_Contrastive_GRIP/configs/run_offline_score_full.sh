@@ -18,6 +18,7 @@ TEMPERATURE="${TEMPERATURE:-1.0}"
 CANDIDATE_BATCH_SIZE="${CANDIDATE_BATCH_SIZE:-8}"
 NUM_SHARDS="${NUM_SHARDS:-1}"
 SHARD_ID="${SHARD_ID:-0}"
+FILTER_SPLITS=( ${FILTER_SPLITS:-train valid test} )
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/${RUN_ID}_offline_confusion_shard${SHARD_ID}of${NUM_SHARDS}}"
 OUTPUT_DIR="${OUTPUT_DIR:-$RUN_DIR}"
@@ -48,7 +49,7 @@ mkdir -p "$OUTPUT_DIR"
   echo "temperature=$TEMPERATURE"
   echo "candidate_batch_size=$CANDIDATE_BATCH_SIZE"
   echo "num_shards=$NUM_SHARDS"
-  echo "shard_id=$SHARD_ID"
+  echo "filter_splits=${FILTER_SPLITS[*]}"
   echo "resume=${RESUME:-}"
   echo "tmux_session=${TMUX_SESSION:-}"
   date --iso-8601=seconds
@@ -84,6 +85,7 @@ set +e
   --temperature "$TEMPERATURE" \
   --num_shards "$NUM_SHARDS" \
   --shard_id "$SHARD_ID" \
+  --filter_splits "${FILTER_SPLITS[@]}" \
   --progress_every "${PROGRESS_EVERY:-5}" \
   "${extra[@]}" \
   2>&1 | tee -a "$OUTPUT_DIR/run.log"

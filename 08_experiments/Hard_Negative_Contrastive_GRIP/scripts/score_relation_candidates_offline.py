@@ -77,6 +77,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--candidate_batch_size", type=int, default=8)
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--split", default="train")
+    parser.add_argument(
+        "--filter_splits",
+        nargs="+",
+        choices=("train", "valid", "test"),
+        default=["train", "valid", "test"],
+        help="KG splits used for false-negative filtering.",
+    )
     parser.add_argument("--progress_every", type=int, default=10)
     parser.add_argument("--num_shards", type=int, default=1)
     parser.add_argument("--shard_id", type=int, default=0)
@@ -293,7 +300,7 @@ def main() -> None:
 
     relation_order = load_train_relation_order(args.raw_dir)
     alias_index = train_relation_alias_index(relation_order)
-    known_relations = known_pair_relations(args.raw_dir)
+    known_relations = known_pair_relations(args.raw_dir, splits=tuple(args.filter_splits))
     items = load_matchable(args, alias_index)
     items = shard_items(items, num_shards=args.num_shards, shard_id=args.shard_id)
     if args.compare_reference is not None:
@@ -346,6 +353,7 @@ def main() -> None:
         candidate_batch_size=args.candidate_batch_size,
         dtype=dtype_name,
         temperature=args.temperature,
+        filter_splits=list(args.filter_splits),
         git_commit=git_commit_hash(HNG.parents[1]),
     )
     write_metadata(meta_path, metadata)

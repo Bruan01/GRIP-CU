@@ -448,10 +448,17 @@ def audit_dump(
     alt_true_sample: int = ALT_TRUE_SAMPLE,
     valid_neg_sample: int = VALID_NEG_SAMPLE,
     scorer_qa_sample: int = SCORER_QA_SAMPLE,
+    filter_splits: tuple[str, ...] | None = None,
 ) -> dict:
+    metadata = {}
+    if metadata_path.is_file():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if filter_splits is None:
+        filter_splits = tuple(metadata.get("filter_splits") or ("train", "valid", "test"))
+    filter_splits = tuple(filter_splits)
     relation_order = load_train_relation_order(raw_dir)
     alias_index = train_relation_alias_index(relation_order)
-    known_all = known_pair_relations(raw_dir)
+    known_all = known_pair_relations(raw_dir, splits=filter_splits)
     split_known = load_split_pair_relations(raw_dir)
     payload = load_json_payload(task_file)
     if not isinstance(payload, dict) or "qa_samples" not in payload:
@@ -459,9 +466,6 @@ def audit_dump(
     qa_texts = [str(text) for text in payload["qa_samples"]]
     expected_ids, unmatched_ids, non_relation_ids = expected_relation_qa(qa_texts, alias_index)
     expected_set = set(expected_ids)
-    metadata = {}
-    if metadata_path.is_file():
-        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
 
     rng_math = random.Random(seed)
     rng_rank = random.Random(seed + 1)
@@ -665,7 +669,7 @@ def audit_dump(
     leakage = {
         "relation_vocab_split": "train.txt insertion order (process.py unique_rel)",
         "relation_vocab_size": len(relation_order),
-        "true_relation_filter_splits": ["train.txt", "valid.txt", "test.txt"],
+        "true_relation_filter_splits": [f"{split}.txt" for split in filter_splits],
         "scorer_checkpoint": checkpoint_info,
         "listed_checkpoint": listed_info,
         "checkpoint_training_data": {
@@ -702,19 +706,19 @@ def audit_dump(
             ),
         },
         "path_B_train_sampler": {
-            "safe": False,
-            "red_flags": [
-                "known_pair_relations() unions train.txt, valid.txt, and test.txt. "
-                "A future train sampler that drops alternative_true candidates therefore "
-                "uses test KG structure, not just train negatives.",
-                (
-                    f"{n_pair_in_test} scored QA entity pairs also appear in test.txt; "
-                    f"{n_alt_from_test} alternative_true labels come from test triples; "
-                    f"{n_alt_from_valid} come from valid triples."
-                ),
-                "B1 generation training already saw the scored Stage-2 questions. "
-                "These scores are in-distribution teacher values, not a held-out val set.",
-            ],
+            "safe": set(filter_splits).issubset({"train"}),
+            "red_flags": (
+                [
+                    "B1 generation training already saw the scored Stage-2 questions. "
+                    "These scores are in-distribution teacher values, not a held-out val set."
+                ]
+                if set(filter_splits).issubset({"train"})
+                else [
+                    "known_pair_relations() includes valid.txt or test.txt, including test KG structure. "
+                    "A future train sampler that drops alternative_true candidates therefore "
+                    "uses non-train KG structure."
+                ]
+            ),
         },
     }
 
@@ -727,7 +731,7 @@ def audit_dump(
         issues.append("rank_consistency")
     if not fn_ok:
         issues.append("false_negative_bug")
-    if leakage["path_B_train_sampler"]["red_flags"]:
+    if not leakage["path_B_train_sampler"]["safe"]:
         issues.append("test_structure_in_train_filter")
     if frozen_comparisons:
         issues.append("frozen_20260921_table_is_not_this_dump")
@@ -1070,7 +1074,7 @@ This scorer is the **B1 generation-only Stage-2 adapter**, not the listed InfoNC
 
 # False-negative Filtering
 
-- Filter source: union of `train.txt`, `valid.txt`, `test.txt` via `known_pair_relations()`
+- Filter source: {', '.join(leakage['true_relation_filter_splits'])} via `known_pair_relations()`
 - Gold is always invalid (`invalid_reason=gold_relation`)
 - Other known pair relations are scored but marked `is_valid_negative=false` (`alternative_true_relation`)
 - Sampled alternative_true: {fn['alternative_true']['sampled']}; present in KG: {fn['alternative_true']['n_present_in_kg']}; missing: {fn['alternative_true']['n_missing_from_kg']}
@@ -1096,7 +1100,7 @@ This scorer is the **B1 generation-only Stage-2 adapter**, not the listed InfoNC
 
 B1 **did** see the scored Stage-2 questions during generation-only training. That is in-distribution teacher scoring, not test-label leakage. It **is** leakage if these scores are treated as a held-out validation of B1.
 
-Any future sampler that consumes `is_valid_negative` from this dump **uses test KG structure** unless the filter is rebuilt from train-only triples.
+Any future sampler that consumes `is_valid_negative` from this dump uses exactly the KG splits listed above.
 
 # Numerical Consistency
 

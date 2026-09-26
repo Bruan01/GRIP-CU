@@ -16,6 +16,7 @@ HNG = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HNG / "src"))
 
 from hard_negative_grip.confusion_audit import (  # noqa: E402
+    SCORER_QA_SAMPLE,
     audit_dump,
     write_audit_outputs,
 )
@@ -36,6 +37,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--report", type=Path, default=None)
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--temperature", type=float, default=1.0)
+    parser.add_argument(
+        "--filter_splits",
+        nargs="+",
+        choices=("train", "valid", "test"),
+        default=None,
+        help="KG splits used by false-negative audit; otherwise use metadata or all splits.",
+    )
     return parser.parse_args()
 
 
@@ -56,6 +64,7 @@ def main() -> None:
         listed_adapter=args.listed_adapter,
         seed=args.seed,
         temperature=args.temperature,
+        filter_splits=tuple(args.filter_splits) if args.filter_splits else None,
     )
     written = write_audit_outputs(result, args.output_dir, markdown_copies=copies)
     ids_path = args.output_dir / "sampled_scorer_qa_ids.json"

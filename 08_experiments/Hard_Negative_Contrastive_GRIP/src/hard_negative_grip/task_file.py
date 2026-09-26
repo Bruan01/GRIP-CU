@@ -193,10 +193,24 @@ def load_score_hard_manifest(path: Path) -> dict[str, dict]:
     return rows
 
 
-def known_pair_relations(raw_dir: Path) -> dict[tuple[str, str], set[str]]:
-    """Index all known train/validation/test triples for false-negative filtering."""
+VALID_FILTER_SPLITS = ("train", "valid", "test")
+
+
+def known_pair_relations(
+    raw_dir: Path,
+    *,
+    splits: tuple[str, ...] = VALID_FILTER_SPLITS,
+) -> dict[tuple[str, str], set[str]]:
+    """Index triples from selected dataset splits for false-negative filtering."""
+    unknown = set(splits).difference(VALID_FILTER_SPLITS)
+    if unknown:
+        raise ValueError(
+            f"unknown filter split(s): {sorted(unknown)}; "
+            f"expected a subset of {VALID_FILTER_SPLITS}"
+        )
     known: dict[tuple[str, str], set[str]] = {}
-    for filename in ("train.txt", "valid.txt", "test.txt"):
+    for split in splits:
+        filename = f"{split}.txt"
         path = raw_dir / filename
         if not path.is_file():
             raise FileNotFoundError(f"missing NELL23K split: {path}")

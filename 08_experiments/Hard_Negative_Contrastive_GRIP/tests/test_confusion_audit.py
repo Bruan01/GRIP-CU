@@ -181,7 +181,52 @@ def test_audit_dump_flags_test_structure_and_writes_revise(tmp_path: Path) -> No
     assert "scoring_inconsistency_live_20qa" not in result["blocking_issues"]
 
 
-def test_compare_score_groups_and_live_rescore_gate() -> None:
+def test_audit_dump_accepts_train_only_filter_without_test_leakage_issue(tmp_path: Path) -> None:
+    task, raw = _write_task_and_kg(tmp_path)
+    order = ["concept:gold", "concept:true", "concept:hard"]
+    scores_rows, _summary = build_qa_score_rows(
+        qa_id="task_qa:0",
+        question="what is the relation between a and b?",
+        head_entity="a",
+        tail_entity="b",
+        gold_relation="concept:gold",
+        matched_train_relation="concept:gold",
+        relation_order=order,
+        scores={"concept:gold": -0.2, "concept:true": -0.5, "concept:hard": -1.1},
+        token_lengths={rel: 2 for rel in order},
+        known_relations=["concept:gold"],
+        model_checkpoint="runs/b1/adapter",
+        split="train",
+    )
+    scores = tmp_path / "candidate_scores.jsonl"
+    summary = tmp_path / "qa_summary.jsonl"
+    metadata = tmp_path / "metadata.json"
+    scores.write_text("".join(json.dumps(row) + "\n" for row in scores_rows), encoding="utf-8")
+    summary.write_text(json.dumps({"qa_id": "task_qa:0"}) + "\n", encoding="utf-8")
+    metadata.write_text(
+        json.dumps({"checkpoint": "runs/b1/adapter", "filter_splits": ["train"]}) + "\n",
+        encoding="utf-8",
+    )
+    result = audit_dump(
+        scores_path=scores,
+        summary_path=summary,
+        metadata_path=metadata,
+        task_file=task,
+        raw_dir=raw,
+        filter_splits=("train",),
+        live_rescore_path=tmp_path / "missing-live.json",
+        math_sample=10,
+        rank_sample=10,
+        alt_true_sample=10,
+        valid_neg_sample=10,
+        scorer_qa_sample=1,
+    )
+    assert result["leakage"]["true_relation_filter_splits"] == ["train.txt"]
+    assert result["leakage"]["path_B_train_sampler"]["safe"] is True
+    assert "test_structure_in_train_filter" not in result["issues"]
+    assert result["false_negative"]["ok"] is True
+
+
     left = [
         {"candidate_relation": "concept:gold", "candidate_score": -0.2, "candidate_rank_all": 1},
         {"candidate_relation": "concept:hard", "candidate_score": -1.1, "candidate_rank_all": 2},

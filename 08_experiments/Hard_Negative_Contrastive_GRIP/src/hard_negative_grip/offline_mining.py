@@ -184,6 +184,7 @@ def build_metadata(
     dtype: str,
     temperature: float,
     git_commit: str | None,
+    filter_splits: list[str] | None = None,
     scoring_version: str = SCORING_VERSION,
 ) -> dict:
     return {
@@ -200,6 +201,7 @@ def build_metadata(
         "candidate_batch_size": int(candidate_batch_size),
         "dtype": dtype,
         "temperature": float(temperature),
+        "filter_splits": list(filter_splits or ("train", "valid", "test")),
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
 

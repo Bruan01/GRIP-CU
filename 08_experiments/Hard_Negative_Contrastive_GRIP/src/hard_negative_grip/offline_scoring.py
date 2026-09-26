@@ -217,6 +217,51 @@ def build_qa_score_rows(
     return rows, summary
 
 
+def relabel_qa_score_group(
+    group: list[dict],
+    *,
+    relation_order: list[str],
+    known_relations: Iterable[str],
+    temperature: float = 1.0,
+) -> tuple[list[dict], dict]:
+    """Rebuild only labels and negative statistics from an existing score group.
+
+    Candidate scores and token lengths are read from the source rows, so this
+    operation never invokes a model or changes the scorer output.
+    """
+    if not group:
+        raise ValueError("cannot relabel an empty QA group")
+    first = group[0]
+    candidates = [str(row.get("candidate_relation") or "") for row in group]
+    if candidates != relation_order:
+        raise ValueError("source group candidate order does not match relation vocabulary")
+    scores = {str(row["candidate_relation"]): float(row["candidate_score"]) for row in group}
+    token_lengths = {
+        str(row["candidate_relation"]): int(row["candidate_token_length"])
+        for row in group
+    }
+    gold_rows = [row for row in group if row.get("is_gold")]
+    if len(gold_rows) != 1:
+        raise ValueError(f"{first.get('qa_id')}: expected exactly one gold row")
+    gold_row = gold_rows[0]
+    rebuilt_rows, summary = build_qa_score_rows(
+        qa_id=str(first["qa_id"]),
+        question=first.get("question"),
+        head_entity=first.get("head_entity"),
+        tail_entity=first.get("tail_entity"),
+        gold_relation=str(first["gold_relation"]),
+        matched_train_relation=str(first["matched_train_relation"]),
+        relation_order=relation_order,
+        scores=scores,
+        token_lengths=token_lengths,
+        known_relations=known_relations,
+        temperature=temperature,
+        model_checkpoint=str(first.get("model_checkpoint") or ""),
+        split=str(first.get("split") or "train"),
+    )
+    if str(gold_row["candidate_relation"]) != str(first["matched_train_relation"]):
+        raise ValueError(f"{first.get('qa_id')}: source gold does not match matched relation")
+    return rebuilt_rows, summary
 def validate_candidate_rows(
     rows: list[dict],
     *,
