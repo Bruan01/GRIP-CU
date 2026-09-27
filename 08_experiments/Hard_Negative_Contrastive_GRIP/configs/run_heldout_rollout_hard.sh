@@ -254,3 +254,4 @@ done
 
 echo "$RUN_DIR" > "$HNG/results/LAST_HELDOUT_ROLLOUT_RUN.txt"
 log "[heldout] completed run_dir=$RUN_DIR"
+bash "$HNG/configs/archive_and_push_results.sh" "$RUN_DIR" | tee -a "$RUN_DIR/run.log"

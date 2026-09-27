@@ -114,7 +114,6 @@ rc=${PIPESTATUS[0]}
 set -e
 echo "[launch] rollout-hard train finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$RUN_DIR/run.log"
 if [[ "$rc" -eq 0 ]]; then
-  LISTED_RUN="$RUN_DIR" B1_RUN="$OLD_RUN" bash "$HNG/configs/attach_frozen_b1.sh" | tee -a "$RUN_DIR/run.log"
   LISTED_RUN="$RUN_DIR" B1_RUN="$OLD_RUN" bash "$HNG/configs/compare_listed_to_frozen_b1.sh" | tee -a "$RUN_DIR/run.log"
 fi
 exit "$rc"

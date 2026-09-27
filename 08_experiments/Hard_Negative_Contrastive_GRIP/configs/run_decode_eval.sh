@@ -88,3 +88,4 @@ eval_one "$ADAPTER_RUN/listed/adapter" "$PILOT_DIR/listed" "$PILOT_EVAL" both 2>
 echo "$PILOT_DIR" > "$HNG/results/LAST_PILOT_DECODE_RUN.txt"
 echo "[decode] pilot done $(date --iso-8601=seconds)" | tee -a "$PILOT_DIR/decode.log"
 echo "decode eval completed smoke=$ADAPTER_RUN pilot=$PILOT_DIR"
+bash "$HNG/configs/archive_and_push_results.sh" "$PILOT_DIR" | tee -a "$PILOT_DIR/decode.log"

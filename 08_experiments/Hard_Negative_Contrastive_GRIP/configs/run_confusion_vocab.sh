@@ -50,3 +50,4 @@ echo "[launch] confusion vocab -> $OUTPUT_DIR min_support=$MIN_SUPPORT"
   --heatmap_top_n "$HEATMAP_TOP_N" \
   --neighborhood_plot_n "$NEIGHBORHOOD_PLOT_N"
 echo "[launch] confusion vocab finished $(date --iso-8601=seconds)"
+bash "$HNG/configs/archive_and_push_results.sh" "$OUTPUT_DIR"

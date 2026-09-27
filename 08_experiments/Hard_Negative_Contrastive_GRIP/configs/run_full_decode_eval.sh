@@ -78,3 +78,4 @@ eval_one "$ADAPTER_RUN/listed/adapter" "$FULL_DIR/listed" 2>&1 | tee -a "$FULL_D
 echo "$FULL_DIR" > "$HNG/results/LAST_FULL_DECODE_RUN.txt"
 echo "[decode] full done $(date --iso-8601=seconds)" | tee -a "$FULL_DIR/decode.log"
 echo "full decode completed adapter=$ADAPTER_RUN full=$FULL_DIR"
+bash "$HNG/configs/archive_and_push_results.sh" "$FULL_DIR" | tee -a "$FULL_DIR/decode.log"

@@ -24,7 +24,7 @@ This is a working title, not a novelty claim. The literature review in `RESEARCH
 - `tests/`: unit tests for deterministic sampling, leakage prevention, losses, and listed training pieces.
 - `汇报_进展与实验结果.md`: briefing, including Qwen2.5-7B official full val/test decode.
 - `REPORT.md`: internal status and H2 verdict; 7B numbers summarized in §4.
-- `results/`: H2 gates, 0.5B smoke, 7B training adapters, and full/pilot decode summaries. H2 write-up: `results/h2_gate_verdict.md`.
+- `results/`: H2 gates, 0.5B smoke, 7B training adapters, and full/pilot decode summaries. H2 write-up: `results/h2_gate_verdict.md`. Lightweight Git snapshots of each finished run are under `results/archive/<run>/<utc-stamp>/`; old snapshots are never overwritten.
 
 ## Initial status
 
@@ -44,6 +44,8 @@ Shared Stage 1 uses the `quick01_storage_quick` recipe (MLP LoRA r=4/alpha=8, fu
 Both Stage 2 arms use the full QA epoch budget (no S2 early stop). Primary metric is greedy generation exact match.
 
 Server jobs auto-enter a detached tmux session and write mid-run HuggingFace checkpoints (`--save_steps 10`, keep 2). Re-running the same `RUN_DIR` resumes from `trainer_*/checkpoint-*`. `SKIP_TMUX=1` is only for short debug. `FORCE_NEW=1` or `--no_resume` starts a directory/stage from scratch.
+
+When a run finishes, `configs/archive_and_push_results.sh` copies JSON/Markdown summaries (not adapter weights) into a new `results/archive/<run>/<utc-stamp>/` directory and `git push`es that snapshot. Re-running the same experiment writes a second stamp; old rows in `results/archive/INDEX.md` stay. `SKIP_RESULT_ARCHIVE=1` skips the snapshot; `SKIP_RESULT_PUSH=1` keeps it local.
 
 ```bash
 # smoke: 64 train / 32 val / 64 test, aligned official 10-way

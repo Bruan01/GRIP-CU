@@ -30,3 +30,4 @@ echo "[launch] confusion analysis -> $OUTPUT_DIR"
   --raw_dir "$RAW_DIR" \
   --output_dir "$OUTPUT_DIR"
 echo "[launch] confusion analysis finished $(date --iso-8601=seconds)"
+bash "$HNG/configs/archive_and_push_results.sh" "$OUTPUT_DIR"

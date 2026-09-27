@@ -33,3 +33,4 @@ cd "$CODE_DIR"
   --model_name qwen-7b \
   --lambda_candidate 1.0
 echo "[compare] wrote $LISTED_RUN/comparison.json"
+bash "$HNG/configs/archive_and_push_results.sh" "$LISTED_RUN"

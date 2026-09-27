@@ -141,3 +141,4 @@ echo "[decode] listed-only start scale=$SCALE decode=$DECODE $(date --iso-8601=s
   2>&1 | tee -a "$RUN_DIR/decode.log"
 echo "[decode] listed-only done $(date --iso-8601=seconds)" | tee -a "$RUN_DIR/decode.log"
 echo "listed-only decode completed listed=$LISTED_ADAPTER b1=$B1_DECODE_RUN run=$RUN_DIR"
+bash "$HNG/configs/archive_and_push_results.sh" "$RUN_DIR" | tee -a "$RUN_DIR/decode.log"

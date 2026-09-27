@@ -73,4 +73,7 @@ set +e
 rc=${PIPESTATUS[0]}
 set -e
 echo "[launch] score-hard mining finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$RUN_DIR/run.log"
+if [[ "$rc" -eq 0 ]]; then
+  bash "$HNG/configs/archive_and_push_results.sh" "$RUN_DIR" | tee -a "$RUN_DIR/run.log"
+fi
 exit "$rc"

@@ -41,11 +41,21 @@ outputs/
 **/outputs/
 **/results/*
 !**/results/.gitkeep
+# Lightweight experiment snapshots (summaries only; never overwrite)
+!**/results/archive/
+!**/results/archive/**
+**/results/archive/**/*.safetensors
+**/results/archive/**/*.bin
+**/results/archive/**/*.pt
+**/results/archive/**/*.pth
+**/results/archive/**/*.ckpt
+**/results/archive/**/*.npz
 **/logs/*.log
 **/logs/*.txt
 
 # Temporary files
 *.log
+!**/results/archive/**/*.log
 *.tmp
 *.temp
 *.bak

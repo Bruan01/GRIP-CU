@@ -65,4 +65,7 @@ set +e
 rc=${PIPESTATUS[0]}
 set -e
 echo "[launch] confusion audit finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$OUTPUT_DIR/cpu_audit.log"
+if [[ "$rc" -eq 0 ]]; then
+  bash "$HNG/configs/archive_and_push_results.sh" "$OUTPUT_DIR" | tee -a "$OUTPUT_DIR/cpu_audit.log"
+fi
 exit "$rc"

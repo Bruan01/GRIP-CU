@@ -58,4 +58,7 @@ set +e
 rc=${PIPESTATUS[0]}
 set -e
 echo "[launch] 20-QA live rescore finished exit=$rc $(date --iso-8601=seconds)" | tee -a "$OUTPUT_DIR/live_20qa_rescore.log"
+if [[ "$rc" -eq 0 ]]; then
+  bash "$HNG/configs/archive_and_push_results.sh" "$OUTPUT_DIR" | tee -a "$OUTPUT_DIR/live_20qa_rescore.log"
+fi
 exit "$rc"

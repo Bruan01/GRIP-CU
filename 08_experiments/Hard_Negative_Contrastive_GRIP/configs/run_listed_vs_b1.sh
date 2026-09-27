@@ -223,3 +223,4 @@ fi
 
 echo "$RUN_DIR" > "$HNG/results/LAST_LISTED_VS_B1_RUN.txt"
 echo "listed vs original GRIP completed: $RUN_DIR"
+bash "$HNG/configs/archive_and_push_results.sh" "$RUN_DIR" | tee -a "$RUN_DIR/run.log"
