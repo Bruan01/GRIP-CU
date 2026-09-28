@@ -1,0 +1,13 @@
+{
+  "source_readonly_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json",
+  "source_sha256": "75f804181261c2bd00e67315fe1cb35d409a1e8a6b0862708627f3f987d3066d",
+  "local_source_copy": "inputs/source_tasks.json",
+  "local_source_copy_sha256": "75f804181261c2bd00e67315fe1cb35d409a1e8a6b0862708627f3f987d3066d",
+  "smoke_input": "inputs/nell23k_smoke_16_each.json",
+  "seed": 2026,
+  "selected_counts": {
+    "context_samples": 16,
+    "qa_samples": 16
+  },
+  "notice": "Smoke data copied and sampled within exp1; source was read-only."
+}

@@ -1,0 +1,30 @@
+{
+  "checked_at_utc": "2026-09-28T03:12:00Z",
+  "host": "linux 5.15.0-190-generic",
+  "memory": {
+    "total_gib_approx": 31,
+    "available_gib_approx": 25
+  },
+  "disk_root": {
+    "total_gib_approx": 937,
+    "used_gib_approx": 795,
+    "available_gib_approx": 95,
+    "used_percent_approx": 90
+  },
+  "gpu": {
+    "query": "nvidia-smi",
+    "status": "unavailable",
+    "error": "Failed to initialize NVML: Driver/library version mismatch",
+    "nvml_library_version": "595.91",
+    "usable_device_count": null
+  },
+  "existing_tmux_session": [
+    "shared-pool-coverage-adaptive-k-full-20260926"
+  ],
+  "model_cache": {
+    "id": "Qwen2.5-0.5B-Instruct",
+    "directory": ".cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct",
+    "status": "incomplete; an .incomplete weight shard was found"
+  },
+  "experiment_training_started": false
+}
