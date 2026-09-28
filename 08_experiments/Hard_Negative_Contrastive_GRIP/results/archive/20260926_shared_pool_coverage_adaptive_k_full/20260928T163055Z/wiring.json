@@ -1,0 +1,29 @@
+{
+  "task_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json",
+  "n_qa": 12014,
+  "n_listed": 3253,
+  "question_id_source": "positional",
+  "variants": {
+    "coverage_adaptive_k": {
+      "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260926_shared_pool_samplers/coverage_adaptive_k.jsonl",
+      "manifest_sha256": "b716c62eb03d635da78650aa07016ecba6714313f217e6cac50a8a214027ce31",
+      "n_qa": 12014,
+      "n_listed": 3253,
+      "k_min": 2,
+      "k_max": 17,
+      "k_mean": 9.315401168152475
+    }
+  },
+  "same_question_ids": true,
+  "note": "CPU wiring check only. Listed-contrastive reads these frozen negative lists via --listed_negative_source score_hard. Do not train the retired 64-QA / 10-step protocol; train Random-K on the full paper task file after this check.",
+  "question_id_head": [
+    "task_qa:0",
+    "task_qa:1",
+    "task_qa:2"
+  ],
+  "question_id_tail": [
+    "task_qa:12011",
+    "task_qa:12012",
+    "task_qa:12013"
+  ]
+}
