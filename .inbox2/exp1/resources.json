@@ -26,5 +26,19 @@
     "directory": ".cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct",
     "status": "incomplete; an .incomplete weight shard was found"
   },
-  "experiment_training_started": false
+  "experiment_training_started": false,
+  "model_snapshot": {
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "copied_from_readonly_cache": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-0.5B-Instruct",
+    "copied_to": ".inbox2/exp1/models/Qwen2.5-0.5B-Instruct",
+    "weight_bytes": 988097824,
+    "weight_sha256": "fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe",
+    "load_check": "passed; 494032768 parameters; CUDA forward finite"
+  },
+  "queue": {
+    "tmux_session": "exp1-smoke-queue-20260928",
+    "log": ".inbox2/exp1/runs/queue_20260928.log",
+    "waits_for_pid": 60981,
+    "poll_seconds": 60
+  }
 }

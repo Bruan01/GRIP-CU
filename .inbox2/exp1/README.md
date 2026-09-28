@@ -97,6 +97,10 @@ B3 的主要形式：
 - The isolated smoke data was prepared in `inputs/nell23k_smoke_16_each.json` from a read-only copy of the existing generated GRIP task file. Source SHA256 and input counts are recorded in `manifest/input_manifest.json`.
 - `scripts/train_mixed_lora_smoke.py` and `scripts/launch_smoke.sh` were added under exp1. Python syntax checks passed; a tiny CPU-only PEFT test confirmed that only the active named adapter receives gradients and that PEFT accepts a concatenated weighted adapter. This is API validation only, not GPU/model training.
 
+- Model provenance: copied the complete Qwen2.5-0.5B-Instruct snapshot from the existing read-only RecurrentGRIP model cache into `models/Qwen2.5-0.5B-Instruct/`. `model.safetensors` SHA256 is `fdf756fa7fcbe7404d5c60e26bff1a0c8b8aa1f72ced49e7dd0210fe288fb7fe`; size 988,097,824 bytes. Loaded with the existing uv environment, 494,032,768 parameters; CUDA forward pass finite. Model weights are local experiment artifacts and are not added to Git.
+- Smoke scripts and model snapshot were validated using the existing uv environment. GPU matrix/model forwards work, but the existing Qwen-7B job is still consuming GPU.
+- A queue was armed in tmux session `exp1-smoke-queue-20260928`; it checks the known Qwen-7B PID and NVIDIA device usage every 60 seconds, then invokes the isolated smoke launcher when available. Queue log: `runs/queue_20260928.log`. The queue itself does not use the GPU. It will stop and log an error if model/input/environment preflight fails; the actual smoke run, if launched, uses a separate tmux session.
+
 ## 0.5B Smoke Progress
 
 The runner is an implementation check for interleaved S1/S2 batches with stage-specific LoRAs and a summed low-rank adapter. It is deliberately small (16 samples per stage, 8 optimizer steps by default). After a pass, it must be expanded into separately controlled B0/B1/B2 groups before any scientific claim. This smoke alone cannot establish forgetting or efficacy.
