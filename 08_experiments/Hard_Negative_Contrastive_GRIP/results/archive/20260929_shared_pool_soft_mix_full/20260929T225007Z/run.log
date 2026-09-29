@@ -1,0 +1,453 @@
+[budget] refuse 64-QA / 10-step; require full paper task file and accum=512
+[wire] attach frozen soft_mix to /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json
+{
+  "task_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json",
+  "n_qa": 12014,
+  "n_listed": 3253,
+  "question_id_source": "positional",
+  "variants": {
+    "soft_mix": {
+      "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_mixture_samplers/soft_mix.jsonl",
+      "manifest_sha256": "8fbd12eb4aacb0be4ffff3a78ba37e8f140f0cee4c41ddcc4d2cb8c902596259",
+      "n_qa": 12014,
+      "n_listed": 3253,
+      "k_min": 9,
+      "k_max": 9,
+      "k_mean": 9.0,
+      "n_lambda": 3253,
+      "lambda_min": 1.0,
+      "lambda_max": 1.0
+    }
+  },
+  "same_question_ids": true,
+  "note": "CPU wiring check only. Listed-contrastive reads these frozen negative lists via --listed_negative_source score_hard. Do not train the retired 64-QA / 10-step protocol; train the requested frozen variant on the full paper task file after this check.",
+  "question_id_head": [
+    "task_qa:0",
+    "task_qa:1",
+    "task_qa:2"
+  ],
+  "question_id_tail": [
+    "task_qa:12011",
+    "task_qa:12012",
+    "task_qa:12013"
+  ]
+}
+[attach] froze B1 summaries from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke into /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_soft_mix_full/b1
+[launch] variant=soft_mix manifest=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_mixture_samplers/soft_mix.jsonl listed=3253 accum=512
+[2026-09-29T09:07:54+0000] [INFO] event=random_seed_set {"cuda_visible_devices": "all", "event": "random_seed_set", "host": "ubuntu", "pid": 525665, "rank": "0", "seed": 2026}
+[data] paper task file context=80820 qa=12014 relation_qa=3297 listed_relation_qa=3253 skipped_unmatched=44 exact_match=2656 alias_match=597 listed_negative_source=score_hard vocab=198 listed_negative_seed=2026 question_ids=positional embed_file=None embed_pool=40 embed_tau=0.1 eval=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction.aligned.json
+[budget] listed n=12014 accum=512 steps=230
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:789: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[2026-09-29T09:07:55+0000] [INFO] event=model_load_start {"cuda_visible_devices": "all", "device_map": null, "dtype": "torch.bfloat16", "event": "model_load_start", "flash_attention": false, "host": "ubuntu", "load_dir": null, "lora_alpha": 32, "lora_r": 8, "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "peft": false, "pid": 525665, "quantization": false, "rank": "0", "target_modules": null}
+[2026-09-29T09:07:55+0000] [INFO] event=model_resolve_start {"cuda_visible_devices": "all", "event": "model_resolve_start", "host": "ubuntu", "local_files_only": true, "model_cache_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache", "model_download_workers": 1, "model_id": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "pid": 525665, "rank": "0"}
+[2026-09-29T09:07:55+0000] [INFO] event=model_local_candidates {"candidates": ["/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct"], "cuda_visible_devices": "all", "event": "model_local_candidates", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 525665, "rank": "0"}
+[2026-09-29T09:07:55+0000] [INFO] event=model_resolve_complete {"cuda_visible_devices": "all", "elapsed_seconds": 0.001, "event": "model_resolve_complete", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 525665, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "source": "local_cache", "total_weight_gib": 14.185, "weight_files": 4}
+[2026-09-29T09:07:56+0000] [INFO] event=model_weights_loading {"attention_implementation": "sdpa", "cuda_visible_devices": "all", "device_map": null, "event": "model_weights_loading", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pid": 525665, "quantization": false, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "torch_dtype": "torch.bfloat16"}
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 92.34it/s]
+[2026-09-29T09:07:56+0000] [INFO] event=model_weights_loaded {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 0.387, "event": "model_weights_loaded", "host": "ubuntu", "memory_footprint_gib": 14.185, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7615616512, "parameters_million": 7615.617, "pid": 525665, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7615616512, "trainable_parameters_million": 7615.617, "trainable_percent": 100.0}
+[2026-09-29T09:07:56+0000] [INFO] event=model_memory_after_base_load {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_memory_after_base_load", "host": "ubuntu", "pid": 525665, "rank": "0"}
+[2026-09-29T09:07:56+0000] [INFO] event=model_resize_token_embeddings {"cuda_visible_devices": "all", "event": "model_resize_token_embeddings", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_vocab_size": 152064, "pid": 525665, "rank": "0", "reason": "align_base_model_with_tokenizer", "tokenizer_vocab_size": 151666}
+[2026-09-29T09:08:11+0000] [INFO] event=tokenizer_ready {"cuda_visible_devices": "all", "event": "tokenizer_ready", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pad_token_id": 151665, "pid": 525665, "rank": "0", "tokenizer_class": "Qwen2TokenizerFast", "vocab_size": 151666}
+[2026-09-29T09:08:11+0000] [INFO] event=model_load_complete_memory {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_load_complete_memory", "host": "ubuntu", "pid": 525665, "rank": "0"}
+[2026-09-29T09:08:11+0000] [INFO] event=model_load_complete {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 16.143, "event": "model_load_complete", "host": "ubuntu", "memory_footprint_gib": 14.18, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7612763648, "parameters_million": 7612.764, "pid": 525665, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7612763648, "trainable_parameters_million": 7612.764, "trainable_percent": 100.0}
+[listed] qa samples: 12014 listed_mean=2.4 lambda=1.0 per_qa_lambda=3253 batch=1 accum=512
+[listed] start fresh (no checkpoint)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151665}.
+  0%|          | 0/240 [00:00<?, ?it/s]  0%|          | 1/240 [03:17<13:06:17, 197.40s/it]                                                     0%|          | 1/240 [03:17<13:06:17, 197.40s/it]  1%|          | 2/240 [06:47<13:32:40, 204.88s/it]                                                     1%|          | 2/240 [06:47<13:32:40, 204.88s/it]  1%|▏         | 3/240 [10:23<13:48:49, 209.83s/it]                                                     1%|▏         | 3/240 [10:23<13:48:49, 209.83s/it]  2%|▏         | 4/240 [13:51<13:42:33, 209.13s/it]                                                     2%|▏         | 4/240 [13:51<13:42:33, 209.13s/it]  2%|▏         | 5/240 [17:41<14:08:50, 216.73s/it]                                                     2%|▏         | 5/240 [17:41<14:08:50, 216.73s/it]  2%|▎         | 6/240 [21:20<14:07:59, 217.43s/it]                                                     2%|▎         | 6/240 [21:20<14:07:59, 217.43s/it]  3%|▎         | 7/240 [24:47<13:51:45, 214.19s/it]                                                     3%|▎         | 7/240 [24:47<13:51:45, 214.19s/it]  3%|▎         | 8/240 [28:19<13:45:31, 213.50s/it]                                                     3%|▎         | 8/240 [28:19<13:45:31, 213.50s/it]  4%|▍         | 9/240 [31:45<13:32:37, 211.07s/it]                                                     4%|▍         | 9/240 [31:45<13:32:37, 211.07s/it]  4%|▍         | 10/240 [35:20<13:33:54, 212.33s/it]                                                      4%|▍         | 10/240 [35:20<13:33:54, 212.33s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+  5%|▍         | 11/240 [38:49<13:26:21, 211.27s/it]                                                      5%|▍         | 11/240 [38:49<13:26:21, 211.27s/it]  5%|▌         | 12/240 [42:07<13:07:18, 207.19s/it]                                                      5%|▌         | 12/240 [42:07<13:07:18, 207.19s/it]  5%|▌         | 13/240 [45:23<12:50:53, 203.76s/it]                                                      5%|▌         | 13/240 [45:23<12:50:53, 203.76s/it]  6%|▌         | 14/240 [48:45<12:45:57, 203.35s/it]                                                      6%|▌         | 14/240 [48:45<12:45:57, 203.35s/it]  6%|▋         | 15/240 [52:19<12:54:03, 206.41s/it]                                                      6%|▋         | 15/240 [52:19<12:54:03, 206.41s/it]  7%|▋         | 16/240 [55:50<12:56:07, 207.89s/it]                                                      7%|▋         | 16/240 [55:50<12:56:07, 207.89s/it]  7%|▋         | 17/240 [59:06<12:38:55, 204.20s/it]                                                      7%|▋         | 17/240 [59:06<12:38:55, 204.20s/it]  8%|▊         | 18/240 [1:02:30<12:35:47, 204.27s/it]                                                        8%|▊         | 18/240 [1:02:30<12:35:47, 204.27s/it]  8%|▊         | 19/240 [1:06:02<12:40:47, 206.55s/it]                                                        8%|▊         | 19/240 [1:06:02<12:40:47, 206.55s/it]  8%|▊         | 20/240 [1:09:37<12:46:56, 209.17s/it]                                                        8%|▊         | 20/240 [1:09:37<12:46:56, 209.17s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+  9%|▉         | 21/240 [1:13:10<12:47:45, 210.34s/it]                                                        9%|▉         | 21/240 [1:13:10<12:47:45, 210.34s/it]  9%|▉         | 22/240 [1:16:53<12:57:52, 214.09s/it]                                                        9%|▉         | 22/240 [1:16:53<12:57:52, 214.09s/it] 10%|▉         | 23/240 [1:20:13<12:39:22, 209.96s/it]                                                       10%|▉         | 23/240 [1:20:13<12:39:22, 209.96s/it] 10%|█         | 24/240 [1:21:53<10:37:06, 176.98s/it]                                                       10%|█         | 24/240 [1:21:53<10:37:06, 176.98s/it] 10%|█         | 25/240 [1:25:03<10:47:45, 180.77s/it]                                                       10%|█         | 25/240 [1:25:03<10:47:45, 180.77s/it] 11%|█         | 26/240 [1:28:31<11:13:38, 188.87s/it]                                                       11%|█         | 26/240 [1:28:31<11:13:38, 188.87s/it] 11%|█▏        | 27/240 [1:32:09<11:42:09, 197.79s/it]                                                       11%|█▏        | 27/240 [1:32:09<11:42:09, 197.79s/it] 12%|█▏        | 28/240 [1:35:50<12:02:41, 204.54s/it]                                                       12%|█▏        | 28/240 [1:35:50<12:02:41, 204.54s/it] 12%|█▏        | 29/240 [1:39:06<11:50:24, 202.01s/it]                                                       12%|█▏        | 29/240 [1:39:06<11:50:24, 202.01s/it] 12%|█▎        | 30/240 [1:42:44<12:04:21, 206.96s/it]                                                       12%|█▎        | 30/240 [1:42:44<12:04:21, 206.96s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 13%|█▎        | 31/240 [1:46:05<11:54:23, 205.09s/it]                                                       13%|█▎        | 31/240 [1:46:05<11:54:23, 205.09s/it] 13%|█▎        | 32/240 [1:49:31<11:51:42, 205.30s/it]                                                       13%|█▎        | 32/240 [1:49:31<11:51:42, 205.30s/it] 14%|█▍        | 33/240 [1:53:13<12:06:08, 210.47s/it]                                                       14%|█▍        | 33/240 [1:53:13<12:06:08, 210.47s/it] 14%|█▍        | 34/240 [1:56:49<12:07:27, 211.88s/it]                                                       14%|█▍        | 34/240 [1:56:49<12:07:27, 211.88s/it] 15%|█▍        | 35/240 [2:00:13<11:56:25, 209.68s/it]                                                       15%|█▍        | 35/240 [2:00:13<11:56:25, 209.68s/it] 15%|█▌        | 36/240 [2:03:55<12:05:27, 213.37s/it]                                                       15%|█▌        | 36/240 [2:03:55<12:05:27, 213.37s/it] 15%|█▌        | 37/240 [2:07:20<11:53:08, 210.78s/it]                                                       15%|█▌        | 37/240 [2:07:20<11:53:08, 210.78s/it] 16%|█▌        | 38/240 [2:11:02<12:00:38, 214.05s/it]                                                       16%|█▌        | 38/240 [2:11:02<12:00:38, 214.05s/it] 16%|█▋        | 39/240 [2:14:33<11:53:59, 213.13s/it]                                                       16%|█▋        | 39/240 [2:14:33<11:53:59, 213.13s/it] 17%|█▋        | 40/240 [2:18:01<11:45:30, 211.65s/it]                                                       17%|█▋        | 40/240 [2:18:01<11:45:30, 211.65s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 17%|█▋        | 41/240 [2:21:28<11:37:40, 210.35s/it]                                                       17%|█▋        | 41/240 [2:21:28<11:37:40, 210.35s/it] 18%|█▊        | 42/240 [2:24:56<11:32:12, 209.76s/it]                                                       18%|█▊        | 42/240 [2:24:56<11:32:12, 209.76s/it] 18%|█▊        | 43/240 [2:28:17<11:19:18, 206.89s/it]                                                       18%|█▊        | 43/240 [2:28:17<11:19:18, 206.89s/it] 18%|█▊        | 44/240 [2:31:52<11:23:42, 209.30s/it]                                                       18%|█▊        | 44/240 [2:31:52<11:23:42, 209.30s/it] 19%|█▉        | 45/240 [2:35:17<11:16:54, 208.28s/it]                                                       19%|█▉        | 45/240 [2:35:17<11:16:54, 208.28s/it] 19%|█▉        | 46/240 [2:38:38<11:06:11, 206.04s/it]                                                       19%|█▉        | 46/240 [2:38:38<11:06:11, 206.04s/it] 20%|█▉        | 47/240 [2:42:13<11:10:58, 208.59s/it]                                                       20%|█▉        | 47/240 [2:42:13<11:10:58, 208.59s/it] 20%|██        | 48/240 [2:43:44<9:14:41, 173.34s/it]                                                       20%|██        | 48/240 [2:43:44<9:14:41, 173.34s/it] 20%|██        | 49/240 [2:47:04<9:37:48, 181.51s/it]                                                      20%|██        | 49/240 [2:47:04<9:37:48, 181.51s/it] 21%|██        | 50/240 [2:50:36<10:03:24, 190.55s/it]                                                       21%|██        | 50/240 [2:50:36<10:03:24, 190.55s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 21%|██▏       | 51/240 [2:54:08<10:20:05, 196.85s/it]                                                       21%|██▏       | 51/240 [2:54:08<10:20:05, 196.85s/it] 22%|██▏       | 52/240 [2:57:33<10:24:34, 199.33s/it]                                                       22%|██▏       | 52/240 [2:57:33<10:24:34, 199.33s/it] 22%|██▏       | 53/240 [3:00:57<10:26:13, 200.93s/it]                                                       22%|██▏       | 53/240 [3:00:57<10:26:13, 200.93s/it] 22%|██▎       | 54/240 [3:04:28<10:31:32, 203.72s/it]                                                       22%|██▎       | 54/240 [3:04:28<10:31:32, 203.72s/it] 23%|██▎       | 55/240 [3:07:57<10:33:43, 205.53s/it]                                                       23%|██▎       | 55/240 [3:07:57<10:33:43, 205.53s/it] 23%|██▎       | 56/240 [3:11:15<10:22:40, 203.04s/it]                                                       23%|██▎       | 56/240 [3:11:15<10:22:40, 203.04s/it] 24%|██▍       | 57/240 [3:14:50<10:30:09, 206.61s/it]                                                       24%|██▍       | 57/240 [3:14:50<10:30:09, 206.61s/it] 24%|██▍       | 58/240 [3:18:10<10:20:57, 204.71s/it]                                                       24%|██▍       | 58/240 [3:18:10<10:20:57, 204.71s/it] 25%|██▍       | 59/240 [3:21:30<10:13:07, 203.25s/it]                                                       25%|██▍       | 59/240 [3:21:30<10:13:07, 203.25s/it] 25%|██▌       | 60/240 [3:25:03<10:19:05, 206.36s/it]                                                       25%|██▌       | 60/240 [3:25:03<10:19:05, 206.36s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 25%|██▌       | 61/240 [3:28:53<10:36:46, 213.44s/it]                                                       25%|██▌       | 61/240 [3:28:53<10:36:46, 213.44s/it] 26%|██▌       | 62/240 [3:32:32<10:38:08, 215.10s/it]                                                       26%|██▌       | 62/240 [3:32:32<10:38:08, 215.10s/it] 26%|██▋       | 63/240 [3:35:55<10:23:51, 211.48s/it]                                                       26%|██▋       | 63/240 [3:35:55<10:23:51, 211.48s/it] 27%|██▋       | 64/240 [3:39:26<10:19:12, 211.09s/it]                                                       27%|██▋       | 64/240 [3:39:26<10:19:12, 211.09s/it] 27%|██▋       | 65/240 [3:42:55<10:13:56, 210.49s/it]                                                       27%|██▋       | 65/240 [3:42:55<10:13:56, 210.49s/it] 28%|██▊       | 66/240 [3:46:35<10:19:15, 213.53s/it]                                                       28%|██▊       | 66/240 [3:46:35<10:19:15, 213.53s/it] 28%|██▊       | 67/240 [3:50:01<10:09:13, 211.29s/it]                                                       28%|██▊       | 67/240 [3:50:01<10:09:13, 211.29s/it] 28%|██▊       | 68/240 [3:53:41<10:12:36, 213.70s/it]                                                       28%|██▊       | 68/240 [3:53:41<10:12:36, 213.70s/it] 29%|██▉       | 69/240 [3:57:09<10:04:20, 212.05s/it]                                                       29%|██▉       | 69/240 [3:57:09<10:04:20, 212.05s/it] 29%|██▉       | 70/240 [4:00:41<10:00:55, 212.09s/it]                                                       29%|██▉       | 70/240 [4:00:41<10:00:55, 212.09s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 30%|██▉       | 71/240 [4:04:15<9:58:42, 212.56s/it]                                                       30%|██▉       | 71/240 [4:04:15<9:58:42, 212.56s/it] 30%|███       | 72/240 [4:05:49<8:15:53, 177.11s/it]                                                      30%|███       | 72/240 [4:05:49<8:15:53, 177.11s/it] 30%|███       | 73/240 [4:09:10<8:32:45, 184.22s/it]                                                      30%|███       | 73/240 [4:09:10<8:32:45, 184.22s/it] 31%|███       | 74/240 [4:12:47<8:57:04, 194.12s/it]                                                      31%|███       | 74/240 [4:12:47<8:57:04, 194.12s/it] 31%|███▏      | 75/240 [4:16:09<9:00:19, 196.48s/it]                                                      31%|███▏      | 75/240 [4:16:09<9:00:19, 196.48s/it] 32%|███▏      | 76/240 [4:19:30<9:00:59, 197.92s/it]                                                      32%|███▏      | 76/240 [4:19:30<9:00:59, 197.92s/it] 32%|███▏      | 77/240 [4:22:52<9:00:51, 199.09s/it]                                                      32%|███▏      | 77/240 [4:22:52<9:00:51, 199.09s/it] 32%|███▎      | 78/240 [4:26:19<9:03:31, 201.30s/it]                                                      32%|███▎      | 78/240 [4:26:19<9:03:31, 201.30s/it] 33%|███▎      | 79/240 [4:29:56<9:13:16, 206.19s/it]                                                      33%|███▎      | 79/240 [4:29:56<9:13:16, 206.19s/it] 33%|███▎      | 80/240 [4:33:33<9:18:34, 209.47s/it]                                                     {'loss': 1492.7183, 'grad_norm': 5719.486328125, 'learning_rate': 0.001, 'epoch': 0.04}
+{'loss': 832.0432, 'grad_norm': 2501.648681640625, 'learning_rate': 0.0009958333333333334, 'epoch': 0.09}
+{'loss': 445.438, 'grad_norm': 903.1703491210938, 'learning_rate': 0.0009916666666666667, 'epoch': 0.13}
+{'loss': 323.9933, 'grad_norm': 555.8884887695312, 'learning_rate': 0.0009875, 'epoch': 0.17}
+{'loss': 321.8676, 'grad_norm': 568.2716674804688, 'learning_rate': 0.0009833333333333332, 'epoch': 0.21}
+{'loss': 264.9526, 'grad_norm': 420.7539978027344, 'learning_rate': 0.0009791666666666666, 'epoch': 0.26}
+{'loss': 271.2971, 'grad_norm': 328.3218994140625, 'learning_rate': 0.000975, 'epoch': 0.3}
+{'loss': 264.2567, 'grad_norm': 341.23565673828125, 'learning_rate': 0.0009708333333333333, 'epoch': 0.34}
+{'loss': 248.5786, 'grad_norm': 258.65216064453125, 'learning_rate': 0.0009666666666666667, 'epoch': 0.38}
+{'loss': 244.7598, 'grad_norm': 364.3977966308594, 'learning_rate': 0.0009625, 'epoch': 0.43}
+{'loss': 237.4932, 'grad_norm': 211.20941162109375, 'learning_rate': 0.0009583333333333334, 'epoch': 0.47}
+{'loss': 217.0972, 'grad_norm': 162.9502716064453, 'learning_rate': 0.0009541666666666667, 'epoch': 0.51}
+{'loss': 227.5014, 'grad_norm': 286.3020324707031, 'learning_rate': 0.00095, 'epoch': 0.55}
+{'loss': 239.713, 'grad_norm': 337.49334716796875, 'learning_rate': 0.0009458333333333334, 'epoch': 0.6}
+{'loss': 232.1683, 'grad_norm': 232.82369995117188, 'learning_rate': 0.0009416666666666667, 'epoch': 0.64}
+{'loss': 224.3274, 'grad_norm': 181.0442352294922, 'learning_rate': 0.0009375, 'epoch': 0.68}
+{'loss': 215.6377, 'grad_norm': 362.21893310546875, 'learning_rate': 0.0009333333333333333, 'epoch': 0.72}
+{'loss': 214.8616, 'grad_norm': 222.75051879882812, 'learning_rate': 0.0009291666666666667, 'epoch': 0.77}
+{'loss': 238.5254, 'grad_norm': 288.86846923828125, 'learning_rate': 0.000925, 'epoch': 0.81}
+{'loss': 220.3534, 'grad_norm': 202.4414520263672, 'learning_rate': 0.0009208333333333333, 'epoch': 0.85}
+{'loss': 224.6186, 'grad_norm': 198.44918823242188, 'learning_rate': 0.0009166666666666666, 'epoch': 0.89}
+{'loss': 217.7446, 'grad_norm': 159.22705078125, 'learning_rate': 0.0009125, 'epoch': 0.94}
+{'loss': 208.8224, 'grad_norm': 156.74649047851562, 'learning_rate': 0.0009083333333333334, 'epoch': 0.98}
+{'loss': 97.459, 'grad_norm': 148.21478271484375, 'learning_rate': 0.0009041666666666667, 'epoch': 1.0}
+{'loss': 195.7381, 'grad_norm': 117.26590728759766, 'learning_rate': 0.0009000000000000001, 'epoch': 1.04}
+{'loss': 193.6972, 'grad_norm': 181.9520721435547, 'learning_rate': 0.0008958333333333334, 'epoch': 1.09}
+{'loss': 209.2845, 'grad_norm': 167.48995971679688, 'learning_rate': 0.0008916666666666667, 'epoch': 1.13}
+{'loss': 196.763, 'grad_norm': 140.9128875732422, 'learning_rate': 0.0008874999999999999, 'epoch': 1.17}
+{'loss': 198.7791, 'grad_norm': 129.12200927734375, 'learning_rate': 0.0008833333333333333, 'epoch': 1.21}
+{'loss': 200.1924, 'grad_norm': 149.26864624023438, 'learning_rate': 0.0008791666666666667, 'epoch': 1.26}
+{'loss': 194.7556, 'grad_norm': 130.3705596923828, 'learning_rate': 0.000875, 'epoch': 1.3}
+{'loss': 194.3188, 'grad_norm': 101.55200958251953, 'learning_rate': 0.0008708333333333334, 'epoch': 1.34}
+{'loss': 181.7162, 'grad_norm': 107.49285888671875, 'learning_rate': 0.0008666666666666667, 'epoch': 1.38}
+{'loss': 184.2067, 'grad_norm': 99.00918579101562, 'learning_rate': 0.0008625000000000001, 'epoch': 1.43}
+{'loss': 180.1075, 'grad_norm': 143.60308837890625, 'learning_rate': 0.0008583333333333333, 'epoch': 1.47}
+{'loss': 185.2282, 'grad_norm': 131.30923461914062, 'learning_rate': 0.0008541666666666666, 'epoch': 1.51}
+{'loss': 194.9422, 'grad_norm': 112.51522827148438, 'learning_rate': 0.00085, 'epoch': 1.55}
+{'loss': 192.4958, 'grad_norm': 116.55829620361328, 'learning_rate': 0.0008458333333333333, 'epoch': 1.6}
+{'loss': 188.4036, 'grad_norm': 113.20071411132812, 'learning_rate': 0.0008416666666666667, 'epoch': 1.64}
+{'loss': 201.9725, 'grad_norm': 197.1395263671875, 'learning_rate': 0.0008375, 'epoch': 1.68}
+{'loss': 181.3874, 'grad_norm': 100.076416015625, 'learning_rate': 0.0008333333333333334, 'epoch': 1.72}
+{'loss': 196.1234, 'grad_norm': 138.55300903320312, 'learning_rate': 0.0008291666666666667, 'epoch': 1.77}
+{'loss': 191.4149, 'grad_norm': 116.47150421142578, 'learning_rate': 0.000825, 'epoch': 1.81}
+{'loss': 193.2109, 'grad_norm': 126.39271545410156, 'learning_rate': 0.0008208333333333334, 'epoch': 1.85}
+{'loss': 188.227, 'grad_norm': 93.16268157958984, 'learning_rate': 0.0008166666666666667, 'epoch': 1.89}
+{'loss': 190.6276, 'grad_norm': 110.9666519165039, 'learning_rate': 0.0008125000000000001, 'epoch': 1.94}
+{'loss': 181.2437, 'grad_norm': 117.22239685058594, 'learning_rate': 0.0008083333333333333, 'epoch': 1.98}
+{'loss': 86.0303, 'grad_norm': 63.55833053588867, 'learning_rate': 0.0008041666666666667, 'epoch': 2.0}
+{'loss': 178.2865, 'grad_norm': 88.01251983642578, 'learning_rate': 0.0008, 'epoch': 2.04}
+{'loss': 170.6654, 'grad_norm': 111.56234741210938, 'learning_rate': 0.0007958333333333333, 'epoch': 2.09}
+{'loss': 171.4408, 'grad_norm': 85.19658660888672, 'learning_rate': 0.0007916666666666666, 'epoch': 2.13}
+{'loss': 176.1258, 'grad_norm': 82.0352783203125, 'learning_rate': 0.0007875, 'epoch': 2.17}
+{'loss': 176.8703, 'grad_norm': 97.58845520019531, 'learning_rate': 0.0007833333333333334, 'epoch': 2.21}
+{'loss': 172.5515, 'grad_norm': 81.43543243408203, 'learning_rate': 0.0007791666666666667, 'epoch': 2.26}
+{'loss': 165.7239, 'grad_norm': 73.33497619628906, 'learning_rate': 0.0007750000000000001, 'epoch': 2.3}
+{'loss': 167.0172, 'grad_norm': 114.37213897705078, 'learning_rate': 0.0007708333333333334, 'epoch': 2.34}
+{'loss': 164.8629, 'grad_norm': 98.14945983886719, 'learning_rate': 0.0007666666666666667, 'epoch': 2.38}
+{'loss': 170.4158, 'grad_norm': 72.03687286376953, 'learning_rate': 0.0007624999999999999, 'epoch': 2.43}
+{'loss': 160.9436, 'grad_norm': 80.58519744873047, 'learning_rate': 0.0007583333333333333, 'epoch': 2.47}
+{'loss': 170.285, 'grad_norm': 90.55465698242188, 'learning_rate': 0.0007541666666666667, 'epoch': 2.51}
+{'loss': 167.0466, 'grad_norm': 86.0589599609375, 'learning_rate': 0.00075, 'epoch': 2.55}
+{'loss': 166.5361, 'grad_norm': 63.57416915893555, 'learning_rate': 0.0007458333333333334, 'epoch': 2.6}
+{'loss': 167.1759, 'grad_norm': 97.24876403808594, 'learning_rate': 0.0007416666666666667, 'epoch': 2.64}
+{'loss': 163.1539, 'grad_norm': 75.75367736816406, 'learning_rate': 0.0007375000000000001, 'epoch': 2.68}
+{'loss': 168.4415, 'grad_norm': 96.02569580078125, 'learning_rate': 0.0007333333333333333, 'epoch': 2.72}
+{'loss': 159.55, 'grad_norm': 67.52349853515625, 'learning_rate': 0.0007291666666666666, 'epoch': 2.77}
+{'loss': 163.5228, 'grad_norm': 78.58092498779297, 'learning_rate': 0.000725, 'epoch': 2.81}
+{'loss': 170.2911, 'grad_norm': 84.67790985107422, 'learning_rate': 0.0007208333333333333, 'epoch': 2.85}
+{'loss': 166.0231, 'grad_norm': 110.28325653076172, 'learning_rate': 0.0007166666666666667, 'epoch': 2.89}
+{'loss': 165.8364, 'grad_norm': 75.2734375, 'learning_rate': 0.0007125, 'epoch': 2.94}
+{'loss': 166.7239, 'grad_norm': 128.42225646972656, 'learning_rate': 0.0007083333333333334, 'epoch': 2.98}
+{'loss': 79.9394, 'grad_norm': 57.19086456298828, 'learning_rate': 0.0007041666666666667, 'epoch': 3.0}
+{'loss': 154.2968, 'grad_norm': 104.02262115478516, 'learning_rate': 0.0007, 'epoch': 3.04}
+{'loss': 153.8818, 'grad_norm': 71.26139068603516, 'learning_rate': 0.0006958333333333334, 'epoch': 3.09}
+{'loss': 151.8358, 'grad_norm': 66.9753646850586, 'learning_rate': 0.0006916666666666667, 'epoch': 3.13}
+{'loss': 158.2248, 'grad_norm': 86.30461120605469, 'learning_rate': 0.0006875, 'epoch': 3.17}
+{'loss': 145.6397, 'grad_norm': 66.68367767333984, 'learning_rate': 0.0006833333333333333, 'epoch': 3.21}
+{'loss': 146.5095, 'grad_norm': 67.10942840576172, 'learning_rate': 0.0006791666666666667, 'epoch': 3.26}
+{'loss': 154.0257, 'grad_norm': 78.85553741455078, 'learning_rate': 0.000675, 'epoch': 3.3}
+ 33%|███▎      | 80/240 [4:33:33<9:18:34, 209.47s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 34%|███▍      | 81/240 [4:37:14<9:23:46, 212.74s/it]                                                      34%|███▍      | 81/240 [4:37:14<9:23:46, 212.74s/it] 34%|███▍      | 82/240 [4:40:35<9:11:06, 209.28s/it]                                                      34%|███▍      | 82/240 [4:40:35<9:11:06, 209.28s/it] 35%|███▍      | 83/240 [4:44:08<9:10:49, 210.51s/it]                                                      35%|███▍      | 83/240 [4:44:08<9:10:49, 210.51s/it] 35%|███▌      | 84/240 [4:47:50<9:16:17, 213.96s/it]                                                      35%|███▌      | 84/240 [4:47:50<9:16:17, 213.96s/it] 35%|███▌      | 85/240 [4:51:33<9:19:52, 216.72s/it]                                                      35%|███▌      | 85/240 [4:51:33<9:19:52, 216.72s/it] 36%|███▌      | 86/240 [4:54:51<9:01:22, 210.92s/it]                                                      36%|███▌      | 86/240 [4:54:51<9:01:22, 210.92s/it] 36%|███▋      | 87/240 [4:58:27<9:01:57, 212.53s/it]                                                      36%|███▋      | 87/240 [4:58:27<9:01:57, 212.53s/it] 37%|███▋      | 88/240 [5:01:57<8:56:30, 211.78s/it]                                                      37%|███▋      | 88/240 [5:01:57<8:56:30, 211.78s/it] 37%|███▋      | 89/240 [5:05:29<8:53:15, 211.89s/it]                                                      37%|███▋      | 89/240 [5:05:29<8:53:15, 211.89s/it] 38%|███▊      | 90/240 [5:08:46<8:38:07, 207.25s/it]                                                      38%|███▊      | 90/240 [5:08:46<8:38:07, 207.25s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 38%|███▊      | 91/240 [5:12:15<8:36:23, 207.95s/it]                                                      38%|███▊      | 91/240 [5:12:15<8:36:23, 207.95s/it] 38%|███▊      | 92/240 [5:15:41<8:31:25, 207.33s/it]                                                      38%|███▊      | 92/240 [5:15:41<8:31:25, 207.33s/it] 39%|███▉      | 93/240 [5:19:13<8:31:08, 208.63s/it]                                                      39%|███▉      | 93/240 [5:19:13<8:31:08, 208.63s/it] 39%|███▉      | 94/240 [5:22:53<8:35:57, 212.04s/it]                                                      39%|███▉      | 94/240 [5:22:53<8:35:57, 212.04s/it] 40%|███▉      | 95/240 [5:26:22<8:30:10, 211.11s/it]                                                      40%|███▉      | 95/240 [5:26:22<8:30:10, 211.11s/it] 40%|████      | 96/240 [5:27:53<7:00:20, 175.14s/it]                                                      40%|████      | 96/240 [5:27:53<7:00:20, 175.14s/it] 40%|████      | 97/240 [5:31:16<7:17:28, 183.56s/it]                                                      40%|████      | 97/240 [5:31:16<7:17:28, 183.56s/it] 41%|████      | 98/240 [5:34:47<7:33:56, 191.81s/it]                                                      41%|████      | 98/240 [5:34:47<7:33:56, 191.81s/it] 41%|████▏     | 99/240 [5:38:23<7:47:26, 198.91s/it]                                                      41%|████▏     | 99/240 [5:38:23<7:47:26, 198.91s/it] 42%|████▏     | 100/240 [5:41:49<7:49:03, 201.03s/it]                                                       42%|████▏     | 100/240 [5:41:49<7:49:03, 201.03s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 42%|████▏     | 101/240 [5:45:26<7:56:39, 205.75s/it]                                                       42%|████▏     | 101/240 [5:45:26<7:56:39, 205.75s/it] 42%|████▎     | 102/240 [5:48:53<7:54:39, 206.38s/it]                                                       42%|████▎     | 102/240 [5:48:53<7:54:39, 206.38s/it] 43%|████▎     | 103/240 [5:52:24<7:53:56, 207.56s/it]                                                       43%|████▎     | 103/240 [5:52:24<7:53:56, 207.56s/it] 43%|████▎     | 104/240 [5:56:03<7:58:11, 210.96s/it]                                                       43%|████▎     | 104/240 [5:56:03<7:58:11, 210.96s/it] 44%|████▍     | 105/240 [5:59:18<7:44:27, 206.43s/it]                                                       44%|████▍     | 105/240 [5:59:18<7:44:27, 206.43s/it] 44%|████▍     | 106/240 [6:02:45<7:41:22, 206.59s/it]                                                       44%|████▍     | 106/240 [6:02:45<7:41:22, 206.59s/it] 45%|████▍     | 107/240 [6:06:08<7:35:09, 205.33s/it]                                                       45%|████▍     | 107/240 [6:06:08<7:35:09, 205.33s/it] 45%|████▌     | 108/240 [6:09:35<7:33:04, 205.94s/it]                                                       45%|████▌     | 108/240 [6:09:35<7:33:04, 205.94s/it] 45%|████▌     | 109/240 [6:13:08<7:34:23, 208.12s/it]                                                       45%|████▌     | 109/240 [6:13:08<7:34:23, 208.12s/it] 46%|████▌     | 110/240 [6:16:46<7:36:54, 210.88s/it]                                                       46%|████▌     | 110/240 [6:16:46<7:36:54, 210.88s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 46%|████▋     | 111/240 [6:20:24<7:38:08, 213.09s/it]                                                       46%|████▋     | 111/240 [6:20:24<7:38:08, 213.09s/it] 47%|████▋     | 112/240 [6:23:46<7:27:43, 209.87s/it]                                                       47%|████▋     | 112/240 [6:23:46<7:27:43, 209.87s/it] 47%|████▋     | 113/240 [6:27:27<7:31:04, 213.11s/it]                                                       47%|████▋     | 113/240 [6:27:27<7:31:04, 213.11s/it] 48%|████▊     | 114/240 [6:30:56<7:24:58, 211.89s/it]                                                       48%|████▊     | 114/240 [6:30:56<7:24:58, 211.89s/it] 48%|████▊     | 115/240 [6:34:38<7:27:57, 215.02s/it]                                                       48%|████▊     | 115/240 [6:34:38<7:27:57, 215.02s/it] 48%|████▊     | 116/240 [6:38:09<7:21:28, 213.61s/it]                                                       48%|████▊     | 116/240 [6:38:09<7:21:28, 213.61s/it] 49%|████▉     | 117/240 [6:41:43<7:18:25, 213.87s/it]                                                       49%|████▉     | 117/240 [6:41:43<7:18:25, 213.87s/it] 49%|████▉     | 118/240 [6:45:01<7:04:57, 208.99s/it]                                                       49%|████▉     | 118/240 [6:45:01<7:04:57, 208.99s/it] 50%|████▉     | 119/240 [6:48:25<6:58:41, 207.62s/it]                                                       50%|████▉     | 119/240 [6:48:25<6:58:41, 207.62s/it] 50%|█████     | 120/240 [6:49:58<5:46:30, 173.25s/it]                                                       50%|█████     | 120/240 [6:49:58<5:46:30, 173.25s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 50%|█████     | 121/240 [6:53:35<6:09:14, 186.17s/it]                                                       50%|█████     | 121/240 [6:53:35<6:09:14, 186.17s/it] 51%|█████     | 122/240 [6:57:06<6:21:00, 193.73s/it]                                                       51%|█████     | 122/240 [6:57:06<6:21:00, 193.73s/it] 51%|█████▏    | 123/240 [7:00:32<6:24:50, 197.36s/it]                                                       51%|█████▏    | 123/240 [7:00:32<6:24:50, 197.36s/it] 52%|█████▏    | 124/240 [7:03:55<6:24:51, 199.06s/it]                                                       52%|█████▏    | 124/240 [7:03:55<6:24:51, 199.06s/it] 52%|█████▏    | 125/240 [7:07:43<6:38:21, 207.84s/it]                                                       52%|█████▏    | 125/240 [7:07:43<6:38:21, 207.84s/it] 52%|█████▎    | 126/240 [7:11:02<6:29:39, 205.09s/it]                                                       52%|█████▎    | 126/240 [7:11:02<6:29:39, 205.09s/it] 53%|█████▎    | 127/240 [7:14:16<6:20:20, 201.95s/it]                                                       53%|█████▎    | 127/240 [7:14:16<6:20:20, 201.95s/it] 53%|█████▎    | 128/240 [7:17:44<6:20:03, 203.61s/it]                                                       53%|█████▎    | 128/240 [7:17:44<6:20:03, 203.61s/it] 54%|█████▍    | 129/240 [7:21:22<6:24:29, 207.83s/it]                                                       54%|█████▍    | 129/240 [7:21:22<6:24:29, 207.83s/it] 54%|█████▍    | 130/240 [7:24:53<6:22:58, 208.89s/it]                                                       54%|█████▍    | 130/240 [7:24:53<6:22:58, 208.89s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 55%|█████▍    | 131/240 [7:28:40<6:29:23, 214.34s/it]                                                       55%|█████▍    | 131/240 [7:28:40<6:29:23, 214.34s/it] 55%|█████▌    | 132/240 [7:32:17<6:27:01, 215.02s/it]                                                       55%|█████▌    | 132/240 [7:32:17<6:27:01, 215.02s/it] 55%|█████▌    | 133/240 [7:35:46<6:20:24, 213.32s/it]                                                       55%|█████▌    | 133/240 [7:35:46<6:20:24, 213.32s/it] 56%|█████▌    | 134/240 [7:39:20<6:17:14, 213.53s/it]                                                       56%|█████▌    | 134/240 [7:39:20<6:17:14, 213.53s/it] 56%|█████▋    | 135/240 [7:42:45<6:09:03, 210.89s/it]                                                       56%|█████▋    | 135/240 [7:42:45<6:09:03, 210.89s/it] 57%|█████▋    | 136/240 [7:46:14<6:04:51, 210.50s/it]                                                       57%|█████▋    | 136/240 [7:46:14<6:04:51, 210.50s/it] 57%|█████▋    | 137/240 [7:49:54<6:05:53, 213.14s/it]                                                       57%|█████▋    | 137/240 [7:49:54<6:05:53, 213.14s/it] 57%|█████▊    | 138/240 [7:53:20<5:59:01, 211.19s/it]                                                       57%|█████▊    | 138/240 [7:53:20<5:59:01, 211.19s/it] 58%|█████▊    | 139/240 [7:56:50<5:54:52, 210.82s/it]                                                       58%|█████▊    | 139/240 [7:56:50<5:54:52, 210.82s/it] 58%|█████▊    | 140/240 [8:00:11<5:46:34, 207.95s/it]                                                       58%|█████▊    | 140/240 [8:00:11<5:46:34, 207.95s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 59%|█████▉    | 141/240 [8:04:02<5:54:09, 214.64s/it]                                                       59%|█████▉    | 141/240 [8:04:02<5:54:09, 214.64s/it] 59%|█████▉    | 142/240 [8:07:25<5:45:05, 211.28s/it]                                                       59%|█████▉    | 142/240 [8:07:25<5:45:05, 211.28s/it] 60%|█████▉    | 143/240 [8:10:44<5:35:29, 207.52s/it]                                                       60%|█████▉    | 143/240 [8:10:44<5:35:29, 207.52s/it] 60%|██████    | 144/240 [8:12:15<4:36:19, 172.71s/it]                                                       60%|██████    | 144/240 [8:12:15<4:36:19, 172.71s/it] 60%|██████    | 145/240 [8:15:45<4:51:06, 183.86s/it]                                                       60%|██████    | 145/240 [8:15:45<4:51:06, 183.86s/it] 61%|██████    | 146/240 [8:19:12<4:58:55, 190.80s/it]                                                       61%|██████    | 146/240 [8:19:12<4:58:55, 190.80s/it] 61%|██████▏   | 147/240 [8:22:51<5:08:51, 199.27s/it]                                                       61%|██████▏   | 147/240 [8:22:51<5:08:51, 199.27s/it] 62%|██████▏   | 148/240 [8:26:26<5:12:37, 203.89s/it]                                                       62%|██████▏   | 148/240 [8:26:26<5:12:37, 203.89s/it] 62%|██████▏   | 149/240 [8:29:58<5:12:59, 206.37s/it]                                                       62%|██████▏   | 149/240 [8:29:58<5:12:59, 206.37s/it] 62%|██████▎   | 150/240 [8:33:40<5:16:27, 210.97s/it]                                                       62%|██████▎   | 150/240 [8:33:40<5:16:27, 210.97s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 63%|██████▎   | 151/240 [8:37:09<5:12:19, 210.55s/it]                                                       63%|██████▎   | 151/240 [8:37:09<5:12:19, 210.55s/it] 63%|██████▎   | 152/240 [8:40:25<5:02:09, 206.02s/it]                                                       63%|██████▎   | 152/240 [8:40:25<5:02:09, 206.02s/it] 64%|██████▍   | 153/240 [8:43:48<4:57:31, 205.19s/it]                                                       64%|██████▍   | 153/240 [8:43:48<4:57:31, 205.19s/it] 64%|██████▍   | 154/240 [8:47:35<5:03:19, 211.62s/it]                                                       64%|██████▍   | 154/240 [8:47:35<5:03:19, 211.62s/it] 65%|██████▍   | 155/240 [8:51:06<4:59:49, 211.65s/it]                                                       65%|██████▍   | 155/240 [8:51:06<4:59:49, 211.65s/it] 65%|██████▌   | 156/240 [8:54:24<4:50:24, 207.43s/it]                                                       65%|██████▌   | 156/240 [8:54:24<4:50:24, 207.43s/it] 65%|██████▌   | 157/240 [8:57:44<4:43:54, 205.23s/it]                                                       65%|██████▌   | 157/240 [8:57:44<4:43:54, 205.23s/it] 66%|██████▌   | 158/240 [9:01:02<4:37:34, 203.11s/it]                                                       66%|██████▌   | 158/240 [9:01:02<4:37:34, 203.11s/it] 66%|██████▋   | 159/240 [9:04:56<4:46:29, 212.22s/it]                                                      {'loss': 153.6607, 'grad_norm': 73.47794342041016, 'learning_rate': 0.0006708333333333333, 'epoch': 3.34}
+{'loss': 149.142, 'grad_norm': 71.6277847290039, 'learning_rate': 0.0006666666666666666, 'epoch': 3.38}
+{'loss': 150.0235, 'grad_norm': 72.72596740722656, 'learning_rate': 0.0006625, 'epoch': 3.43}
+{'loss': 151.564, 'grad_norm': 76.21235656738281, 'learning_rate': 0.0006583333333333334, 'epoch': 3.47}
+{'loss': 152.0521, 'grad_norm': 71.68171691894531, 'learning_rate': 0.0006541666666666667, 'epoch': 3.51}
+{'loss': 153.1082, 'grad_norm': 71.67255401611328, 'learning_rate': 0.0006500000000000001, 'epoch': 3.55}
+{'loss': 150.4093, 'grad_norm': 76.13198852539062, 'learning_rate': 0.0006458333333333334, 'epoch': 3.6}
+{'loss': 155.1202, 'grad_norm': 68.9053955078125, 'learning_rate': 0.0006416666666666667, 'epoch': 3.64}
+{'loss': 146.3091, 'grad_norm': 66.09783935546875, 'learning_rate': 0.0006374999999999999, 'epoch': 3.68}
+{'loss': 147.9436, 'grad_norm': 64.17816925048828, 'learning_rate': 0.0006333333333333333, 'epoch': 3.72}
+{'loss': 156.0731, 'grad_norm': 77.77920532226562, 'learning_rate': 0.0006291666666666667, 'epoch': 3.77}
+{'loss': 156.9302, 'grad_norm': 74.68120574951172, 'learning_rate': 0.000625, 'epoch': 3.81}
+{'loss': 150.2165, 'grad_norm': 118.08125305175781, 'learning_rate': 0.0006208333333333334, 'epoch': 3.85}
+{'loss': 149.3349, 'grad_norm': 72.73088836669922, 'learning_rate': 0.0006166666666666667, 'epoch': 3.89}
+{'loss': 148.4004, 'grad_norm': 74.73640441894531, 'learning_rate': 0.0006125000000000001, 'epoch': 3.94}
+{'loss': 153.2541, 'grad_norm': 98.76702117919922, 'learning_rate': 0.0006083333333333333, 'epoch': 3.98}
+{'loss': 65.5033, 'grad_norm': 39.43765640258789, 'learning_rate': 0.0006041666666666666, 'epoch': 4.0}
+{'loss': 138.9051, 'grad_norm': 62.46803665161133, 'learning_rate': 0.0006, 'epoch': 4.04}
+{'loss': 133.8642, 'grad_norm': 61.824989318847656, 'learning_rate': 0.0005958333333333333, 'epoch': 4.09}
+{'loss': 134.243, 'grad_norm': 63.693634033203125, 'learning_rate': 0.0005916666666666667, 'epoch': 4.13}
+{'loss': 139.4231, 'grad_norm': 77.4303970336914, 'learning_rate': 0.0005875, 'epoch': 4.17}
+{'loss': 137.692, 'grad_norm': 71.26439666748047, 'learning_rate': 0.0005833333333333334, 'epoch': 4.21}
+{'loss': 133.0715, 'grad_norm': 68.58845520019531, 'learning_rate': 0.0005791666666666667, 'epoch': 4.26}
+{'loss': 135.3461, 'grad_norm': 73.1034927368164, 'learning_rate': 0.000575, 'epoch': 4.3}
+{'loss': 140.1845, 'grad_norm': 75.44976806640625, 'learning_rate': 0.0005708333333333333, 'epoch': 4.34}
+{'loss': 139.4969, 'grad_norm': 64.53094482421875, 'learning_rate': 0.0005666666666666667, 'epoch': 4.38}
+{'loss': 135.4319, 'grad_norm': 74.07098388671875, 'learning_rate': 0.0005625000000000001, 'epoch': 4.43}
+{'loss': 137.5639, 'grad_norm': 64.30135345458984, 'learning_rate': 0.0005583333333333333, 'epoch': 4.47}
+{'loss': 135.7182, 'grad_norm': 77.56267547607422, 'learning_rate': 0.0005541666666666667, 'epoch': 4.51}
+{'loss': 134.7901, 'grad_norm': 64.8584976196289, 'learning_rate': 0.00055, 'epoch': 4.55}
+{'loss': 132.5383, 'grad_norm': 66.79979705810547, 'learning_rate': 0.0005458333333333333, 'epoch': 4.6}
+{'loss': 135.2283, 'grad_norm': 72.25594329833984, 'learning_rate': 0.0005416666666666666, 'epoch': 4.64}
+{'loss': 136.3769, 'grad_norm': 67.9384765625, 'learning_rate': 0.0005375, 'epoch': 4.68}
+{'loss': 131.2439, 'grad_norm': 66.5384292602539, 'learning_rate': 0.0005333333333333334, 'epoch': 4.72}
+{'loss': 138.4927, 'grad_norm': 78.97000885009766, 'learning_rate': 0.0005291666666666667, 'epoch': 4.77}
+{'loss': 136.9759, 'grad_norm': 67.65656280517578, 'learning_rate': 0.0005250000000000001, 'epoch': 4.81}
+{'loss': 135.7982, 'grad_norm': 65.53704833984375, 'learning_rate': 0.0005208333333333334, 'epoch': 4.85}
+{'loss': 134.7392, 'grad_norm': 64.76520538330078, 'learning_rate': 0.0005166666666666667, 'epoch': 4.89}
+{'loss': 135.4982, 'grad_norm': 66.14811706542969, 'learning_rate': 0.0005124999999999999, 'epoch': 4.94}
+{'loss': 132.9254, 'grad_norm': 62.02031326293945, 'learning_rate': 0.0005083333333333333, 'epoch': 4.98}
+{'loss': 62.5142, 'grad_norm': 41.657474517822266, 'learning_rate': 0.0005041666666666667, 'epoch': 5.0}
+{'loss': 123.942, 'grad_norm': 65.15260314941406, 'learning_rate': 0.0005, 'epoch': 5.04}
+{'loss': 121.995, 'grad_norm': 76.02215576171875, 'learning_rate': 0.0004958333333333334, 'epoch': 5.09}
+{'loss': 119.468, 'grad_norm': 68.8490982055664, 'learning_rate': 0.0004916666666666666, 'epoch': 5.13}
+{'loss': 123.1557, 'grad_norm': 80.12541198730469, 'learning_rate': 0.0004875, 'epoch': 5.17}
+{'loss': 119.0968, 'grad_norm': 76.42015075683594, 'learning_rate': 0.00048333333333333334, 'epoch': 5.21}
+{'loss': 118.5673, 'grad_norm': 73.67157745361328, 'learning_rate': 0.0004791666666666667, 'epoch': 5.26}
+{'loss': 118.6656, 'grad_norm': 73.33463287353516, 'learning_rate': 0.000475, 'epoch': 5.3}
+{'loss': 115.0938, 'grad_norm': 66.86383819580078, 'learning_rate': 0.00047083333333333336, 'epoch': 5.34}
+{'loss': 121.7072, 'grad_norm': 69.21327209472656, 'learning_rate': 0.00046666666666666666, 'epoch': 5.38}
+{'loss': 118.6169, 'grad_norm': 65.66841125488281, 'learning_rate': 0.0004625, 'epoch': 5.43}
+{'loss': 125.2825, 'grad_norm': 76.76139068603516, 'learning_rate': 0.0004583333333333333, 'epoch': 5.47}
+{'loss': 121.2368, 'grad_norm': 72.39632415771484, 'learning_rate': 0.0004541666666666667, 'epoch': 5.51}
+{'loss': 120.4168, 'grad_norm': 73.7887954711914, 'learning_rate': 0.00045000000000000004, 'epoch': 5.55}
+{'loss': 122.5521, 'grad_norm': 73.6077651977539, 'learning_rate': 0.00044583333333333335, 'epoch': 5.6}
+{'loss': 116.5557, 'grad_norm': 68.24663543701172, 'learning_rate': 0.00044166666666666665, 'epoch': 5.64}
+{'loss': 126.4192, 'grad_norm': 85.41506958007812, 'learning_rate': 0.0004375, 'epoch': 5.68}
+{'loss': 117.7854, 'grad_norm': 68.66232299804688, 'learning_rate': 0.00043333333333333337, 'epoch': 5.72}
+{'loss': 120.6032, 'grad_norm': 73.29867553710938, 'learning_rate': 0.00042916666666666667, 'epoch': 5.77}
+{'loss': 122.6999, 'grad_norm': 76.61373901367188, 'learning_rate': 0.000425, 'epoch': 5.81}
+{'loss': 120.1007, 'grad_norm': 71.69794464111328, 'learning_rate': 0.00042083333333333333, 'epoch': 5.85}
+{'loss': 122.6534, 'grad_norm': 74.54130554199219, 'learning_rate': 0.0004166666666666667, 'epoch': 5.89}
+{'loss': 122.0095, 'grad_norm': 70.44034576416016, 'learning_rate': 0.0004125, 'epoch': 5.94}
+{'loss': 121.3251, 'grad_norm': 71.068115234375, 'learning_rate': 0.00040833333333333336, 'epoch': 5.98}
+{'loss': 57.1267, 'grad_norm': 44.48918914794922, 'learning_rate': 0.00040416666666666666, 'epoch': 6.0}
+{'loss': 108.8056, 'grad_norm': 70.54132080078125, 'learning_rate': 0.0004, 'epoch': 6.04}
+{'loss': 108.864, 'grad_norm': 67.06562805175781, 'learning_rate': 0.0003958333333333333, 'epoch': 6.09}
+{'loss': 106.2701, 'grad_norm': 73.76904296875, 'learning_rate': 0.0003916666666666667, 'epoch': 6.13}
+{'loss': 106.5409, 'grad_norm': 84.26892852783203, 'learning_rate': 0.00038750000000000004, 'epoch': 6.17}
+{'loss': 106.9665, 'grad_norm': 92.58094787597656, 'learning_rate': 0.00038333333333333334, 'epoch': 6.21}
+{'loss': 106.8665, 'grad_norm': 82.57206726074219, 'learning_rate': 0.00037916666666666665, 'epoch': 6.26}
+{'loss': 109.0536, 'grad_norm': 83.59278106689453, 'learning_rate': 0.000375, 'epoch': 6.3}
+{'loss': 110.0794, 'grad_norm': 82.66207122802734, 'learning_rate': 0.00037083333333333337, 'epoch': 6.34}
+{'loss': 108.2212, 'grad_norm': 76.0914306640625, 'learning_rate': 0.00036666666666666667, 'epoch': 6.38}
+{'loss': 105.924, 'grad_norm': 74.96964263916016, 'learning_rate': 0.0003625, 'epoch': 6.43}
+{'loss': 106.6543, 'grad_norm': 75.46711730957031, 'learning_rate': 0.00035833333333333333, 'epoch': 6.47}
+{'loss': 111.2723, 'grad_norm': 75.03173828125, 'learning_rate': 0.0003541666666666667, 'epoch': 6.51}
+{'loss': 106.5312, 'grad_norm': 77.73123931884766, 'learning_rate': 0.00035, 'epoch': 6.55}
+{'loss': 106.6494, 'grad_norm': 77.15918731689453, 'learning_rate': 0.00034583333333333335, 'epoch': 6.6}
+ 66%|██████▋   | 159/240 [9:04:56<4:46:29, 212.22s/it] 67%|██████▋   | 160/240 [9:08:17<4:38:27, 208.84s/it]                                                       67%|██████▋   | 160/240 [9:08:17<4:38:27, 208.84s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 67%|██████▋   | 161/240 [9:12:01<4:41:06, 213.50s/it]                                                       67%|██████▋   | 161/240 [9:12:01<4:41:06, 213.50s/it] 68%|██████▊   | 162/240 [9:15:38<4:38:58, 214.60s/it]                                                       68%|██████▊   | 162/240 [9:15:38<4:38:58, 214.60s/it] 68%|██████▊   | 163/240 [9:18:53<4:27:58, 208.81s/it]                                                       68%|██████▊   | 163/240 [9:18:53<4:27:58, 208.81s/it] 68%|██████▊   | 164/240 [9:22:32<4:28:20, 211.84s/it]                                                       68%|██████▊   | 164/240 [9:22:32<4:28:20, 211.84s/it] 69%|██████▉   | 165/240 [9:25:52<4:20:17, 208.24s/it]                                                       69%|██████▉   | 165/240 [9:25:52<4:20:17, 208.24s/it] 69%|██████▉   | 166/240 [9:29:17<4:15:43, 207.34s/it]                                                       69%|██████▉   | 166/240 [9:29:17<4:15:43, 207.34s/it] 70%|██████▉   | 167/240 [9:32:37<4:09:16, 204.88s/it]                                                       70%|██████▉   | 167/240 [9:32:37<4:09:16, 204.88s/it] 70%|███████   | 168/240 [9:34:09<3:25:26, 171.20s/it]                                                       70%|███████   | 168/240 [9:34:09<3:25:26, 171.20s/it] 70%|███████   | 169/240 [9:37:30<3:32:59, 179.99s/it]                                                       70%|███████   | 169/240 [9:37:30<3:32:59, 179.99s/it] 71%|███████   | 170/240 [9:40:55<3:38:44, 187.49s/it]                                                       71%|███████   | 170/240 [9:40:55<3:38:44, 187.49s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 71%|███████▏  | 171/240 [9:44:40<3:48:39, 198.83s/it]                                                       71%|███████▏  | 171/240 [9:44:40<3:48:39, 198.83s/it] 72%|███████▏  | 172/240 [9:48:20<3:52:27, 205.11s/it]                                                       72%|███████▏  | 172/240 [9:48:20<3:52:27, 205.11s/it] 72%|███████▏  | 173/240 [9:51:51<3:50:55, 206.80s/it]                                                       72%|███████▏  | 173/240 [9:51:51<3:50:55, 206.80s/it] 72%|███████▎  | 174/240 [9:55:19<3:47:59, 207.27s/it]                                                       72%|███████▎  | 174/240 [9:55:19<3:47:59, 207.27s/it] 73%|███████▎  | 175/240 [9:58:57<3:47:54, 210.37s/it]                                                       73%|███████▎  | 175/240 [9:58:57<3:47:54, 210.37s/it] 73%|███████▎  | 176/240 [10:02:21<3:42:29, 208.59s/it]                                                        73%|███████▎  | 176/240 [10:02:21<3:42:29, 208.59s/it] 74%|███████▍  | 177/240 [10:05:38<3:35:20, 205.08s/it]                                                        74%|███████▍  | 177/240 [10:05:38<3:35:20, 205.08s/it] 74%|███████▍  | 178/240 [10:09:09<3:33:56, 207.05s/it]                                                        74%|███████▍  | 178/240 [10:09:09<3:33:56, 207.05s/it] 75%|███████▍  | 179/240 [10:12:45<3:33:13, 209.72s/it]                                                        75%|███████▍  | 179/240 [10:12:45<3:33:13, 209.72s/it] 75%|███████▌  | 180/240 [10:16:10<3:28:12, 208.22s/it]                                                        75%|███████▌  | 180/240 [10:16:10<3:28:12, 208.22s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 75%|███████▌  | 181/240 [10:19:55<3:29:34, 213.13s/it]                                                        75%|███████▌  | 181/240 [10:19:55<3:29:34, 213.13s/it] 76%|███████▌  | 182/240 [10:23:17<3:22:54, 209.90s/it]                                                        76%|███████▌  | 182/240 [10:23:17<3:22:54, 209.90s/it] 76%|███████▋  | 183/240 [10:26:49<3:20:04, 210.61s/it]                                                        76%|███████▋  | 183/240 [10:26:49<3:20:04, 210.61s/it] 77%|███████▋  | 184/240 [10:30:11<3:14:10, 208.05s/it]                                                        77%|███████▋  | 184/240 [10:30:11<3:14:10, 208.05s/it] 77%|███████▋  | 185/240 [10:33:36<3:09:50, 207.11s/it]                                                        77%|███████▋  | 185/240 [10:33:36<3:09:50, 207.11s/it] 78%|███████▊  | 186/240 [10:37:10<3:08:02, 208.94s/it]                                                        78%|███████▊  | 186/240 [10:37:10<3:08:02, 208.94s/it] 78%|███████▊  | 187/240 [10:40:27<3:01:25, 205.38s/it]                                                        78%|███████▊  | 187/240 [10:40:27<3:01:25, 205.38s/it] 78%|███████▊  | 188/240 [10:43:48<2:56:56, 204.15s/it]                                                        78%|███████▊  | 188/240 [10:43:48<2:56:56, 204.15s/it] 79%|███████▉  | 189/240 [10:47:20<2:55:28, 206.45s/it]                                                        79%|███████▉  | 189/240 [10:47:20<2:55:28, 206.45s/it] 79%|███████▉  | 190/240 [10:50:54<2:54:05, 208.91s/it]                                                        79%|███████▉  | 190/240 [10:50:54<2:54:05, 208.91s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 80%|███████▉  | 191/240 [10:54:43<2:55:25, 214.81s/it]                                                        80%|███████▉  | 191/240 [10:54:43<2:55:25, 214.81s/it] 80%|████████  | 192/240 [10:56:23<2:24:25, 180.52s/it]                                                        80%|████████  | 192/240 [10:56:23<2:24:25, 180.52s/it] 80%|████████  | 193/240 [10:59:42<2:25:44, 186.05s/it]                                                        80%|████████  | 193/240 [10:59:42<2:25:44, 186.05s/it] 81%|████████  | 194/240 [11:03:18<2:29:24, 194.88s/it]                                                        81%|████████  | 194/240 [11:03:18<2:29:24, 194.88s/it] 81%|████████▏ | 195/240 [11:06:49<2:29:44, 199.66s/it]                                                        81%|████████▏ | 195/240 [11:06:49<2:29:44, 199.66s/it] 82%|████████▏ | 196/240 [11:10:18<2:28:36, 202.66s/it]                                                        82%|████████▏ | 196/240 [11:10:18<2:28:36, 202.66s/it] 82%|████████▏ | 197/240 [11:13:46<2:26:24, 204.29s/it]                                                        82%|████████▏ | 197/240 [11:13:46<2:26:24, 204.29s/it] 82%|████████▎ | 198/240 [11:17:18<2:24:27, 206.36s/it]                                                        82%|████████▎ | 198/240 [11:17:18<2:24:27, 206.36s/it] 83%|████████▎ | 199/240 [11:20:41<2:20:24, 205.47s/it]                                                        83%|████████▎ | 199/240 [11:20:41<2:20:24, 205.47s/it] 83%|████████▎ | 200/240 [11:24:12<2:18:05, 207.14s/it]                                                        83%|████████▎ | 200/240 [11:24:12<2:18:05, 207.14s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 84%|████████▍ | 201/240 [11:27:56<2:17:54, 212.15s/it]                                                        84%|████████▍ | 201/240 [11:27:56<2:17:54, 212.15s/it] 84%|████████▍ | 202/240 [11:31:13<2:11:27, 207.56s/it]                                                        84%|████████▍ | 202/240 [11:31:13<2:11:27, 207.56s/it] 85%|████████▍ | 203/240 [11:34:45<2:08:46, 208.82s/it]                                                        85%|████████▍ | 203/240 [11:34:45<2:08:46, 208.82s/it] 85%|████████▌ | 204/240 [11:38:15<2:05:35, 209.31s/it]                                                        85%|████████▌ | 204/240 [11:38:15<2:05:35, 209.31s/it] 85%|████████▌ | 205/240 [11:41:49<2:02:56, 210.77s/it]                                                        85%|████████▌ | 205/240 [11:41:49<2:02:56, 210.77s/it] 86%|████████▌ | 206/240 [11:45:21<1:59:38, 211.14s/it]                                                        86%|████████▌ | 206/240 [11:45:21<1:59:38, 211.14s/it] 86%|████████▋ | 207/240 [11:48:58<1:57:06, 212.93s/it]                                                        86%|████████▋ | 207/240 [11:48:58<1:57:06, 212.93s/it] 87%|████████▋ | 208/240 [11:52:26<1:52:45, 211.43s/it]                                                        87%|████████▋ | 208/240 [11:52:26<1:52:45, 211.43s/it] 87%|████████▋ | 209/240 [11:55:55<1:48:49, 210.64s/it]                                                        87%|████████▋ | 209/240 [11:55:55<1:48:49, 210.64s/it] 88%|████████▊ | 210/240 [11:59:24<1:45:04, 210.16s/it]                                                        88%|████████▊ | 210/240 [11:59:24<1:45:04, 210.16s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 88%|████████▊ | 211/240 [12:02:56<1:41:50, 210.71s/it]                                                        88%|████████▊ | 211/240 [12:02:56<1:41:50, 210.71s/it] 88%|████████▊ | 212/240 [12:06:20<1:37:24, 208.72s/it]                                                        88%|████████▊ | 212/240 [12:06:20<1:37:24, 208.72s/it] 89%|████████▉ | 213/240 [12:09:47<1:33:42, 208.23s/it]                                                        89%|████████▉ | 213/240 [12:09:47<1:33:42, 208.23s/it] 89%|████████▉ | 214/240 [12:13:14<1:30:02, 207.78s/it]                                                        89%|████████▉ | 214/240 [12:13:14<1:30:02, 207.78s/it] 90%|████████▉ | 215/240 [12:16:51<1:27:47, 210.68s/it]                                                        90%|████████▉ | 215/240 [12:16:51<1:27:47, 210.68s/it] 90%|█████████ | 216/240 [12:18:33<1:11:12, 178.00s/it]                                                        90%|█████████ | 216/240 [12:18:33<1:11:12, 178.00s/it] 90%|█████████ | 217/240 [12:21:53<1:10:43, 184.52s/it]                                                        90%|█████████ | 217/240 [12:21:53<1:10:43, 184.52s/it] 91%|█████████ | 218/240 [12:25:27<1:10:56, 193.49s/it]                                                        91%|█████████ | 218/240 [12:25:27<1:10:56, 193.49s/it] 91%|█████████▏| 219/240 [12:28:57<1:09:24, 198.33s/it]                                                        91%|█████████▏| 219/240 [12:28:57<1:09:24, 198.33s/it] 92%|█████████▏| 220/240 [12:32:27<1:07:16, 201.82s/it]                                                        92%|█████████▏| 220/240 [12:32:27<1:07:16, 201.82s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 92%|█████████▏| 221/240 [12:35:59<1:04:51, 204.84s/it]                                                        92%|█████████▏| 221/240 [12:35:59<1:04:51, 204.84s/it] 92%|█████████▎| 222/240 [12:39:27<1:01:46, 205.89s/it]                                                        92%|█████████▎| 222/240 [12:39:27<1:01:46, 205.89s/it] 93%|█████████▎| 223/240 [12:42:50<58:03, 204.90s/it]                                                        93%|█████████▎| 223/240 [12:42:50<58:03, 204.90s/it] 93%|█████████▎| 224/240 [12:46:18<54:57, 206.06s/it]                                                      93%|█████████▎| 224/240 [12:46:18<54:57, 206.06s/it] 94%|█████████▍| 225/240 [12:49:48<51:45, 207.04s/it]                                                      94%|█████████▍| 225/240 [12:49:48<51:45, 207.04s/it] 94%|█████████▍| 226/240 [12:53:02<47:22, 203.05s/it]                                                      94%|█████████▍| 226/240 [12:53:02<47:22, 203.05s/it] 95%|█████████▍| 227/240 [12:56:28<44:13, 204.15s/it]                                                      95%|█████████▍| 227/240 [12:56:28<44:13, 204.15s/it] 95%|█████████▌| 228/240 [13:00:13<42:04, 210.38s/it]                                                      95%|█████████▌| 228/240 [13:00:13<42:04, 210.38s/it] 95%|█████████▌| 229/240 [13:04:00<39:27, 215.23s/it]                                                      95%|█████████▌| 229/240 [13:04:00<39:27, 215.23s/it] 96%|█████████▌| 230/240 [13:07:31<35:40, 214.05s/it]                                                      96%|█████████▌| 230/240 [13:07:31<35:40, 214.05s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 96%|█████████▋| 231/240 [13:11:11<32:21, 215.70s/it]                                                      96%|█████████▋| 231/240 [13:11:11<32:21, 215.70s/it] 97%|█████████▋| 232/240 [13:14:58<29:13, 219.21s/it]                                                      97%|█████████▋| 232/240 [13:14:58<29:13, 219.21s/it] 97%|█████████▋| 233/240 [13:18:21<25:00, 214.35s/it]                                                      97%|█████████▋| 233/240 [13:18:21<25:00, 214.35s/it] 98%|█████████▊| 234/240 [13:21:38<20:54, 209.03s/it]                                                      98%|█████████▊| 234/240 [13:21:38<20:54, 209.03s/it] 98%|█████████▊| 235/240 [13:25:03<17:19, 207.82s/it]                                                      98%|█████████▊| 235/240 [13:25:03<17:19, 207.82s/it] 98%|█████████▊| 236/240 [13:28:33<13:54, 208.74s/it]                                                      98%|█████████▊| 236/240 [13:28:33<13:54, 208.74s/it] 99%|█████████▉| 237/240 [13:32:19<10:41, 213.90s/it]                                                      99%|█████████▉| 237/240 [13:32:19<10:41, 213.90s/it] 99%|█████████▉| 238/240 [13:35:48<07:04, 212.17s/it]                                                      99%|█████████▉| 238/240 [13:35:48<07:04, 212.17s/it]100%|█████████▉| 239/240 [13:39:10<03:29, 209.35s/it]                                                     {'loss': 105.1936, 'grad_norm': 78.43675231933594, 'learning_rate': 0.00034166666666666666, 'epoch': 6.64}
+{'loss': 108.0206, 'grad_norm': 74.31092071533203, 'learning_rate': 0.0003375, 'epoch': 6.68}
+{'loss': 104.6781, 'grad_norm': 74.97591400146484, 'learning_rate': 0.0003333333333333333, 'epoch': 6.72}
+{'loss': 103.9674, 'grad_norm': 77.15870666503906, 'learning_rate': 0.0003291666666666667, 'epoch': 6.77}
+{'loss': 107.5576, 'grad_norm': 81.03116607666016, 'learning_rate': 0.00032500000000000004, 'epoch': 6.81}
+{'loss': 109.9117, 'grad_norm': 81.28807830810547, 'learning_rate': 0.00032083333333333334, 'epoch': 6.85}
+{'loss': 107.8142, 'grad_norm': 74.84406280517578, 'learning_rate': 0.00031666666666666665, 'epoch': 6.89}
+{'loss': 108.1514, 'grad_norm': 79.21627044677734, 'learning_rate': 0.0003125, 'epoch': 6.94}
+{'loss': 107.1601, 'grad_norm': 76.96986389160156, 'learning_rate': 0.00030833333333333337, 'epoch': 6.98}
+{'loss': 48.484, 'grad_norm': 49.545265197753906, 'learning_rate': 0.00030416666666666667, 'epoch': 7.0}
+{'loss': 97.5951, 'grad_norm': 76.23419189453125, 'learning_rate': 0.0003, 'epoch': 7.04}
+{'loss': 93.9549, 'grad_norm': 70.95341491699219, 'learning_rate': 0.00029583333333333333, 'epoch': 7.09}
+{'loss': 94.2856, 'grad_norm': 70.68684387207031, 'learning_rate': 0.0002916666666666667, 'epoch': 7.13}
+{'loss': 95.8139, 'grad_norm': 83.61857604980469, 'learning_rate': 0.0002875, 'epoch': 7.17}
+{'loss': 96.4552, 'grad_norm': 92.27066802978516, 'learning_rate': 0.00028333333333333335, 'epoch': 7.21}
+{'loss': 94.0289, 'grad_norm': 92.10758972167969, 'learning_rate': 0.00027916666666666666, 'epoch': 7.26}
+{'loss': 93.6396, 'grad_norm': 89.13982391357422, 'learning_rate': 0.000275, 'epoch': 7.3}
+{'loss': 95.1313, 'grad_norm': 84.52967834472656, 'learning_rate': 0.0002708333333333333, 'epoch': 7.34}
+{'loss': 95.1561, 'grad_norm': 79.44483184814453, 'learning_rate': 0.0002666666666666667, 'epoch': 7.38}
+{'loss': 94.9699, 'grad_norm': 76.82380676269531, 'learning_rate': 0.00026250000000000004, 'epoch': 7.43}
+{'loss': 95.0564, 'grad_norm': 78.69596099853516, 'learning_rate': 0.00025833333333333334, 'epoch': 7.47}
+{'loss': 96.1684, 'grad_norm': 79.99810791015625, 'learning_rate': 0.00025416666666666665, 'epoch': 7.51}
+{'loss': 94.5008, 'grad_norm': 74.32085418701172, 'learning_rate': 0.00025, 'epoch': 7.55}
+{'loss': 95.9242, 'grad_norm': 76.48716735839844, 'learning_rate': 0.0002458333333333333, 'epoch': 7.6}
+{'loss': 95.6817, 'grad_norm': 79.05538177490234, 'learning_rate': 0.00024166666666666667, 'epoch': 7.64}
+{'loss': 98.6033, 'grad_norm': 82.20816040039062, 'learning_rate': 0.0002375, 'epoch': 7.68}
+{'loss': 95.9688, 'grad_norm': 79.78828430175781, 'learning_rate': 0.00023333333333333333, 'epoch': 7.72}
+{'loss': 98.3782, 'grad_norm': 82.38282775878906, 'learning_rate': 0.00022916666666666666, 'epoch': 7.77}
+{'loss': 98.4869, 'grad_norm': 83.1513671875, 'learning_rate': 0.00022500000000000002, 'epoch': 7.81}
+{'loss': 96.4952, 'grad_norm': 79.05101013183594, 'learning_rate': 0.00022083333333333333, 'epoch': 7.85}
+{'loss': 95.5221, 'grad_norm': 76.92221069335938, 'learning_rate': 0.00021666666666666668, 'epoch': 7.89}
+{'loss': 97.3008, 'grad_norm': 78.6703109741211, 'learning_rate': 0.0002125, 'epoch': 7.94}
+{'loss': 95.3168, 'grad_norm': 76.71238708496094, 'learning_rate': 0.00020833333333333335, 'epoch': 7.98}
+{'loss': 44.4259, 'grad_norm': 51.4311637878418, 'learning_rate': 0.00020416666666666668, 'epoch': 8.0}
+{'loss': 87.7755, 'grad_norm': 72.45502471923828, 'learning_rate': 0.0002, 'epoch': 8.04}
+{'loss': 88.5945, 'grad_norm': 69.92435455322266, 'learning_rate': 0.00019583333333333334, 'epoch': 8.09}
+{'loss': 85.5866, 'grad_norm': 68.67440795898438, 'learning_rate': 0.00019166666666666667, 'epoch': 8.13}
+{'loss': 87.4626, 'grad_norm': 72.41033172607422, 'learning_rate': 0.0001875, 'epoch': 8.17}
+{'loss': 88.028, 'grad_norm': 81.34256744384766, 'learning_rate': 0.00018333333333333334, 'epoch': 8.21}
+{'loss': 87.6004, 'grad_norm': 86.43525695800781, 'learning_rate': 0.00017916666666666667, 'epoch': 8.26}
+{'loss': 86.8025, 'grad_norm': 86.04486083984375, 'learning_rate': 0.000175, 'epoch': 8.3}
+{'loss': 85.5407, 'grad_norm': 82.51946258544922, 'learning_rate': 0.00017083333333333333, 'epoch': 8.34}
+{'loss': 85.9074, 'grad_norm': 88.7356185913086, 'learning_rate': 0.00016666666666666666, 'epoch': 8.38}
+{'loss': 88.0182, 'grad_norm': 83.67738342285156, 'learning_rate': 0.00016250000000000002, 'epoch': 8.43}
+{'loss': 88.2883, 'grad_norm': 82.15803527832031, 'learning_rate': 0.00015833333333333332, 'epoch': 8.47}
+{'loss': 85.2063, 'grad_norm': 78.31205749511719, 'learning_rate': 0.00015416666666666668, 'epoch': 8.51}
+{'loss': 87.8361, 'grad_norm': 79.24793243408203, 'learning_rate': 0.00015, 'epoch': 8.55}
+{'loss': 86.0432, 'grad_norm': 76.11604309082031, 'learning_rate': 0.00014583333333333335, 'epoch': 8.6}
+{'loss': 88.9708, 'grad_norm': 73.83576965332031, 'learning_rate': 0.00014166666666666668, 'epoch': 8.64}
+{'loss': 86.9205, 'grad_norm': 76.68163299560547, 'learning_rate': 0.0001375, 'epoch': 8.68}
+{'loss': 87.9643, 'grad_norm': 81.75442504882812, 'learning_rate': 0.00013333333333333334, 'epoch': 8.72}
+{'loss': 86.7248, 'grad_norm': 78.6181869506836, 'learning_rate': 0.00012916666666666667, 'epoch': 8.77}
+{'loss': 87.3109, 'grad_norm': 80.01227569580078, 'learning_rate': 0.000125, 'epoch': 8.81}
+{'loss': 87.958, 'grad_norm': 80.67642211914062, 'learning_rate': 0.00012083333333333333, 'epoch': 8.85}
+{'loss': 87.4682, 'grad_norm': 78.66899871826172, 'learning_rate': 0.00011666666666666667, 'epoch': 8.89}
+{'loss': 88.5724, 'grad_norm': 79.29528045654297, 'learning_rate': 0.00011250000000000001, 'epoch': 8.94}
+{'loss': 86.5873, 'grad_norm': 77.10713195800781, 'learning_rate': 0.00010833333333333334, 'epoch': 8.98}
+{'loss': 40.0992, 'grad_norm': 50.871421813964844, 'learning_rate': 0.00010416666666666667, 'epoch': 9.0}
+{'loss': 80.9311, 'grad_norm': 74.01333618164062, 'learning_rate': 0.0001, 'epoch': 9.04}
+{'loss': 81.8562, 'grad_norm': 69.76747131347656, 'learning_rate': 9.583333333333334e-05, 'epoch': 9.09}
+{'loss': 80.9587, 'grad_norm': 68.74467468261719, 'learning_rate': 9.166666666666667e-05, 'epoch': 9.13}
+{'loss': 79.7981, 'grad_norm': 69.89186096191406, 'learning_rate': 8.75e-05, 'epoch': 9.17}
+{'loss': 80.7212, 'grad_norm': 73.29533386230469, 'learning_rate': 8.333333333333333e-05, 'epoch': 9.21}
+{'loss': 81.9677, 'grad_norm': 79.439697265625, 'learning_rate': 7.916666666666666e-05, 'epoch': 9.26}
+{'loss': 80.3914, 'grad_norm': 76.79014587402344, 'learning_rate': 7.5e-05, 'epoch': 9.3}
+{'loss': 81.4035, 'grad_norm': 81.48876953125, 'learning_rate': 7.083333333333334e-05, 'epoch': 9.34}
+{'loss': 80.7806, 'grad_norm': 78.27213287353516, 'learning_rate': 6.666666666666667e-05, 'epoch': 9.38}
+{'loss': 81.946, 'grad_norm': 76.8366928100586, 'learning_rate': 6.25e-05, 'epoch': 9.43}
+{'loss': 82.1793, 'grad_norm': 82.11837768554688, 'learning_rate': 5.833333333333333e-05, 'epoch': 9.47}
+{'loss': 81.4513, 'grad_norm': 75.29122161865234, 'learning_rate': 5.416666666666667e-05, 'epoch': 9.51}
+{'loss': 80.123, 'grad_norm': 74.86072540283203, 'learning_rate': 5e-05, 'epoch': 9.55}
+{'loss': 80.1301, 'grad_norm': 76.5869140625, 'learning_rate': 4.5833333333333334e-05, 'epoch': 9.6}
+{'loss': 80.566, 'grad_norm': 77.75318145751953, 'learning_rate': 4.1666666666666665e-05, 'epoch': 9.64}
+{'loss': 81.5205, 'grad_norm': 76.31877899169922, 'learning_rate': 3.75e-05, 'epoch': 9.68}
+{'loss': 81.3194, 'grad_norm': 78.17962646484375, 'learning_rate': 3.3333333333333335e-05, 'epoch': 9.72}
+{'loss': 81.3065, 'grad_norm': 77.27986145019531, 'learning_rate': 2.9166666666666666e-05, 'epoch': 9.77}
+{'loss': 82.7391, 'grad_norm': 77.25812530517578, 'learning_rate': 2.5e-05, 'epoch': 9.81}
+{'loss': 81.4851, 'grad_norm': 74.61309814453125, 'learning_rate': 2.0833333333333333e-05, 'epoch': 9.85}
+{'loss': 81.3349, 'grad_norm': 71.97006225585938, 'learning_rate': 1.6666666666666667e-05, 'epoch': 9.89}
+{'loss': 82.6296, 'grad_norm': 73.75933837890625, 'learning_rate': 1.25e-05, 'epoch': 9.94}
+100%|█████████▉| 239/240 [13:39:10<03:29, 209.35s/it]100%|██████████| 240/240 [13:40:46<00:00, 175.28s/it]                                                     100%|██████████| 240/240 [13:40:46<00:00, 175.28s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+                                                     100%|██████████| 240/240 [13:40:48<00:00, 175.28s/it]100%|██████████| 240/240 [13:40:48<00:00, 205.20s/it]
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+{'loss': 81.2625, 'grad_norm': 71.1736068725586, 'learning_rate': 8.333333333333334e-06, 'epoch': 9.98}
+{'loss': 37.935, 'grad_norm': 50.93613052368164, 'learning_rate': 4.166666666666667e-06, 'epoch': 10.0}
+{'train_runtime': 49248.4234, 'train_samples_per_second': 2.439, 'train_steps_per_second': 0.005, 'train_loss': 143.6567573706309, 'epoch': 10.0}
+[listed] saved /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_soft_mix_full/listed/adapter
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[eval] /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_soft_mix_full/listed/adapter EM=0.8958 n=96
+
+=== listed vs original GRIP ===
+{
+  "input_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json",
+  "s1_adapter": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter",
+  "model_name": "qwen-7b",
+  "lambda_candidate": 1.0,
+  "b1": {
+    "all": {
+      "count": 96,
+      "em": 0.8645833333333334
+    },
+    "wrong_in_list": 10,
+    "wrong_out_of_list": 3,
+    "test": {
+      "count": 64,
+      "em": 0.859375
+    },
+    "validation": {
+      "count": 32,
+      "em": 0.875
+    }
+  },
+  "listed": {
+    "all": {
+      "count": 96,
+      "em": 0.8958333333333334
+    },
+    "candidate_valid_rate": 0.96875,
+    "candidate_invalid": 3,
+    "wrong_in_list": 7,
+    "wrong_out_of_list": 3,
+    "test": {
+      "count": 64,
+      "em": 0.859375
+    },
+    "validation": {
+      "count": 32,
+      "em": 0.96875
+    }
+  },
+  "listed_minus_b1_em": 0.03125,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke",
+    "copied_at_utc": "2026-09-29T09:07:50+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Listed is this run. B1 is the frozen generation-only adapter from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke (lambda=0 never used InfoNCE negatives). A method result requires listed EM > B1 on generation."
+}
+[launch] variant=soft_mix finished exit=0 2026-09-29T22:50:01+00:00
+[attach] froze B1 summaries from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke into /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_soft_mix_full/b1
+
+=== listed vs original GRIP ===
+{
+  "input_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json",
+  "s1_adapter": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter",
+  "model_name": "qwen-7b",
+  "lambda_candidate": 1.0,
+  "b1": {
+    "all": {
+      "count": 96,
+      "em": 0.8645833333333334
+    },
+    "wrong_in_list": 10,
+    "wrong_out_of_list": 3,
+    "test": {
+      "count": 64,
+      "em": 0.859375
+    },
+    "validation": {
+      "count": 32,
+      "em": 0.875
+    }
+  },
+  "listed": {
+    "all": {
+      "count": 96,
+      "em": 0.8958333333333334
+    },
+    "candidate_valid_rate": 0.96875,
+    "candidate_invalid": 3,
+    "wrong_in_list": 7,
+    "wrong_out_of_list": 3,
+    "test": {
+      "count": 64,
+      "em": 0.859375
+    },
+    "validation": {
+      "count": 32,
+      "em": 0.96875
+    }
+  },
+  "listed_minus_b1_em": 0.03125,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke",
+    "copied_at_utc": "2026-09-29T22:50:01+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Listed is this run. B1 is the frozen generation-only adapter from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke (lambda=0 never used InfoNCE negatives). A method result requires listed EM > B1 on generation."
+}
+[compare] wrote /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_soft_mix_full/comparison.json
