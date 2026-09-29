@@ -140,6 +140,12 @@ bash configs/run_wire_shared_pool_samplers.sh
 TMUX_SESSION=shared-pool-random-k-full-20260926 \
   bash configs/run_shared_pool_random_k_full.sh
 
+# freeze Soft-Mix / Calibrated from the same dump without overwriting the
+# control manifests. Then train Soft-Mix, then Calibrated, one GPU at a time.
+SKIP_TMUX=1 bash configs/run_freeze_mixture_samplers.sh
+TMUX_SESSION=shared-pool-mixture-full-20260929 \
+  bash configs/run_shared_pool_mixture_full.sh
+
 
 # CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)
 # MIN_SUPPORT filters figures only; relation_pair_statistics.csv stays complete.

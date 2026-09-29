@@ -44,8 +44,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--variants",
         nargs="+",
-        default=list(SAMPLER_VARIANTS),
-        help="Subset of random_k / top_k_hard / coverage_adaptive_k.",
+        default=None,
+        help="Subset of random_k / top_k_hard / coverage_adaptive_k / soft_mix / calibrated.",
     )
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
@@ -53,18 +53,23 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    unknown = [name for name in args.variants if name not in SAMPLER_VARIANTS]
+    requested = args.variants or [
+        name for name in SAMPLER_VARIANTS if (args.sampler_dir / f"{name}.jsonl").is_file()
+    ]
+    if not requested:
+        raise ValueError(f"no sampler manifests found under {args.sampler_dir}")
+    unknown = [name for name in requested if name not in SAMPLER_VARIANTS]
     if unknown:
         raise ValueError(f"unknown sampler variants: {unknown}")
     payload = verify_listed_manifest_wiring(
         task_path=args.task_file,
         manifest_paths={
-            variant: args.sampler_dir / f"{variant}.jsonl" for variant in args.variants
+            variant: args.sampler_dir / f"{variant}.jsonl" for variant in requested
         },
         raw_dir=args.raw_dir,
         expected_n=args.expected_n,
         expected_listed=args.expected_listed,
-        variants=tuple(args.variants),
+        variants=tuple(requested),
     )
     compact = compact_wiring_payload(payload)
     if args.output is not None:

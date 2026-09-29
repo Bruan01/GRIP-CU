@@ -271,6 +271,12 @@ def load_score_hard_manifest(path: Path) -> dict[str, dict]:
             row["hard_negative_relations"] = [str(rel) for rel in hard]
             row["uniform_negative_relations"] = [str(rel) for rel in uniform]
             row["negative_relations"] = [str(rel) for rel in negatives]
+            if "lambda_candidate" in row and row["lambda_candidate"] is not None:
+                row["lambda_candidate"] = float(row["lambda_candidate"])
+                if row["lambda_candidate"] < 0:
+                    raise ValueError(
+                        f"{path}:{line_number}: lambda_candidate must be non-negative"
+                    )
             rows[question_id] = row
     if not rows:
         raise ValueError(f"{path} contains no manifest rows")
@@ -344,6 +350,11 @@ def normalize_manifest_row(
         raise ValueError(f"manifest contains an empty negative for {question_id!r}")
     if gold in negatives or len(negatives) != len(set(negatives)):
         raise ValueError(f"manifest contains gold/duplicate negative for {question_id!r}")
+    if "lambda_candidate" in row and row["lambda_candidate"] is not None:
+        weight = float(row["lambda_candidate"])
+        if weight < 0:
+            raise ValueError(f"manifest lambda_candidate is negative for {question_id!r}")
+        row["lambda_candidate"] = weight
     return negatives
 
 def build_qa_assets_from_task_texts(
@@ -417,6 +428,7 @@ def build_qa_assets_from_task_texts(
         question_id = resolved_ids[index]
         gold = assistant_gold(text)
         listed: list[str] = []
+        lambda_candidate = None
         matched = match_train_relation(gold, alias_index) if use_train_graph else None
         if is_relation_gold(gold, text):
             if listed_negative_source in {"score_hard", "rollout_hard"}:
@@ -433,6 +445,8 @@ def build_qa_assets_from_task_texts(
                         relation_order=relation_order or [],
                         allow_out_of_vocab=listed_negative_source == "rollout_hard",
                     )
+                    if row.get("lambda_candidate") is not None:
+                        lambda_candidate = float(row["lambda_candidate"])
             elif listed_negative_source == "embed_sim":
                 if matched is not None and neighbor_index is not None:
                     listed = neighbor_index.sample(
@@ -466,6 +480,7 @@ def build_qa_assets_from_task_texts(
                 "prefix_text": assistant_answer_prefix(text),
                 "listed_negative_source": listed_negative_source,
                 "matched_train_relation": matched,
+                "lambda_candidate": lambda_candidate,
             }
         )
     if listed_negative_source in {"score_hard", "rollout_hard"}:

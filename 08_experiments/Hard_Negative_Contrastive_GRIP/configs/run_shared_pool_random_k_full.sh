@@ -8,7 +8,7 @@
 # Eval stays on the aligned 32/64 smoke split so this run is comparable to H.
 #
 # Do not rescore 3253x198. Top-K Hard / Coverage-Adaptive K stay frozen until
-# Random-K has a real budget.
+# Random-K has a real budget. Soft-Mix / Calibrated use a later mixture freeze.
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -32,9 +32,9 @@ if [[ "$VARIANT" != "random_k" && "${ALLOW_NON_RANDOM:-0}" != "1" ]]; then
   exit 1
 fi
 case "$VARIANT" in
-  random_k|top_k_hard|coverage_adaptive_k) ;;
+  random_k|top_k_hard|coverage_adaptive_k|soft_mix|calibrated) ;;
   *)
-    echo "error: VARIANT must be random_k, top_k_hard, or coverage_adaptive_k" >&2
+    echo "error: VARIANT must be random_k, top_k_hard, coverage_adaptive_k, soft_mix, or calibrated" >&2
     exit 1
     ;;
 esac
@@ -112,7 +112,7 @@ log() {
   echo "seed=$SEED"
   echo "tmux_session=$TMUX_SESSION"
   echo "listed_negative_source=score_hard"
-  echo "note=full paper-task Random-K listed train on frozen train-only manifests; not 64-QA / 10-step"
+  echo "note=full paper-task listed train on frozen train-only manifests; not 64-QA / 10-step"
   date --iso-8601=seconds
   "$PYTHON" -c "import torch; print('cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
   echo -n "manifest_${VARIANT}_sha256="

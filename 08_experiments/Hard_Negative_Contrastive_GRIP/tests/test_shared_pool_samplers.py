@@ -9,15 +9,19 @@ sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
 
 from hard_negative_grip.offline_scoring import build_qa_score_rows  # noqa: E402
 from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
+    MIXTURE_SAMPLER_VARIANTS,
     assert_score_hard_listed_training_budget,
+    clip_calibrated_lambda,
     decide_coverage_k,
     freeze_shared_pool_samplers,
     listed_update_budget,
+    mixture_probabilities,
     propose_coverage_tau,
     rank_valid_pool,
     refuse_underfit_listed_budget,
     sample_qa_variants,
     sample_random_k,
+    sample_soft_mix,
     sample_top_k,
     shared_valid_pool,
 )
@@ -190,6 +194,89 @@ def test_coverage_adaptive_k_follows_per_qa_mass_not_fixed_nine() -> None:
     assert sampled["coverage_adaptive_k"]["covered_negative_mass"] >= tau - 1e-12
 
 
+def test_soft_mix_keeps_six_uniform_and_three_mixture() -> None:
+    rows = _rows(
+        qa_id="task_qa:0",
+        scores={
+            "concept:gold": -0.10,
+            "concept:hard": -0.11,
+            "concept:mid": -0.80,
+            "concept:easy": -2.00,
+            "concept:other": -1.50,
+            "concept:a": -1.20,
+            "concept:b": -1.40,
+            "concept:c": -1.70,
+            "concept:d": -2.20,
+            "concept:e": -2.50,
+            "concept:f": -3.00,
+        },
+    )
+    sampled = sample_qa_variants(
+        rows,
+        k_fixed=9,
+        tau=0.5,
+        k_min=1,
+        k_max=9,
+        rng=random.Random(2026),
+        seed=2026,
+        k_uniform=6,
+        k_soft=3,
+        rho=0.33,
+    )
+    mix = sampled["soft_mix"]
+    calibrated = sampled["calibrated"]
+    assert mix["k_uniform"] == 6
+    assert mix["k_soft"] == 3
+    assert mix["k"] == 9
+    assert mix["negative_relations"] == (
+        mix["hard_negative_relations"] + mix["uniform_negative_relations"]
+    )
+    assert mix["negative_relations"] == calibrated["negative_relations"]
+    assert mix["lambda_candidate"] == 1.0
+    assert calibrated["lambda_candidate"] == sampled["per_qa"]["lambda_q"]
+    assert 0.25 <= calibrated["lambda_candidate"] <= 1.0
+    assert "concept:gold" not in mix["negative_relations"]
+    assert len(set(mix["negative_relations"])) == 9
+
+
+def test_mixture_probabilities_interpolate_uniform_and_mass() -> None:
+    masses = [0.8, 0.2]
+    uniform = mixture_probabilities(masses, rho=0.0)
+    mass_only = mixture_probabilities(masses, rho=1.0)
+    mixed = mixture_probabilities(masses, rho=0.5)
+    assert uniform == [0.5, 0.5]
+    assert mass_only == [0.8, 0.2]
+    assert abs(mixed[0] - 0.65) < 1e-12
+    assert abs(sum(mixed) - 1.0) < 1e-12
+
+
+def test_clip_calibrated_lambda_lowers_concentrated_questions() -> None:
+    mild = clip_calibrated_lambda(0.10, lambda_0=1.0, lambda_min=0.25, beta=0.5)
+    hard = clip_calibrated_lambda(0.90, lambda_0=1.0, lambda_min=0.25, beta=0.5)
+    assert abs(mild - 0.95) < 1e-12
+    assert abs(hard - 0.55) < 1e-12
+    floor = clip_calibrated_lambda(2.0, lambda_0=1.0, lambda_min=0.25, beta=0.5)
+    assert abs(floor - 0.25) < 1e-12
+
+
+def test_sample_soft_mix_is_without_replacement() -> None:
+    pool = [
+        {"candidate_relation": f"r{i}", "candidate_score": -float(i), "negative_mass": 0.1 * (i + 1)}
+        for i in range(12)
+    ]
+    uniform, soft = sample_soft_mix(
+        pool,
+        k_uniform=6,
+        k_soft=3,
+        rho=0.33,
+        rng=random.Random(2026),
+    )
+    names = [row["candidate_relation"] for row in [*uniform, *soft]]
+    assert len(names) == len(set(names)) == 9
+    assert len(uniform) == 6
+    assert len(soft) == 3
+
+
 def test_coverage_tau_is_median_top9_mass() -> None:
     masses = [0.10, 0.20, 0.30, 0.40, 0.50]
     assert abs(propose_coverage_tau(masses) - 0.30) < 1e-12
@@ -260,6 +347,63 @@ def test_freeze_writes_three_shared_pool_manifests(tmp_path: Path) -> None:
     assert "Training protocol" in report
     assert "Do not train" in report
     assert "12014 QA" in report
+
+
+def test_freeze_writes_mixture_manifests_without_controls(tmp_path: Path) -> None:
+    scores_path = tmp_path / "candidate_scores.jsonl"
+    metadata_path = tmp_path / "metadata.json"
+    output_dir = tmp_path / "mixture"
+    groups = [
+        _rows(
+            qa_id="task_qa:0",
+            scores={
+                "concept:gold": -0.2,
+                "concept:hard": -0.3,
+                "concept:mid": -0.8,
+                "concept:easy": -2.0,
+                "concept:other": -1.5,
+                "concept:a": -1.1,
+                "concept:b": -1.3,
+                "concept:c": -1.6,
+                "concept:d": -1.9,
+                "concept:e": -2.4,
+            },
+        )
+    ]
+    with scores_path.open("w", encoding="utf-8") as stream:
+        for group in groups:
+            for row in group:
+                stream.write(json.dumps(row) + "\n")
+    metadata_path.write_text(json.dumps({"filter_splits": ["train"]}), encoding="utf-8")
+    summary = freeze_shared_pool_samplers(
+        scores_path=scores_path,
+        output_dir=output_dir,
+        metadata_path=metadata_path,
+        k_fixed=9,
+        k_min=1,
+        k_max=9,
+        seed=2026,
+        variants=MIXTURE_SAMPLER_VARIANTS,
+    )
+    assert summary["variants"] == ["soft_mix", "calibrated"]
+    assert summary["training_protocol"]["next_variant"] == "soft_mix"
+    assert not (output_dir / "random_k.jsonl").exists()
+    mix_rows = [
+        json.loads(line)
+        for line in (output_dir / "soft_mix.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    calibrated_rows = [
+        json.loads(line)
+        for line in (output_dir / "calibrated.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert mix_rows[0]["negative_relations"] == calibrated_rows[0]["negative_relations"]
+    assert mix_rows[0]["lambda_candidate"] == 1.0
+    assert calibrated_rows[0]["lambda_candidate"] < mix_rows[0]["lambda_candidate"] or abs(
+        calibrated_rows[0]["lambda_candidate"] - 1.0
+    ) < 1e-12
+    report = (output_dir / "FROZEN_SAMPLERS.md").read_text(encoding="utf-8")
+    assert "Soft-Mix" in report
+    assert "Calibrated" in report
 
 
 def test_freeze_rejects_all_split_dump(tmp_path: Path) -> None:

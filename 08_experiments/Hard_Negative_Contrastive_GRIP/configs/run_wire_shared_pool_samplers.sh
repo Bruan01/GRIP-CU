@@ -14,14 +14,33 @@ RAW_DIR="${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
 SAMPLER_DIR="${SAMPLER_DIR:-$HNG/results/runs/20260926_shared_pool_samplers}"
 OUTPUT_DIR="${OUTPUT_DIR:-$SAMPLER_DIR/wired_full}"
 EXPECTED_LISTED="${EXPECTED_LISTED:-3253}"
+VARIANTS="${VARIANTS:-}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2
   exit 1
 fi
-for required in "$INPUT_FILE" "$RAW_DIR/train.txt" "$SAMPLER_DIR/policy.json" "$SAMPLER_DIR/random_k.jsonl"; do
-  if [[ ! -e "$required" ]]; then
-    echo "error: missing required path: $required" >&2
+required=("$INPUT_FILE" "$RAW_DIR/train.txt" "$SAMPLER_DIR/policy.json")
+if [[ -n "$VARIANTS" ]]; then
+  read -r -a VARIANT_LIST <<< "$VARIANTS"
+else
+  VARIANT_LIST=()
+  for candidate in random_k top_k_hard coverage_adaptive_k soft_mix calibrated; do
+    if [[ -f "$SAMPLER_DIR/${candidate}.jsonl" ]]; then
+      VARIANT_LIST+=("$candidate")
+    fi
+  done
+fi
+if [[ "${#VARIANT_LIST[@]}" -eq 0 ]]; then
+  echo "error: no sampler manifests found under $SAMPLER_DIR" >&2
+  exit 1
+fi
+for variant in "${VARIANT_LIST[@]}"; do
+  required+=("$SAMPLER_DIR/${variant}.jsonl")
+done
+for required_path in "${required[@]}"; do
+  if [[ ! -e "$required_path" ]]; then
+    echo "error: missing required path: $required_path" >&2
     exit 1
   fi
 done
@@ -41,6 +60,7 @@ LOG="$OUTPUT_DIR/run.log"
     --sampler_dir "$SAMPLER_DIR" \
     --raw_dir "$RAW_DIR" \
     --expected_listed "$EXPECTED_LISTED" \
+    --variants "${VARIANT_LIST[@]}" \
     --output "$OUTPUT_DIR/wiring.json"
   echo "[wire] finished $(date --iso-8601=seconds)"
 } | tee "$LOG"

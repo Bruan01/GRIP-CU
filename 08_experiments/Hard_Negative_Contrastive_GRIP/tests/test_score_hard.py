@@ -103,6 +103,29 @@ def test_score_hard_manifest_attaches_listed_negatives(tmp_path: Path) -> None:
     assert texts[0].endswith("<answer>concept:gold</answer>")
     assert metas[0]["listed_relations"] == ["concept:hard", "concept:uniform"]
     assert metas[0]["question_id"] == "task_qa:0"
+    assert metas[0]["lambda_candidate"] is None
+
+
+def test_score_hard_manifest_keeps_per_qa_lambda(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.jsonl"
+    row = {
+        "question_id": "task_qa:0",
+        "positive_relation": "concept:gold",
+        "hard_negative_relations": ["concept:hard"],
+        "uniform_negative_relations": ["concept:uniform"],
+        "negative_relations": ["concept:hard", "concept:uniform"],
+        "lambda_candidate": 0.55,
+    }
+    manifest.write_text(json.dumps(row) + "\n", encoding="utf-8")
+    loaded = load_score_hard_manifest(manifest)
+    _, metas = build_qa_assets_from_task_texts(
+        [_qa("What is the relation between a and b?", "concept:gold")],
+        seed=2026,
+        listed_negative_source="score_hard",
+        relation_order=["concept:gold", "concept:hard", "concept:uniform"],
+        score_hard_manifest=loaded,
+    )
+    assert metas[0]["lambda_candidate"] == 0.55
 
 
 def test_question_entity_pair_strips_word_node_prefix() -> None:

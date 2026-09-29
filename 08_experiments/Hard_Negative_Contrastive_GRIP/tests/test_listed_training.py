@@ -88,6 +88,7 @@ def test_listed_qa_dataset_keeps_the_decision_set() -> None:
     assert item["prefix_ids"] == [len("PRE<answer>"), 7, 8]
     assert len(item["relation_ids"]) == 3
     assert item["relation_ids"][0] == [len("likes"), 7, 8]
+    assert item["lambda_candidate"] is None
 
 
 def test_listed_qa_dataset_accepts_variable_negative_k() -> None:
@@ -125,6 +126,7 @@ def test_listed_collator_does_not_tensorize_prompt_lists() -> None:
                 "prefix_text": "PRE<answer>",
                 "prefix_ids": [9, 7, 8],
                 "relation_ids": [[4, 7, 8], [1, 7, 8], [1, 7, 8]],
+                "lambda_candidate": 0.5,
             },
             {
                 "input_ids": [3, 4],
@@ -133,6 +135,7 @@ def test_listed_collator_does_not_tensorize_prompt_lists() -> None:
                 "prefix_text": "PRE2<answer>",
                 "prefix_ids": [10, 7, 8],
                 "relation_ids": [],
+                "lambda_candidate": None,
             },
         ]
     )
@@ -142,6 +145,7 @@ def test_listed_collator_does_not_tensorize_prompt_lists() -> None:
     assert batch["prefix_text"] == ["PRE<answer>", "PRE2<answer>"]
     assert batch["prefix_ids"] == [[9, 7, 8], [10, 7, 8]]
     assert batch["relation_ids"][0][0] == [4, 7, 8]
+    assert batch["lambda_candidate"] == [0.5, None]
     for key in EXTRA_KEYS:
         assert key in batch
 
@@ -193,6 +197,31 @@ def test_listed_candidates_are_scored_in_one_forward() -> None:
     assert trainer.candidate_forwards == 2
     assert scores.shape == (2,)
     assert scores[0] > scores[1] - 1e-5
+
+
+def test_batch_lambda_uses_per_qa_weights_and_global_fallback() -> None:
+    trainer = ListedContrastiveTrainer.__new__(ListedContrastiveTrainer)
+    trainer.lambda_candidate = 1.0
+    weights = trainer._batch_lambda([0.25, None], 2, torch.device("cpu"))
+    assert weights.tolist() == [0.25, 1.0]
+    fallback = trainer._batch_lambda(None, 2, torch.device("cpu"))
+    assert fallback.tolist() == [1.0, 1.0]
+
+
+def test_listed_qa_dataset_keeps_per_qa_lambda() -> None:
+    dataset = ListedQADataset(
+        ["hello world"],
+        [
+            {
+                "listed_relations": ["visits", "owns"],
+                "positive_relation": "likes",
+                "prefix_text": "PRE<answer>",
+                "lambda_candidate": 0.55,
+            }
+        ],
+        _FakeEncodeTokenizer(),
+    )
+    assert dataset[0]["lambda_candidate"] == 0.55
 
 
 def test_pick_closed_set_answer_uses_argmax_and_prompt_order_ties() -> None:

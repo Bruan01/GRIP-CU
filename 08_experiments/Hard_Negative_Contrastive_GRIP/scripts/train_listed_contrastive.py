@@ -504,7 +504,9 @@ def train_stage2(
     print(
         f"[{variant}] qa samples: {len(dataset)} listed_mean="
         f"{sum(len(m['listed_relations']) for m in metas) / len(metas):.1f} "
-        f"lambda={lambda_candidate} batch={stage_args.per_device_train_batch_size} "
+        f"lambda={lambda_candidate} "
+        f"per_qa_lambda={sum(1 for meta in metas if meta.get('lambda_candidate') is not None)} "
+        f"batch={stage_args.per_device_train_batch_size} "
         f"accum={stage_args.gradient_accumulation_steps}",
         flush=True,
     )
@@ -554,6 +556,7 @@ def train_stage2(
             "candidate_forwards": trainer.candidate_forwards,
             "last_generation_loss": trainer.last_generation_loss,
             "last_candidate_loss": trainer.last_candidate_loss,
+            "last_lambda_candidate": trainer.last_lambda_candidate,
             "per_device_train_batch_size": stage_args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
             "gradient_checkpointing": use_checkpointing,

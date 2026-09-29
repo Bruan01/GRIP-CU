@@ -29,6 +29,7 @@ EXTRA_KEYS = (
     "prefix_text",
     "prefix_ids",
     "relation_ids",
+    "lambda_candidate",
 )
 
 
@@ -113,6 +114,7 @@ class ListedQADataset(torch.utils.data.Dataset):
             prefix_ids = encode_without_specials(tokenizer, prefix)
             relation_ids = [encode_without_specials(tokenizer, positive)]
             relation_ids.extend(encode_without_specials(tokenizer, rel) for rel in listed)
+        weight = meta.get("lambda_candidate")
         return {
             "input_ids": list(encoded["input_ids"]),
             "attention_mask": list(encoded["attention_mask"]),
@@ -121,6 +123,7 @@ class ListedQADataset(torch.utils.data.Dataset):
             "prefix_text": prefix,
             "prefix_ids": prefix_ids,
             "relation_ids": relation_ids,
+            "lambda_candidate": None if weight is None else float(weight),
         }
 
     def __len__(self) -> int:
@@ -136,6 +139,7 @@ class ListedQADataset(torch.utils.data.Dataset):
             "prefix_text": item["prefix_text"],
             "prefix_ids": list(item["prefix_ids"]),
             "relation_ids": [list(row) for row in item["relation_ids"]],
+            "lambda_candidate": item.get("lambda_candidate"),
         }
 
 
@@ -165,6 +169,24 @@ class ListedContrastiveTrainer(Trainer):
         self.memory_forwards = 0
         self.last_generation_loss = 0.0
         self.last_candidate_loss = 0.0
+        self.last_lambda_candidate = float(lambda_candidate)
+
+    def _batch_lambda(self, weights, n_items: int, device) -> torch.Tensor:
+        """Per-QA InfoNCE weights; missing values fall back to the global lambda."""
+        if not weights:
+            values = [self.lambda_candidate] * n_items
+        else:
+            values = [
+                self.lambda_candidate if weight is None else float(weight)
+                for weight in weights
+            ]
+            if any(value < 0 for value in values):
+                raise ValueError("lambda_candidate must be non-negative")
+            if len(values) != n_items:
+                raise ValueError(
+                    f"lambda_candidate batch has {len(values)} entries, expected {n_items}"
+                )
+        return torch.tensor(values, dtype=torch.float32, device=device)
 
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
         listed_batch = inputs.pop("listed_relations", None)
@@ -172,10 +194,13 @@ class ListedContrastiveTrainer(Trainer):
         prefix_batch = inputs.pop("prefix_text", None)
         prefix_ids_batch = inputs.pop("prefix_ids", None)
         relation_ids_batch = inputs.pop("relation_ids", None)
+        lambda_batch = inputs.pop("lambda_candidate", None)
         outputs = model(**inputs)
         generation_loss = outputs.loss
         candidate_loss = generation_loss.new_zeros(())
-        if self.lambda_candidate > 0:
+        n_items = len(prefix_ids_batch or prefix_batch or [])
+        weights = self._batch_lambda(lambda_batch, n_items, generation_loss.device)
+        if bool((weights > 0).any()):
             candidate_loss = self._listed_candidate_loss(
                 model,
                 prefix_ids_batch or [],
@@ -183,10 +208,12 @@ class ListedContrastiveTrainer(Trainer):
                 prefixes=prefix_batch or [],
                 positives=positive_batch or [],
                 listed_lists=listed_batch or [],
+                weights=weights,
             )
         self.last_generation_loss = float(generation_loss.detach())
         self.last_candidate_loss = float(candidate_loss.detach())
-        loss = generation_loss + self.lambda_candidate * candidate_loss
+        self.last_lambda_candidate = float(weights.mean().detach()) if n_items else float(self.lambda_candidate)
+        loss = generation_loss + candidate_loss
         return (loss, outputs) if return_outputs else loss
 
     def _listed_candidate_loss(
@@ -198,6 +225,7 @@ class ListedContrastiveTrainer(Trainer):
         prefixes,
         positives,
         listed_lists,
+        weights: torch.Tensor | None = None,
     ) -> torch.Tensor:
         tokenizer = self.processing_class
         scorer = unwrap_for_scoring(model, getattr(self, "accelerator", None))
@@ -233,19 +261,19 @@ class ListedContrastiveTrainer(Trainer):
         scores = self._score_candidate_rows(scorer, tokenizer, rows, prefix_lens, device)
         losses = []
         offset = 0
-        for size in group_sizes:
+        for index, size in enumerate(group_sizes):
             if size < 2:
                 offset += size
                 continue
             group = scores[offset : offset + size]
             offset += size
-            losses.append(
-                candidate_infonce_loss(
-                    group[:1],
-                    group[1:].unsqueeze(0),
-                    temperature=self.temperature,
-                )
+            sample_loss = candidate_infonce_loss(
+                group[:1],
+                group[1:].unsqueeze(0),
+                temperature=self.temperature,
             )
+            weight = 1.0 if weights is None else weights[index]
+            losses.append(weight * sample_loss)
         if self.memory_size > 0:
             fresh = []
             for relation_ids in relation_ids_batch:
