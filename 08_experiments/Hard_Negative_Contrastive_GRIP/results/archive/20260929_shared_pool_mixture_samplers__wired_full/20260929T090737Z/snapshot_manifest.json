@@ -1,0 +1,15 @@
+{
+  "source_run": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260929_shared_pool_mixture_samplers/wired_full",
+  "snapshot": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/archive/20260929_shared_pool_mixture_samplers__wired_full/20260929T090737Z",
+  "copied": [
+    "run.log",
+    "wiring.json"
+  ],
+  "metrics": {
+    "listed_em": null,
+    "b1_em": null,
+    "listed_minus_b1_em": null,
+    "eval_n": null
+  },
+  "note": "Lightweight Git snapshot. Adapter weights and score dumps remain in results/runs/."
+}
