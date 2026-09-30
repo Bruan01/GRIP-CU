@@ -171,6 +171,19 @@ class ListedContrastiveTrainer(Trainer):
         self.last_candidate_loss = 0.0
         self.last_lambda_candidate = float(lambda_candidate)
 
+    def listed_log_fields(self) -> dict[str, float | int]:
+        """Fields HuggingFace Trainer should persist next to the mixed loss."""
+        return {
+            "generation_loss": float(self.last_generation_loss),
+            "candidate_loss": float(self.last_candidate_loss),
+            "lambda_candidate": float(self.last_lambda_candidate),
+            "candidate_forwards": int(self.candidate_forwards),
+        }
+
+    def log(self, logs, start_time=None):
+        merged = {**logs, **self.listed_log_fields()}
+        return super().log(merged, start_time=start_time)
+
     def _batch_lambda(self, weights, n_items: int, device) -> torch.Tensor:
         """Per-QA InfoNCE weights; missing values fall back to the global lambda."""
         if not weights:

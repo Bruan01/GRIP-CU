@@ -146,6 +146,14 @@ SKIP_TMUX=1 bash configs/run_freeze_mixture_samplers.sh
 TMUX_SESSION=shared-pool-mixture-full-20260929 \
   bash configs/run_shared_pool_mixture_full.sh
 
+# closed-set 10-way scoring on the five listed adapters. Mixture-full already
+# chains this after Calibrated unless SKIP_CLOSED_SET=1. Inference only.
+TMUX_SESSION=shared-pool-closed-set-20260929 \
+  bash configs/run_shared_pool_closed_set.sh
+
+# CPU-only five-arm comparison (generation + optional closed-set). Safe while
+# Soft-Mix / Calibrated are still training; missing arms stay omitted.
+SKIP_TMUX=1 bash configs/run_shared_pool_ablation_compare.sh
 
 # CPU-only relation-global confusion vocabulary / matrix (does not overwrite analysis/)
 # MIN_SUPPORT filters figures only; relation_pair_statistics.csv stays complete.

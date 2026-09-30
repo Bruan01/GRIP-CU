@@ -199,6 +199,19 @@ def test_listed_candidates_are_scored_in_one_forward() -> None:
     assert scores[0] > scores[1] - 1e-5
 
 
+def test_listed_log_fields_record_generation_and_lambda() -> None:
+    trainer = ListedContrastiveTrainer.__new__(ListedContrastiveTrainer)
+    trainer.last_generation_loss = 0.155
+    trainer.last_candidate_loss = 0.42
+    trainer.last_lambda_candidate = 0.88
+    trainer.candidate_forwards = 3253
+    fields = trainer.listed_log_fields()
+    assert fields["generation_loss"] == 0.155
+    assert fields["candidate_loss"] == 0.42
+    assert fields["lambda_candidate"] == 0.88
+    assert fields["candidate_forwards"] == 3253
+
+
 def test_batch_lambda_uses_per_qa_weights_and_global_fallback() -> None:
     trainer = ListedContrastiveTrainer.__new__(ListedContrastiveTrainer)
     trainer.lambda_candidate = 1.0

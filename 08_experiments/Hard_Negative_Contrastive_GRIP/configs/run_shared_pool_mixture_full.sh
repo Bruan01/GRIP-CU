@@ -3,7 +3,10 @@
 #
 # Same 20260913 Stage-1 adapter, frozen B1, and experiment-H budget
 # (~12014 QA, accum=512, ~230 steps). Soft-Mix runs first. Calibrated starts
-# only after Soft-Mix finishes with a listed/summary.json. One GPU at a time.
+# only after Soft-Mix finishes with a listed/summary.json. After Calibrated
+# has listed/summary.json, run closed-set decode on the five listed adapters
+# and write the five-arm comparison. One GPU at a time.
+# SKIP_CLOSED_SET=1 stops after Calibrated training.
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -26,19 +29,28 @@ log() {
   echo "[mixture] $*"
 }
 
-log "CPU-wire frozen Soft-Mix / Calibrated onto the paper task file"
-OUTPUT_DIR="${SAMPLER_DIR}/wired_full" SAMPLER_DIR="$SAMPLER_DIR" \
-  EXPECTED_LISTED="$EXPECTED_LISTED" VARIANTS="soft_mix calibrated" SKIP_TMUX=1 \
-  bash "$HNG/configs/run_wire_shared_pool_samplers.sh"
+WIRE_DIR="${SAMPLER_DIR}/wired_full"
+if [[ -f "$WIRE_DIR/wiring.json" && "${FORCE_WIRE:-0}" != "1" ]]; then
+  log "reuse CPU wiring $WIRE_DIR/wiring.json"
+else
+  log "CPU-wire frozen Soft-Mix / Calibrated onto the paper task file"
+  OUTPUT_DIR="$WIRE_DIR" SAMPLER_DIR="$SAMPLER_DIR" \
+    EXPECTED_LISTED="$EXPECTED_LISTED" VARIANTS="soft_mix calibrated" SKIP_TMUX=1 \
+    bash "$HNG/configs/run_wire_shared_pool_samplers.sh"
+fi
 
-log "train Soft-Mix"
-ALLOW_NON_RANDOM=1 VARIANT=soft_mix \
-  SAMPLER_DIR="$SAMPLER_DIR" \
-  RUN_DIR="$SOFT_RUN_DIR" \
-  RUN_ID=20260929_shared_pool_soft_mix_full \
-  TMUX_SESSION="${TMUX_SESSION:-shared-pool-mixture-full-20260929}" \
-  SKIP_TMUX=1 \
-  bash "$HNG/configs/run_shared_pool_random_k_full.sh"
+if [[ -f "$SOFT_RUN_DIR/listed/summary.json" && "${FORCE_SOFT_MIX:-0}" != "1" ]]; then
+  log "reuse Soft-Mix $SOFT_RUN_DIR/listed/summary.json"
+else
+  log "train Soft-Mix"
+  ALLOW_NON_RANDOM=1 VARIANT=soft_mix \
+    SAMPLER_DIR="$SAMPLER_DIR" \
+    RUN_DIR="$SOFT_RUN_DIR" \
+    RUN_ID=20260929_shared_pool_soft_mix_full \
+    TMUX_SESSION="${TMUX_SESSION:-shared-pool-mixture-full-20260929}" \
+    SKIP_TMUX=1 \
+    bash "$HNG/configs/run_shared_pool_random_k_full.sh"
+fi
 
 if [[ ! -f "$SOFT_RUN_DIR/listed/summary.json" ]]; then
   echo "error: Soft-Mix finished without listed/summary.json: $SOFT_RUN_DIR" >&2
@@ -53,3 +65,21 @@ ALLOW_NON_RANDOM=1 VARIANT=calibrated \
   TMUX_SESSION="${TMUX_SESSION:-shared-pool-mixture-full-20260929}" \
   SKIP_TMUX=1 \
   bash "$HNG/configs/run_shared_pool_random_k_full.sh"
+
+if [[ ! -f "$CALIBRATED_RUN_DIR/listed/summary.json" ]]; then
+  echo "error: Calibrated finished without listed/summary.json: $CALIBRATED_RUN_DIR" >&2
+  exit 1
+fi
+
+if [[ "${SKIP_CLOSED_SET:-0}" == "1" ]]; then
+  log "skip closed-set decode (SKIP_CLOSED_SET=1)"
+  exit 0
+fi
+
+log "closed-set decode after Calibrated, then five-arm compare"
+WAIT_FOR_PATTERN= \
+  SOFT_DIR="$SOFT_RUN_DIR" \
+  CALIBRATED_DIR="$CALIBRATED_RUN_DIR" \
+  TMUX_SESSION="${TMUX_SESSION:-shared-pool-mixture-full-20260929}" \
+  SKIP_TMUX=1 \
+  bash "$HNG/configs/run_shared_pool_closed_set.sh"

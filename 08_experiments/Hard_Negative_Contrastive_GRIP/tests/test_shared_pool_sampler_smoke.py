@@ -12,7 +12,10 @@ HNG = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
 sys.path.insert(0, str(Path(__file__).parents[1] / "scripts"))
 
-from compare_shared_pool_sampler_runs import main as compare_main  # noqa: E402
+from compare_shared_pool_sampler_runs import (  # noqa: E402
+    main as compare_main,
+    relation_family,
+)
 from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
     compact_wiring_payload,
     verify_listed_manifest_wiring,
@@ -28,6 +31,13 @@ def _summary(em: float, n: int = 96) -> dict:
         "test": {"count": 64, "em": em},
         "validation": {"count": 32, "em": em},
     }
+
+
+def test_relation_family_uses_nell_type_prefix() -> None:
+    assert relation_family("concept:athleteplaysforteam") == "athlete"
+    assert relation_family("concept:athletehomestadium") == "athlete"
+    assert relation_family("concept:citylocatedincountry") == "city"
+    assert relation_family("concept:politicianusholdsoffice") == "politicianus"
 
 
 def test_compare_shared_pool_sampler_runs(tmp_path: Path, monkeypatch) -> None:
@@ -48,8 +58,93 @@ def test_compare_shared_pool_sampler_runs(tmp_path: Path, monkeypatch) -> None:
     payload = json.loads(output.read_text(encoding="utf-8"))
     assert payload["deltas"]["top_k_hard_minus_random_k"] == pytest.approx(0.10)
     assert payload["variants"]["random_k"]["listed_minus_b1_em"] == pytest.approx(0.10)
+    assert payload["missing_variants"] == ["soft_mix", "calibrated"]
     assert "64-QA / 10-step" in payload["note"]
-    assert "12014 QA" in payload["note"]
+    assert "96-question smoke" in payload["note"]
+
+
+def _write_listed(run_dir: Path, *, em: float, gen_loss: float, closed_em: float, ool: int) -> None:
+    listed = run_dir / "listed"
+    listed.mkdir(parents=True)
+    summary = _summary(em)
+    summary["wrong_out_of_list"] = ool
+    (listed / "summary.json").write_text(json.dumps(summary), encoding="utf-8")
+    closed = _summary(closed_em)
+    closed["mrr"] = closed_em
+    closed["hits@1"] = closed_em
+    (listed / "summary_closed_set.json").write_text(json.dumps(closed), encoding="utf-8")
+    adapter = listed / "adapter"
+    adapter.mkdir()
+    (adapter / "run_metadata.json").write_text(
+        json.dumps(
+            {
+                "last_generation_loss": gen_loss,
+                "last_candidate_loss": 0.1,
+                "candidate_forwards": 325300,
+                "seconds": 100.0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    (listed / "predictions_correct.jsonl").write_text(
+        json.dumps(
+            {
+                "correct": False,
+                "in_list": True,
+                "target": ["concept:athleteplaysforteam"],
+                "response": "concept:athletehomestadium",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def test_compare_prompt6_five_arm_gate(tmp_path: Path, monkeypatch) -> None:
+    b1_host = tmp_path / "random_k"
+    _write_listed(b1_host, em=0.90625, gen_loss=0.155, closed_em=0.92, ool=4)
+    (b1_host / "b1").mkdir()
+    (b1_host / "b1" / "summary.json").write_text(json.dumps(_summary(0.864583)), encoding="utf-8")
+    top = tmp_path / "top_k_hard"
+    _write_listed(top, em=0.8229, gen_loss=0.326, closed_em=0.85, ool=13)
+    adaptive = tmp_path / "coverage_adaptive_k"
+    _write_listed(adaptive, em=0.8021, gen_loss=0.245, closed_em=0.84, ool=15)
+    mix = tmp_path / "soft_mix"
+    _write_listed(mix, em=0.9167, gen_loss=0.160, closed_em=0.93, ool=3)
+    calibrated = tmp_path / "calibrated"
+    _write_listed(calibrated, em=0.9271, gen_loss=0.158, closed_em=0.94, ool=3)
+    output = tmp_path / "ablation.json"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "compare_shared_pool_sampler_runs.py",
+            "--random_k_dir",
+            str(b1_host),
+            "--top_k_hard_dir",
+            str(top),
+            "--coverage_adaptive_k_dir",
+            str(adaptive),
+            "--soft_mix_dir",
+            str(mix),
+            "--calibrated_dir",
+            str(calibrated),
+            "--output",
+            str(output),
+            "--require_all",
+        ],
+    )
+    compare_main()
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["present_variants"] == [
+        "random_k",
+        "top_k_hard",
+        "coverage_adaptive_k",
+        "soft_mix",
+        "calibrated",
+    ]
+    assert payload["calibrated_gate"]["continue"] is True
+    assert payload["variants"]["calibrated"]["family_confusion"]["in_list_same_family"] == 1
+    assert payload["deltas"]["calibrated_minus_random_k"] == pytest.approx(0.02085)
 
 
 def test_retired_shared_pool_sampler_smoke_script_exits() -> None:
@@ -62,6 +157,25 @@ def test_retired_shared_pool_sampler_smoke_script_exits() -> None:
     assert result.returncode == 1
     assert "64-QA / 10-step" in result.stderr
     assert "run_shared_pool_random_k_full.sh" in result.stderr
+
+
+def test_mixture_full_script_chains_closed_set_after_calibrated() -> None:
+    mixture = (HNG / "configs/run_shared_pool_mixture_full.sh").read_text(encoding="utf-8")
+    closed = (HNG / "configs/run_shared_pool_closed_set.sh").read_text(encoding="utf-8")
+    compare = (HNG / "configs/run_shared_pool_ablation_compare.sh").read_text(encoding="utf-8")
+    assert "VARIANT=soft_mix" in mixture
+    assert "VARIANT=calibrated" in mixture
+    assert "FORCE_WIRE" in mixture
+    assert "FORCE_SOFT_MIX" in mixture
+    assert "reuse Soft-Mix" in mixture
+    calibrated_at = mixture.index("VARIANT=calibrated")
+    summary_at = mixture.index("CALIBRATED_RUN_DIR/listed/summary.json")
+    closed_at = mixture.index("run_shared_pool_closed_set.sh")
+    assert calibrated_at < summary_at < closed_at
+    assert "SKIP_CLOSED_SET" in mixture
+    assert "run_shared_pool_ablation_compare.sh" in closed
+    assert "soft_mix" in closed and "calibrated" in closed
+    assert "ablation_comparison.json" in compare
 
 
 def test_subset_matchable_task_qa_keeps_original_ids(tmp_path: Path, monkeypatch) -> None:
