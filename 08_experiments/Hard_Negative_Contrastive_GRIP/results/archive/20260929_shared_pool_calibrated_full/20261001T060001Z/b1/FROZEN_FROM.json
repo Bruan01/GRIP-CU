@@ -1,0 +1,5 @@
+{
+  "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke",
+  "copied_at_utc": "2026-10-01T05:59:55+00:00",
+  "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+}
