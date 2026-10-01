@@ -1,0 +1,19 @@
+{
+  "stage": "s2",
+  "variant": "listed",
+  "model_name": "qwen-7b",
+  "lambda_candidate": 1.0,
+  "memory_size": 0,
+  "memory_forwards": 0,
+  "qa_samples": 12014,
+  "candidate_forwards": 325300,
+  "last_generation_loss": 0.15480369329452515,
+  "last_candidate_loss": 0.0,
+  "per_device_train_batch_size": 1,
+  "gradient_accumulation_steps": 512,
+  "gradient_checkpointing": true,
+  "seconds": 48546.2,
+  "s1_adapter": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter",
+  "resumed_from": null,
+  "created_at_utc": "2026-09-27T00:14:57.446767+00:00"
+}
