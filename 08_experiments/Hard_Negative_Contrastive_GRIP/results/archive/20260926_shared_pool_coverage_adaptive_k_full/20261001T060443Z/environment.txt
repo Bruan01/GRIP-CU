@@ -1,0 +1,16 @@
+variant=coverage_adaptive_k
+run_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260926_shared_pool_coverage_adaptive_k_full
+s1_adapter=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter
+input_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json
+eval_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction.aligned.json
+sampler_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260926_shared_pool_samplers
+expected_listed=3253
+seed=2026
+tmux_session=shared-pool-coverage-adaptive-k-full-20260926
+listed_negative_source=score_hard
+note=full paper-task Random-K listed train on frozen train-only manifests; not 64-QA / 10-step
+2026-09-28T02:32:18+00:00
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:789: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+cuda True NVIDIA GeForce RTX 3090
+manifest_coverage_adaptive_k_sha256=b716c62eb03d635da78650aa07016ecba6714313f217e6cac50a8a214027ce31

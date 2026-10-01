@@ -1,0 +1,20 @@
+{
+  "all": {
+    "count": 96,
+    "em": 0.875
+  },
+  "wrong_in_list": 12,
+  "wrong_out_of_list": 0,
+  "test": {
+    "count": 64,
+    "em": 0.875
+  },
+  "validation": {
+    "count": 32,
+    "em": 0.875
+  },
+  "mrr": 0.9206845238095238,
+  "hits@1": 0.875,
+  "hits@3": 0.9583333333333334,
+  "hits@10": 1.0
+}
