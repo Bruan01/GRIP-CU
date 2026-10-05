@@ -4,7 +4,8 @@
 CPU-only. Does not load a language model, does not rescore, and does not train.
 Control variants (Random-K / Top-K Hard / Coverage-Adaptive K) stay frozen.
 Soft-Mix / Calibrated write additional manifests from the same valid-negative
-pool without resampling the already-frozen control lists.
+pool without resampling the already-frozen control lists. Default Soft-Mix
+draws the 3 mixture slots from the ranked Top-N subset, not the full pool.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
     DEFAULT_K_MIN,
     DEFAULT_K_SOFT,
     DEFAULT_K_UNIFORM,
+    DEFAULT_SOFT_POOL_K,
     DEFAULT_LAMBDA_0,
     DEFAULT_LAMBDA_BETA,
     DEFAULT_LAMBDA_MIN,
@@ -44,6 +46,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--k_max", type=int, default=DEFAULT_K_MAX)
     parser.add_argument("--k_uniform", type=int, default=DEFAULT_K_UNIFORM)
     parser.add_argument("--k_soft", type=int, default=DEFAULT_K_SOFT)
+    parser.add_argument(
+        "--soft_pool_k",
+        type=int,
+        default=DEFAULT_SOFT_POOL_K,
+        help="Ranked Top-N subset used by the k_soft mixture. 0 = full-pool mixture.",
+    )
     parser.add_argument("--rho", type=float, default=DEFAULT_SOFT_RHO)
     parser.add_argument("--lambda_0", type=float, default=DEFAULT_LAMBDA_0)
     parser.add_argument("--lambda_min", type=float, default=DEFAULT_LAMBDA_MIN)
@@ -81,6 +89,7 @@ def main() -> None:
         k_uniform=args.k_uniform,
         k_soft=args.k_soft,
         rho=args.rho,
+        soft_pool_k=args.soft_pool_k,
         lambda_0=args.lambda_0,
         lambda_min=args.lambda_min,
         lambda_beta=args.lambda_beta,

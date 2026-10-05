@@ -237,6 +237,8 @@ def test_soft_mix_keeps_six_uniform_and_three_mixture() -> None:
     assert 0.25 <= calibrated["lambda_candidate"] <= 1.0
     assert "concept:gold" not in mix["negative_relations"]
     assert len(set(mix["negative_relations"])) == 9
+    assert mix["soft_pool_k"] == 9
+    assert mix["selection_rule"] == "k_uniform_uniform_plus_k_soft_truncated_topn_mass_mixture"
 
 
 def test_mixture_probabilities_interpolate_uniform_and_mass() -> None:
@@ -270,11 +272,100 @@ def test_sample_soft_mix_is_without_replacement() -> None:
         k_soft=3,
         rho=0.33,
         rng=random.Random(2026),
+        soft_pool_k=9,
     )
     names = [row["candidate_relation"] for row in [*uniform, *soft]]
     assert len(names) == len(set(names)) == 9
     assert len(uniform) == 6
     assert len(soft) == 3
+    ranked_names = [row["candidate_relation"] for row in rank_valid_pool(pool)]
+    top9 = set(ranked_names[:9])
+    uniform_names = {row["candidate_relation"] for row in uniform}
+    leftover_top = top9 - uniform_names
+    assert leftover_top
+    assert {row["candidate_relation"] for row in soft} <= leftover_top
+
+
+def test_truncated_soft_mix_hits_topn_hard_mass() -> None:
+    pool = [
+        {"candidate_relation": "hard", "candidate_score": 0.0, "negative_mass": 50.0},
+        *[
+            {
+                "candidate_relation": f"easy{i}",
+                "candidate_score": -10.0 - i,
+                "negative_mass": 0.01,
+            }
+            for i in range(40)
+        ],
+    ]
+    hits = 0
+    trials = 80
+    for seed in range(trials):
+        _uniform, soft = sample_soft_mix(
+            pool,
+            k_uniform=6,
+            k_soft=3,
+            rho=0.33,
+            rng=random.Random(seed),
+            soft_pool_k=9,
+        )
+        if any(row["candidate_relation"] == "hard" for row in soft):
+            hits += 1
+    assert hits >= 20
+
+
+def test_soft_pool_k_zero_restores_full_pool_mixture() -> None:
+    pool = [
+        {"candidate_relation": f"r{i}", "candidate_score": -float(i), "negative_mass": 0.1}
+        for i in range(12)
+    ]
+    uniform, soft = sample_soft_mix(
+        pool,
+        k_uniform=6,
+        k_soft=3,
+        rho=0.0,
+        rng=random.Random(7),
+        soft_pool_k=0,
+    )
+    names = [row["candidate_relation"] for row in [*uniform, *soft]]
+    assert len(names) == len(set(names)) == 9
+    assert {row["candidate_relation"] for row in soft} <= {row["candidate_relation"] for row in pool}
+
+
+class _IndexSelectingRNG(random.Random):
+    def __init__(self, indexes: list[int]) -> None:
+        super().__init__(0)
+        self._indexes = list(indexes)
+
+    def sample(self, population, k):  # noqa: ANN001
+        if k != len(self._indexes):
+            raise AssertionError(f"expected k={len(self._indexes)}, got {k}")
+        return list(self._indexes)
+
+
+def test_truncated_soft_mix_falls_back_when_topn_is_taken() -> None:
+    pool = [
+        {"candidate_relation": f"top{i}", "candidate_score": -float(i), "negative_mass": 1.0}
+        for i in range(3)
+    ] + [
+        {"candidate_relation": f"tail{i}", "candidate_score": -10.0 - i, "negative_mass": 0.01}
+        for i in range(8)
+    ]
+    wanted = {"top0", "top1", "top2", "tail0", "tail1", "tail2"}
+    indexes = [i for i, row in enumerate(pool) if row["candidate_relation"] in wanted]
+    uniform, soft = sample_soft_mix(
+        pool,
+        k_uniform=6,
+        k_soft=3,
+        rho=1.0,
+        rng=_IndexSelectingRNG(indexes),
+        ranked=rank_valid_pool(pool),
+        soft_pool_k=3,
+    )
+    assert {row["candidate_relation"] for row in uniform} == wanted
+    assert len(soft) == 3
+    assert {row["candidate_relation"] for row in soft} <= {f"tail{i}" for i in range(8)}
+    assert not {row["candidate_relation"] for row in soft} & {row["candidate_relation"] for row in uniform}
 
 
 def test_coverage_tau_is_median_top9_mass() -> None:
@@ -398,12 +489,20 @@ def test_freeze_writes_mixture_manifests_without_controls(tmp_path: Path) -> Non
     ]
     assert mix_rows[0]["negative_relations"] == calibrated_rows[0]["negative_relations"]
     assert mix_rows[0]["lambda_candidate"] == 1.0
+    assert mix_rows[0]["soft_pool_k"] == 9
+    assert mix_rows[0]["selection_rule"] == (
+        "k_uniform_uniform_plus_k_soft_truncated_topn_mass_mixture"
+    )
+    assert summary["soft_pool_k"] == 9
+    assert "Top-9" in summary["selection_rules"]["soft_mix"]
     assert calibrated_rows[0]["lambda_candidate"] < mix_rows[0]["lambda_candidate"] or abs(
         calibrated_rows[0]["lambda_candidate"] - 1.0
     ) < 1e-12
     report = (output_dir / "FROZEN_SAMPLERS.md").read_text(encoding="utf-8")
     assert "Soft-Mix" in report
     assert "Calibrated" in report
+    assert "Top-9" in report
+    assert "not Top-3 Hard" in report
 
 
 def test_freeze_rejects_all_split_dump(tmp_path: Path) -> None:

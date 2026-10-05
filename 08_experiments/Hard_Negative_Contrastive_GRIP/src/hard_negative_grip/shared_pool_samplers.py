@@ -1,9 +1,13 @@
 """Frozen shared-pool listed-contrastive samplers.
 
-Random-K / Top-K Hard / Coverage-Adaptive K plus the Prompt-6 Soft-Mix and
-Calibrated mixture. All variants read the same train-only valid-negative pool
-from a Prompt-4/7 score dump. They never rescore and never consult valid/test
-KG structure.
+Random-K / Top-K Hard / Coverage-Adaptive K plus Soft-Mix and Calibrated.
+All variants read the same train-only valid-negative pool from a Prompt-4/7
+score dump. They never rescore and never consult valid/test KG structure.
+
+The 20260929 Soft-Mix freeze mixed 3 soft draws over the full ~197-way pool.
+This module now truncates those soft draws to Top-N (default 9) so the
+mixture actually concentrates on confused relations. Old freeze directories
+are left untouched.
 """
 
 from __future__ import annotations
@@ -42,6 +46,7 @@ SAMPLER_VARIANTS = CONTROL_SAMPLER_VARIANTS + MIXTURE_SAMPLER_VARIANTS
 DEFAULT_K_FIXED = 9
 DEFAULT_K_UNIFORM = 6
 DEFAULT_K_SOFT = 3
+DEFAULT_SOFT_POOL_K = 9
 DEFAULT_K_MIN = 1
 DEFAULT_K_MAX = 20
 DEFAULT_SEED = 2026
@@ -209,10 +214,21 @@ def sample_soft_mix(
     k_soft: int,
     rho: float,
     rng: random.Random,
+    ranked: list[dict] | None = None,
+    soft_pool_k: int = DEFAULT_SOFT_POOL_K,
 ) -> tuple[list[dict], list[dict]]:
-    """6 uniform + 3 mixture draws, without replacement, gold already excluded."""
+    """6 uniform from the full pool + 3 mixture draws from the Top-N subset.
+
+    The mixture still uses ``p(r) = (1-rho)/|S| + rho m_S(r)`` so this is not
+    Top-3 Hard. ``S`` is the remaining Top-``soft_pool_k`` after uniform draws.
+    If that subset is exhausted, leftover soft slots fall back to the next-
+    hardest ranked rows with the same mixture. ``soft_pool_k=0`` restores the
+    old full-pool mixture. Gold is already excluded from ``pool``.
+    """
     if k_uniform < 0 or k_soft < 0:
         raise ValueError(f"k_uniform/k_soft must be non-negative, got {k_uniform}/{k_soft}")
+    if soft_pool_k < 0:
+        raise ValueError(f"soft_pool_k must be non-negative, got {soft_pool_k}")
     n_valid = len(pool)
     take_uniform = min(k_uniform, n_valid)
     uniform_rows = sample_random_k(pool, take_uniform, rng)
@@ -220,16 +236,32 @@ def sample_soft_mix(
     take_soft = min(k_soft, remaining)
     if take_soft == 0:
         return uniform_rows, []
-    masses = confusion_masses(pool)
-    probabilities = mixture_probabilities(masses, rho=rho)
+    ranked_pool = list(ranked) if ranked is not None else rank_valid_pool(pool)
     excluded = {str(row["candidate_relation"]) for row in uniform_rows}
+    if soft_pool_k == 0:
+        topn = ranked_pool
+        fallback: list[dict] = []
+    else:
+        topn = ranked_pool[: min(soft_pool_k, len(ranked_pool))]
+        fallback = ranked_pool[len(topn) :]
     soft_rows = sample_weighted_without_replacement(
-        pool,
+        topn,
         take_soft,
         rng,
-        probabilities,
+        mixture_probabilities(confusion_masses(topn), rho=rho),
         excluded=excluded,
     )
+    if len(soft_rows) < take_soft and fallback:
+        leftover = take_soft - len(soft_rows)
+        excluded |= {str(row["candidate_relation"]) for row in soft_rows}
+        extra = sample_weighted_without_replacement(
+            fallback,
+            leftover,
+            rng,
+            mixture_probabilities(confusion_masses(fallback), rho=rho),
+            excluded=excluded,
+        )
+        soft_rows.extend(extra)
     return uniform_rows, soft_rows
 
 
@@ -413,6 +445,7 @@ def sample_qa_variants(
     k_uniform: int = DEFAULT_K_UNIFORM,
     k_soft: int = DEFAULT_K_SOFT,
     rho: float = DEFAULT_SOFT_RHO,
+    soft_pool_k: int = DEFAULT_SOFT_POOL_K,
     lambda_0: float = DEFAULT_LAMBDA_0,
     lambda_min: float = DEFAULT_LAMBDA_MIN,
     lambda_beta: float = DEFAULT_LAMBDA_BETA,
@@ -443,6 +476,8 @@ def sample_qa_variants(
         k_soft=k_soft,
         rho=rho,
         rng=rng,
+        ranked=ranked,
+        soft_pool_k=soft_pool_k,
     )
     mix_covered = sum(float(row["negative_mass"]) for row in [*mix_uniform, *mix_soft])
     per_qa = {
@@ -456,6 +491,7 @@ def sample_qa_variants(
         "k_uniform": len(mix_uniform),
         "k_soft": len(mix_soft),
         "k_mix": len(mix_uniform) + len(mix_soft),
+        "soft_pool_k": soft_pool_k,
         "adaptive_covered_mass": covered_mass(ranked, k_adaptive),
         "random_covered_mass": sum(float(row["negative_mass"]) for row in random_rows),
         "top_covered_mass": covered_mass(ranked, k_top),
@@ -479,10 +515,11 @@ def sample_qa_variants(
     }
     mix_extra = {
         **shared_extra,
-        "selection_rule": "k_uniform_uniform_plus_k_soft_mass_mixture",
+        "selection_rule": "k_uniform_uniform_plus_k_soft_truncated_topn_mass_mixture",
         "selection_seed": seed,
         "k_uniform": k_uniform,
         "k_soft": k_soft,
+        "soft_pool_k": soft_pool_k,
         "soft_rho": rho,
         "covered_negative_mass": mix_covered,
         "concentration_c_q": concentration,
@@ -577,6 +614,7 @@ def freeze_shared_pool_samplers(
     k_uniform: int = DEFAULT_K_UNIFORM,
     k_soft: int = DEFAULT_K_SOFT,
     rho: float = DEFAULT_SOFT_RHO,
+    soft_pool_k: int = DEFAULT_SOFT_POOL_K,
     lambda_0: float = DEFAULT_LAMBDA_0,
     lambda_min: float = DEFAULT_LAMBDA_MIN,
     lambda_beta: float = DEFAULT_LAMBDA_BETA,
@@ -619,6 +657,7 @@ def freeze_shared_pool_samplers(
             k_uniform=k_uniform,
             k_soft=k_soft,
             rho=rho,
+            soft_pool_k=soft_pool_k,
             lambda_0=lambda_0,
             lambda_min=lambda_min,
             lambda_beta=lambda_beta,
@@ -647,6 +686,7 @@ def freeze_shared_pool_samplers(
         "k_fixed": k_fixed,
         "k_uniform": k_uniform,
         "k_soft": k_soft,
+        "soft_pool_k": soft_pool_k,
         "k_adaptive": summarize_values([float(value) for value in k_adaptive_values]),
         "k_adaptive_eq_k_fixed": sum(1 for value in k_adaptive_values if value == k_fixed),
         "k_adaptive_lt_k_fixed": sum(1 for value in k_adaptive_values if value < k_fixed),
@@ -677,6 +717,7 @@ def freeze_shared_pool_samplers(
         "k_fixed": k_fixed,
         "k_uniform": k_uniform,
         "k_soft": k_soft,
+        "soft_pool_k": soft_pool_k,
         "k_min": k_min,
         "k_max": k_max,
         "coverage_tau": frozen_tau,
@@ -695,8 +736,9 @@ def freeze_shared_pool_samplers(
                 "k_min, k_max); then take top K_i"
             ),
             "soft_mix": (
-                f"{k_uniform} uniform + {k_soft} draws from "
-                f"(1-rho)/|P| + rho * m(r), rho={rho}, without replacement"
+                f"{k_uniform} uniform from the full pool + {k_soft} draws from "
+                f"Top-{soft_pool_k} via (1-rho)/|S| + rho * m_S(r), rho={rho}, "
+                "without replacement; leftover slots fall back to the remaining ranked pool"
             ),
             "calibrated": (
                 "same negatives as soft_mix; lambda_q = lambda_0 * "
@@ -806,8 +848,9 @@ def render_sampler_report(
     if mixture:
         lines.extend(
             [
-                f"- Soft-Mix: `{policy.get('k_uniform', DEFAULT_K_UNIFORM)}` uniform + "
-                f"`{policy.get('k_soft', DEFAULT_K_SOFT)}` mixture, rho="
+                f"- Soft-Mix: `{policy.get('k_uniform', DEFAULT_K_UNIFORM)}` uniform from "
+                f"the full pool + `{policy.get('k_soft', DEFAULT_K_SOFT)}` mixture from "
+                f"Top-{policy.get('soft_pool_k', DEFAULT_SOFT_POOL_K)}, rho="
                 f"{policy.get('soft_rho', DEFAULT_SOFT_RHO)}",
                 f"- Calibrated: lambda_0={policy.get('lambda_0', DEFAULT_LAMBDA_0)}, "
                 f"lambda_min={policy.get('lambda_min', DEFAULT_LAMBDA_MIN)}, "
@@ -863,7 +906,8 @@ def render_sampler_report(
             "- Top-K Hard: the `k_fixed` highest `candidate_score` rows in that pool.",
             "- Coverage-Adaptive K: smallest top-K whose cumulative `negative_mass`",
             "  reaches `tau`, clamped to `[k_min, k_max]`.",
-            "- Soft-Mix: 6 uniform + 3 confusion-mixture draws, without replacement.",
+            "- Soft-Mix: 6 uniform from the full pool + 3 confusion-mixture draws",
+            "  from the Top-N subset, without replacement. This is not Top-3 Hard.",
             "- Calibrated: same negatives as Soft-Mix, with per-QA InfoNCE weight",
             "  `lambda_q = lambda_0 * clip(1 - beta * top9_mass, lambda_min/lambda_0, 1)`.",
             "",
