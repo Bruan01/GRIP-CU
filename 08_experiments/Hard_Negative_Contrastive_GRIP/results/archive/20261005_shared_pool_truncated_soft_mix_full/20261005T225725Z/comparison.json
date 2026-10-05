@@ -1,0 +1,47 @@
+{
+  "input_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json",
+  "s1_adapter": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter",
+  "model_name": "qwen-7b",
+  "lambda_candidate": 1.0,
+  "b1": {
+    "all": {
+      "count": 96,
+      "em": 0.8645833333333334
+    },
+    "wrong_in_list": 10,
+    "wrong_out_of_list": 3,
+    "test": {
+      "count": 64,
+      "em": 0.859375
+    },
+    "validation": {
+      "count": 32,
+      "em": 0.875
+    }
+  },
+  "listed": {
+    "all": {
+      "count": 96,
+      "em": 0.84375
+    },
+    "candidate_valid_rate": 0.875,
+    "candidate_invalid": 12,
+    "wrong_in_list": 3,
+    "wrong_out_of_list": 12,
+    "test": {
+      "count": 64,
+      "em": 0.796875
+    },
+    "validation": {
+      "count": 32,
+      "em": 0.9375
+    }
+  },
+  "listed_minus_b1_em": -0.02083333333333337,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke",
+    "copied_at_utc": "2026-10-05T22:57:19+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Listed is this run. B1 is the frozen generation-only adapter from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke (lambda=0 never used InfoNCE negatives). A method result requires listed EM > B1 on generation."
+}

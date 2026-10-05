@@ -1,0 +1,11 @@
+{
+  "n_samples": 12014,
+  "batch": 1,
+  "requested_accum": 512,
+  "effective_accum": 512,
+  "epochs": 10.0,
+  "steps_per_epoch": 23,
+  "total_steps": 230,
+  "accum_clamped": false,
+  "underfit": false
+}
