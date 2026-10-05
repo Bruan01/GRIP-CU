@@ -23,8 +23,8 @@ DEFAULT_RUNS = {
     / "results"
     / "runs"
     / "20260926_shared_pool_coverage_adaptive_k_full",
-    "soft_mix": HNG / "results" / "runs" / "20260929_shared_pool_soft_mix_full",
-    "calibrated": HNG / "results" / "runs" / "20260929_shared_pool_calibrated_full",
+    "soft_mix": HNG / "results" / "runs" / "20261005_shared_pool_truncated_soft_mix_full",
+    "calibrated": HNG / "results" / "runs" / "20261005_shared_pool_truncated_calibrated_full",
 }
 
 
@@ -334,7 +334,7 @@ def main() -> None:
         if args.run_dir is not None:
             output = args.run_dir / "comparison.json"
         else:
-            output = HNG / "results" / "runs" / "20260929_shared_pool_mixture_samplers" / "ablation_comparison.json"
+            output = HNG / "results" / "runs" / "20261005_shared_pool_truncated_mixture_samplers" / "ablation_comparison.json"
 
     payload = {
         "run_dir": None if args.run_dir is None else str(args.run_dir),

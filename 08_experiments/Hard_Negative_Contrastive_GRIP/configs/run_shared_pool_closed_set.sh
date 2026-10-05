@@ -17,8 +17,8 @@ LAST_RUN_FILE="$HNG/results/LAST_SHARED_POOL_CLOSED_SET_RUN.txt"
 RANDOM_K_DIR="${RANDOM_K_DIR:-$HNG/results/runs/20260926_shared_pool_random_k_full}"
 TOP_K_DIR="${TOP_K_DIR:-$HNG/results/runs/20260926_shared_pool_top_k_hard_full}"
 ADAPTIVE_DIR="${ADAPTIVE_DIR:-$HNG/results/runs/20260926_shared_pool_coverage_adaptive_k_full}"
-SOFT_DIR="${SOFT_DIR:-$HNG/results/runs/20260929_shared_pool_soft_mix_full}"
-CALIBRATED_DIR="${CALIBRATED_DIR:-$HNG/results/runs/20260929_shared_pool_calibrated_full}"
+SOFT_DIR="${SOFT_DIR:-$HNG/results/runs/20261005_shared_pool_truncated_soft_mix_full}"
+CALIBRATED_DIR="${CALIBRATED_DIR:-$HNG/results/runs/20261005_shared_pool_truncated_calibrated_full}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2

@@ -60,6 +60,16 @@ DEFAULT_LISTED_ACCUM = 512
 DEFAULT_LISTED_EPOCHS = 10
 DEFAULT_MIN_TRAIN_QA = 3253
 RETIRED_UNDERFIT_TRAIN = "64-QA / 10-step listed smoke"
+RETIRED_FULL_POOL_MIXTURE_NAMES = frozenset(
+    {
+        "20260929_shared_pool_mixture_samplers",
+        "20260929_shared_pool_soft_mix_full",
+        "20260929_shared_pool_calibrated_full",
+    }
+)
+TRUNCATED_MIXTURE_SAMPLER_DIRNAME = "20261005_shared_pool_truncated_mixture_samplers"
+TRUNCATED_SOFT_MIX_RUN_DIRNAME = "20261005_shared_pool_truncated_soft_mix_full"
+TRUNCATED_CALIBRATED_RUN_DIRNAME = "20261005_shared_pool_truncated_calibrated_full"
 
 
 def file_sha256(path: Path) -> str:
@@ -319,6 +329,39 @@ def listed_update_budget(
         "accum_clamped": clamped,
         "underfit": bool(clamped or too_small),
     }
+
+
+def refuse_retired_full_pool_mixture(
+    path: Path,
+    *,
+    allow: bool = False,
+) -> None:
+    """Block the 20260929 full-pool Soft-Mix freeze and its listed runs."""
+    if allow:
+        return
+    name = Path(path).name
+    if name in RETIRED_FULL_POOL_MIXTURE_NAMES:
+        raise ValueError(
+            f"{path} is the retired 20260929 full-pool Soft-Mix directory. "
+            f"Freeze/train `{TRUNCATED_MIXTURE_SAMPLER_DIRNAME}` "
+            f"(soft_pool_k={DEFAULT_SOFT_POOL_K}) instead of resampling the 197-way pool."
+        )
+
+
+def assert_truncated_mixture_policy(policy: dict, *, path: Path | None = None) -> None:
+    """Require the Top-N truncated mixture, not the old full-pool Soft-Mix."""
+    location = str(path) if path is not None else "policy"
+    soft_pool_k = int(policy.get("soft_pool_k", 0) or 0)
+    rule = str((policy.get("selection_rules") or {}).get("soft_mix") or "")
+    if soft_pool_k <= 0:
+        raise ValueError(
+            f"{location} still uses the full-pool Soft-Mix (soft_pool_k={soft_pool_k}). "
+            f"Refreeze with --soft_pool_k {DEFAULT_SOFT_POOL_K}."
+        )
+    if "Top-" not in rule:
+        raise ValueError(
+            f"{location} Soft-Mix rule is not truncated Top-N: {rule!r}"
+        )
 
 
 def refuse_underfit_listed_budget(
@@ -628,6 +671,7 @@ def freeze_shared_pool_samplers(
         raise ValueError(f"unknown sampler variants: {unknown}")
     if not variants:
         raise ValueError("variants must be non-empty")
+    refuse_retired_full_pool_mixture(output_dir)
     source_meta = load_source_metadata(metadata_path)
     filter_splits = source_meta.get("filter_splits") or ["train"]
     if list(filter_splits) != ["train"]:

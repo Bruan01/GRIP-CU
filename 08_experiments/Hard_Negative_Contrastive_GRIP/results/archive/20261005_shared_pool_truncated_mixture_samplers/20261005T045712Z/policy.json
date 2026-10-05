@@ -1,0 +1,49 @@
+{
+  "source_scores": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260923_offline_confusion_train_filter/candidate_scores.jsonl",
+  "source_metadata": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260923_offline_confusion_train_filter/metadata.json",
+  "source_scores_sha256": "0a4b0a0245e5ccfe6d872ff2aa89b5a2a52aebb7fbaffa7747dce2586e378708",
+  "filter_splits": [
+    "train"
+  ],
+  "shared_pool": "is_valid_negative from train-only dump",
+  "n_qa": 3253,
+  "k_fixed": 9,
+  "k_uniform": 6,
+  "k_soft": 3,
+  "soft_pool_k": 9,
+  "k_min": 1,
+  "k_max": 20,
+  "coverage_tau": 0.23080358351312513,
+  "coverage_tau_source": "median_top9_negative_mass",
+  "soft_rho": 0.33,
+  "lambda_0": 1.0,
+  "lambda_min": 0.25,
+  "lambda_beta": 0.5,
+  "seed": 2026,
+  "variants": [
+    "soft_mix",
+    "calibrated"
+  ],
+  "selection_rules": {
+    "random_k": "uniform_without_replacement from shared valid pool, K=k_fixed",
+    "top_k_hard": "top k_fixed by candidate_score, relation name breaks ties",
+    "coverage_adaptive_k": "K_i = clip(smallest K covering coverage_tau of negative_mass, k_min, k_max); then take top K_i",
+    "soft_mix": "6 uniform from the full pool + 3 draws from Top-9 via (1-rho)/|S| + rho * m_S(r), rho=0.33, without replacement; leftover slots fall back to the remaining ranked pool",
+    "calibrated": "same negatives as soft_mix; lambda_q = lambda_0 * clip(1 - beta * top9_mass, lambda_min/lambda_0, 1)"
+  },
+  "do_not_train_from": "results/runs/20260923_offline_confusion_full",
+  "training_protocol": {
+    "wire_first": true,
+    "next_variant": "soft_mix",
+    "train_qa": "full paper task file; listed negatives from frozen sampler IDs",
+    "min_train_qa": 3253,
+    "expected_paper_qa": 12014,
+    "accum": 512,
+    "epochs": 10,
+    "expected_listed_steps": 230,
+    "do_not_train": "64-QA / 10-step listed smoke",
+    "do_not_train_matchable_only": 3253,
+    "do_not_rescore": "3253x198",
+    "do_not_expand_underfit_overnight": true
+  }
+}

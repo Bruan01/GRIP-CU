@@ -5,7 +5,7 @@ set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON="${PYTHON:-$HNG/../RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/bin/python}"
-OUTPUT="${OUTPUT:-$HNG/results/runs/20260929_shared_pool_mixture_samplers/ablation_comparison.json}"
+OUTPUT="${OUTPUT:-$HNG/results/runs/20261005_shared_pool_truncated_mixture_samplers/ablation_comparison.json}"
 
 if [[ ! -x "$PYTHON" ]]; then
   echo "error: Python environment not found: $PYTHON" >&2

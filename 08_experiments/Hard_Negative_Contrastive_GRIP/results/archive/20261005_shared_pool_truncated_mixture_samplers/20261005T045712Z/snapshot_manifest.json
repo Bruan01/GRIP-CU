@@ -1,0 +1,20 @@
+{
+  "source_run": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers",
+  "snapshot": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/archive/20261005_shared_pool_truncated_mixture_samplers/20261005T045712Z",
+  "copied": [
+    "FROZEN_SAMPLERS.md",
+    "calibrated.jsonl",
+    "global_statistics.json",
+    "per_qa.jsonl",
+    "policy.json",
+    "run.log",
+    "soft_mix.jsonl"
+  ],
+  "metrics": {
+    "listed_em": null,
+    "b1_em": null,
+    "listed_minus_b1_em": null,
+    "eval_n": null
+  },
+  "note": "Lightweight Git snapshot. Adapter weights and score dumps remain in results/runs/."
+}

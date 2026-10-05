@@ -142,13 +142,12 @@ TMUX_SESSION=shared-pool-random-k-full-20260926 \
 
 # freeze truncated Soft-Mix / Calibrated (3 soft draws from Top-9, not the
 # full 197-way pool). Writes 20261005_shared_pool_truncated_mixture_samplers
-# and does not overwrite 20260929_shared_pool_mixture_samplers. CPU-only.
+# and refuses to overwrite 20260929_shared_pool_mixture_samplers. CPU-only.
 SKIP_TMUX=1 bash configs/run_freeze_mixture_samplers.sh
-# Train only after pointing SAMPLER_DIR at that new freeze. Do not reuse the
-# 20260929 full-pool mixture lists.
-# SAMPLER_DIR=results/runs/20261005_shared_pool_truncated_mixture_samplers \
-#   TMUX_SESSION=shared-pool-truncated-mixture-full-20261005 \
-#   bash configs/run_shared_pool_mixture_full.sh
+# listed truncated Soft-Mix then Calibrated. Defaults already point at the
+# 20261005 freeze/runs; do not reuse the 20260929 full-pool mixture lists.
+TMUX_SESSION=shared-pool-truncated-mixture-full-20261005 \
+  bash configs/run_shared_pool_mixture_full.sh
 
 # closed-set 10-way scoring on the five listed adapters. Mixture-full already
 # chains this after Calibrated unless SKIP_CLOSED_SET=1. Inference only.

@@ -11,6 +11,7 @@ from hard_negative_grip.offline_scoring import build_qa_score_rows  # noqa: E402
 from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
     MIXTURE_SAMPLER_VARIANTS,
     assert_score_hard_listed_training_budget,
+    assert_truncated_mixture_policy,
     clip_calibrated_lambda,
     decide_coverage_k,
     freeze_shared_pool_samplers,
@@ -18,6 +19,7 @@ from hard_negative_grip.shared_pool_samplers import (  # noqa: E402
     mixture_probabilities,
     propose_coverage_tau,
     rank_valid_pool,
+    refuse_retired_full_pool_mixture,
     refuse_underfit_listed_budget,
     sample_qa_variants,
     sample_random_k,
@@ -529,6 +531,62 @@ def test_freeze_rejects_all_split_dump(tmp_path: Path) -> None:
         assert "train-only" in str(exc)
     else:
         raise AssertionError("all-split dump should be rejected")
+
+
+def test_refuse_retired_full_pool_mixture_directory() -> None:
+    try:
+        refuse_retired_full_pool_mixture(Path("results/runs/20260929_shared_pool_mixture_samplers"))
+    except ValueError as exc:
+        assert "retired 20260929" in str(exc)
+        assert "20261005_shared_pool_truncated_mixture_samplers" in str(exc)
+    else:
+        raise AssertionError("retired full-pool freeze should be refused")
+    refuse_retired_full_pool_mixture(
+        Path("results/runs/20260929_shared_pool_mixture_samplers"),
+        allow=True,
+    )
+    refuse_retired_full_pool_mixture(
+        Path("results/runs/20261005_shared_pool_truncated_mixture_samplers")
+    )
+    try:
+        assert_truncated_mixture_policy(
+            {"soft_pool_k": 0, "selection_rules": {"soft_mix": "full pool"}},
+            path=Path("policy.json"),
+        )
+    except ValueError as exc:
+        assert "full-pool Soft-Mix" in str(exc)
+    else:
+        raise AssertionError("full-pool policy should be refused")
+    assert_truncated_mixture_policy(
+        {
+            "soft_pool_k": 9,
+            "selection_rules": {"soft_mix": "6 uniform from the full pool + 3 draws from Top-9"},
+        }
+    )
+
+
+def test_freeze_refuses_retired_full_pool_output_dir(tmp_path: Path) -> None:
+    scores_path = tmp_path / "candidate_scores.jsonl"
+    metadata_path = tmp_path / "metadata.json"
+    rows = _rows(
+        qa_id="task_qa:0",
+        scores={"concept:gold": -0.2, "concept:hard": -0.3, "concept:easy": -1.0},
+    )
+    with scores_path.open("w", encoding="utf-8") as stream:
+        for row in rows:
+            stream.write(json.dumps(row) + "\n")
+    metadata_path.write_text(json.dumps({"filter_splits": ["train"]}), encoding="utf-8")
+    try:
+        freeze_shared_pool_samplers(
+            scores_path=scores_path,
+            output_dir=tmp_path / "20260929_shared_pool_mixture_samplers",
+            metadata_path=metadata_path,
+            variants=MIXTURE_SAMPLER_VARIANTS,
+        )
+    except ValueError as exc:
+        assert "retired 20260929" in str(exc)
+    else:
+        raise AssertionError("freeze should refuse the 20260929 directory name")
 
 
 def test_listed_update_budget_marks_64qa_as_underfit() -> None:

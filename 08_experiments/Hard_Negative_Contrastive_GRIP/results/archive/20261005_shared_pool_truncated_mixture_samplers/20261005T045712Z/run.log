@@ -1,0 +1,167 @@
+[launch] freeze truncated Soft-Mix / Calibrated -> /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers
+scores=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260923_offline_confusion_train_filter/candidate_scores.jsonl
+metadata=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260923_offline_confusion_train_filter/metadata.json
+k_uniform=6 k_soft=3 soft_pool_k=9 rho=0.33
+lambda_0=1.0 lambda_min=0.25 lambda_beta=0.5 seed=2026
+{
+  "source_scores": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260923_offline_confusion_train_filter/candidate_scores.jsonl",
+  "source_metadata": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260923_offline_confusion_train_filter/metadata.json",
+  "source_scores_sha256": "0a4b0a0245e5ccfe6d872ff2aa89b5a2a52aebb7fbaffa7747dce2586e378708",
+  "filter_splits": [
+    "train"
+  ],
+  "shared_pool": "is_valid_negative from train-only dump",
+  "n_qa": 3253,
+  "k_fixed": 9,
+  "k_uniform": 6,
+  "k_soft": 3,
+  "soft_pool_k": 9,
+  "k_min": 1,
+  "k_max": 20,
+  "coverage_tau": 0.23080358351312513,
+  "coverage_tau_source": "median_top9_negative_mass",
+  "soft_rho": 0.33,
+  "lambda_0": 1.0,
+  "lambda_min": 0.25,
+  "lambda_beta": 0.5,
+  "seed": 2026,
+  "variants": [
+    "soft_mix",
+    "calibrated"
+  ],
+  "selection_rules": {
+    "random_k": "uniform_without_replacement from shared valid pool, K=k_fixed",
+    "top_k_hard": "top k_fixed by candidate_score, relation name breaks ties",
+    "coverage_adaptive_k": "K_i = clip(smallest K covering coverage_tau of negative_mass, k_min, k_max); then take top K_i",
+    "soft_mix": "6 uniform from the full pool + 3 draws from Top-9 via (1-rho)/|S| + rho * m_S(r), rho=0.33, without replacement; leftover slots fall back to the remaining ranked pool",
+    "calibrated": "same negatives as soft_mix; lambda_q = lambda_0 * clip(1 - beta * top9_mass, lambda_min/lambda_0, 1)"
+  },
+  "do_not_train_from": "results/runs/20260923_offline_confusion_full",
+  "training_protocol": {
+    "wire_first": true,
+    "next_variant": "soft_mix",
+    "train_qa": "full paper task file; listed negatives from frozen sampler IDs",
+    "min_train_qa": 3253,
+    "expected_paper_qa": 12014,
+    "accum": 512,
+    "epochs": 10,
+    "expected_listed_steps": 230,
+    "do_not_train": "64-QA / 10-step listed smoke",
+    "do_not_train_matchable_only": 3253,
+    "do_not_rescore": "3253x198",
+    "do_not_expand_underfit_overnight": true
+  },
+  "output_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers",
+  "policy_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers/policy.json",
+  "per_qa_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers/per_qa.jsonl",
+  "global_statistics_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers/global_statistics.json",
+  "report_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers/FROZEN_SAMPLERS.md",
+  "manifests": {
+    "soft_mix": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers/soft_mix.jsonl",
+    "calibrated": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261005_shared_pool_truncated_mixture_samplers/calibrated.jsonl"
+  },
+  "manifest_sha256": {
+    "soft_mix": "870a90ee5c7d94a961debf4d88a94f7f0e5218d2c55ca689a10b8716b720e1b8",
+    "calibrated": "c1dcb6d50a26b544667cf968527a44fe4262a1bf37b485710d9ace0075b84922"
+  },
+  "k_statistics": {
+    "k_fixed": 9,
+    "k_uniform": 6,
+    "k_soft": 3,
+    "soft_pool_k": 9,
+    "k_adaptive": {
+      "count": 3253,
+      "mean": 9.315401168152475,
+      "std": 2.5199113867987566,
+      "median": 9.0,
+      "min": 2.0,
+      "max": 17.0,
+      "p10": 6.0,
+      "p25": 7.0,
+      "p50": 9.0,
+      "p75": 11.0,
+      "p90": 12.0,
+      "p95": 13.0,
+      "p99": 14.0
+    },
+    "k_adaptive_eq_k_fixed": 459,
+    "k_adaptive_lt_k_fixed": 1168,
+    "k_adaptive_gt_k_fixed": 1626,
+    "k_mix": {
+      "count": 3253,
+      "mean": 9.0,
+      "std": 0.0,
+      "median": 9.0,
+      "min": 9.0,
+      "max": 9.0,
+      "p10": 9.0,
+      "p25": 9.0,
+      "p50": 9.0,
+      "p75": 9.0,
+      "p90": 9.0,
+      "p95": 9.0,
+      "p99": 9.0
+    },
+    "k_80": {
+      "count": 3253,
+      "mean": 75.20350445742392,
+      "std": 10.546943647525763,
+      "median": 77.0,
+      "min": 29.0,
+      "max": 99.0,
+      "p10": 61.0,
+      "p25": 69.0,
+      "p50": 77.0,
+      "p75": 83.0,
+      "p90": 87.0,
+      "p95": 90.0,
+      "p99": 93.0
+    },
+    "k_90": {
+      "count": 3253,
+      "mean": 104.98124807869658,
+      "std": 11.095702734015344,
+      "median": 107.0,
+      "min": 52.0,
+      "max": 129.0,
+      "p10": 91.0,
+      "p25": 99.0,
+      "p50": 107.0,
+      "p75": 113.0,
+      "p90": 117.0,
+      "p95": 119.0,
+      "p99": 123.0
+    }
+  },
+  "top9_mass": {
+    "count": 3253,
+    "mean": 0.24171990152959497,
+    "std": 0.051688037124076706,
+    "median": 0.23080358351312513,
+    "min": 0.1425856813184079,
+    "max": 0.5331969912610222,
+    "p10": 0.18562244299718933,
+    "p25": 0.20409370797114612,
+    "p50": 0.23080358351312513,
+    "p75": 0.2704846437875621,
+    "p90": 0.3128017553118276,
+    "p95": 0.3379284948561429,
+    "p99": 0.397924380227746
+  },
+  "lambda_q": {
+    "count": 3253,
+    "mean": 0.8791400492352025,
+    "std": 0.02584401856203835,
+    "median": 0.8845982082434374,
+    "min": 0.7334015043694889,
+    "max": 0.9287071593407961,
+    "p10": 0.8435991223440861,
+    "p25": 0.864757678106219,
+    "p50": 0.8845982082434374,
+    "p75": 0.897953146014427,
+    "p90": 0.9071887785014053,
+    "p95": 0.9122997240963084,
+    "p99": 0.9189096629147671
+  }
+}
+[launch] freeze finished 2026-10-05T04:57:11+00:00

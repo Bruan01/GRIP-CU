@@ -37,6 +37,11 @@ if [[ ! -f "$SCORES" ]]; then
   echo "error: missing train-only scores: $SCORES" >&2
   exit 1
 fi
+if [[ "$(basename "$OUTPUT_DIR")" == "20260929_shared_pool_mixture_samplers" && "${ALLOW_RETIRED_FULL_POOL:-0}" != "1" ]]; then
+  echo "error: refusing to overwrite the retired full-pool freeze: $OUTPUT_DIR" >&2
+  echo "  default is $HNG/results/runs/20261005_shared_pool_truncated_mixture_samplers" >&2
+  exit 1
+fi
 
 export PYTHONPATH="$HNG/src${PYTHONPATH:+:$PYTHONPATH}"
 mkdir -p "$OUTPUT_DIR"

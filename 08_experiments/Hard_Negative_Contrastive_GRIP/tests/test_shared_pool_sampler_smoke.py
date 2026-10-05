@@ -163,11 +163,21 @@ def test_mixture_full_script_chains_closed_set_after_calibrated() -> None:
     mixture = (HNG / "configs/run_shared_pool_mixture_full.sh").read_text(encoding="utf-8")
     closed = (HNG / "configs/run_shared_pool_closed_set.sh").read_text(encoding="utf-8")
     compare = (HNG / "configs/run_shared_pool_ablation_compare.sh").read_text(encoding="utf-8")
+    freeze = (HNG / "configs/run_freeze_mixture_samplers.sh").read_text(encoding="utf-8")
     assert "VARIANT=soft_mix" in mixture
     assert "VARIANT=calibrated" in mixture
     assert "FORCE_WIRE" in mixture
     assert "FORCE_SOFT_MIX" in mixture
     assert "reuse Soft-Mix" in mixture
+    assert "20261005_shared_pool_truncated_mixture_samplers" in mixture
+    assert "20261005_shared_pool_truncated_soft_mix_full" in mixture
+    assert "20261005_shared_pool_truncated_calibrated_full" in mixture
+    assert "refuse_retired_full_pool_mixture" in mixture
+    assert "20260929_shared_pool_mixture_samplers" not in mixture.split("SAMPLER_DIR=")[1].splitlines()[0]
+    assert "20261005_shared_pool_truncated_mixture_samplers" in freeze
+    assert "refusing to overwrite the retired full-pool freeze" in freeze
+    assert "20261005_shared_pool_truncated_soft_mix_full" in closed
+    assert "20261005_shared_pool_truncated_mixture_samplers" in compare
     calibrated_at = mixture.index("VARIANT=calibrated")
     summary_at = mixture.index("CALIBRATED_RUN_DIR/listed/summary.json")
     closed_at = mixture.index("run_shared_pool_closed_set.sh")
