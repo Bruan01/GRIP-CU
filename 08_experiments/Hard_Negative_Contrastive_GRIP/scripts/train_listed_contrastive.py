@@ -239,6 +239,24 @@ def flatten_adapter(adapter_dir: Path) -> None:
         nested.rmdir()
 
 
+def _record_trainer_budget(output_dir: Path, trainer: ListedContrastiveTrainer) -> None:
+    """Store the Trainer's actual ``max_steps`` next to the planned budget."""
+    path = output_dir / "budget.json"
+    if not path.is_file():
+        return
+    budget = json.loads(path.read_text(encoding="utf-8"))
+    actual = int(trainer.state.max_steps)
+    budget["trainer_max_steps"] = actual
+    budget["trainer_global_step"] = int(trainer.state.global_step)
+    if budget.get("total_steps") != actual:
+        print(
+            f"[budget] planned total_steps={budget.get('total_steps')} "
+            f"trainer_max_steps={actual}",
+            flush=True,
+        )
+    path.write_text(json.dumps(budget, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def save_adapter(model, tokenizer, adapter_dir: Path, metadata: dict) -> None:
     adapter_dir.mkdir(parents=True, exist_ok=True)
     model.save_pretrained(adapter_dir)
@@ -540,6 +558,7 @@ def train_stage2(
     else:
         print(f"[{variant}] start fresh (no checkpoint)", flush=True)
     trainer.train(resume_from_checkpoint=resume_from)
+    _record_trainer_budget(output_dir, trainer)
     adapter_dir = output_dir / variant / "adapter"
     save_adapter(
         model,
@@ -554,9 +573,21 @@ def train_stage2(
             "memory_forwards": trainer.memory_forwards,
             "qa_samples": len(dataset),
             "candidate_forwards": trainer.candidate_forwards,
-            "last_generation_loss": trainer.last_generation_loss,
-            "last_candidate_loss": trainer.last_candidate_loss,
-            "last_lambda_candidate": trainer.last_lambda_candidate,
+            **{
+                key: trainer.logged_loss_fields[key]
+                for key in (
+                    "generation_loss",
+                    "candidate_loss",
+                    "contrastive_candidate_loss",
+                    "lambda_candidate",
+                )
+                if key in trainer.logged_loss_fields
+            },
+            "last_microbatch_generation_loss": trainer.last_generation_loss,
+            "last_microbatch_candidate_loss": trainer.last_candidate_loss,
+            "last_microbatch_lambda_candidate": trainer.last_lambda_candidate,
+            "trainer_max_steps": int(trainer.state.max_steps),
+            "trainer_global_step": int(trainer.state.global_step),
             "per_device_train_batch_size": stage_args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
             "gradient_checkpointing": use_checkpointing,
@@ -934,6 +965,9 @@ def main() -> None:
             epochs=args.involve_qa_epochs,
         )
         if budget is not None:
+            # Planned step count only. train_listed overwrites trainer_max_steps
+            # with the Trainer value after the optimizer schedule exists.
+            budget["trainer_max_steps"] = None
             (output_dir / "budget.json").write_text(
                 json.dumps(budget, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",

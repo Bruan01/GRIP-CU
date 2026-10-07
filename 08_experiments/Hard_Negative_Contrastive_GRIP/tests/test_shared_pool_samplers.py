@@ -596,11 +596,13 @@ def test_listed_update_budget_marks_64qa_as_underfit() -> None:
     assert smoke["underfit"] is True
     matchable_only = listed_update_budget(3253)
     assert matchable_only["effective_accum"] == 512
-    assert matchable_only["total_steps"] == 60
+    assert matchable_only["steps_per_epoch"] == 7
+    assert matchable_only["total_steps"] == 70
     assert matchable_only["underfit"] is True
     paper = listed_update_budget(12014)
     assert paper["effective_accum"] == 512
-    assert paper["total_steps"] == 230
+    assert paper["steps_per_epoch"] == 24
+    assert paper["total_steps"] == 240
     assert paper["underfit"] is False
     try:
         refuse_underfit_listed_budget(64)
@@ -644,5 +646,5 @@ def test_listed_update_budget_marks_64qa_as_underfit() -> None:
         listed_negative_source="score_hard",
     )
     assert paper is not None
-    assert paper["total_steps"] == 230
+    assert paper["total_steps"] == 240
     assert paper["underfit"] is False

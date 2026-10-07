@@ -314,7 +314,14 @@ def listed_update_budget(
     effective_accum = requested_accum
     if batch * requested_accum > n_samples:
         effective_accum = max(1, n_samples // batch)
-    steps_per_epoch = max(n_samples // (batch * effective_accum), 1) if n_samples else 0
+    # Match Trainer: one optimizer step per accumulation window, including a
+    # short final window. 12014 / 512 is therefore 24 steps, not 23.
+    updates_per_epoch = (
+        (n_samples + batch * effective_accum - 1) // (batch * effective_accum)
+        if n_samples
+        else 0
+    )
+    steps_per_epoch = updates_per_epoch
     total_steps = int(epochs * steps_per_epoch)
     clamped = effective_accum != requested_accum
     too_small = n_samples <= DEFAULT_MIN_TRAIN_QA
@@ -328,6 +335,7 @@ def listed_update_budget(
         "total_steps": total_steps,
         "accum_clamped": clamped,
         "underfit": bool(clamped or too_small),
+        "tail_policy": "keep_incomplete_window",
     }
 
 
@@ -798,7 +806,7 @@ def freeze_shared_pool_samplers(
             "expected_paper_qa": 12014,
             "accum": DEFAULT_LISTED_ACCUM,
             "epochs": DEFAULT_LISTED_EPOCHS,
-            "expected_listed_steps": 230,
+            "expected_listed_steps": 240,
             "do_not_train": RETIRED_UNDERFIT_TRAIN,
             "do_not_train_matchable_only": 3253,
             "do_not_rescore": "3253x198",

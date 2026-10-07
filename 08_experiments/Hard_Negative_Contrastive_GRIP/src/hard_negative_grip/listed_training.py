@@ -155,6 +155,9 @@ class ListedContrastiveTrainer(Trainer):
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
+        # compute_loss returns one microbatch and ignores num_items_in_batch.
+        # Tell Trainer to divide by the actual accumulation-window size.
+        self.model_accepts_loss_kwargs = False
         if lambda_candidate < 0:
             raise ValueError("lambda_candidate must be non-negative")
         if temperature <= 0:
@@ -170,19 +173,51 @@ class ListedContrastiveTrainer(Trainer):
         self.last_generation_loss = 0.0
         self.last_candidate_loss = 0.0
         self.last_lambda_candidate = float(lambda_candidate)
+        self._reset_loss_window()
+        self.logged_loss_fields: dict[str, float | int] = {}
+        self.trainer_max_steps: int | None = None
+
+    def _reset_loss_window(self) -> None:
+        self._window_samples = 0
+        self._window_generation_sum = 0.0
+        self._window_weighted_candidate_sum = 0.0
+        self._window_contrastive_samples = 0
+        self._window_contrastive_loss_sum = 0.0
+        self._window_lambda_sum = 0.0
 
     def listed_log_fields(self) -> dict[str, float | int]:
-        """Fields HuggingFace Trainer should persist next to the mixed loss."""
+        """Window means. ``last_*`` remains the final microbatch only."""
+        samples = self._window_samples
+        contrastive = self._window_contrastive_samples
         return {
-            "generation_loss": float(self.last_generation_loss),
-            "candidate_loss": float(self.last_candidate_loss),
-            "lambda_candidate": float(self.last_lambda_candidate),
+            "generation_loss": (
+                self._window_generation_sum / samples if samples else 0.0
+            ),
+            "candidate_loss": (
+                self._window_weighted_candidate_sum / samples if samples else 0.0
+            ),
+            "contrastive_candidate_loss": (
+                self._window_contrastive_loss_sum / contrastive if contrastive else 0.0
+            ),
+            "lambda_candidate": (
+                self._window_lambda_sum / contrastive if contrastive else 0.0
+            ),
             "candidate_forwards": int(self.candidate_forwards),
+            "last_microbatch_generation_loss": float(self.last_generation_loss),
+            "last_microbatch_candidate_loss": float(self.last_candidate_loss),
+            "last_microbatch_lambda_candidate": float(self.last_lambda_candidate),
         }
 
     def log(self, logs, start_time=None):
-        merged = {**logs, **self.listed_log_fields()}
+        fields = self.listed_log_fields()
+        self.logged_loss_fields = fields
+        merged = {**logs, **fields}
+        self._reset_loss_window()
         return super().log(merged, start_time=start_time)
+
+    def create_optimizer_and_scheduler(self, num_training_steps: int):
+        self.trainer_max_steps = int(num_training_steps)
+        return super().create_optimizer_and_scheduler(num_training_steps)
 
     def _batch_lambda(self, weights, n_items: int, device) -> torch.Tensor:
         """Per-QA InfoNCE weights; missing values fall back to the global lambda."""
@@ -211,10 +246,11 @@ class ListedContrastiveTrainer(Trainer):
         outputs = model(**inputs)
         generation_loss = outputs.loss
         candidate_loss = generation_loss.new_zeros(())
+        sample_losses: list[torch.Tensor] = []
         n_items = len(prefix_ids_batch or prefix_batch or [])
         weights = self._batch_lambda(lambda_batch, n_items, generation_loss.device)
         if bool((weights > 0).any()):
-            candidate_loss = self._listed_candidate_loss(
+            candidate_loss, sample_losses = self._listed_candidate_loss(
                 model,
                 prefix_ids_batch or [],
                 relation_ids_batch or [],
@@ -223,9 +259,25 @@ class ListedContrastiveTrainer(Trainer):
                 listed_lists=listed_batch or [],
                 weights=weights,
             )
-        self.last_generation_loss = float(generation_loss.detach())
-        self.last_candidate_loss = float(candidate_loss.detach())
-        self.last_lambda_candidate = float(weights.mean().detach()) if n_items else float(self.lambda_candidate)
+        generation_value = float(generation_loss.detach())
+        candidate_value = float(candidate_loss.detach())
+        self.last_generation_loss = generation_value
+        self.last_candidate_loss = candidate_value
+        self.last_lambda_candidate = (
+            float(weights.mean().detach()) if n_items else float(self.lambda_candidate)
+        )
+        contrastive_losses = [loss for loss in sample_losses if loss is not None]
+        contrastive_weights = [
+            float(weights[index].detach())
+            for index, loss in enumerate(sample_losses)
+            if loss is not None
+        ]
+        self._window_samples += n_items
+        self._window_generation_sum += generation_value * n_items
+        self._window_weighted_candidate_sum += candidate_value * n_items
+        self._window_contrastive_samples += len(contrastive_losses)
+        self._window_contrastive_loss_sum += sum(float(loss.detach()) for loss in contrastive_losses)
+        self._window_lambda_sum += sum(contrastive_weights)
         loss = generation_loss + candidate_loss
         return (loss, outputs) if return_outputs else loss
 
@@ -239,7 +291,7 @@ class ListedContrastiveTrainer(Trainer):
         positives,
         listed_lists,
         weights: torch.Tensor | None = None,
-    ) -> torch.Tensor:
+    ) -> tuple[torch.Tensor, list[torch.Tensor | None]]:
         tokenizer = self.processing_class
         scorer = unwrap_for_scoring(model, getattr(self, "accelerator", None))
         device = next(scorer.parameters()).device
@@ -270,13 +322,15 @@ class ListedContrastiveTrainer(Trainer):
             prefix_lens.extend([packed_prefix] * len(packed_ids))
             group_sizes.append(len(packed_ids))
         if not rows:
-            return next(scorer.parameters()).new_zeros(())
+            return next(scorer.parameters()).new_zeros(()), [None] * len(group_sizes)
         scores = self._score_candidate_rows(scorer, tokenizer, rows, prefix_lens, device)
         losses = []
+        sample_losses: list[torch.Tensor | None] = []
         offset = 0
         for index, size in enumerate(group_sizes):
             if size < 2:
                 offset += size
+                sample_losses.append(None)
                 continue
             group = scores[offset : offset + size]
             offset += size
@@ -286,6 +340,7 @@ class ListedContrastiveTrainer(Trainer):
                 temperature=self.temperature,
             )
             weight = 1.0 if weights is None else weights[index]
+            sample_losses.append(sample_loss)
             losses.append(weight * sample_loss)
         if self.memory_size > 0:
             fresh = []
@@ -295,8 +350,8 @@ class ListedContrastiveTrainer(Trainer):
                         fresh.append(list(row))
             self.relation_memory = (self.relation_memory + fresh)[-self.memory_size:]
         if not losses:
-            return next(scorer.parameters()).new_zeros(())
-        return torch.stack(losses).mean()
+            return next(scorer.parameters()).new_zeros(()), sample_losses
+        return torch.stack(losses).mean(), sample_losses
 
     def _candidate_token_rows(
         self,

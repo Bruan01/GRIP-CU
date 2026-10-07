@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
 import torch
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "src"))
@@ -199,17 +200,25 @@ def test_listed_candidates_are_scored_in_one_forward() -> None:
     assert scores[0] > scores[1] - 1e-5
 
 
-def test_listed_log_fields_record_generation_and_lambda() -> None:
+def test_listed_log_fields_average_the_logging_window() -> None:
     trainer = ListedContrastiveTrainer.__new__(ListedContrastiveTrainer)
-    trainer.last_generation_loss = 0.155
-    trainer.last_candidate_loss = 0.42
-    trainer.last_lambda_candidate = 0.88
-    trainer.candidate_forwards = 3253
+    trainer._reset_loss_window()
+    trainer.last_generation_loss = 9.0
+    trainer.last_candidate_loss = 0.0
+    trainer.last_lambda_candidate = 1.0
+    trainer.candidate_forwards = 10
+    trainer._window_samples = 2
+    trainer._window_generation_sum = 0.2 + 0.4
+    trainer._window_weighted_candidate_sum = 0.5
+    trainer._window_contrastive_samples = 1
+    trainer._window_contrastive_loss_sum = 1.0
+    trainer._window_lambda_sum = 0.5
     fields = trainer.listed_log_fields()
-    assert fields["generation_loss"] == 0.155
-    assert fields["candidate_loss"] == 0.42
-    assert fields["lambda_candidate"] == 0.88
-    assert fields["candidate_forwards"] == 3253
+    assert fields["generation_loss"] == pytest.approx(0.3)
+    assert fields["candidate_loss"] == pytest.approx(0.25)
+    assert fields["contrastive_candidate_loss"] == 1.0
+    assert fields["lambda_candidate"] == 0.5
+    assert fields["last_microbatch_candidate_loss"] == 0.0
 
 
 def test_batch_lambda_uses_per_qa_weights_and_global_fallback() -> None:
@@ -241,6 +250,165 @@ def test_pick_closed_set_answer_uses_argmax_and_prompt_order_ties() -> None:
     relations = ["owns", "visits", "likes"]
     assert pick_closed_set_answer(relations, [1.0, 3.0, 2.0]) == "visits"
     assert pick_closed_set_answer(relations, [2.0, 2.0, 1.0]) == "owns"
+
+
+class _TinyLM(torch.nn.Module):
+    """One scalar parameter. Generation loss is that scalar times a token count."""
+
+    def __init__(self, value: float = 0.4) -> None:
+        super().__init__()
+        self.weight = torch.nn.Parameter(torch.tensor(value))
+
+    def forward(self, input_ids=None, attention_mask=None, labels=None, **kwargs):
+        count = float(input_ids.shape[0])
+        loss = self.weight * count
+        return type("Out", (), {"loss": loss, "logits": self.weight.view(1, 1, 1)})()
+
+
+class _ScriptedCandidate(ListedContrastiveTrainer):
+    """Replace 10-way scoring with fixed per-question losses."""
+
+    def __init__(self, *args, scripted: list[float | None], **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._scripted = list(scripted)
+        self._cursor = 0
+
+    def _listed_candidate_loss(self, model, prefix_ids_batch, relation_ids_batch, **kwargs):
+        weights = kwargs["weights"]
+        losses = []
+        sample_losses: list[torch.Tensor | None] = []
+        for index, _prefix in enumerate(prefix_ids_batch):
+            value = self._scripted[self._cursor]
+            self._cursor += 1
+            if value is None:
+                sample_losses.append(None)
+                continue
+            sample = model.weight.new_tensor(value)
+            sample_losses.append(sample)
+            losses.append(weights[index] * sample)
+        if not losses:
+            return model.weight.new_zeros(()), sample_losses
+        return torch.stack(losses).mean(), sample_losses
+
+
+def _microbatch(token_count: int, *, prefix: bool, weight: float | None) -> dict:
+    ids = torch.arange(token_count).view(1, token_count)
+    return {
+        "input_ids": ids,
+        "attention_mask": torch.ones_like(ids),
+        "labels": ids.clone(),
+        "prefix_ids": [[1, 2]] if prefix else [[]],
+        "relation_ids": [[[3], [4]]] if prefix else [[]],
+        "prefix_text": ["prefix"] if prefix else [""],
+        "positive_relation": ["gold"] if prefix else [""],
+        "listed_relations": [["other"]] if prefix else [[]],
+        "lambda_candidate": [weight],
+    }
+
+
+def _manual_window_gradient(model: _TinyLM, batches: list[dict], scripted: list[float | None]) -> torch.Tensor:
+    """Mean of microbatch losses, then one backward. This is the target scale."""
+    pieces = []
+    cursor = 0
+    for batch in batches:
+        count = float(batch["input_ids"].shape[0])
+        generation = model.weight * count
+        weights = batch["lambda_candidate"]
+        terms = []
+        for weight in weights:
+            value = scripted[cursor]
+            cursor += 1
+            if value is None or weight is None or float(weight) <= 0:
+                continue
+            terms.append(model.weight.new_tensor(float(weight) * value))
+        candidate = torch.stack(terms).mean() if terms else generation.new_zeros(())
+        pieces.append(generation + candidate)
+    loss = torch.stack(pieces).mean()
+    loss.backward()
+    assert model.weight.grad is not None
+    return model.weight.grad.detach().clone()
+
+
+def _trainer_window_gradient(
+    batches: list[dict],
+    scripted: list[float | None],
+    *,
+    configured_accum: int,
+) -> tuple[torch.Tensor, ListedContrastiveTrainer]:
+    model = _TinyLM()
+    trainer = _ScriptedCandidate(
+        model=model,
+        args=_cpu_training_args(configured_accum),
+        train_dataset=[{"input_ids": [1]}],
+        processing_class=object(),
+        scripted=scripted,
+        lambda_candidate=1.0,
+    )
+    trainer.current_gradient_accumulation_steps = len(batches)
+    trainer.accelerator.gradient_state.sync_gradients = False
+    for batch in batches:
+        trainer.training_step(model, batch)
+    assert model.weight.grad is not None
+    return model.weight.grad.detach().clone(), trainer
+
+
+def _cpu_training_args(accum: int):
+    from transformers import TrainingArguments
+
+    return TrainingArguments(
+        output_dir="/tmp/listed-accum-normalization",
+        per_device_train_batch_size=1,
+        gradient_accumulation_steps=accum,
+        learning_rate=1e-4,
+        report_to="none",
+        use_cpu=True,
+        disable_tqdm=True,
+    )
+
+
+def test_training_step_matches_mean_of_microbatch_losses() -> None:
+    batches = [
+        _microbatch(2, prefix=True, weight=0.5),
+        _microbatch(4, prefix=False, weight=None),
+        _microbatch(1, prefix=True, weight=1.0),
+        _microbatch(3, prefix=True, weight=0.25),
+    ]
+    scripted = [0.8, None, 1.2, 0.4]
+    manual = _manual_window_gradient(_TinyLM(), batches, scripted)
+    trained, trainer = _trainer_window_gradient(batches, scripted, configured_accum=4)
+    assert torch.allclose(trained, manual)
+    assert not torch.allclose(trained * 4, manual)
+    assert trainer.model_accepts_loss_kwargs is False
+
+
+def test_short_final_window_divides_by_its_actual_size() -> None:
+    batches = [
+        _microbatch(2, prefix=True, weight=1.0),
+        _microbatch(3, prefix=False, weight=None),
+    ]
+    scripted = [0.6, None]
+    manual = _manual_window_gradient(_TinyLM(), batches, scripted)
+    trained, _trainer = _trainer_window_gradient(batches, scripted, configured_accum=4)
+    assert torch.allclose(trained, manual)
+    over_divided = _manual_window_gradient(_TinyLM(), batches, scripted) * (2 / 4)
+    assert not torch.allclose(trained, over_divided)
+
+
+def test_logged_candidate_loss_keeps_earlier_microbatches() -> None:
+    batches = [
+        _microbatch(2, prefix=True, weight=0.5),
+        _microbatch(2, prefix=False, weight=None),
+    ]
+    scripted = [0.8, None]
+    _gradient, trainer = _trainer_window_gradient(batches, scripted, configured_accum=2)
+    fields = trainer.listed_log_fields()
+    assert fields["candidate_loss"] == pytest.approx(0.2)
+    assert fields["contrastive_candidate_loss"] == pytest.approx(0.8)
+    assert fields["lambda_candidate"] == pytest.approx(0.5)
+    assert fields["last_microbatch_candidate_loss"] == 0.0
+    # Both microbatches have one sample; token counts are 2 and 2, so the
+    # mean generation term is weight * 1, not the sum of the two counts.
+    assert fields["generation_loss"] == pytest.approx(0.4)
 
 
 def test_pack_decision_set_rows_share_one_prefix() -> None:
