@@ -1,0 +1,14 @@
+variant=random_k
+run_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261007_accumfix_random_k_full
+s1_adapter=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter
+input_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/grip_nell23k_tasks.json
+eval_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction.aligned.json
+sampler_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260926_shared_pool_samplers
+expected_listed=3253
+seed=2026
+tmux_session=accumfix-rk-cal-20261007
+listed_negative_source=score_hard
+note=full paper-task listed train on frozen train-only manifests; not 64-QA / 10-step
+2026-10-07T08:12:06+00:00
+cuda True NVIDIA GeForce RTX 3090
+manifest_random_k_sha256=ec66764bdb9c7d3af26a59c9a40854dde014bbe4a47482828b7293ff04303b94
