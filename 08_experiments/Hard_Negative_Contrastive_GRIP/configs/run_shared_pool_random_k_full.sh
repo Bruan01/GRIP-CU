@@ -173,6 +173,12 @@ skip_flags=()
 if [[ "${SKIP_TRAIN:-0}" == "1" && -f "$RUN_DIR/listed/adapter/adapter_config.json" ]]; then
   skip_flags+=(--skip_train)
 fi
+summary="$RUN_DIR/listed/summary.json"
+if [[ -f "$summary" ]] && ! "$PYTHON" -c 'import json,sys; json.load(open(sys.argv[1],encoding="utf-8"))' "$summary"; then
+  echo "error: listed summary exists but is not valid JSON: $summary" >&2
+  echo "  remove it before SKIP_TRAIN=1 if this eval was interrupted" >&2
+  exit 1
+fi
 
 LISTED_RUN="$RUN_DIR" B1_RUN="$OLD_RUN" bash "$HNG/configs/attach_frozen_b1.sh" | tee -a "$RUN_DIR/run.log"
 log "[launch] variant=$VARIANT manifest=$MANIFEST listed=$EXPECTED_LISTED accum=512"
