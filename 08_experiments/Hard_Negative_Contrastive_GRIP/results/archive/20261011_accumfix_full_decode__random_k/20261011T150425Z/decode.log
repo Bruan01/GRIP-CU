@@ -1,0 +1,523 @@
+[decode] listed-only start scale=full decode=both 2026-10-11T09:44:56+00:00
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:789: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[2026-10-11T09:45:00+0000] [INFO] event=model_load_start {"cuda_visible_devices": "all", "device_map": null, "dtype": "torch.bfloat16", "event": "model_load_start", "flash_attention": false, "host": "ubuntu", "load_dir": null, "lora_alpha": 32, "lora_r": 8, "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "peft": false, "pid": 639969, "quantization": false, "rank": "0", "target_modules": null}
+[2026-10-11T09:45:00+0000] [INFO] event=model_resolve_start {"cuda_visible_devices": "all", "event": "model_resolve_start", "host": "ubuntu", "local_files_only": true, "model_cache_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache", "model_download_workers": 1, "model_id": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "pid": 639969, "rank": "0"}
+[2026-10-11T09:45:00+0000] [INFO] event=model_local_candidates {"candidates": ["/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct"], "cuda_visible_devices": "all", "event": "model_local_candidates", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 639969, "rank": "0"}
+[2026-10-11T09:45:00+0000] [INFO] event=model_resolve_complete {"cuda_visible_devices": "all", "elapsed_seconds": 0.001, "event": "model_resolve_complete", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 639969, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "source": "local_cache", "total_weight_gib": 14.185, "weight_files": 4}
+[2026-10-11T09:45:01+0000] [INFO] event=model_weights_loading {"attention_implementation": "sdpa", "cuda_visible_devices": "all", "device_map": null, "event": "model_weights_loading", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pid": 639969, "quantization": false, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "torch_dtype": "torch.bfloat16"}
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 153.54it/s]
+[2026-10-11T09:45:01+0000] [INFO] event=model_weights_loaded {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 0.308, "event": "model_weights_loaded", "host": "ubuntu", "memory_footprint_gib": 14.185, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7615616512, "parameters_million": 7615.617, "pid": 639969, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7615616512, "trainable_parameters_million": 7615.617, "trainable_percent": 100.0}
+[2026-10-11T09:45:01+0000] [INFO] event=model_memory_after_base_load {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_memory_after_base_load", "host": "ubuntu", "pid": 639969, "rank": "0"}
+[2026-10-11T09:45:01+0000] [INFO] event=model_resize_token_embeddings {"cuda_visible_devices": "all", "event": "model_resize_token_embeddings", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_vocab_size": 152064, "pid": 639969, "rank": "0", "reason": "align_base_model_with_tokenizer", "tokenizer_vocab_size": 151666}
+[2026-10-11T09:45:16+0000] [INFO] event=tokenizer_ready {"cuda_visible_devices": "all", "event": "tokenizer_ready", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pad_token_id": 151665, "pid": 639969, "rank": "0", "tokenizer_class": "Qwen2TokenizerFast", "vocab_size": 151666}
+[2026-10-11T09:45:16+0000] [INFO] event=model_load_complete_memory {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_load_complete_memory", "host": "ubuntu", "pid": 639969, "rank": "0"}
+[2026-10-11T09:45:16+0000] [INFO] event=model_load_complete {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 15.883, "event": "model_load_complete", "host": "ubuntu", "memory_footprint_gib": 14.18, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7612763648, "parameters_million": 7612.764, "pid": 639969, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7612763648, "trainable_parameters_million": 7612.764, "trainable_percent": 100.0}
+[resume] predictions_correct.jsonl: 0/9895 done, 9895 remaining
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[generate] 1/9895 EM=1.0000
+[generate] 64/9895 EM=0.9219
+[generate] 128/9895 EM=0.9297
+[generate] 192/9895 EM=0.9271
+[generate] 256/9895 EM=0.9258
+[generate] 320/9895 EM=0.9250
+[generate] 384/9895 EM=0.9141
+[generate] 448/9895 EM=0.9107
+[generate] 512/9895 EM=0.9180
+[generate] 576/9895 EM=0.9167
+[generate] 640/9895 EM=0.9094
+[generate] 704/9895 EM=0.9077
+[generate] 768/9895 EM=0.9102
+[generate] 832/9895 EM=0.9111
+[generate] 896/9895 EM=0.9074
+[generate] 960/9895 EM=0.9073
+[generate] 1024/9895 EM=0.9043
+[generate] 1088/9895 EM=0.9062
+[generate] 1152/9895 EM=0.9071
+[generate] 1216/9895 EM=0.9030
+[generate] 1280/9895 EM=0.9047
+[generate] 1344/9895 EM=0.9033
+[generate] 1408/9895 EM=0.9048
+[generate] 1472/9895 EM=0.9049
+[generate] 1536/9895 EM=0.9036
+[generate] 1600/9895 EM=0.9031
+[generate] 1664/9895 EM=0.9020
+[generate] 1728/9895 EM=0.9010
+[generate] 1792/9895 EM=0.8996
+[generate] 1856/9895 EM=0.9014
+[generate] 1920/9895 EM=0.9010
+[generate] 1984/9895 EM=0.9012
+[generate] 2048/9895 EM=0.9004
+[generate] 2112/9895 EM=0.8987
+[generate] 2176/9895 EM=0.8998
+[generate] 2240/9895 EM=0.8996
+[generate] 2304/9895 EM=0.9002
+[generate] 2368/9895 EM=0.8986
+[generate] 2432/9895 EM=0.8984
+[generate] 2496/9895 EM=0.8986
+[generate] 2560/9895 EM=0.8992
+[generate] 2624/9895 EM=0.9002
+[generate] 2688/9895 EM=0.9010
+[generate] 2752/9895 EM=0.9019
+[generate] 2816/9895 EM=0.9016
+[generate] 2880/9895 EM=0.9017
+[generate] 2944/9895 EM=0.9015
+[generate] 3008/9895 EM=0.9026
+[generate] 3072/9895 EM=0.9007
+[generate] 3136/9895 EM=0.9005
+[generate] 3200/9895 EM=0.9012
+[generate] 3264/9895 EM=0.9010
+[generate] 3328/9895 EM=0.9002
+[generate] 3392/9895 EM=0.8992
+[generate] 3456/9895 EM=0.9005
+[generate] 3520/9895 EM=0.9000
+[generate] 3584/9895 EM=0.9007
+[generate] 3648/9895 EM=0.8994
+[generate] 3712/9895 EM=0.8998
+[generate] 3776/9895 EM=0.8988
+[generate] 3840/9895 EM=0.8979
+[generate] 3904/9895 EM=0.8983
+[generate] 3968/9895 EM=0.8987
+[generate] 4032/9895 EM=0.8983
+[generate] 4096/9895 EM=0.8977
+[generate] 4160/9895 EM=0.8976
+[generate] 4224/9895 EM=0.8949
+[generate] 4288/9895 EM=0.8946
+[generate] 4352/9895 EM=0.8938
+[generate] 4416/9895 EM=0.8938
+[generate] 4480/9895 EM=0.8935
+[generate] 4544/9895 EM=0.8941
+[generate] 4608/9895 EM=0.8943
+[generate] 4672/9895 EM=0.8932
+[generate] 4736/9895 EM=0.8929
+[generate] 4800/9895 EM=0.8942
+[generate] 4864/9895 EM=0.8943
+[generate] 4928/9895 EM=0.8939
+[generate] 4992/9895 EM=0.8940
+[generate] 5056/9895 EM=0.8932
+[generate] 5120/9895 EM=0.8930
+[generate] 5184/9895 EM=0.8927
+[generate] 5248/9895 EM=0.8920
+[generate] 5312/9895 EM=0.8927
+[generate] 5376/9895 EM=0.8930
+[generate] 5440/9895 EM=0.8925
+[generate] 5504/9895 EM=0.8919
+[generate] 5568/9895 EM=0.8917
+[generate] 5632/9895 EM=0.8917
+[generate] 5696/9895 EM=0.8915
+[generate] 5760/9895 EM=0.8911
+[generate] 5824/9895 EM=0.8913
+[generate] 5888/9895 EM=0.8910
+[generate] 5952/9895 EM=0.8911
+[generate] 6016/9895 EM=0.8906
+[generate] 6080/9895 EM=0.8910
+[generate] 6144/9895 EM=0.8910
+[generate] 6208/9895 EM=0.8908
+[generate] 6272/9895 EM=0.8905
+[generate] 6336/9895 EM=0.8908
+[generate] 6400/9895 EM=0.8905
+[generate] 6464/9895 EM=0.8906
+[generate] 6528/9895 EM=0.8906
+[generate] 6592/9895 EM=0.8909
+[generate] 6656/9895 EM=0.8914
+[generate] 6720/9895 EM=0.8914
+[generate] 6784/9895 EM=0.8908
+[generate] 6848/9895 EM=0.8908
+[generate] 6912/9895 EM=0.8905
+[generate] 6976/9895 EM=0.8909
+[generate] 7040/9895 EM=0.8913
+[generate] 7104/9895 EM=0.8912
+[generate] 7168/9895 EM=0.8916
+[generate] 7232/9895 EM=0.8912
+[generate] 7296/9895 EM=0.8913
+[generate] 7360/9895 EM=0.8912
+[generate] 7424/9895 EM=0.8910
+[generate] 7488/9895 EM=0.8909
+[generate] 7552/9895 EM=0.8913
+[generate] 7616/9895 EM=0.8917
+[generate] 7680/9895 EM=0.8910
+[generate] 7744/9895 EM=0.8906
+[generate] 7808/9895 EM=0.8904
+[generate] 7872/9895 EM=0.8904
+[generate] 7936/9895 EM=0.8908
+[generate] 8000/9895 EM=0.8901
+[generate] 8064/9895 EM=0.8904
+[generate] 8128/9895 EM=0.8899
+[generate] 8192/9895 EM=0.8903
+[generate] 8256/9895 EM=0.8904
+[generate] 8320/9895 EM=0.8903
+[generate] 8384/9895 EM=0.8900
+[generate] 8448/9895 EM=0.8904
+[generate] 8512/9895 EM=0.8905
+[generate] 8576/9895 EM=0.8909
+[generate] 8640/9895 EM=0.8907
+[generate] 8704/9895 EM=0.8910
+[generate] 8768/9895 EM=0.8907
+[generate] 8832/9895 EM=0.8909
+[generate] 8896/9895 EM=0.8910
+[generate] 8960/9895 EM=0.8903
+[generate] 9024/9895 EM=0.8905
+[generate] 9088/9895 EM=0.8906
+[generate] 9152/9895 EM=0.8906
+[generate] 9216/9895 EM=0.8907
+[generate] 9280/9895 EM=0.8908
+[generate] 9344/9895 EM=0.8905
+[generate] 9408/9895 EM=0.8901
+[generate] 9472/9895 EM=0.8899
+[generate] 9536/9895 EM=0.8901
+[generate] 9600/9895 EM=0.8905
+[generate] 9664/9895 EM=0.8904
+[generate] 9728/9895 EM=0.8901
+[generate] 9792/9895 EM=0.8896
+[generate] 9856/9895 EM=0.8899
+[generate] 9895/9895 EM=0.8900
+[eval generate] /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261007_accumfix_random_k_full/listed/adapter EM=0.8900 n=9895
+[resume] predictions_closed_set.jsonl: 0/9895 done, 9895 remaining
+[closed_set] 1/9895 hits@1=1.0000
+[closed_set] 64/9895 hits@1=0.9219
+[closed_set] 128/9895 hits@1=0.9453
+[closed_set] 192/9895 hits@1=0.9479
+[closed_set] 256/9895 hits@1=0.9531
+[closed_set] 320/9895 hits@1=0.9500
+[closed_set] 384/9895 hits@1=0.9375
+[closed_set] 448/9895 hits@1=0.9353
+[closed_set] 512/9895 hits@1=0.9395
+[closed_set] 576/9895 hits@1=0.9375
+[closed_set] 640/9895 hits@1=0.9391
+[closed_set] 704/9895 hits@1=0.9375
+[closed_set] 768/9895 hits@1=0.9362
+[closed_set] 832/9895 hits@1=0.9351
+[closed_set] 896/9895 hits@1=0.9319
+[closed_set] 960/9895 hits@1=0.9323
+[closed_set] 1024/9895 hits@1=0.9316
+[closed_set] 1088/9895 hits@1=0.9347
+[closed_set] 1152/9895 hits@1=0.9358
+[closed_set] 1216/9895 hits@1=0.9334
+[closed_set] 1280/9895 hits@1=0.9344
+[closed_set] 1344/9895 hits@1=0.9353
+[closed_set] 1408/9895 hits@1=0.9354
+[closed_set] 1472/9895 hits@1=0.9355
+[closed_set] 1536/9895 hits@1=0.9342
+[closed_set] 1600/9895 hits@1=0.9325
+[closed_set] 1664/9895 hits@1=0.9321
+[closed_set] 1728/9895 hits@1=0.9317
+[closed_set] 1792/9895 hits@1=0.9314
+[closed_set] 1856/9895 hits@1=0.9327
+[closed_set] 1920/9895 hits@1=0.9318
+[closed_set] 1984/9895 hits@1=0.9315
+[closed_set] 2048/9895 hits@1=0.9312
+[closed_set] 2112/9895 hits@1=0.9309
+[closed_set] 2176/9895 hits@1=0.9315
+[closed_set] 2240/9895 hits@1=0.9308
+[closed_set] 2304/9895 hits@1=0.9314
+[closed_set] 2368/9895 hits@1=0.9299
+[closed_set] 2432/9895 hits@1=0.9293
+[closed_set] 2496/9895 hits@1=0.9291
+[closed_set] 2560/9895 hits@1=0.9297
+[closed_set] 2624/9895 hits@1=0.9306
+[closed_set] 2688/9895 hits@1=0.9312
+[closed_set] 2752/9895 hits@1=0.9317
+[closed_set] 2816/9895 hits@1=0.9318
+[closed_set] 2880/9895 hits@1=0.9319
+[closed_set] 2944/9895 hits@1=0.9317
+[closed_set] 3008/9895 hits@1=0.9322
+[closed_set] 3072/9895 hits@1=0.9310
+[closed_set] 3136/9895 hits@1=0.9308
+[closed_set] 3200/9895 hits@1=0.9316
+[closed_set] 3264/9895 hits@1=0.9314
+[closed_set] 3328/9895 hits@1=0.9306
+[closed_set] 3392/9895 hits@1=0.9301
+[closed_set] 3456/9895 hits@1=0.9308
+[closed_set] 3520/9895 hits@1=0.9307
+[closed_set] 3584/9895 hits@1=0.9314
+[closed_set] 3648/9895 hits@1=0.9306
+[closed_set] 3712/9895 hits@1=0.9308
+[closed_set] 3776/9895 hits@1=0.9298
+[closed_set] 3840/9895 hits@1=0.9284
+[closed_set] 3904/9895 hits@1=0.9285
+[closed_set] 3968/9895 hits@1=0.9284
+[closed_set] 4032/9895 hits@1=0.9283
+[closed_set] 4096/9895 hits@1=0.9275
+[closed_set] 4160/9895 hits@1=0.9274
+[closed_set] 4224/9895 hits@1=0.9259
+[closed_set] 4288/9895 hits@1=0.9251
+[closed_set] 4352/9895 hits@1=0.9251
+[closed_set] 4416/9895 hits@1=0.9255
+[closed_set] 4480/9895 hits@1=0.9252
+[closed_set] 4544/9895 hits@1=0.9258
+[closed_set] 4608/9895 hits@1=0.9258
+[closed_set] 4672/9895 hits@1=0.9249
+[closed_set] 4736/9895 hits@1=0.9244
+[closed_set] 4800/9895 hits@1=0.9250
+[closed_set] 4864/9895 hits@1=0.9250
+[closed_set] 4928/9895 hits@1=0.9247
+[closed_set] 4992/9895 hits@1=0.9253
+[closed_set] 5056/9895 hits@1=0.9250
+[closed_set] 5120/9895 hits@1=0.9250
+[closed_set] 5184/9895 hits@1=0.9248
+[closed_set] 5248/9895 hits@1=0.9242
+[closed_set] 5312/9895 hits@1=0.9247
+[closed_set] 5376/9895 hits@1=0.9245
+[closed_set] 5440/9895 hits@1=0.9243
+[closed_set] 5504/9895 hits@1=0.9235
+[closed_set] 5568/9895 hits@1=0.9235
+[closed_set] 5632/9895 hits@1=0.9237
+[closed_set] 5696/9895 hits@1=0.9238
+[closed_set] 5760/9895 hits@1=0.9238
+[closed_set] 5824/9895 hits@1=0.9238
+[closed_set] 5888/9895 hits@1=0.9237
+[closed_set] 5952/9895 hits@1=0.9241
+[closed_set] 6016/9895 hits@1=0.9235
+[closed_set] 6080/9895 hits@1=0.9238
+[closed_set] 6144/9895 hits@1=0.9240
+[closed_set] 6208/9895 hits@1=0.9238
+[closed_set] 6272/9895 hits@1=0.9238
+[closed_set] 6336/9895 hits@1=0.9238
+[closed_set] 6400/9895 hits@1=0.9234
+[closed_set] 6464/9895 hits@1=0.9237
+[closed_set] 6528/9895 hits@1=0.9233
+[closed_set] 6592/9895 hits@1=0.9234
+[closed_set] 6656/9895 hits@1=0.9238
+[closed_set] 6720/9895 hits@1=0.9237
+[closed_set] 6784/9895 hits@1=0.9235
+[closed_set] 6848/9895 hits@1=0.9233
+[closed_set] 6912/9895 hits@1=0.9233
+[closed_set] 6976/9895 hits@1=0.9235
+[closed_set] 7040/9895 hits@1=0.9236
+[closed_set] 7104/9895 hits@1=0.9236
+[closed_set] 7168/9895 hits@1=0.9238
+[closed_set] 7232/9895 hits@1=0.9237
+[closed_set] 7296/9895 hits@1=0.9235
+[closed_set] 7360/9895 hits@1=0.9236
+[closed_set] 7424/9895 hits@1=0.9234
+[closed_set] 7488/9895 hits@1=0.9231
+[closed_set] 7552/9895 hits@1=0.9235
+[closed_set] 7616/9895 hits@1=0.9240
+[closed_set] 7680/9895 hits@1=0.9233
+[closed_set] 7744/9895 hits@1=0.9226
+[closed_set] 7808/9895 hits@1=0.9226
+[closed_set] 7872/9895 hits@1=0.9229
+[closed_set] 7936/9895 hits@1=0.9233
+[closed_set] 8000/9895 hits@1=0.9229
+[closed_set] 8064/9895 hits@1=0.9231
+[closed_set] 8128/9895 hits@1=0.9227
+[closed_set] 8192/9895 hits@1=0.9230
+[closed_set] 8256/9895 hits@1=0.9231
+[closed_set] 8320/9895 hits@1=0.9231
+[closed_set] 8384/9895 hits@1=0.9232
+[closed_set] 8448/9895 hits@1=0.9234
+[closed_set] 8512/9895 hits@1=0.9235
+[closed_set] 8576/9895 hits@1=0.9237
+[closed_set] 8640/9895 hits@1=0.9240
+[closed_set] 8704/9895 hits@1=0.9242
+[closed_set] 8768/9895 hits@1=0.9243
+[closed_set] 8832/9895 hits@1=0.9241
+[closed_set] 8896/9895 hits@1=0.9242
+[closed_set] 8960/9895 hits@1=0.9238
+[closed_set] 9024/9895 hits@1=0.9241
+[closed_set] 9088/9895 hits@1=0.9242
+[closed_set] 9152/9895 hits@1=0.9245
+[closed_set] 9216/9895 hits@1=0.9245
+[closed_set] 9280/9895 hits@1=0.9246
+[closed_set] 9344/9895 hits@1=0.9243
+[closed_set] 9408/9895 hits@1=0.9239
+[closed_set] 9472/9895 hits@1=0.9239
+[closed_set] 9536/9895 hits@1=0.9239
+[closed_set] 9600/9895 hits@1=0.9243
+[closed_set] 9664/9895 hits@1=0.9239
+[closed_set] 9728/9895 hits@1=0.9238
+[closed_set] 9792/9895 hits@1=0.9235
+[closed_set] 9856/9895 hits@1=0.9238
+[closed_set] 9895/9895 hits@1=0.9240
+[eval closed_set] /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261007_accumfix_random_k_full/listed/adapter EM=0.9240 hits@1=0.9238 n=9895
+
+=== generate comparison ===
+{
+  "output_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261011_accumfix_full_decode/random_k",
+  "eval_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json",
+  "eval_name": "full",
+  "created_at_utc": "2026-10-11T12:24:34.384824+00:00",
+  "b1_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.8502273875694796
+    },
+    "wrong_in_list": 1160,
+    "wrong_out_of_list": 322,
+    "test": {
+      "count": 4944,
+      "em": 0.8491100323624595
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8513431629973742
+    }
+  },
+  "listed_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.890045477513896
+    },
+    "candidate_valid_rate": 0.9518948964123295,
+    "candidate_invalid": 476,
+    "wrong_in_list": 614,
+    "wrong_out_of_list": 474,
+    "test": {
+      "count": 4944,
+      "em": 0.8861245954692557
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8939608159967684
+    }
+  },
+  "b1_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8690247599797878
+    },
+    "wrong_in_list": 1296,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8693365695792881
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.9209662969112187,
+    "hits@1": 0.8690247599797878,
+    "hits@3": 0.9674583122789288,
+    "hits@10": 1.0
+  },
+  "listed_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.9240020212228398
+    },
+    "candidate_valid_rate": 1.0,
+    "candidate_invalid": 0,
+    "wrong_in_list": 752,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.9231391585760518
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.9248636639062816
+    },
+    "mrr": 0.9572979779750876,
+    "hits@1": 0.923799898938858,
+    "hits@3": 0.9912076806467913,
+    "hits@10": 1.0
+  },
+  "listed_minus_b1_generate_em": 0.03981808994441638,
+  "listed_closed_set_minus_b1_generate_em": 0.07377463365336023,
+  "listed_closed_set_minus_b1_closed_set_em": 0.05497726124305202,
+  "listed_closed_set_minus_listed_generate_em": 0.033956543708943854,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode",
+    "copied_at_utc": "2026-10-11T09:44:56+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Closed-set EM is argmax over the official 10-way continuations. A paper signal needs listed closed-set > B1 generate on the official NELL23K test split. Current slice: full. B1 predictions were copied from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode and were not re-decoded."
+}
+
+=== closed-set comparison ===
+{
+  "output_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261011_accumfix_full_decode/random_k",
+  "eval_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json",
+  "eval_name": "full",
+  "created_at_utc": "2026-10-11T12:24:34.384824+00:00",
+  "b1_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.8502273875694796
+    },
+    "wrong_in_list": 1160,
+    "wrong_out_of_list": 322,
+    "test": {
+      "count": 4944,
+      "em": 0.8491100323624595
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8513431629973742
+    }
+  },
+  "listed_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.890045477513896
+    },
+    "candidate_valid_rate": 0.9518948964123295,
+    "candidate_invalid": 476,
+    "wrong_in_list": 614,
+    "wrong_out_of_list": 474,
+    "test": {
+      "count": 4944,
+      "em": 0.8861245954692557
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8939608159967684
+    }
+  },
+  "b1_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8690247599797878
+    },
+    "wrong_in_list": 1296,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8693365695792881
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.9209662969112187,
+    "hits@1": 0.8690247599797878,
+    "hits@3": 0.9674583122789288,
+    "hits@10": 1.0
+  },
+  "listed_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.9240020212228398
+    },
+    "candidate_valid_rate": 1.0,
+    "candidate_invalid": 0,
+    "wrong_in_list": 752,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.9231391585760518
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.9248636639062816
+    },
+    "mrr": 0.9572979779750876,
+    "hits@1": 0.923799898938858,
+    "hits@3": 0.9912076806467913,
+    "hits@10": 1.0
+  },
+  "listed_minus_b1_generate_em": 0.03981808994441638,
+  "listed_closed_set_minus_b1_generate_em": 0.07377463365336023,
+  "listed_closed_set_minus_b1_closed_set_em": 0.05497726124305202,
+  "listed_closed_set_minus_listed_generate_em": 0.033956543708943854,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode",
+    "copied_at_utc": "2026-10-11T09:44:56+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Closed-set EM is argmax over the official 10-way continuations. A paper signal needs listed closed-set > B1 generate on the official NELL23K test split. Current slice: full. B1 predictions were copied from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode and were not re-decoded."
+}
+[decode] listed-only done 2026-10-11T12:24:35+00:00
+[archive] SKIP_RESULT_ARCHIVE=1; not snapshotting
