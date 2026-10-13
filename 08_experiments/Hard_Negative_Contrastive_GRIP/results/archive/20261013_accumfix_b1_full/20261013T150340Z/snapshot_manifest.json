@@ -1,0 +1,31 @@
+{
+  "source_run": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full",
+  "snapshot": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/archive/20261013_accumfix_b1_full/20261013T150340Z",
+  "copied": [
+    "b1/adapter/README.md",
+    "b1/adapter/adapter_config.json",
+    "b1/adapter/run_metadata.json",
+    "b1/predictions_correct.jsonl",
+    "b1/summary.json",
+    "full_decode/b1/FROZEN_FROM.json",
+    "full_decode/b1/predictions_correct.jsonl",
+    "full_decode/b1/summary.json",
+    "full_decode/b1/summary_closed_set.json",
+    "full_decode/comparison.json",
+    "full_decode/comparison_closed_set.json",
+    "full_decode/decode.log",
+    "full_decode/environment.txt",
+    "full_decode/listed/predictions_correct.jsonl",
+    "full_decode/listed/summary.json",
+    "full_decode/listed/summary_closed_set.json",
+    "run.log",
+    "run_config.json"
+  ],
+  "metrics": {
+    "listed_em": null,
+    "b1_em": 0.84375,
+    "listed_minus_b1_em": null,
+    "eval_n": 96
+  },
+  "note": "Lightweight Git snapshot. Adapter weights and score dumps remain in results/runs/."
+}

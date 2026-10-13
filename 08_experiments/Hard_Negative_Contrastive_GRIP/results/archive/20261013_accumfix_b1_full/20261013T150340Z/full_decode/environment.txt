@@ -1,0 +1,10 @@
+scale=full
+decode=both
+adapter_run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full
+listed_adapter=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter
+b1_decode_run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode
+eval_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json
+run_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/full_decode
+wait_for_pattern=
+tmux_session=accumfix-b1-20261013
+2026-10-13T12:22:48+00:00

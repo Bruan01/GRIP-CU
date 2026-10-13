@@ -1,0 +1,853 @@
+[b1] started 2026-10-13T08:43:22+00:00
+[2026-10-13T08:43:26+0000] [INFO] event=random_seed_set {"cuda_visible_devices": "all", "event": "random_seed_set", "host": "ubuntu", "pid": 891373, "rank": "0", "seed": 2026}
+[data] paper task file context=80820 qa=12014 relation_qa=3297 listed_relation_qa=3253 skipped_unmatched=44 exact_match=2656 alias_match=597 listed_negative_source=train_graph vocab=198 listed_negative_seed=2026 question_ids=positional embed_file=None embed_pool=40 embed_tau=0.1 eval=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction.aligned.json
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:789: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[2026-10-13T08:43:27+0000] [INFO] event=model_load_start {"cuda_visible_devices": "all", "device_map": null, "dtype": "torch.bfloat16", "event": "model_load_start", "flash_attention": false, "host": "ubuntu", "load_dir": null, "lora_alpha": 32, "lora_r": 8, "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "peft": false, "pid": 891373, "quantization": false, "rank": "0", "target_modules": null}
+[2026-10-13T08:43:27+0000] [INFO] event=model_resolve_start {"cuda_visible_devices": "all", "event": "model_resolve_start", "host": "ubuntu", "local_files_only": true, "model_cache_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache", "model_download_workers": 1, "model_id": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "pid": 891373, "rank": "0"}
+[2026-10-13T08:43:27+0000] [INFO] event=model_local_candidates {"candidates": ["/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct"], "cuda_visible_devices": "all", "event": "model_local_candidates", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 891373, "rank": "0"}
+[2026-10-13T08:43:27+0000] [INFO] event=model_resolve_complete {"cuda_visible_devices": "all", "elapsed_seconds": 0.001, "event": "model_resolve_complete", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 891373, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "source": "local_cache", "total_weight_gib": 14.185, "weight_files": 4}
+[2026-10-13T08:43:27+0000] [INFO] event=model_weights_loading {"attention_implementation": "sdpa", "cuda_visible_devices": "all", "device_map": null, "event": "model_weights_loading", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pid": 891373, "quantization": false, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "torch_dtype": "torch.bfloat16"}
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 150.86it/s]
+[2026-10-13T08:43:27+0000] [INFO] event=model_weights_loaded {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 0.36, "event": "model_weights_loaded", "host": "ubuntu", "memory_footprint_gib": 14.185, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7615616512, "parameters_million": 7615.617, "pid": 891373, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7615616512, "trainable_parameters_million": 7615.617, "trainable_percent": 100.0}
+[2026-10-13T08:43:27+0000] [INFO] event=model_memory_after_base_load {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_memory_after_base_load", "host": "ubuntu", "pid": 891373, "rank": "0"}
+[2026-10-13T08:43:27+0000] [INFO] event=model_resize_token_embeddings {"cuda_visible_devices": "all", "event": "model_resize_token_embeddings", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_vocab_size": 152064, "pid": 891373, "rank": "0", "reason": "align_base_model_with_tokenizer", "tokenizer_vocab_size": 151666}
+[2026-10-13T08:43:43+0000] [INFO] event=tokenizer_ready {"cuda_visible_devices": "all", "event": "tokenizer_ready", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pad_token_id": 151665, "pid": 891373, "rank": "0", "tokenizer_class": "Qwen2TokenizerFast", "vocab_size": 151666}
+[2026-10-13T08:43:43+0000] [INFO] event=model_load_complete_memory {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_load_complete_memory", "host": "ubuntu", "pid": 891373, "rank": "0"}
+[2026-10-13T08:43:43+0000] [INFO] event=model_load_complete {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 16.012, "event": "model_load_complete", "host": "ubuntu", "memory_footprint_gib": 14.18, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7612763648, "parameters_million": 7612.764, "pid": 891373, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7612763648, "trainable_parameters_million": 7612.764, "trainable_percent": 100.0}
+[b1] qa samples: 12014 listed_mean=2.4 lambda=0.0 per_qa_lambda=0 batch=1 accum=512
+[b1] start fresh (no checkpoint)
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'bos_token_id': None, 'pad_token_id': 151665}.
+  0%|          | 0/240 [00:00<?, ?it/s]  0%|          | 1/240 [00:55<3:42:25, 55.84s/it]                                                   0%|          | 1/240 [00:55<3:42:25, 55.84s/it]  1%|          | 2/240 [01:51<3:41:00, 55.71s/it]                                                   1%|          | 2/240 [01:51<3:41:00, 55.71s/it]  1%|▏         | 3/240 [02:47<3:40:32, 55.83s/it]                                                   1%|▏         | 3/240 [02:47<3:40:32, 55.83s/it]  2%|▏         | 4/240 [03:43<3:39:39, 55.85s/it]                                                   2%|▏         | 4/240 [03:43<3:39:39, 55.85s/it]  2%|▏         | 5/240 [04:40<3:40:05, 56.19s/it]                                                   2%|▏         | 5/240 [04:40<3:40:05, 56.19s/it]  2%|▎         | 6/240 [05:35<3:38:25, 56.01s/it]                                                   2%|▎         | 6/240 [05:35<3:38:25, 56.01s/it]  3%|▎         | 7/240 [06:33<3:39:06, 56.42s/it]                                                   3%|▎         | 7/240 [06:33<3:39:06, 56.42s/it]  3%|▎         | 8/240 [07:30<3:39:16, 56.71s/it]                                                   3%|▎         | 8/240 [07:30<3:39:16, 56.71s/it]  4%|▍         | 9/240 [08:27<3:39:01, 56.89s/it]                                                   4%|▍         | 9/240 [08:27<3:39:01, 56.89s/it]  4%|▍         | 10/240 [09:24<3:37:38, 56.78s/it]                                                    4%|▍         | 10/240 [09:24<3:37:38, 56.78s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+  5%|▍         | 11/240 [10:22<3:38:08, 57.16s/it]                                                    5%|▍         | 11/240 [10:22<3:38:08, 57.16s/it]  5%|▌         | 12/240 [11:19<3:37:21, 57.20s/it]                                                    5%|▌         | 12/240 [11:19<3:37:21, 57.20s/it]  5%|▌         | 13/240 [12:16<3:36:38, 57.26s/it]                                                    5%|▌         | 13/240 [12:16<3:36:38, 57.26s/it]  6%|▌         | 14/240 [13:13<3:35:25, 57.19s/it]                                                    6%|▌         | 14/240 [13:13<3:35:25, 57.19s/it]  6%|▋         | 15/240 [14:09<3:32:20, 56.63s/it]                                                    6%|▋         | 15/240 [14:09<3:32:20, 56.63s/it]  7%|▋         | 16/240 [15:06<3:32:04, 56.81s/it]                                                    7%|▋         | 16/240 [15:06<3:32:04, 56.81s/it]  7%|▋         | 17/240 [16:04<3:32:01, 57.05s/it]                                                    7%|▋         | 17/240 [16:04<3:32:01, 57.05s/it]  8%|▊         | 18/240 [17:01<3:31:34, 57.18s/it]                                                    8%|▊         | 18/240 [17:01<3:31:34, 57.18s/it]  8%|▊         | 19/240 [17:59<3:30:58, 57.28s/it]                                                    8%|▊         | 19/240 [17:59<3:30:58, 57.28s/it]  8%|▊         | 20/240 [18:56<3:29:54, 57.25s/it]                                                    8%|▊         | 20/240 [18:56<3:29:54, 57.25s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+  9%|▉         | 21/240 [19:54<3:30:32, 57.68s/it]                                                    9%|▉         | 21/240 [19:54<3:30:32, 57.68s/it]  9%|▉         | 22/240 [20:51<3:28:05, 57.27s/it]                                                  {'loss': 2.4368, 'grad_norm': 10.258684158325195, 'learning_rate': 0.001, 'generation_loss': 2.436785384081304, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 2.537992238998413, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.04}
+{'loss': 1.1775, 'grad_norm': 3.685896158218384, 'learning_rate': 0.0009958333333333334, 'generation_loss': 1.1774922822369263, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 1.2140791416168213, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.09}
+{'loss': 0.5361, 'grad_norm': 1.2274740934371948, 'learning_rate': 0.0009916666666666667, 'generation_loss': 0.536119972995948, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.5100331902503967, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.13}
+{'loss': 0.4507, 'grad_norm': 0.8772847056388855, 'learning_rate': 0.0009875, 'generation_loss': 0.45066349880653434, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 1.041650414466858, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.17}
+{'loss': 0.4469, 'grad_norm': 0.5300189852714539, 'learning_rate': 0.0009833333333333332, 'generation_loss': 0.4469481805281248, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4703449308872223, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.21}
+{'loss': 0.3966, 'grad_norm': 0.26852211356163025, 'learning_rate': 0.0009791666666666666, 'generation_loss': 0.39658365643117577, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.5076048970222473, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.26}
+{'loss': 0.3984, 'grad_norm': 0.1874724179506302, 'learning_rate': 0.000975, 'generation_loss': 0.3984022713266313, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.30601683259010315, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.3}
+{'loss': 0.3839, 'grad_norm': 0.1801299750804901, 'learning_rate': 0.0009708333333333333, 'generation_loss': 0.3838619609014131, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2723645269870758, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.34}
+{'loss': 0.3879, 'grad_norm': 0.1684434413909912, 'learning_rate': 0.0009666666666666667, 'generation_loss': 0.38785572577035055, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2555531859397888, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.38}
+{'loss': 0.3815, 'grad_norm': 0.15523186326026917, 'learning_rate': 0.0009625, 'generation_loss': 0.3815238809038419, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26460182666778564, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.43}
+{'loss': 0.3872, 'grad_norm': 0.14240577816963196, 'learning_rate': 0.0009583333333333334, 'generation_loss': 0.38717322240700014, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4971187710762024, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.47}
+{'loss': 0.3723, 'grad_norm': 0.136689230799675, 'learning_rate': 0.0009541666666666667, 'generation_loss': 0.37233702643425204, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.6773275136947632, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.51}
+{'loss': 0.373, 'grad_norm': 0.1363789141178131, 'learning_rate': 0.00095, 'generation_loss': 0.37299882670049556, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.34588176012039185, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.55}
+{'loss': 0.3748, 'grad_norm': 0.1249055415391922, 'learning_rate': 0.0009458333333333334, 'generation_loss': 0.37475597398588434, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2502695918083191, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.6}
+{'loss': 0.3656, 'grad_norm': 0.12619419395923615, 'learning_rate': 0.0009416666666666667, 'generation_loss': 0.3656145023996942, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3825872540473938, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.64}
+{'loss': 0.3677, 'grad_norm': 0.12865369021892548, 'learning_rate': 0.0009375, 'generation_loss': 0.3677266528829932, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.36553388833999634, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.68}
+{'loss': 0.3609, 'grad_norm': 0.14525166153907776, 'learning_rate': 0.0009333333333333333, 'generation_loss': 0.3609418650739826, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15937356650829315, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.72}
+{'loss': 0.3604, 'grad_norm': 0.12360213696956635, 'learning_rate': 0.0009291666666666667, 'generation_loss': 0.36035306827398017, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2702297270298004, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.77}
+{'loss': 0.3671, 'grad_norm': 0.13694919645786285, 'learning_rate': 0.000925, 'generation_loss': 0.36712933314265683, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.34773361682891846, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.81}
+{'loss': 0.3479, 'grad_norm': 0.1165468618273735, 'learning_rate': 0.0009208333333333333, 'generation_loss': 0.3479218754800968, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4200208783149719, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.85}
+{'loss': 0.3599, 'grad_norm': 0.116172656416893, 'learning_rate': 0.0009166666666666666, 'generation_loss': 0.35985559565597214, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1920900195837021, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.89}
+  9%|▉         | 22/240 [20:51<3:28:05, 57.27s/it] 10%|▉         | 23/240 [21:47<3:25:38, 56.86s/it]                                                   10%|▉         | 23/240 [21:47<3:25:38, 56.86s/it] 10%|█         | 24/240 [22:13<2:51:37, 47.67s/it]                                                   10%|█         | 24/240 [22:13<2:51:37, 47.67s/it] 10%|█         | 25/240 [23:08<2:59:05, 49.98s/it]                                                   10%|█         | 25/240 [23:08<2:59:05, 49.98s/it] 11%|█         | 26/240 [24:05<3:05:39, 52.05s/it]                                                   11%|█         | 26/240 [24:05<3:05:39, 52.05s/it] 11%|█▏        | 27/240 [25:01<3:08:57, 53.23s/it]                                                   11%|█▏        | 27/240 [25:01<3:08:57, 53.23s/it] 12%|█▏        | 28/240 [25:58<3:11:52, 54.30s/it]                                                   12%|█▏        | 28/240 [25:58<3:11:52, 54.30s/it] 12%|█▏        | 29/240 [26:54<3:12:21, 54.70s/it]                                                   12%|█▏        | 29/240 [26:54<3:12:21, 54.70s/it] 12%|█▎        | 30/240 [27:49<3:12:09, 54.90s/it]                                                   12%|█▎        | 30/240 [27:49<3:12:09, 54.90s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 13%|█▎        | 31/240 [28:46<3:13:53, 55.66s/it]                                                   13%|█▎        | 31/240 [28:46<3:13:53, 55.66s/it] 13%|█▎        | 32/240 [29:43<3:13:49, 55.91s/it]                                                   13%|█▎        | 32/240 [29:43<3:13:49, 55.91s/it] 14%|█▍        | 33/240 [30:38<3:12:25, 55.77s/it]                                                   14%|█▍        | 33/240 [30:38<3:12:25, 55.77s/it] 14%|█▍        | 34/240 [31:34<3:11:32, 55.79s/it]                                                   14%|█▍        | 34/240 [31:34<3:11:32, 55.79s/it] 15%|█▍        | 35/240 [32:29<3:09:34, 55.48s/it]                                                   15%|█▍        | 35/240 [32:29<3:09:34, 55.48s/it] 15%|█▌        | 36/240 [33:25<3:09:30, 55.74s/it]                                                   15%|█▌        | 36/240 [33:25<3:09:30, 55.74s/it] 15%|█▌        | 37/240 [34:21<3:08:40, 55.76s/it]                                                   15%|█▌        | 37/240 [34:21<3:08:40, 55.76s/it] 16%|█▌        | 38/240 [35:17<3:07:31, 55.70s/it]                                                   16%|█▌        | 38/240 [35:17<3:07:31, 55.70s/it] 16%|█▋        | 39/240 [36:09<3:03:39, 54.82s/it]                                                   16%|█▋        | 39/240 [36:09<3:03:39, 54.82s/it] 17%|█▋        | 40/240 [37:05<3:03:08, 54.94s/it]                                                   17%|█▋        | 40/240 [37:05<3:03:08, 54.94s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 17%|█▋        | 41/240 [38:02<3:04:12, 55.54s/it]                                                   17%|█▋        | 41/240 [38:02<3:04:12, 55.54s/it] 18%|█▊        | 42/240 [38:55<3:01:29, 55.00s/it]                                                   18%|█▊        | 42/240 [38:55<3:01:29, 55.00s/it] 18%|█▊        | 43/240 [39:49<2:59:43, 54.74s/it]                                                  {'loss': 0.3594, 'grad_norm': 0.13062095642089844, 'learning_rate': 0.0009125, 'generation_loss': 0.3594490588584449, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.7482993602752686, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.94}
+{'loss': 0.3569, 'grad_norm': 0.11718230694532394, 'learning_rate': 0.0009083333333333334, 'generation_loss': 0.3569111302786041, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.5762329697608948, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 0.98}
+{'loss': 0.3399, 'grad_norm': 0.14381828904151917, 'learning_rate': 0.0009041666666666667, 'generation_loss': 0.33993018931951846, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2917031943798065, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.0}
+{'loss': 0.3366, 'grad_norm': 0.11616465449333191, 'learning_rate': 0.0009000000000000001, 'generation_loss': 0.3365898161137011, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2605658173561096, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.04}
+{'loss': 0.3239, 'grad_norm': 0.12629418075084686, 'learning_rate': 0.0008958333333333334, 'generation_loss': 0.3238711984886322, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4132247567176819, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.09}
+{'loss': 0.3448, 'grad_norm': 0.11897481977939606, 'learning_rate': 0.0008916666666666667, 'generation_loss': 0.34482122361077927, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.38410326838493347, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.13}
+{'loss': 0.3343, 'grad_norm': 0.11714738607406616, 'learning_rate': 0.0008874999999999999, 'generation_loss': 0.3343289585900493, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.6352699995040894, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.17}
+{'loss': 0.3367, 'grad_norm': 0.12217109650373459, 'learning_rate': 0.0008833333333333333, 'generation_loss': 0.3367393648950383, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26253706216812134, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.21}
+{'loss': 0.3285, 'grad_norm': 0.1209101527929306, 'learning_rate': 0.0008791666666666667, 'generation_loss': 0.3285216957156081, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4556615352630615, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.26}
+{'loss': 0.328, 'grad_norm': 0.11749754846096039, 'learning_rate': 0.000875, 'generation_loss': 0.32800530761596747, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.38632693886756897, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.3}
+{'loss': 0.3352, 'grad_norm': 0.11061802506446838, 'learning_rate': 0.0008708333333333334, 'generation_loss': 0.3352115224406589, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.23018872737884521, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.34}
+{'loss': 0.3215, 'grad_norm': 0.10826519876718521, 'learning_rate': 0.0008666666666666667, 'generation_loss': 0.32148861096356995, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.7006124258041382, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.38}
+{'loss': 0.3193, 'grad_norm': 0.12766100466251373, 'learning_rate': 0.0008625000000000001, 'generation_loss': 0.31932652689283714, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26120585203170776, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.43}
+{'loss': 0.3164, 'grad_norm': 0.11826509982347488, 'learning_rate': 0.0008583333333333333, 'generation_loss': 0.3163543788250536, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2332419604063034, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.47}
+{'loss': 0.3155, 'grad_norm': 0.1215859055519104, 'learning_rate': 0.0008541666666666666, 'generation_loss': 0.31549954440561123, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.32548263669013977, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.51}
+{'loss': 0.3346, 'grad_norm': 0.11660747230052948, 'learning_rate': 0.00085, 'generation_loss': 0.33459049608791247, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.33861514925956726, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.55}
+{'loss': 0.3292, 'grad_norm': 0.1226578801870346, 'learning_rate': 0.0008458333333333333, 'generation_loss': 0.3291597182105761, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1889137625694275, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.6}
+{'loss': 0.3197, 'grad_norm': 0.11226300150156021, 'learning_rate': 0.0008416666666666667, 'generation_loss': 0.31969999306602404, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2313782274723053, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.64}
+{'loss': 0.3217, 'grad_norm': 0.11554364860057831, 'learning_rate': 0.0008375, 'generation_loss': 0.32172699566581286, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2212955206632614, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.68}
+{'loss': 0.3149, 'grad_norm': 0.10936436802148819, 'learning_rate': 0.0008333333333333334, 'generation_loss': 0.31490728989592753, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.5697227716445923, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.72}
+{'loss': 0.3315, 'grad_norm': 0.11358628422021866, 'learning_rate': 0.0008291666666666667, 'generation_loss': 0.3314596428826917, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2812817096710205, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.77}
+ 18%|█▊        | 43/240 [39:49<2:59:43, 54.74s/it] 18%|█▊        | 44/240 [40:46<3:00:17, 55.19s/it]                                                   18%|█▊        | 44/240 [40:46<3:00:17, 55.19s/it] 19%|█▉        | 45/240 [41:41<2:59:53, 55.35s/it]                                                   19%|█▉        | 45/240 [41:41<2:59:53, 55.35s/it] 19%|█▉        | 46/240 [42:39<3:01:12, 56.04s/it]                                                   19%|█▉        | 46/240 [42:39<3:01:12, 56.04s/it] 20%|█▉        | 47/240 [43:33<2:58:36, 55.53s/it]                                                   20%|█▉        | 47/240 [43:33<2:58:36, 55.53s/it] 20%|██        | 48/240 [43:59<2:29:07, 46.60s/it]                                                   20%|██        | 48/240 [43:59<2:29:07, 46.60s/it] 20%|██        | 49/240 [44:57<2:39:13, 50.02s/it]                                                   20%|██        | 49/240 [44:57<2:39:13, 50.02s/it] 21%|██        | 50/240 [45:56<2:46:23, 52.54s/it]                                                   21%|██        | 50/240 [45:56<2:46:23, 52.54s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 21%|██▏       | 51/240 [46:56<2:52:41, 54.82s/it]                                                   21%|██▏       | 51/240 [46:56<2:52:41, 54.82s/it] 22%|██▏       | 52/240 [47:54<2:54:56, 55.83s/it]                                                   22%|██▏       | 52/240 [47:54<2:54:56, 55.83s/it] 22%|██▏       | 53/240 [48:48<2:52:08, 55.23s/it]                                                   22%|██▏       | 53/240 [48:48<2:52:08, 55.23s/it] 22%|██▎       | 54/240 [49:39<2:47:45, 54.11s/it]                                                   22%|██▎       | 54/240 [49:39<2:47:45, 54.11s/it] 23%|██▎       | 55/240 [50:30<2:43:57, 53.18s/it]                                                   23%|██▎       | 55/240 [50:30<2:43:57, 53.18s/it] 23%|██▎       | 56/240 [51:21<2:41:18, 52.60s/it]                                                   23%|██▎       | 56/240 [51:21<2:41:18, 52.60s/it] 24%|██▍       | 57/240 [52:16<2:41:55, 53.09s/it]                                                   24%|██▍       | 57/240 [52:16<2:41:55, 53.09s/it] 24%|██▍       | 58/240 [53:13<2:44:24, 54.20s/it]                                                   24%|██▍       | 58/240 [53:13<2:44:24, 54.20s/it] 25%|██▍       | 59/240 [54:09<2:45:51, 54.98s/it]                                                   25%|██▍       | 59/240 [54:09<2:45:51, 54.98s/it] 25%|██▌       | 60/240 [55:07<2:47:23, 55.80s/it]                                                   25%|██▌       | 60/240 [55:07<2:47:23, 55.80s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 25%|██▌       | 61/240 [56:03<2:46:32, 55.82s/it]                                                   25%|██▌       | 61/240 [56:03<2:46:32, 55.82s/it] 26%|██▌       | 62/240 [56:56<2:42:50, 54.89s/it]                                                   26%|██▌       | 62/240 [56:56<2:42:50, 54.89s/it] 26%|██▋       | 63/240 [57:49<2:40:34, 54.43s/it]                                                   26%|██▋       | 63/240 [57:49<2:40:34, 54.43s/it] 27%|██▋       | 64/240 [58:43<2:39:44, 54.45s/it]                                                  {'loss': 0.3223, 'grad_norm': 0.11579401046037674, 'learning_rate': 0.000825, 'generation_loss': 0.3222881440888159, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.32344651222229004, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.81}
+{'loss': 0.33, 'grad_norm': 0.11448659747838974, 'learning_rate': 0.0008208333333333334, 'generation_loss': 0.33003005397040397, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.5742747187614441, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.85}
+{'loss': 0.3277, 'grad_norm': 0.11122704297304153, 'learning_rate': 0.0008166666666666667, 'generation_loss': 0.3277132102230098, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.29728269577026367, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.89}
+{'loss': 0.3293, 'grad_norm': 0.12317384779453278, 'learning_rate': 0.0008125000000000001, 'generation_loss': 0.32930511474842206, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26690977811813354, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.94}
+{'loss': 0.3129, 'grad_norm': 0.10925041884183884, 'learning_rate': 0.0008083333333333333, 'generation_loss': 0.31294527524732985, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.27191364765167236, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 1.98}
+{'loss': 0.3315, 'grad_norm': 0.15405330061912537, 'learning_rate': 0.0008041666666666667, 'generation_loss': 0.33145828657791393, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.24458961188793182, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.0}
+{'loss': 0.3163, 'grad_norm': 0.10673537850379944, 'learning_rate': 0.0008, 'generation_loss': 0.31633801953285, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.23180529475212097, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.04}
+{'loss': 0.2957, 'grad_norm': 0.10825236141681671, 'learning_rate': 0.0007958333333333333, 'generation_loss': 0.29573090543271974, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.232371985912323, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.09}
+{'loss': 0.2998, 'grad_norm': 0.14124836027622223, 'learning_rate': 0.0007916666666666666, 'generation_loss': 0.2997512041765731, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.22032305598258972, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.13}
+{'loss': 0.305, 'grad_norm': 0.11015447229146957, 'learning_rate': 0.0007875, 'generation_loss': 0.30496794907958247, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3644919693470001, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.17}
+{'loss': 0.3087, 'grad_norm': 0.11627451330423355, 'learning_rate': 0.0007833333333333334, 'generation_loss': 0.3086589437443763, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17561481893062592, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.21}
+{'loss': 0.306, 'grad_norm': 0.1295115053653717, 'learning_rate': 0.0007791666666666667, 'generation_loss': 0.3060210807889234, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.38135266304016113, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.26}
+{'loss': 0.2943, 'grad_norm': 0.11276007443666458, 'learning_rate': 0.0007750000000000001, 'generation_loss': 0.29427069271332584, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2181314080953598, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.3}
+{'loss': 0.2994, 'grad_norm': 0.13104182481765747, 'learning_rate': 0.0007708333333333334, 'generation_loss': 0.29942877145367675, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.48546016216278076, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.34}
+{'loss': 0.2881, 'grad_norm': 0.12172063440084457, 'learning_rate': 0.0007666666666666667, 'generation_loss': 0.2880568352411501, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.32084670662879944, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.38}
+{'loss': 0.3013, 'grad_norm': 0.12546885013580322, 'learning_rate': 0.0007624999999999999, 'generation_loss': 0.30130077549256384, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.263848215341568, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.43}
+{'loss': 0.2846, 'grad_norm': 0.1137441024184227, 'learning_rate': 0.0007583333333333333, 'generation_loss': 0.28458873892668635, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.24658583104610443, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.47}
+{'loss': 0.2943, 'grad_norm': 0.10968076437711716, 'learning_rate': 0.0007541666666666667, 'generation_loss': 0.29425672674551606, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2291155457496643, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.51}
+{'loss': 0.2928, 'grad_norm': 0.12887601554393768, 'learning_rate': 0.00075, 'generation_loss': 0.2928055062657222, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.6113505363464355, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.55}
+{'loss': 0.2994, 'grad_norm': 0.11828077584505081, 'learning_rate': 0.0007458333333333334, 'generation_loss': 0.2994421708281152, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2174014300107956, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.6}
+{'loss': 0.2948, 'grad_norm': 0.12196151167154312, 'learning_rate': 0.0007416666666666667, 'generation_loss': 0.2948008057719562, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.25072339177131653, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.64}
+ 27%|██▋       | 64/240 [58:43<2:39:44, 54.45s/it] 27%|██▋       | 65/240 [59:37<2:37:58, 54.16s/it]                                                   27%|██▋       | 65/240 [59:37<2:37:58, 54.16s/it] 28%|██▊       | 66/240 [1:00:30<2:35:58, 53.78s/it]                                                     28%|██▊       | 66/240 [1:00:30<2:35:58, 53.78s/it] 28%|██▊       | 67/240 [1:01:24<2:35:17, 53.86s/it]                                                     28%|██▊       | 67/240 [1:01:24<2:35:17, 53.86s/it] 28%|██▊       | 68/240 [1:02:19<2:35:40, 54.31s/it]                                                     28%|██▊       | 68/240 [1:02:19<2:35:40, 54.31s/it] 29%|██▉       | 69/240 [1:03:15<2:36:12, 54.81s/it]                                                     29%|██▉       | 69/240 [1:03:15<2:36:12, 54.81s/it] 29%|██▉       | 70/240 [1:04:12<2:36:47, 55.34s/it]                                                     29%|██▉       | 70/240 [1:04:12<2:36:47, 55.34s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 30%|██▉       | 71/240 [1:05:11<2:39:09, 56.51s/it]                                                     30%|██▉       | 71/240 [1:05:11<2:39:09, 56.51s/it] 30%|███       | 72/240 [1:05:38<2:13:03, 47.52s/it]                                                     30%|███       | 72/240 [1:05:38<2:13:03, 47.52s/it] 30%|███       | 73/240 [1:06:33<2:19:08, 49.99s/it]                                                     30%|███       | 73/240 [1:06:33<2:19:08, 49.99s/it] 31%|███       | 74/240 [1:07:29<2:22:43, 51.59s/it]                                                     31%|███       | 74/240 [1:07:29<2:22:43, 51.59s/it] 31%|███▏      | 75/240 [1:08:25<2:26:11, 53.16s/it]                                                     31%|███▏      | 75/240 [1:08:25<2:26:11, 53.16s/it] 32%|███▏      | 76/240 [1:09:22<2:28:01, 54.16s/it]                                                     32%|███▏      | 76/240 [1:09:22<2:28:01, 54.16s/it] 32%|███▏      | 77/240 [1:10:19<2:29:09, 54.90s/it]                                                     32%|███▏      | 77/240 [1:10:19<2:29:09, 54.90s/it] 32%|███▎      | 78/240 [1:11:17<2:31:04, 55.95s/it]                                                     32%|███▎      | 78/240 [1:11:17<2:31:04, 55.95s/it] 33%|███▎      | 79/240 [1:12:15<2:32:02, 56.66s/it]                                                     33%|███▎      | 79/240 [1:12:15<2:32:02, 56.66s/it] 33%|███▎      | 80/240 [1:13:13<2:31:31, 56.82s/it]                                                     33%|███▎      | 80/240 [1:13:13<2:31:31, 56.82s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 34%|███▍      | 81/240 [1:14:09<2:30:29, 56.79s/it]                                                     34%|███▍      | 81/240 [1:14:09<2:30:29, 56.79s/it] 34%|███▍      | 82/240 [1:15:06<2:29:11, 56.66s/it]                                                     34%|███▍      | 82/240 [1:15:06<2:29:11, 56.66s/it] 35%|███▍      | 83/240 [1:16:02<2:28:08, 56.62s/it]                                                     35%|███▍      | 83/240 [1:16:02<2:28:08, 56.62s/it] 35%|███▌      | 84/240 [1:16:56<2:25:03, 55.79s/it]                                                     35%|███▌      | 84/240 [1:16:56<2:25:03, 55.79s/it] 35%|███▌      | 85/240 [1:17:52<2:24:17, 55.85s/it]                                                    {'loss': 0.29, 'grad_norm': 0.11855051666498184, 'learning_rate': 0.0007375000000000001, 'generation_loss': 0.28996669669868425, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1627371609210968, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.68}
+{'loss': 0.2939, 'grad_norm': 0.1308281421661377, 'learning_rate': 0.0007333333333333333, 'generation_loss': 0.2938940851308871, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18964830040931702, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.72}
+{'loss': 0.2897, 'grad_norm': 0.12630422413349152, 'learning_rate': 0.0007291666666666666, 'generation_loss': 0.2896693321526982, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.21686488389968872, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.77}
+{'loss': 0.2888, 'grad_norm': 0.12426398694515228, 'learning_rate': 0.000725, 'generation_loss': 0.2888031912734732, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2485758662223816, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.81}
+{'loss': 0.2968, 'grad_norm': 0.11743614077568054, 'learning_rate': 0.0007208333333333333, 'generation_loss': 0.29683694208506495, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3045506477355957, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.85}
+{'loss': 0.2898, 'grad_norm': 0.127105250954628, 'learning_rate': 0.0007166666666666667, 'generation_loss': 0.28982161430758424, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2057553231716156, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.89}
+{'loss': 0.2944, 'grad_norm': 0.11840131133794785, 'learning_rate': 0.0007125, 'generation_loss': 0.29444199381396174, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2397666871547699, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.94}
+{'loss': 0.2909, 'grad_norm': 0.10944144427776337, 'learning_rate': 0.0007083333333333334, 'generation_loss': 0.29090558833559044, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3626402020454407, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 2.98}
+{'loss': 0.2962, 'grad_norm': 0.17816324532032013, 'learning_rate': 0.0007041666666666667, 'generation_loss': 0.2961513774798197, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4228500425815582, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.0}
+{'loss': 0.2674, 'grad_norm': 0.12375086545944214, 'learning_rate': 0.0007, 'generation_loss': 0.2673780937329866, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1829540878534317, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.04}
+{'loss': 0.2754, 'grad_norm': 0.11715067923069, 'learning_rate': 0.0006958333333333334, 'generation_loss': 0.2754421703139087, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4061855673789978, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.09}
+{'loss': 0.2654, 'grad_norm': 0.11655284464359283, 'learning_rate': 0.0006916666666666667, 'generation_loss': 0.2654209390748292, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2254849076271057, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.13}
+{'loss': 0.2787, 'grad_norm': 0.14136429131031036, 'learning_rate': 0.0006875, 'generation_loss': 0.2786999048839789, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.23455721139907837, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.17}
+{'loss': 0.2621, 'grad_norm': 0.13950450718402863, 'learning_rate': 0.0006833333333333333, 'generation_loss': 0.2621147076715715, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.24973425269126892, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.21}
+{'loss': 0.2631, 'grad_norm': 0.13765646517276764, 'learning_rate': 0.0006791666666666667, 'generation_loss': 0.2630694930558093, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3977600038051605, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.26}
+{'loss': 0.2678, 'grad_norm': 0.13960589468479156, 'learning_rate': 0.000675, 'generation_loss': 0.2678155021276325, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14496102929115295, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.3}
+{'loss': 0.2732, 'grad_norm': 0.13951654732227325, 'learning_rate': 0.0006708333333333333, 'generation_loss': 0.2732481784623815, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26862281560897827, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.34}
+{'loss': 0.2649, 'grad_norm': 0.13281595706939697, 'learning_rate': 0.0006666666666666666, 'generation_loss': 0.2648499042115873, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4322910010814667, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.38}
+{'loss': 0.267, 'grad_norm': 0.12835942208766937, 'learning_rate': 0.0006625, 'generation_loss': 0.2670224215835333, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.31577879190444946, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.43}
+{'loss': 0.2708, 'grad_norm': 0.1386290341615677, 'learning_rate': 0.0006583333333333334, 'generation_loss': 0.2707887060678331, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.22929848730564117, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.47}
+{'loss': 0.272, 'grad_norm': 0.1379639357328415, 'learning_rate': 0.0006541666666666667, 'generation_loss': 0.272013018024154, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.41187912225723267, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.51}
+ 35%|███▌      | 85/240 [1:17:52<2:24:17, 55.85s/it] 36%|███▌      | 86/240 [1:18:49<2:24:13, 56.19s/it]                                                     36%|███▌      | 86/240 [1:18:49<2:24:13, 56.19s/it] 36%|███▋      | 87/240 [1:19:46<2:24:17, 56.59s/it]                                                     36%|███▋      | 87/240 [1:19:46<2:24:17, 56.59s/it] 37%|███▋      | 88/240 [1:20:42<2:22:37, 56.30s/it]                                                     37%|███▋      | 88/240 [1:20:42<2:22:37, 56.30s/it] 37%|███▋      | 89/240 [1:21:40<2:22:53, 56.78s/it]                                                     37%|███▋      | 89/240 [1:21:40<2:22:53, 56.78s/it] 38%|███▊      | 90/240 [1:22:37<2:22:17, 56.91s/it]                                                     38%|███▊      | 90/240 [1:22:37<2:22:17, 56.91s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 38%|███▊      | 91/240 [1:23:36<2:22:56, 57.56s/it]                                                     38%|███▊      | 91/240 [1:23:36<2:22:56, 57.56s/it] 38%|███▊      | 92/240 [1:24:34<2:21:49, 57.50s/it]                                                     38%|███▊      | 92/240 [1:24:34<2:21:49, 57.50s/it] 39%|███▉      | 93/240 [1:25:30<2:19:53, 57.10s/it]                                                     39%|███▉      | 93/240 [1:25:30<2:19:53, 57.10s/it] 39%|███▉      | 94/240 [1:26:27<2:18:51, 57.07s/it]                                                     39%|███▉      | 94/240 [1:26:27<2:18:51, 57.07s/it] 40%|███▉      | 95/240 [1:27:22<2:16:46, 56.59s/it]                                                     40%|███▉      | 95/240 [1:27:22<2:16:46, 56.59s/it] 40%|████      | 96/240 [1:27:49<1:54:18, 47.63s/it]                                                     40%|████      | 96/240 [1:27:49<1:54:18, 47.63s/it] 40%|████      | 97/240 [1:28:45<1:59:32, 50.16s/it]                                                     40%|████      | 97/240 [1:28:45<1:59:32, 50.16s/it] 41%|████      | 98/240 [1:29:42<2:03:13, 52.07s/it]                                                     41%|████      | 98/240 [1:29:42<2:03:13, 52.07s/it] 41%|████▏     | 99/240 [1:30:38<2:05:43, 53.50s/it]                                                     41%|████▏     | 99/240 [1:30:38<2:05:43, 53.50s/it] 42%|████▏     | 100/240 [1:31:36<2:07:31, 54.65s/it]                                                      42%|████▏     | 100/240 [1:31:36<2:07:31, 54.65s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 42%|████▏     | 101/240 [1:32:36<2:10:16, 56.24s/it]                                                      42%|████▏     | 101/240 [1:32:36<2:10:16, 56.24s/it] 42%|████▎     | 102/240 [1:33:34<2:10:26, 56.71s/it]                                                      42%|████▎     | 102/240 [1:33:34<2:10:26, 56.71s/it] 43%|████▎     | 103/240 [1:34:30<2:09:30, 56.72s/it]                                                      43%|████▎     | 103/240 [1:34:30<2:09:30, 56.72s/it] 43%|████▎     | 104/240 [1:35:27<2:08:26, 56.66s/it]                                                      43%|████▎     | 104/240 [1:35:27<2:08:26, 56.66s/it] 44%|████▍     | 105/240 [1:36:24<2:07:36, 56.72s/it]                                                      44%|████▍     | 105/240 [1:36:24<2:07:36, 56.72s/it] 44%|████▍     | 106/240 [1:37:20<2:06:12, 56.51s/it]                                                     {'loss': 0.2758, 'grad_norm': 0.1346713751554489, 'learning_rate': 0.0006500000000000001, 'generation_loss': 0.2758106633264106, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17869657278060913, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.55}
+{'loss': 0.2675, 'grad_norm': 0.1313266009092331, 'learning_rate': 0.0006458333333333334, 'generation_loss': 0.267476522247307, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.6353257298469543, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.6}
+{'loss': 0.2797, 'grad_norm': 0.13651198148727417, 'learning_rate': 0.0006416666666666667, 'generation_loss': 0.27972771908389404, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4778386354446411, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.64}
+{'loss': 0.2649, 'grad_norm': 0.1308506280183792, 'learning_rate': 0.0006374999999999999, 'generation_loss': 0.26493450172711164, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3142363131046295, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.68}
+{'loss': 0.2662, 'grad_norm': 0.13507458567619324, 'learning_rate': 0.0006333333333333333, 'generation_loss': 0.266233933652984, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18439637124538422, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.72}
+{'loss': 0.2744, 'grad_norm': 0.13348743319511414, 'learning_rate': 0.0006291666666666667, 'generation_loss': 0.27435978733410593, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.21228495240211487, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.77}
+{'loss': 0.2761, 'grad_norm': 0.13080891966819763, 'learning_rate': 0.000625, 'generation_loss': 0.2761191411118489, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.24686495959758759, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.81}
+{'loss': 0.2706, 'grad_norm': 0.12627384066581726, 'learning_rate': 0.0006208333333333334, 'generation_loss': 0.2705753141781315, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19160909950733185, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.85}
+{'loss': 0.2683, 'grad_norm': 0.14032608270645142, 'learning_rate': 0.0006166666666666667, 'generation_loss': 0.26833207003073767, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1897018998861313, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.89}
+{'loss': 0.2649, 'grad_norm': 0.1283462941646576, 'learning_rate': 0.0006125000000000001, 'generation_loss': 0.2648594620404765, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.202453151345253, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.94}
+{'loss': 0.272, 'grad_norm': 0.12572237849235535, 'learning_rate': 0.0006083333333333333, 'generation_loss': 0.27196253099828027, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19677138328552246, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 3.98}
+{'loss': 0.2573, 'grad_norm': 0.17671585083007812, 'learning_rate': 0.0006041666666666666, 'generation_loss': 0.2572652551055956, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17042410373687744, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.0}
+{'loss': 0.2472, 'grad_norm': 0.13181143999099731, 'learning_rate': 0.0006, 'generation_loss': 0.24715773160278331, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16254188120365143, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.04}
+{'loss': 0.2379, 'grad_norm': 0.13101622462272644, 'learning_rate': 0.0005958333333333333, 'generation_loss': 0.23786594471312128, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.22333712875843048, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.09}
+{'loss': 0.2416, 'grad_norm': 0.14398284256458282, 'learning_rate': 0.0005916666666666667, 'generation_loss': 0.24162864475511014, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16768904030323029, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.13}
+{'loss': 0.2471, 'grad_norm': 0.15646879374980927, 'learning_rate': 0.0005875, 'generation_loss': 0.2471326724771643, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15415194630622864, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.17}
+{'loss': 0.2433, 'grad_norm': 0.15382204949855804, 'learning_rate': 0.0005833333333333334, 'generation_loss': 0.24331467533193063, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18074224889278412, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.21}
+{'loss': 0.2372, 'grad_norm': 0.1607424020767212, 'learning_rate': 0.0005791666666666667, 'generation_loss': 0.23716999843600206, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18505047261714935, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.26}
+{'loss': 0.2404, 'grad_norm': 0.15346311032772064, 'learning_rate': 0.000575, 'generation_loss': 0.24043461575638503, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19220533967018127, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.3}
+{'loss': 0.2513, 'grad_norm': 0.1628667712211609, 'learning_rate': 0.0005708333333333333, 'generation_loss': 0.251255309645785, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.44632387161254883, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.34}
+{'loss': 0.2496, 'grad_norm': 0.1525142788887024, 'learning_rate': 0.0005666666666666667, 'generation_loss': 0.24962213888647966, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1853637546300888, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.38}
+ 44%|████▍     | 106/240 [1:37:20<2:06:12, 56.51s/it] 45%|████▍     | 107/240 [1:38:15<2:04:30, 56.17s/it]                                                      45%|████▍     | 107/240 [1:38:15<2:04:30, 56.17s/it] 45%|████▌     | 108/240 [1:39:11<2:03:24, 56.10s/it]                                                      45%|████▌     | 108/240 [1:39:11<2:03:24, 56.10s/it] 45%|████▌     | 109/240 [1:40:08<2:03:02, 56.36s/it]                                                      45%|████▌     | 109/240 [1:40:08<2:03:02, 56.36s/it] 46%|████▌     | 110/240 [1:41:06<2:02:56, 56.75s/it]                                                      46%|████▌     | 110/240 [1:41:06<2:02:56, 56.75s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 46%|████▋     | 111/240 [1:42:05<2:03:32, 57.46s/it]                                                      46%|████▋     | 111/240 [1:42:05<2:03:32, 57.46s/it] 47%|████▋     | 112/240 [1:43:03<2:02:58, 57.64s/it]                                                      47%|████▋     | 112/240 [1:43:03<2:02:58, 57.64s/it] 47%|████▋     | 113/240 [1:44:00<2:01:28, 57.39s/it]                                                      47%|████▋     | 113/240 [1:44:00<2:01:28, 57.39s/it] 48%|████▊     | 114/240 [1:44:57<2:00:16, 57.27s/it]                                                      48%|████▊     | 114/240 [1:44:57<2:00:16, 57.27s/it] 48%|████▊     | 115/240 [1:45:54<1:59:14, 57.24s/it]                                                      48%|████▊     | 115/240 [1:45:54<1:59:14, 57.24s/it] 48%|████▊     | 116/240 [1:46:50<1:57:50, 57.02s/it]                                                      48%|████▊     | 116/240 [1:46:50<1:57:50, 57.02s/it] 49%|████▉     | 117/240 [1:47:47<1:56:50, 56.99s/it]                                                      49%|████▉     | 117/240 [1:47:47<1:56:50, 56.99s/it] 49%|████▉     | 118/240 [1:48:44<1:55:55, 57.01s/it]                                                      49%|████▉     | 118/240 [1:48:44<1:55:55, 57.01s/it] 50%|████▉     | 119/240 [1:49:40<1:54:16, 56.67s/it]                                                      50%|████▉     | 119/240 [1:49:40<1:54:16, 56.67s/it] 50%|█████     | 120/240 [1:50:07<1:35:36, 47.81s/it]                                                      50%|█████     | 120/240 [1:50:07<1:35:36, 47.81s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 50%|█████     | 121/240 [1:51:07<1:42:09, 51.51s/it]                                                      50%|█████     | 121/240 [1:51:07<1:42:09, 51.51s/it] 51%|█████     | 122/240 [1:52:04<1:44:06, 52.93s/it]                                                      51%|█████     | 122/240 [1:52:04<1:44:06, 52.93s/it] 51%|█████▏    | 123/240 [1:53:01<1:45:57, 54.33s/it]                                                      51%|█████▏    | 123/240 [1:53:01<1:45:57, 54.33s/it] 52%|█████▏    | 124/240 [1:53:59<1:46:48, 55.25s/it]                                                      52%|█████▏    | 124/240 [1:53:59<1:46:48, 55.25s/it] 52%|█████▏    | 125/240 [1:54:56<1:47:05, 55.87s/it]                                                      52%|█████▏    | 125/240 [1:54:56<1:47:05, 55.87s/it] 52%|█████▎    | 126/240 [1:55:54<1:47:08, 56.39s/it]                                                      52%|█████▎    | 126/240 [1:55:54<1:47:08, 56.39s/it] 53%|█████▎    | 127/240 [1:56:49<1:45:54, 56.23s/it]                                                     {'loss': 0.2398, 'grad_norm': 0.1472947597503662, 'learning_rate': 0.0005625000000000001, 'generation_loss': 0.23980848732753657, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2578602731227875, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.43}
+{'loss': 0.2458, 'grad_norm': 0.14554578065872192, 'learning_rate': 0.0005583333333333333, 'generation_loss': 0.24584556167246774, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.40686702728271484, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.47}
+{'loss': 0.2445, 'grad_norm': 0.17054586112499237, 'learning_rate': 0.0005541666666666667, 'generation_loss': 0.24453190551139414, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.35588836669921875, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.51}
+{'loss': 0.2431, 'grad_norm': 0.14867018163204193, 'learning_rate': 0.00055, 'generation_loss': 0.2431081129325321, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.4668295979499817, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.55}
+{'loss': 0.2397, 'grad_norm': 0.14881932735443115, 'learning_rate': 0.0005458333333333333, 'generation_loss': 0.2397263786988333, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2572815716266632, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.6}
+{'loss': 0.2394, 'grad_norm': 0.14485743641853333, 'learning_rate': 0.0005416666666666666, 'generation_loss': 0.23939580784644932, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17763027548789978, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.64}
+{'loss': 0.2455, 'grad_norm': 0.1450703740119934, 'learning_rate': 0.0005375, 'generation_loss': 0.24550358728447463, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2612830698490143, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.68}
+{'loss': 0.2373, 'grad_norm': 0.1408236026763916, 'learning_rate': 0.0005333333333333334, 'generation_loss': 0.2372742088045925, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.25694921612739563, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.72}
+{'loss': 0.2443, 'grad_norm': 0.1426924616098404, 'learning_rate': 0.0005291666666666667, 'generation_loss': 0.2443457679473795, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.37572264671325684, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.77}
+{'loss': 0.2495, 'grad_norm': 0.14668133854866028, 'learning_rate': 0.0005250000000000001, 'generation_loss': 0.2494798038242152, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.5686191916465759, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.81}
+{'loss': 0.2426, 'grad_norm': 0.14707732200622559, 'learning_rate': 0.0005208333333333334, 'generation_loss': 0.24261339755321387, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.24982501566410065, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.85}
+{'loss': 0.2445, 'grad_norm': 0.14597497880458832, 'learning_rate': 0.0005166666666666667, 'generation_loss': 0.2444989027280826, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18413373827934265, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.89}
+{'loss': 0.247, 'grad_norm': 0.145457461476326, 'learning_rate': 0.0005124999999999999, 'generation_loss': 0.24704562709666789, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.29860052466392517, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.94}
+{'loss': 0.2419, 'grad_norm': 0.14581967890262604, 'learning_rate': 0.0005083333333333333, 'generation_loss': 0.24192227334424388, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16998855769634247, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 4.98}
+{'loss': 0.2477, 'grad_norm': 0.19365455210208893, 'learning_rate': 0.0005041666666666667, 'generation_loss': 0.24772945356343976, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2921791970729828, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.0}
+{'loss': 0.2241, 'grad_norm': 0.15621840953826904, 'learning_rate': 0.0005, 'generation_loss': 0.22410368072451092, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19288566708564758, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.04}
+{'loss': 0.2167, 'grad_norm': 0.14538727700710297, 'learning_rate': 0.0004958333333333334, 'generation_loss': 0.21667548388359137, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19302278757095337, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.09}
+{'loss': 0.2159, 'grad_norm': 0.15712134540081024, 'learning_rate': 0.0004916666666666666, 'generation_loss': 0.21587411002838053, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.11657281965017319, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.13}
+{'loss': 0.2195, 'grad_norm': 0.18665730953216553, 'learning_rate': 0.0004875, 'generation_loss': 0.2194926147640217, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18391190469264984, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.17}
+{'loss': 0.211, 'grad_norm': 0.18122215569019318, 'learning_rate': 0.00048333333333333334, 'generation_loss': 0.21104889892740175, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13654135167598724, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.21}
+{'loss': 0.2151, 'grad_norm': 0.17966000735759735, 'learning_rate': 0.0004791666666666667, 'generation_loss': 0.21511380080482922, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.20273295044898987, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.26}
+ 53%|█████▎    | 127/240 [1:56:49<1:45:54, 56.23s/it] 53%|█████▎    | 128/240 [1:57:44<1:44:20, 55.89s/it]                                                      53%|█████▎    | 128/240 [1:57:44<1:44:20, 55.89s/it] 54%|█████▍    | 129/240 [1:58:40<1:43:02, 55.70s/it]                                                      54%|█████▍    | 129/240 [1:58:40<1:43:02, 55.70s/it] 54%|█████▍    | 130/240 [1:59:36<1:42:11, 55.74s/it]                                                      54%|█████▍    | 130/240 [1:59:36<1:42:11, 55.74s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 55%|█████▍    | 131/240 [2:00:32<1:41:48, 56.05s/it]                                                      55%|█████▍    | 131/240 [2:00:32<1:41:48, 56.05s/it] 55%|█████▌    | 132/240 [2:01:29<1:41:19, 56.29s/it]                                                      55%|█████▌    | 132/240 [2:01:29<1:41:19, 56.29s/it] 55%|█████▌    | 133/240 [2:02:27<1:41:01, 56.65s/it]                                                      55%|█████▌    | 133/240 [2:02:27<1:41:01, 56.65s/it] 56%|█████▌    | 134/240 [2:03:23<1:39:54, 56.55s/it]                                                      56%|█████▌    | 134/240 [2:03:23<1:39:54, 56.55s/it] 56%|█████▋    | 135/240 [2:04:19<1:38:53, 56.51s/it]                                                      56%|█████▋    | 135/240 [2:04:19<1:38:53, 56.51s/it] 57%|█████▋    | 136/240 [2:05:17<1:38:29, 56.82s/it]                                                      57%|█████▋    | 136/240 [2:05:17<1:38:29, 56.82s/it] 57%|█████▋    | 137/240 [2:06:14<1:37:36, 56.86s/it]                                                      57%|█████▋    | 137/240 [2:06:14<1:37:36, 56.86s/it] 57%|█████▊    | 138/240 [2:07:11<1:36:43, 56.90s/it]                                                      57%|█████▊    | 138/240 [2:07:11<1:36:43, 56.90s/it] 58%|█████▊    | 139/240 [2:08:06<1:34:58, 56.42s/it]                                                      58%|█████▊    | 139/240 [2:08:06<1:34:58, 56.42s/it] 58%|█████▊    | 140/240 [2:09:00<1:32:47, 55.68s/it]                                                      58%|█████▊    | 140/240 [2:09:00<1:32:47, 55.68s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 59%|█████▉    | 141/240 [2:09:57<1:32:35, 56.12s/it]                                                      59%|█████▉    | 141/240 [2:09:57<1:32:35, 56.12s/it] 59%|█████▉    | 142/240 [2:10:53<1:31:12, 55.85s/it]                                                      59%|█████▉    | 142/240 [2:10:53<1:31:12, 55.85s/it] 60%|█████▉    | 143/240 [2:11:46<1:29:15, 55.21s/it]                                                      60%|█████▉    | 143/240 [2:11:46<1:29:15, 55.21s/it] 60%|██████    | 144/240 [2:12:13<1:14:50, 46.77s/it]                                                      60%|██████    | 144/240 [2:12:13<1:14:50, 46.77s/it] 60%|██████    | 145/240 [2:13:09<1:18:26, 49.54s/it]                                                      60%|██████    | 145/240 [2:13:09<1:18:26, 49.54s/it] 61%|██████    | 146/240 [2:14:04<1:20:06, 51.14s/it]                                                      61%|██████    | 146/240 [2:14:04<1:20:06, 51.14s/it] 61%|██████▏   | 147/240 [2:14:59<1:20:58, 52.24s/it]                                                      61%|██████▏   | 147/240 [2:14:59<1:20:58, 52.24s/it] 62%|██████▏   | 148/240 [2:15:53<1:20:44, 52.66s/it]                                                     {'loss': 0.2128, 'grad_norm': 0.15996912121772766, 'learning_rate': 0.000475, 'generation_loss': 0.21281261443800759, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18089407682418823, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.3}
+{'loss': 0.2076, 'grad_norm': 0.16232645511627197, 'learning_rate': 0.00047083333333333336, 'generation_loss': 0.2076358190679457, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14528022706508636, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.34}
+{'loss': 0.216, 'grad_norm': 0.15748681128025055, 'learning_rate': 0.00046666666666666666, 'generation_loss': 0.2159739783819532, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.20317326486110687, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.38}
+{'loss': 0.2144, 'grad_norm': 0.16479365527629852, 'learning_rate': 0.0004625, 'generation_loss': 0.21439426696451847, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3194510340690613, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.43}
+{'loss': 0.226, 'grad_norm': 0.17872440814971924, 'learning_rate': 0.0004583333333333333, 'generation_loss': 0.2260359434003476, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2022431641817093, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.47}
+{'loss': 0.2178, 'grad_norm': 0.16256344318389893, 'learning_rate': 0.0004541666666666667, 'generation_loss': 0.21784547746938188, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14710450172424316, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.51}
+{'loss': 0.2167, 'grad_norm': 0.16405241191387177, 'learning_rate': 0.00045000000000000004, 'generation_loss': 0.21669313590973616, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3093941807746887, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.55}
+{'loss': 0.2207, 'grad_norm': 0.15938402712345123, 'learning_rate': 0.00044583333333333335, 'generation_loss': 0.22068457209388725, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2067333608865738, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.6}
+{'loss': 0.2138, 'grad_norm': 0.1591896116733551, 'learning_rate': 0.00044166666666666665, 'generation_loss': 0.213835697810282, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19942884147167206, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.64}
+{'loss': 0.2255, 'grad_norm': 0.16652652621269226, 'learning_rate': 0.0004375, 'generation_loss': 0.22554971996578388, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3181855082511902, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.68}
+{'loss': 0.2178, 'grad_norm': 0.16262318193912506, 'learning_rate': 0.00043333333333333337, 'generation_loss': 0.21781414866563864, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15670928359031677, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.72}
+{'loss': 0.2194, 'grad_norm': 0.17049936950206757, 'learning_rate': 0.00042916666666666667, 'generation_loss': 0.21941904581035487, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15134696662425995, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.77}
+{'loss': 0.2237, 'grad_norm': 0.16531698405742645, 'learning_rate': 0.000425, 'generation_loss': 0.22370282755582593, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2639174163341522, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.81}
+{'loss': 0.2182, 'grad_norm': 0.15424713492393494, 'learning_rate': 0.00042083333333333333, 'generation_loss': 0.2182012031407794, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18714120984077454, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.85}
+{'loss': 0.2209, 'grad_norm': 0.14837637543678284, 'learning_rate': 0.0004166666666666667, 'generation_loss': 0.22088299901224673, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17173294723033905, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.89}
+{'loss': 0.2226, 'grad_norm': 0.15644842386245728, 'learning_rate': 0.0004125, 'generation_loss': 0.22259571563336067, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2886030972003937, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.94}
+{'loss': 0.2191, 'grad_norm': 0.15375863015651703, 'learning_rate': 0.00040833333333333336, 'generation_loss': 0.21913336668512784, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3192216753959656, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 5.98}
+{'loss': 0.2244, 'grad_norm': 0.21478179097175598, 'learning_rate': 0.00040416666666666666, 'generation_loss': 0.22440874360564375, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2365127056837082, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.0}
+{'loss': 0.1958, 'grad_norm': 0.1533050686120987, 'learning_rate': 0.0004, 'generation_loss': 0.19583908215281554, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1513865739107132, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.04}
+{'loss': 0.1929, 'grad_norm': 0.14977513253688812, 'learning_rate': 0.0003958333333333333, 'generation_loss': 0.19291844192775898, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.22225280106067657, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.09}
+{'loss': 0.1916, 'grad_norm': 0.17604726552963257, 'learning_rate': 0.0003916666666666667, 'generation_loss': 0.1915587050607428, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1277083158493042, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.13}
+ 62%|██████▏   | 148/240 [2:15:53<1:20:44, 52.66s/it] 62%|██████▏   | 149/240 [2:16:50<1:22:08, 54.16s/it]                                                      62%|██████▏   | 149/240 [2:16:50<1:22:08, 54.16s/it] 62%|██████▎   | 150/240 [2:17:46<1:21:51, 54.57s/it]                                                      62%|██████▎   | 150/240 [2:17:46<1:21:51, 54.57s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 63%|██████▎   | 151/240 [2:18:42<1:21:47, 55.15s/it]                                                      63%|██████▎   | 151/240 [2:18:42<1:21:47, 55.15s/it] 63%|██████▎   | 152/240 [2:19:38<1:21:17, 55.43s/it]                                                      63%|██████▎   | 152/240 [2:19:38<1:21:17, 55.43s/it] 64%|██████▍   | 153/240 [2:20:35<1:21:01, 55.88s/it]                                                      64%|██████▍   | 153/240 [2:20:35<1:21:01, 55.88s/it] 64%|██████▍   | 154/240 [2:21:32<1:20:36, 56.24s/it]                                                      64%|██████▍   | 154/240 [2:21:32<1:20:36, 56.24s/it] 65%|██████▍   | 155/240 [2:22:29<1:19:47, 56.33s/it]                                                      65%|██████▍   | 155/240 [2:22:29<1:19:47, 56.33s/it] 65%|██████▌   | 156/240 [2:23:26<1:19:20, 56.68s/it]                                                      65%|██████▌   | 156/240 [2:23:26<1:19:20, 56.68s/it] 65%|██████▌   | 157/240 [2:24:23<1:18:24, 56.68s/it]                                                      65%|██████▌   | 157/240 [2:24:23<1:18:24, 56.68s/it] 66%|██████▌   | 158/240 [2:25:20<1:17:42, 56.85s/it]                                                      66%|██████▌   | 158/240 [2:25:20<1:17:42, 56.85s/it] 66%|██████▋   | 159/240 [2:26:18<1:17:01, 57.06s/it]                                                      66%|██████▋   | 159/240 [2:26:18<1:17:01, 57.06s/it] 67%|██████▋   | 160/240 [2:27:15<1:16:07, 57.09s/it]                                                      67%|██████▋   | 160/240 [2:27:15<1:16:07, 57.09s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 67%|██████▋   | 161/240 [2:28:14<1:15:56, 57.68s/it]                                                      67%|██████▋   | 161/240 [2:28:14<1:15:56, 57.68s/it] 68%|██████▊   | 162/240 [2:29:12<1:14:59, 57.69s/it]                                                      68%|██████▊   | 162/240 [2:29:12<1:14:59, 57.69s/it] 68%|██████▊   | 163/240 [2:30:09<1:13:54, 57.59s/it]                                                      68%|██████▊   | 163/240 [2:30:09<1:13:54, 57.59s/it] 68%|██████▊   | 164/240 [2:31:06<1:12:27, 57.21s/it]                                                      68%|██████▊   | 164/240 [2:31:06<1:12:27, 57.21s/it] 69%|██████▉   | 165/240 [2:32:01<1:10:42, 56.57s/it]                                                      69%|██████▉   | 165/240 [2:32:01<1:10:42, 56.57s/it] 69%|██████▉   | 166/240 [2:32:54<1:08:37, 55.64s/it]                                                      69%|██████▉   | 166/240 [2:32:54<1:08:37, 55.64s/it] 70%|██████▉   | 167/240 [2:33:49<1:07:31, 55.50s/it]                                                      70%|██████▉   | 167/240 [2:33:49<1:07:31, 55.50s/it] 70%|███████   | 168/240 [2:34:13<55:11, 46.00s/it]                                                      70%|███████   | 168/240 [2:34:13<55:11, 46.00s/it] 70%|███████   | 169/240 [2:35:04<56:10, 47.47s/it]                                                   {'loss': 0.1929, 'grad_norm': 0.2125026285648346, 'learning_rate': 0.00038750000000000004, 'generation_loss': 0.19286560248292517, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16416046023368835, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.17}
+{'loss': 0.1932, 'grad_norm': 0.19693659245967865, 'learning_rate': 0.00038333333333333334, 'generation_loss': 0.19320183899253607, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1635778546333313, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.21}
+{'loss': 0.1946, 'grad_norm': 0.18064318597316742, 'learning_rate': 0.00037916666666666665, 'generation_loss': 0.19457405275898054, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.158273845911026, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.26}
+{'loss': 0.1972, 'grad_norm': 0.18016788363456726, 'learning_rate': 0.000375, 'generation_loss': 0.19715803980943747, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.31284114718437195, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.3}
+{'loss': 0.1999, 'grad_norm': 0.1760164201259613, 'learning_rate': 0.00037083333333333337, 'generation_loss': 0.19986370466358494, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3065612316131592, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.34}
+{'loss': 0.1953, 'grad_norm': 0.17028383910655975, 'learning_rate': 0.00036666666666666667, 'generation_loss': 0.19528213204466738, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15444134175777435, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.38}
+{'loss': 0.194, 'grad_norm': 0.17385418713092804, 'learning_rate': 0.0003625, 'generation_loss': 0.19395944160351064, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14086580276489258, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.43}
+{'loss': 0.1946, 'grad_norm': 0.17139090597629547, 'learning_rate': 0.00035833333333333333, 'generation_loss': 0.1945793830236653, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26071539521217346, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.47}
+{'loss': 0.2024, 'grad_norm': 0.18345628678798676, 'learning_rate': 0.0003541666666666667, 'generation_loss': 0.202424507951946, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15378813445568085, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.51}
+{'loss': 0.1948, 'grad_norm': 0.17979256808757782, 'learning_rate': 0.00035, 'generation_loss': 0.19479933103139047, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13527938723564148, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.55}
+{'loss': 0.1957, 'grad_norm': 0.17154447734355927, 'learning_rate': 0.00034583333333333335, 'generation_loss': 0.19567261110933032, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.186459019780159, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.6}
+{'loss': 0.1916, 'grad_norm': 0.16904465854167938, 'learning_rate': 0.00034166666666666666, 'generation_loss': 0.19162562281417195, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1900375634431839, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.64}
+{'loss': 0.1984, 'grad_norm': 0.16967296600341797, 'learning_rate': 0.0003375, 'generation_loss': 0.1984104958100943, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.28832441568374634, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.68}
+{'loss': 0.193, 'grad_norm': 0.16926808655261993, 'learning_rate': 0.0003333333333333333, 'generation_loss': 0.19303141233103815, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16573457419872284, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.72}
+{'loss': 0.1919, 'grad_norm': 0.17032186686992645, 'learning_rate': 0.0003291666666666667, 'generation_loss': 0.19186056405305862, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.26370716094970703, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.77}
+{'loss': 0.1963, 'grad_norm': 0.17188405990600586, 'learning_rate': 0.00032500000000000004, 'generation_loss': 0.19628061380353756, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15313932299613953, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.81}
+{'loss': 0.2006, 'grad_norm': 0.17584198713302612, 'learning_rate': 0.00032083333333333334, 'generation_loss': 0.20062590156157967, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1497371345758438, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.85}
+{'loss': 0.2005, 'grad_norm': 0.17729012668132782, 'learning_rate': 0.00031666666666666665, 'generation_loss': 0.20050425926456228, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18100005388259888, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.89}
+{'loss': 0.1955, 'grad_norm': 0.17542797327041626, 'learning_rate': 0.0003125, 'generation_loss': 0.1955485114158364, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13965490460395813, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.94}
+{'loss': 0.1934, 'grad_norm': 0.17181475460529327, 'learning_rate': 0.00030833333333333337, 'generation_loss': 0.19344108182122, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.3788096308708191, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 6.98}
+{'loss': 0.1887, 'grad_norm': 0.24007564783096313, 'learning_rate': 0.00030416666666666667, 'generation_loss': 0.18874145765640155, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.21954113245010376, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.0}
+ 70%|███████   | 169/240 [2:35:04<56:10, 47.47s/it] 71%|███████   | 170/240 [2:35:55<56:45, 48.65s/it]                                                    71%|███████   | 170/240 [2:35:55<56:45, 48.65s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 71%|███████▏  | 171/240 [2:36:50<58:02, 50.47s/it]                                                    71%|███████▏  | 171/240 [2:36:50<58:02, 50.47s/it] 72%|███████▏  | 172/240 [2:37:47<59:22, 52.39s/it]                                                    72%|███████▏  | 172/240 [2:37:47<59:22, 52.39s/it] 72%|███████▏  | 173/240 [2:38:44<1:00:03, 53.78s/it]                                                      72%|███████▏  | 173/240 [2:38:44<1:00:03, 53.78s/it] 72%|███████▎  | 174/240 [2:39:42<1:00:28, 54.98s/it]                                                      72%|███████▎  | 174/240 [2:39:42<1:00:28, 54.98s/it] 73%|███████▎  | 175/240 [2:40:39<1:00:18, 55.67s/it]                                                      73%|███████▎  | 175/240 [2:40:39<1:00:18, 55.67s/it] 73%|███████▎  | 176/240 [2:41:32<58:33, 54.90s/it]                                                      73%|███████▎  | 176/240 [2:41:32<58:33, 54.90s/it] 74%|███████▍  | 177/240 [2:42:25<56:54, 54.20s/it]                                                    74%|███████▍  | 177/240 [2:42:25<56:54, 54.20s/it] 74%|███████▍  | 178/240 [2:43:16<55:02, 53.27s/it]                                                    74%|███████▍  | 178/240 [2:43:16<55:02, 53.27s/it] 75%|███████▍  | 179/240 [2:44:12<55:02, 54.14s/it]                                                    75%|███████▍  | 179/240 [2:44:12<55:02, 54.14s/it] 75%|███████▌  | 180/240 [2:45:10<55:22, 55.38s/it]                                                    75%|███████▌  | 180/240 [2:45:10<55:22, 55.38s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 75%|███████▌  | 181/240 [2:46:08<55:06, 56.04s/it]                                                    75%|███████▌  | 181/240 [2:46:08<55:06, 56.04s/it] 76%|███████▌  | 182/240 [2:47:01<53:25, 55.26s/it]                                                    76%|███████▌  | 182/240 [2:47:01<53:25, 55.26s/it] 76%|███████▋  | 183/240 [2:47:56<52:21, 55.11s/it]                                                    76%|███████▋  | 183/240 [2:47:56<52:21, 55.11s/it] 77%|███████▋  | 184/240 [2:48:54<52:20, 56.07s/it]                                                    77%|███████▋  | 184/240 [2:48:54<52:20, 56.07s/it] 77%|███████▋  | 185/240 [2:49:49<51:06, 55.75s/it]                                                    77%|███████▋  | 185/240 [2:49:49<51:06, 55.75s/it] 78%|███████▊  | 186/240 [2:50:43<49:42, 55.24s/it]                                                    78%|███████▊  | 186/240 [2:50:43<49:42, 55.24s/it] 78%|███████▊  | 187/240 [2:51:38<48:31, 54.93s/it]                                                    78%|███████▊  | 187/240 [2:51:38<48:31, 54.93s/it] 78%|███████▊  | 188/240 [2:52:32<47:33, 54.88s/it]                                                    78%|███████▊  | 188/240 [2:52:32<47:33, 54.88s/it] 79%|███████▉  | 189/240 [2:53:27<46:39, 54.90s/it]                                                    79%|███████▉  | 189/240 [2:53:27<46:39, 54.90s/it] 79%|███████▉  | 190/240 [2:54:22<45:42, 54.85s/it]                                                   {'loss': 0.1785, 'grad_norm': 0.1685415655374527, 'learning_rate': 0.0003, 'generation_loss': 0.1785049063328188, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15548443794250488, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.04}
+{'loss': 0.1715, 'grad_norm': 0.15731805562973022, 'learning_rate': 0.00029583333333333333, 'generation_loss': 0.17154012665560003, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19168560206890106, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.09}
+{'loss': 0.1732, 'grad_norm': 0.16848349571228027, 'learning_rate': 0.0002916666666666667, 'generation_loss': 0.17319046876218636, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1371646374464035, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.13}
+{'loss': 0.1777, 'grad_norm': 0.18864598870277405, 'learning_rate': 0.0002875, 'generation_loss': 0.17766690684948117, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18289151787757874, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.17}
+{'loss': 0.1735, 'grad_norm': 0.19504298269748688, 'learning_rate': 0.00028333333333333335, 'generation_loss': 0.17345415106683504, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13863858580589294, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.21}
+{'loss': 0.1752, 'grad_norm': 0.20227576792240143, 'learning_rate': 0.00027916666666666666, 'generation_loss': 0.17518815794028342, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16702869534492493, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.26}
+{'loss': 0.1705, 'grad_norm': 0.18461830914020538, 'learning_rate': 0.000275, 'generation_loss': 0.17047961575735826, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13426938652992249, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.3}
+{'loss': 0.1748, 'grad_norm': 0.16701273620128632, 'learning_rate': 0.0002708333333333333, 'generation_loss': 0.17480056404019706, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16581949591636658, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.34}
+{'loss': 0.1745, 'grad_norm': 0.16853542625904083, 'learning_rate': 0.0002666666666666667, 'generation_loss': 0.17451704941049684, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2514629065990448, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.38}
+{'loss': 0.1755, 'grad_norm': 0.1616121530532837, 'learning_rate': 0.00026250000000000004, 'generation_loss': 0.17546915556886233, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1331625133752823, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.43}
+{'loss': 0.1732, 'grad_norm': 0.16489586234092712, 'learning_rate': 0.00025833333333333334, 'generation_loss': 0.17315443903498817, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16946905851364136, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.47}
+{'loss': 0.1764, 'grad_norm': 0.17867639660835266, 'learning_rate': 0.00025416666666666665, 'generation_loss': 0.1763991704210639, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.2932354211807251, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.51}
+{'loss': 0.1757, 'grad_norm': 0.17537249624729156, 'learning_rate': 0.00025, 'generation_loss': 0.1756603314570384, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1615527868270874, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.55}
+{'loss': 0.177, 'grad_norm': 0.18528924882411957, 'learning_rate': 0.0002458333333333333, 'generation_loss': 0.1769704155594809, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18805725872516632, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.6}
+{'loss': 0.1766, 'grad_norm': 0.16926932334899902, 'learning_rate': 0.00024166666666666667, 'generation_loss': 0.17664991995843593, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14341133832931519, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.64}
+{'loss': 0.1786, 'grad_norm': 0.1780342012643814, 'learning_rate': 0.0002375, 'generation_loss': 0.17862623577821068, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13459239900112152, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.68}
+{'loss': 0.1764, 'grad_norm': 0.17144151031970978, 'learning_rate': 0.00023333333333333333, 'generation_loss': 0.17635518267343286, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.138456329703331, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.72}
+{'loss': 0.1799, 'grad_norm': 0.18028302490711212, 'learning_rate': 0.00022916666666666666, 'generation_loss': 0.17994141059170943, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13506413996219635, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.77}
+{'loss': 0.1801, 'grad_norm': 0.17636889219284058, 'learning_rate': 0.00022500000000000002, 'generation_loss': 0.18005584584898315, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1646280735731125, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.81}
+{'loss': 0.1799, 'grad_norm': 0.17567265033721924, 'learning_rate': 0.00022083333333333333, 'generation_loss': 0.1798560206516413, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15074823796749115, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.85}
+{'loss': 0.1785, 'grad_norm': 0.1710786670446396, 'learning_rate': 0.00021666666666666668, 'generation_loss': 0.17847313411766663, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.32465192675590515, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.89}
+ 79%|███████▉  | 190/240 [2:54:22<45:42, 54.85s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 80%|███████▉  | 191/240 [2:55:17<44:41, 54.72s/it]                                                    80%|███████▉  | 191/240 [2:55:17<44:41, 54.72s/it] 80%|████████  | 192/240 [2:55:42<36:46, 45.96s/it]                                                    80%|████████  | 192/240 [2:55:42<36:46, 45.96s/it] 80%|████████  | 193/240 [2:56:40<38:45, 49.49s/it]                                                    80%|████████  | 193/240 [2:56:40<38:45, 49.49s/it] 81%|████████  | 194/240 [2:57:36<39:27, 51.47s/it]                                                    81%|████████  | 194/240 [2:57:36<39:27, 51.47s/it] 81%|████████▏ | 195/240 [2:58:32<39:44, 52.98s/it]                                                    81%|████████▏ | 195/240 [2:58:32<39:44, 52.98s/it] 82%|████████▏ | 196/240 [2:59:29<39:42, 54.14s/it]                                                    82%|████████▏ | 196/240 [2:59:29<39:42, 54.14s/it] 82%|████████▏ | 197/240 [3:00:25<39:12, 54.71s/it]                                                    82%|████████▏ | 197/240 [3:00:25<39:12, 54.71s/it] 82%|████████▎ | 198/240 [3:01:21<38:35, 55.12s/it]                                                    82%|████████▎ | 198/240 [3:01:21<38:35, 55.12s/it] 83%|████████▎ | 199/240 [3:02:17<37:42, 55.18s/it]                                                    83%|████████▎ | 199/240 [3:02:17<37:42, 55.18s/it] 83%|████████▎ | 200/240 [3:03:11<36:42, 55.06s/it]                                                    83%|████████▎ | 200/240 [3:03:11<36:42, 55.06s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 84%|████████▍ | 201/240 [3:04:08<35:59, 55.38s/it]                                                    84%|████████▍ | 201/240 [3:04:08<35:59, 55.38s/it] 84%|████████▍ | 202/240 [3:05:02<34:54, 55.13s/it]                                                    84%|████████▍ | 202/240 [3:05:02<34:54, 55.13s/it] 85%|████████▍ | 203/240 [3:05:53<33:17, 53.98s/it]                                                    85%|████████▍ | 203/240 [3:05:53<33:17, 53.98s/it] 85%|████████▌ | 204/240 [3:06:44<31:48, 53.03s/it]                                                    85%|████████▌ | 204/240 [3:06:44<31:48, 53.03s/it] 85%|████████▌ | 205/240 [3:07:36<30:40, 52.59s/it]                                                    85%|████████▌ | 205/240 [3:07:36<30:40, 52.59s/it] 86%|████████▌ | 206/240 [3:08:28<29:41, 52.40s/it]                                                    86%|████████▌ | 206/240 [3:08:28<29:41, 52.40s/it] 86%|████████▋ | 207/240 [3:09:20<28:49, 52.41s/it]                                                    86%|████████▋ | 207/240 [3:09:20<28:49, 52.41s/it] 87%|████████▋ | 208/240 [3:10:11<27:46, 52.07s/it]                                                    87%|████████▋ | 208/240 [3:10:11<27:46, 52.07s/it] 87%|████████▋ | 209/240 [3:11:06<27:15, 52.76s/it]                                                    87%|████████▋ | 209/240 [3:11:06<27:15, 52.76s/it] 88%|████████▊ | 210/240 [3:12:01<26:48, 53.60s/it]                                                    88%|████████▊ | 210/240 [3:12:01<26:48, 53.60s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 88%|████████▊ | 211/240 [3:12:59<26:30, 54.85s/it]                                                   {'loss': 0.179, 'grad_norm': 0.17048048973083496, 'learning_rate': 0.0002125, 'generation_loss': 0.17896674925577827, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.208891823887825, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.94}
+{'loss': 0.1748, 'grad_norm': 0.166432186961174, 'learning_rate': 0.00020833333333333335, 'generation_loss': 0.17477645343751647, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1753949224948883, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 7.98}
+{'loss': 0.1748, 'grad_norm': 0.25122731924057007, 'learning_rate': 0.00020416666666666668, 'generation_loss': 0.17480888245862072, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15591494739055634, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.0}
+{'loss': 0.1619, 'grad_norm': 0.15334294736385345, 'learning_rate': 0.0002, 'generation_loss': 0.16188536274421494, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14786472916603088, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.04}
+{'loss': 0.1634, 'grad_norm': 0.15905402600765228, 'learning_rate': 0.00019583333333333334, 'generation_loss': 0.16343608890019823, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16093914210796356, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.09}
+{'loss': 0.1588, 'grad_norm': 0.15333840250968933, 'learning_rate': 0.00019166666666666667, 'generation_loss': 0.15883973590098321, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.156873419880867, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.13}
+{'loss': 0.1621, 'grad_norm': 0.16243836283683777, 'learning_rate': 0.0001875, 'generation_loss': 0.16211915733583737, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.22509469091892242, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.17}
+{'loss': 0.1601, 'grad_norm': 0.17195363342761993, 'learning_rate': 0.00018333333333333334, 'generation_loss': 0.16011580696795136, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14908874034881592, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.21}
+{'loss': 0.1612, 'grad_norm': 0.1794462502002716, 'learning_rate': 0.00017916666666666667, 'generation_loss': 0.16122129463474266, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1670360118150711, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.26}
+{'loss': 0.1599, 'grad_norm': 0.18405966460704803, 'learning_rate': 0.000175, 'generation_loss': 0.15986958239227533, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1691550463438034, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.3}
+{'loss': 0.1576, 'grad_norm': 0.1726127564907074, 'learning_rate': 0.00017083333333333333, 'generation_loss': 0.15757527529785875, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.172399640083313, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.34}
+{'loss': 0.1587, 'grad_norm': 0.17850807309150696, 'learning_rate': 0.00016666666666666666, 'generation_loss': 0.15866357226332184, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.227455735206604, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.38}
+{'loss': 0.162, 'grad_norm': 0.1689302921295166, 'learning_rate': 0.00016250000000000002, 'generation_loss': 0.16201360999548342, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19883716106414795, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.43}
+{'loss': 0.1629, 'grad_norm': 0.17163331806659698, 'learning_rate': 0.00015833333333333332, 'generation_loss': 0.16292262624483556, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.20879188179969788, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.47}
+{'loss': 0.1573, 'grad_norm': 0.15984685719013214, 'learning_rate': 0.00015416666666666668, 'generation_loss': 0.15731160966970492, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1294364482164383, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.51}
+{'loss': 0.1591, 'grad_norm': 0.16362005472183228, 'learning_rate': 0.00015, 'generation_loss': 0.15905787007068284, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.176377072930336, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.55}
+{'loss': 0.1595, 'grad_norm': 0.1613030582666397, 'learning_rate': 0.00014583333333333335, 'generation_loss': 0.15947540785418823, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13515155017375946, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.6}
+{'loss': 0.1638, 'grad_norm': 0.16313455998897552, 'learning_rate': 0.00014166666666666668, 'generation_loss': 0.16378340712981299, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.251004695892334, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.64}
+{'loss': 0.1617, 'grad_norm': 0.16950300335884094, 'learning_rate': 0.0001375, 'generation_loss': 0.16173241884098388, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1328589767217636, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.68}
+{'loss': 0.1622, 'grad_norm': 0.16130229830741882, 'learning_rate': 0.00013333333333333334, 'generation_loss': 0.16218455880880356, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.12868687510490417, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.72}
+{'loss': 0.1617, 'grad_norm': 0.17034602165222168, 'learning_rate': 0.00012916666666666667, 'generation_loss': 0.16166341744246893, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.12935297191143036, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.77}
+ 88%|████████▊ | 211/240 [3:12:59<26:30, 54.85s/it] 88%|████████▊ | 212/240 [3:13:55<25:43, 55.14s/it]                                                    88%|████████▊ | 212/240 [3:13:55<25:43, 55.14s/it] 89%|████████▉ | 213/240 [3:14:52<25:02, 55.64s/it]                                                    89%|████████▉ | 213/240 [3:14:52<25:02, 55.64s/it] 89%|████████▉ | 214/240 [3:15:47<24:01, 55.42s/it]                                                    89%|████████▉ | 214/240 [3:15:47<24:01, 55.42s/it] 90%|████████▉ | 215/240 [3:16:37<22:28, 53.95s/it]                                                    90%|████████▉ | 215/240 [3:16:37<22:28, 53.95s/it] 90%|█████████ | 216/240 [3:17:01<17:56, 44.87s/it]                                                    90%|█████████ | 216/240 [3:17:01<17:56, 44.87s/it] 90%|█████████ | 217/240 [3:17:52<17:58, 46.89s/it]                                                    90%|█████████ | 217/240 [3:17:52<17:58, 46.89s/it] 91%|█████████ | 218/240 [3:18:43<17:36, 48.01s/it]                                                    91%|█████████ | 218/240 [3:18:43<17:36, 48.01s/it] 91%|█████████▏| 219/240 [3:19:33<17:02, 48.69s/it]                                                    91%|█████████▏| 219/240 [3:19:33<17:02, 48.69s/it] 92%|█████████▏| 220/240 [3:20:24<16:23, 49.20s/it]                                                    92%|█████████▏| 220/240 [3:20:24<16:23, 49.20s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 92%|█████████▏| 221/240 [3:21:17<15:56, 50.35s/it]                                                    92%|█████████▏| 221/240 [3:21:17<15:56, 50.35s/it] 92%|█████████▎| 222/240 [3:22:12<15:31, 51.77s/it]                                                    92%|█████████▎| 222/240 [3:22:12<15:31, 51.77s/it] 93%|█████████▎| 223/240 [3:23:06<14:52, 52.49s/it]                                                    93%|█████████▎| 223/240 [3:23:06<14:52, 52.49s/it] 93%|█████████▎| 224/240 [3:24:02<14:14, 53.40s/it]                                                    93%|█████████▎| 224/240 [3:24:02<14:14, 53.40s/it] 94%|█████████▍| 225/240 [3:24:56<13:26, 53.77s/it]                                                    94%|█████████▍| 225/240 [3:24:56<13:26, 53.77s/it] 94%|█████████▍| 226/240 [3:25:50<12:34, 53.93s/it]                                                    94%|█████████▍| 226/240 [3:25:50<12:34, 53.93s/it] 95%|█████████▍| 227/240 [3:26:44<11:39, 53.83s/it]                                                    95%|█████████▍| 227/240 [3:26:44<11:39, 53.83s/it] 95%|█████████▌| 228/240 [3:27:40<10:51, 54.33s/it]                                                    95%|█████████▌| 228/240 [3:27:40<10:51, 54.33s/it] 95%|█████████▌| 229/240 [3:28:37<10:06, 55.16s/it]                                                    95%|█████████▌| 229/240 [3:28:37<10:06, 55.16s/it] 96%|█████████▌| 230/240 [3:29:32<09:11, 55.12s/it]                                                    96%|█████████▌| 230/240 [3:29:32<09:11, 55.12s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+ 96%|█████████▋| 231/240 [3:30:29<08:22, 55.84s/it]                                                    96%|█████████▋| 231/240 [3:30:29<08:22, 55.84s/it] 97%|█████████▋| 232/240 [3:31:24<07:24, 55.61s/it]                                                   {'loss': 0.1623, 'grad_norm': 0.1701534539461136, 'learning_rate': 0.000125, 'generation_loss': 0.16234341970994137, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1985282450914383, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.81}
+{'loss': 0.163, 'grad_norm': 0.16627350449562073, 'learning_rate': 0.00012083333333333333, 'generation_loss': 0.16304593007953372, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1487952023744583, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.85}
+{'loss': 0.161, 'grad_norm': 0.16484439373016357, 'learning_rate': 0.00011666666666666667, 'generation_loss': 0.16103012461098842, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18325383961200714, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.89}
+{'loss': 0.1617, 'grad_norm': 0.16176900267601013, 'learning_rate': 0.00011250000000000001, 'generation_loss': 0.16166966708260588, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16172777116298676, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.94}
+{'loss': 0.1607, 'grad_norm': 0.16075995564460754, 'learning_rate': 0.00010833333333333334, 'generation_loss': 0.1607118036627071, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16634869575500488, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 8.98}
+{'loss': 0.1612, 'grad_norm': 0.232286736369133, 'learning_rate': 0.00010416666666666667, 'generation_loss': 0.16118681894130066, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15731406211853027, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.0}
+{'loss': 0.1507, 'grad_norm': 0.14639808237552643, 'learning_rate': 0.0001, 'generation_loss': 0.15065350574150216, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.143251433968544, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.04}
+{'loss': 0.1509, 'grad_norm': 0.14382080733776093, 'learning_rate': 9.583333333333334e-05, 'generation_loss': 0.15092876832932234, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.12805786728858948, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.09}
+{'loss': 0.1498, 'grad_norm': 0.14238221943378448, 'learning_rate': 9.166666666666667e-05, 'generation_loss': 0.14978678119950928, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13290894031524658, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.13}
+{'loss': 0.1475, 'grad_norm': 0.1423441618680954, 'learning_rate': 8.75e-05, 'generation_loss': 0.14749663950351533, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.12937550246715546, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.17}
+{'loss': 0.1485, 'grad_norm': 0.14469563961029053, 'learning_rate': 8.333333333333333e-05, 'generation_loss': 0.14845082644023933, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1490897685289383, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.21}
+{'loss': 0.1493, 'grad_norm': 0.14820611476898193, 'learning_rate': 7.916666666666666e-05, 'generation_loss': 0.1492583545477828, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1767042875289917, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.26}
+{'loss': 0.1498, 'grad_norm': 0.15336397290229797, 'learning_rate': 7.5e-05, 'generation_loss': 0.1498391032946529, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16612252593040466, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.3}
+{'loss': 0.1508, 'grad_norm': 0.15760983526706696, 'learning_rate': 7.083333333333334e-05, 'generation_loss': 0.1508412716939347, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1385030299425125, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.34}
+{'loss': 0.1485, 'grad_norm': 0.15824763476848602, 'learning_rate': 6.666666666666667e-05, 'generation_loss': 0.1485204519412946, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1299176961183548, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.38}
+{'loss': 0.1517, 'grad_norm': 0.16286498308181763, 'learning_rate': 6.25e-05, 'generation_loss': 0.15174876277160365, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.18845950067043304, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.43}
+{'loss': 0.152, 'grad_norm': 0.17347092926502228, 'learning_rate': 5.833333333333333e-05, 'generation_loss': 0.1520479113823967, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19042398035526276, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.47}
+{'loss': 0.1519, 'grad_norm': 0.157321035861969, 'learning_rate': 5.416666666666667e-05, 'generation_loss': 0.15190780922421254, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1274002194404602, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.51}
+{'loss': 0.1499, 'grad_norm': 0.15917754173278809, 'learning_rate': 5e-05, 'generation_loss': 0.1498527208896121, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.15881632268428802, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.55}
+{'loss': 0.1493, 'grad_norm': 0.15895585715770721, 'learning_rate': 4.5833333333333334e-05, 'generation_loss': 0.14929570523963775, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16452749073505402, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.6}
+{'loss': 0.1494, 'grad_norm': 0.16145914793014526, 'learning_rate': 4.1666666666666665e-05, 'generation_loss': 0.1494394813926192, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.19893202185630798, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.64}
+ 97%|█████████▋| 232/240 [3:31:24<07:24, 55.61s/it] 97%|█████████▋| 233/240 [3:32:19<06:28, 55.45s/it]                                                    97%|█████████▋| 233/240 [3:32:19<06:28, 55.45s/it] 98%|█████████▊| 234/240 [3:33:16<05:34, 55.81s/it]                                                    98%|█████████▊| 234/240 [3:33:16<05:34, 55.81s/it] 98%|█████████▊| 235/240 [3:34:11<04:37, 55.58s/it]                                                    98%|█████████▊| 235/240 [3:34:11<04:37, 55.58s/it] 98%|█████████▊| 236/240 [3:35:05<03:40, 55.04s/it]                                                    98%|█████████▊| 236/240 [3:35:05<03:40, 55.04s/it] 99%|█████████▉| 237/240 [3:35:58<02:43, 54.59s/it]                                                    99%|█████████▉| 237/240 [3:35:58<02:43, 54.59s/it] 99%|█████████▉| 238/240 [3:36:51<01:47, 53.85s/it]                                                    99%|█████████▉| 238/240 [3:36:51<01:47, 53.85s/it]100%|█████████▉| 239/240 [3:37:42<00:53, 53.08s/it]                                                   100%|█████████▉| 239/240 [3:37:42<00:53, 53.08s/it]100%|██████████| 240/240 [3:38:07<00:00, 44.77s/it]                                                   100%|██████████| 240/240 [3:38:07<00:00, 44.77s/it]/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+                                                   100%|██████████| 240/240 [3:38:09<00:00, 44.77s/it]100%|██████████| 240/240 [3:38:09<00:00, 54.54s/it]
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:300: UserWarning: Setting `save_embedding_layers` to `True` as the embedding layer has been resized during finetuning.
+  warnings.warn(
+{'loss': 0.1517, 'grad_norm': 0.1571808159351349, 'learning_rate': 3.75e-05, 'generation_loss': 0.15166841736936476, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1269429326057434, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.68}
+{'loss': 0.1502, 'grad_norm': 0.16034390032291412, 'learning_rate': 3.3333333333333335e-05, 'generation_loss': 0.15024943269963842, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.12822364270687103, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.72}
+{'loss': 0.151, 'grad_norm': 0.1603953242301941, 'learning_rate': 2.9166666666666666e-05, 'generation_loss': 0.15097971344948746, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17825250327587128, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.77}
+{'loss': 0.1527, 'grad_norm': 0.15618474781513214, 'learning_rate': 2.5e-05, 'generation_loss': 0.15274916832277086, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16529476642608643, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.81}
+{'loss': 0.1499, 'grad_norm': 0.14922384917736053, 'learning_rate': 2.0833333333333333e-05, 'generation_loss': 0.149897021939978, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.16445426642894745, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.85}
+{'loss': 0.1503, 'grad_norm': 0.1528012603521347, 'learning_rate': 1.6666666666666667e-05, 'generation_loss': 0.15027125882625114, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.13681744039058685, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.89}
+{'loss': 0.1528, 'grad_norm': 0.15092481672763824, 'learning_rate': 1.25e-05, 'generation_loss': 0.15278536661935505, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.17629395425319672, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.94}
+{'loss': 0.1502, 'grad_norm': 0.14659260213375092, 'learning_rate': 8.333333333333334e-06, 'generation_loss': 0.1501823482249165, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.1305021494626999, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 9.98}
+{'loss': 0.1508, 'grad_norm': 0.2276339828968048, 'learning_rate': 4.166666666666667e-06, 'generation_loss': 0.1508122438705769, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14223073422908783, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 10.0}
+{'train_runtime': 13089.509, 'train_samples_per_second': 9.178, 'train_steps_per_second': 0.018, 'train_loss': 0.2540997409572204, 'generation_loss': 0.0, 'candidate_loss': 0.0, 'contrastive_candidate_loss': 0.0, 'lambda_candidate': 0.0, 'candidate_forwards': 0, 'last_microbatch_generation_loss': 0.14223073422908783, 'last_microbatch_candidate_loss': 0.0, 'last_microbatch_lambda_candidate': 0.0, 'epoch': 10.0}
+[b1] saved /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[eval] /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter EM=0.8438 n=96
+[b1] train complete 2026-10-13T12:22:48+00:00
+scale=full
+decode=both
+adapter_run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full
+listed_adapter=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter
+b1_decode_run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode
+eval_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json
+run_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/full_decode
+wait_for_pattern=
+tmux_session=accumfix-b1-20261013
+2026-10-13T12:22:48+00:00
+[attach] froze B1 summaries from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode into /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/full_decode/b1
+[decode] listed-only start scale=full decode=both 2026-10-13T12:22:48+00:00
+/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:789: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[2026-10-13T12:22:53+0000] [INFO] event=model_load_start {"cuda_visible_devices": "all", "device_map": null, "dtype": "torch.bfloat16", "event": "model_load_start", "flash_attention": false, "host": "ubuntu", "load_dir": null, "lora_alpha": 32, "lora_r": 8, "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "peft": false, "pid": 958467, "quantization": false, "rank": "0", "target_modules": null}
+[2026-10-13T12:22:53+0000] [INFO] event=model_resolve_start {"cuda_visible_devices": "all", "event": "model_resolve_start", "host": "ubuntu", "local_files_only": true, "model_cache_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache", "model_download_workers": 1, "model_id": "Qwen/Qwen2.5-7B-Instruct", "model_source": "local", "pid": 958467, "rank": "0"}
+[2026-10-13T12:22:53+0000] [INFO] event=model_local_candidates {"candidates": ["/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct"], "cuda_visible_devices": "all", "event": "model_local_candidates", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 958467, "rank": "0"}
+[2026-10-13T12:22:53+0000] [INFO] event=model_resolve_complete {"cuda_visible_devices": "all", "elapsed_seconds": 0.001, "event": "model_resolve_complete", "host": "ubuntu", "model_id": "Qwen/Qwen2.5-7B-Instruct", "pid": 958467, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "source": "local_cache", "total_weight_gib": 14.185, "weight_files": 4}
+[2026-10-13T12:22:53+0000] [INFO] event=model_weights_loading {"attention_implementation": "sdpa", "cuda_visible_devices": "all", "device_map": null, "event": "model_weights_loading", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pid": 958467, "quantization": false, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "torch_dtype": "torch.bfloat16"}
+`torch_dtype` is deprecated! Use `dtype` instead!
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00, 89.22it/s]
+[2026-10-13T12:22:53+0000] [INFO] event=model_weights_loaded {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 0.354, "event": "model_weights_loaded", "host": "ubuntu", "memory_footprint_gib": 14.185, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7615616512, "parameters_million": 7615.617, "pid": 958467, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7615616512, "trainable_parameters_million": 7615.617, "trainable_percent": 100.0}
+[2026-10-13T12:22:53+0000] [INFO] event=model_memory_after_base_load {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_memory_after_base_load", "host": "ubuntu", "pid": 958467, "rank": "0"}
+[2026-10-13T12:22:53+0000] [INFO] event=model_resize_token_embeddings {"cuda_visible_devices": "all", "event": "model_resize_token_embeddings", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "model_vocab_size": 152064, "pid": 958467, "rank": "0", "reason": "align_base_model_with_tokenizer", "tokenizer_vocab_size": 151666}
+[2026-10-13T12:23:10+0000] [INFO] event=tokenizer_ready {"cuda_visible_devices": "all", "event": "tokenizer_ready", "host": "ubuntu", "model_name": "Qwen/Qwen2.5-7B-Instruct", "pad_token_id": 151665, "pid": 958467, "rank": "0", "tokenizer_class": "Qwen2TokenizerFast", "vocab_size": 151666}
+[2026-10-13T12:23:10+0000] [INFO] event=model_load_complete_memory {"cuda_available": true, "cuda_visible_devices": "all", "devices": [{"allocated_gib": 0.0, "index": 0, "max_allocated_gib": 0.0, "reserved_gib": 0.0}], "event": "model_load_complete_memory", "host": "ubuntu", "pid": 958467, "rank": "0"}
+[2026-10-13T12:23:10+0000] [INFO] event=model_load_complete {"class": "Qwen2ForCausalLM", "cuda_visible_devices": "all", "devices": ["cpu"], "dtypes": ["torch.bfloat16"], "elapsed_seconds": 16.574, "event": "model_load_complete", "host": "ubuntu", "memory_footprint_gib": 14.18, "model_config_type": "qwen2", "model_name": "Qwen/Qwen2.5-7B-Instruct", "parameters": 7612763648, "parameters_million": 7612.764, "pid": 958467, "rank": "0", "resolved_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache/Qwen--Qwen2.5-7B-Instruct", "trainable_parameters": 7612763648, "trainable_parameters_million": 7612.764, "trainable_percent": 100.0}
+[resume] predictions_correct.jsonl: 0/9895 done, 9895 remaining
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[generate] 1/9895 EM=1.0000
+[generate] 64/9895 EM=0.8594
+[generate] 128/9895 EM=0.8750
+[generate] 192/9895 EM=0.8490
+[generate] 256/9895 EM=0.8594
+[generate] 320/9895 EM=0.8688
+[generate] 384/9895 EM=0.8646
+[generate] 448/9895 EM=0.8571
+[generate] 512/9895 EM=0.8652
+[generate] 576/9895 EM=0.8646
+[generate] 640/9895 EM=0.8578
+[generate] 704/9895 EM=0.8565
+[generate] 768/9895 EM=0.8477
+[generate] 832/9895 EM=0.8474
+[generate] 896/9895 EM=0.8449
+[generate] 960/9895 EM=0.8417
+[generate] 1024/9895 EM=0.8418
+[generate] 1088/9895 EM=0.8438
+[generate] 1152/9895 EM=0.8446
+[generate] 1216/9895 EM=0.8429
+[generate] 1280/9895 EM=0.8430
+[generate] 1344/9895 EM=0.8430
+[generate] 1408/9895 EM=0.8423
+[generate] 1472/9895 EM=0.8444
+[generate] 1536/9895 EM=0.8444
+[generate] 1600/9895 EM=0.8438
+[generate] 1664/9895 EM=0.8438
+[generate] 1728/9895 EM=0.8420
+[generate] 1792/9895 EM=0.8415
+[generate] 1856/9895 EM=0.8432
+[generate] 1920/9895 EM=0.8438
+[generate] 1984/9895 EM=0.8443
+[generate] 2048/9895 EM=0.8423
+[generate] 2112/9895 EM=0.8423
+[generate] 2176/9895 EM=0.8419
+[generate] 2240/9895 EM=0.8411
+[generate] 2304/9895 EM=0.8424
+[generate] 2368/9895 EM=0.8425
+[generate] 2432/9895 EM=0.8433
+[generate] 2496/9895 EM=0.8421
+[generate] 2560/9895 EM=0.8434
+[generate] 2624/9895 EM=0.8445
+[generate] 2688/9895 EM=0.8449
+[generate] 2752/9895 EM=0.8463
+[generate] 2816/9895 EM=0.8462
+[generate] 2880/9895 EM=0.8451
+[generate] 2944/9895 EM=0.8444
+[generate] 3008/9895 EM=0.8457
+[generate] 3072/9895 EM=0.8451
+[generate] 3136/9895 EM=0.8450
+[generate] 3200/9895 EM=0.8447
+[generate] 3264/9895 EM=0.8459
+[generate] 3328/9895 EM=0.8441
+[generate] 3392/9895 EM=0.8435
+[generate] 3456/9895 EM=0.8449
+[generate] 3520/9895 EM=0.8440
+[generate] 3584/9895 EM=0.8449
+[generate] 3648/9895 EM=0.8443
+[generate] 3712/9895 EM=0.8438
+[generate] 3776/9895 EM=0.8432
+[generate] 3840/9895 EM=0.8422
+[generate] 3904/9895 EM=0.8412
+[generate] 3968/9895 EM=0.8412
+[generate] 4032/9895 EM=0.8408
+[generate] 4096/9895 EM=0.8411
+[generate] 4160/9895 EM=0.8409
+[generate] 4224/9895 EM=0.8390
+[generate] 4288/9895 EM=0.8389
+[generate] 4352/9895 EM=0.8387
+[generate] 4416/9895 EM=0.8390
+[generate] 4480/9895 EM=0.8386
+[generate] 4544/9895 EM=0.8391
+[generate] 4608/9895 EM=0.8401
+[generate] 4672/9895 EM=0.8388
+[generate] 4736/9895 EM=0.8385
+[generate] 4800/9895 EM=0.8387
+[generate] 4864/9895 EM=0.8388
+[generate] 4928/9895 EM=0.8387
+[generate] 4992/9895 EM=0.8389
+[generate] 5056/9895 EM=0.8388
+[generate] 5120/9895 EM=0.8391
+[generate] 5184/9895 EM=0.8385
+[generate] 5248/9895 EM=0.8378
+[generate] 5312/9895 EM=0.8385
+[generate] 5376/9895 EM=0.8384
+[generate] 5440/9895 EM=0.8375
+[generate] 5504/9895 EM=0.8363
+[generate] 5568/9895 EM=0.8366
+[generate] 5632/9895 EM=0.8363
+[generate] 5696/9895 EM=0.8373
+[generate] 5760/9895 EM=0.8373
+[generate] 5824/9895 EM=0.8364
+[generate] 5888/9895 EM=0.8364
+[generate] 5952/9895 EM=0.8369
+[generate] 6016/9895 EM=0.8366
+[generate] 6080/9895 EM=0.8365
+[generate] 6144/9895 EM=0.8363
+[generate] 6208/9895 EM=0.8365
+[generate] 6272/9895 EM=0.8363
+[generate] 6336/9895 EM=0.8368
+[generate] 6400/9895 EM=0.8366
+[generate] 6464/9895 EM=0.8369
+[generate] 6528/9895 EM=0.8373
+[generate] 6592/9895 EM=0.8375
+[generate] 6656/9895 EM=0.8379
+[generate] 6720/9895 EM=0.8379
+[generate] 6784/9895 EM=0.8381
+[generate] 6848/9895 EM=0.8381
+[generate] 6912/9895 EM=0.8378
+[generate] 6976/9895 EM=0.8380
+[generate] 7040/9895 EM=0.8382
+[generate] 7104/9895 EM=0.8387
+[generate] 7168/9895 EM=0.8386
+[generate] 7232/9895 EM=0.8386
+[generate] 7296/9895 EM=0.8394
+[generate] 7360/9895 EM=0.8395
+[generate] 7424/9895 EM=0.8389
+[generate] 7488/9895 EM=0.8389
+[generate] 7552/9895 EM=0.8390
+[generate] 7616/9895 EM=0.8390
+[generate] 7680/9895 EM=0.8387
+[generate] 7744/9895 EM=0.8387
+[generate] 7808/9895 EM=0.8386
+[generate] 7872/9895 EM=0.8385
+[generate] 7936/9895 EM=0.8390
+[generate] 8000/9895 EM=0.8387
+[generate] 8064/9895 EM=0.8395
+[generate] 8128/9895 EM=0.8391
+[generate] 8192/9895 EM=0.8390
+[generate] 8256/9895 EM=0.8390
+[generate] 8320/9895 EM=0.8387
+[generate] 8384/9895 EM=0.8383
+[generate] 8448/9895 EM=0.8388
+[generate] 8512/9895 EM=0.8393
+[generate] 8576/9895 EM=0.8394
+[generate] 8640/9895 EM=0.8395
+[generate] 8704/9895 EM=0.8400
+[generate] 8768/9895 EM=0.8396
+[generate] 8832/9895 EM=0.8398
+[generate] 8896/9895 EM=0.8402
+[generate] 8960/9895 EM=0.8400
+[generate] 9024/9895 EM=0.8401
+[generate] 9088/9895 EM=0.8403
+[generate] 9152/9895 EM=0.8406
+[generate] 9216/9895 EM=0.8406
+[generate] 9280/9895 EM=0.8408
+[generate] 9344/9895 EM=0.8405
+[generate] 9408/9895 EM=0.8400
+[generate] 9472/9895 EM=0.8399
+[generate] 9536/9895 EM=0.8401
+[generate] 9600/9895 EM=0.8407
+[generate] 9664/9895 EM=0.8406
+[generate] 9728/9895 EM=0.8405
+[generate] 9792/9895 EM=0.8400
+[generate] 9856/9895 EM=0.8401
+[generate] 9895/9895 EM=0.8402
+[eval generate] /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter EM=0.8402 n=9895
+[resume] predictions_closed_set.jsonl: 0/9895 done, 9895 remaining
+[closed_set] 1/9895 hits@1=1.0000
+[closed_set] 64/9895 hits@1=0.8594
+[closed_set] 128/9895 hits@1=0.8906
+[closed_set] 192/9895 hits@1=0.8802
+[closed_set] 256/9895 hits@1=0.8828
+[closed_set] 320/9895 hits@1=0.8938
+[closed_set] 384/9895 hits@1=0.8854
+[closed_set] 448/9895 hits@1=0.8817
+[closed_set] 512/9895 hits@1=0.8906
+[closed_set] 576/9895 hits@1=0.8924
+[closed_set] 640/9895 hits@1=0.8859
+[closed_set] 704/9895 hits@1=0.8849
+[closed_set] 768/9895 hits@1=0.8802
+[closed_set] 832/9895 hits@1=0.8774
+[closed_set] 896/9895 hits@1=0.8728
+[closed_set] 960/9895 hits@1=0.8708
+[closed_set] 1024/9895 hits@1=0.8701
+[closed_set] 1088/9895 hits@1=0.8741
+[closed_set] 1152/9895 hits@1=0.8741
+[closed_set] 1216/9895 hits@1=0.8750
+[closed_set] 1280/9895 hits@1=0.8742
+[closed_set] 1344/9895 hits@1=0.8750
+[closed_set] 1408/9895 hits@1=0.8736
+[closed_set] 1472/9895 hits@1=0.8736
+[closed_set] 1536/9895 hits@1=0.8730
+[closed_set] 1600/9895 hits@1=0.8725
+[closed_set] 1664/9895 hits@1=0.8720
+[closed_set] 1728/9895 hits@1=0.8704
+[closed_set] 1792/9895 hits@1=0.8694
+[closed_set] 1856/9895 hits@1=0.8718
+[closed_set] 1920/9895 hits@1=0.8724
+[closed_set] 1984/9895 hits@1=0.8720
+[closed_set] 2048/9895 hits@1=0.8706
+[closed_set] 2112/9895 hits@1=0.8707
+[closed_set] 2176/9895 hits@1=0.8695
+[closed_set] 2240/9895 hits@1=0.8683
+[closed_set] 2304/9895 hits@1=0.8694
+[closed_set] 2368/9895 hits@1=0.8695
+[closed_set] 2432/9895 hits@1=0.8697
+[closed_set] 2496/9895 hits@1=0.8690
+[closed_set] 2560/9895 hits@1=0.8703
+[closed_set] 2624/9895 hits@1=0.8708
+[closed_set] 2688/9895 hits@1=0.8709
+[closed_set] 2752/9895 hits@1=0.8721
+[closed_set] 2816/9895 hits@1=0.8725
+[closed_set] 2880/9895 hits@1=0.8719
+[closed_set] 2944/9895 hits@1=0.8723
+[closed_set] 3008/9895 hits@1=0.8733
+[closed_set] 3072/9895 hits@1=0.8724
+[closed_set] 3136/9895 hits@1=0.8731
+[closed_set] 3200/9895 hits@1=0.8728
+[closed_set] 3264/9895 hits@1=0.8738
+[closed_set] 3328/9895 hits@1=0.8720
+[closed_set] 3392/9895 hits@1=0.8715
+[closed_set] 3456/9895 hits@1=0.8727
+[closed_set] 3520/9895 hits@1=0.8724
+[closed_set] 3584/9895 hits@1=0.8730
+[closed_set] 3648/9895 hits@1=0.8728
+[closed_set] 3712/9895 hits@1=0.8723
+[closed_set] 3776/9895 hits@1=0.8721
+[closed_set] 3840/9895 hits@1=0.8716
+[closed_set] 3904/9895 hits@1=0.8709
+[closed_set] 3968/9895 hits@1=0.8710
+[closed_set] 4032/9895 hits@1=0.8710
+[closed_set] 4096/9895 hits@1=0.8711
+[closed_set] 4160/9895 hits@1=0.8712
+[closed_set] 4224/9895 hits@1=0.8696
+[closed_set] 4288/9895 hits@1=0.8689
+[closed_set] 4352/9895 hits@1=0.8686
+[closed_set] 4416/9895 hits@1=0.8689
+[closed_set] 4480/9895 hits@1=0.8685
+[closed_set] 4544/9895 hits@1=0.8693
+[closed_set] 4608/9895 hits@1=0.8700
+[closed_set] 4672/9895 hits@1=0.8690
+[closed_set] 4736/9895 hits@1=0.8682
+[closed_set] 4800/9895 hits@1=0.8683
+[closed_set] 4864/9895 hits@1=0.8684
+[closed_set] 4928/9895 hits@1=0.8685
+[closed_set] 4992/9895 hits@1=0.8688
+[closed_set] 5056/9895 hits@1=0.8687
+[closed_set] 5120/9895 hits@1=0.8688
+[closed_set] 5184/9895 hits@1=0.8684
+[closed_set] 5248/9895 hits@1=0.8681
+[closed_set] 5312/9895 hits@1=0.8688
+[closed_set] 5376/9895 hits@1=0.8685
+[closed_set] 5440/9895 hits@1=0.8678
+[closed_set] 5504/9895 hits@1=0.8668
+[closed_set] 5568/9895 hits@1=0.8673
+[closed_set] 5632/9895 hits@1=0.8668
+[closed_set] 5696/9895 hits@1=0.8675
+[closed_set] 5760/9895 hits@1=0.8677
+[closed_set] 5824/9895 hits@1=0.8673
+[closed_set] 5888/9895 hits@1=0.8675
+[closed_set] 5952/9895 hits@1=0.8678
+[closed_set] 6016/9895 hits@1=0.8674
+[closed_set] 6080/9895 hits@1=0.8669
+[closed_set] 6144/9895 hits@1=0.8672
+[closed_set] 6208/9895 hits@1=0.8673
+[closed_set] 6272/9895 hits@1=0.8670
+[closed_set] 6336/9895 hits@1=0.8674
+[closed_set] 6400/9895 hits@1=0.8670
+[closed_set] 6464/9895 hits@1=0.8674
+[closed_set] 6528/9895 hits@1=0.8676
+[closed_set] 6592/9895 hits@1=0.8679
+[closed_set] 6656/9895 hits@1=0.8682
+[closed_set] 6720/9895 hits@1=0.8683
+[closed_set] 6784/9895 hits@1=0.8685
+[closed_set] 6848/9895 hits@1=0.8684
+[closed_set] 6912/9895 hits@1=0.8681
+[closed_set] 6976/9895 hits@1=0.8684
+[closed_set] 7040/9895 hits@1=0.8686
+[closed_set] 7104/9895 hits@1=0.8689
+[closed_set] 7168/9895 hits@1=0.8687
+[closed_set] 7232/9895 hits@1=0.8691
+[closed_set] 7296/9895 hits@1=0.8695
+[closed_set] 7360/9895 hits@1=0.8696
+[closed_set] 7424/9895 hits@1=0.8695
+[closed_set] 7488/9895 hits@1=0.8695
+[closed_set] 7552/9895 hits@1=0.8696
+[closed_set] 7616/9895 hits@1=0.8697
+[closed_set] 7680/9895 hits@1=0.8695
+[closed_set] 7744/9895 hits@1=0.8693
+[closed_set] 7808/9895 hits@1=0.8694
+[closed_set] 7872/9895 hits@1=0.8695
+[closed_set] 7936/9895 hits@1=0.8697
+[closed_set] 8000/9895 hits@1=0.8696
+[closed_set] 8064/9895 hits@1=0.8705
+[closed_set] 8128/9895 hits@1=0.8702
+[closed_set] 8192/9895 hits@1=0.8702
+[closed_set] 8256/9895 hits@1=0.8703
+[closed_set] 8320/9895 hits@1=0.8701
+[closed_set] 8384/9895 hits@1=0.8699
+[closed_set] 8448/9895 hits@1=0.8703
+[closed_set] 8512/9895 hits@1=0.8707
+[closed_set] 8576/9895 hits@1=0.8708
+[closed_set] 8640/9895 hits@1=0.8707
+[closed_set] 8704/9895 hits@1=0.8710
+[closed_set] 8768/9895 hits@1=0.8709
+[closed_set] 8832/9895 hits@1=0.8713
+[closed_set] 8896/9895 hits@1=0.8715
+[closed_set] 8960/9895 hits@1=0.8711
+[closed_set] 9024/9895 hits@1=0.8715
+[closed_set] 9088/9895 hits@1=0.8719
+[closed_set] 9152/9895 hits@1=0.8723
+[closed_set] 9216/9895 hits@1=0.8723
+[closed_set] 9280/9895 hits@1=0.8723
+[closed_set] 9344/9895 hits@1=0.8718
+[closed_set] 9408/9895 hits@1=0.8713
+[closed_set] 9472/9895 hits@1=0.8714
+[closed_set] 9536/9895 hits@1=0.8714
+[closed_set] 9600/9895 hits@1=0.8720
+[closed_set] 9664/9895 hits@1=0.8721
+[closed_set] 9728/9895 hits@1=0.8721
+[closed_set] 9792/9895 hits@1=0.8718
+[closed_set] 9856/9895 hits@1=0.8720
+[closed_set] 9895/9895 hits@1=0.8722
+[eval closed_set] /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter EM=0.8722 hits@1=0.8721 n=9895
+
+=== generate comparison ===
+{
+  "output_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/full_decode",
+  "eval_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json",
+  "eval_name": "full",
+  "created_at_utc": "2026-10-13T15:03:38.480817+00:00",
+  "b1_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.8502273875694796
+    },
+    "wrong_in_list": 1160,
+    "wrong_out_of_list": 322,
+    "test": {
+      "count": 4944,
+      "em": 0.8491100323624595
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8513431629973742
+    }
+  },
+  "listed_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.84022233451238
+    },
+    "candidate_valid_rate": 0.9479535118746841,
+    "candidate_invalid": 515,
+    "wrong_in_list": 1074,
+    "wrong_out_of_list": 507,
+    "test": {
+      "count": 4944,
+      "em": 0.841626213592233
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8388204403150878
+    }
+  },
+  "b1_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8690247599797878
+    },
+    "wrong_in_list": 1296,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8693365695792881
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.9209662969112187,
+    "hits@1": 0.8690247599797878,
+    "hits@3": 0.9674583122789288,
+    "hits@10": 1.0
+  },
+  "listed_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8721576553815058
+    },
+    "candidate_valid_rate": 1.0,
+    "candidate_invalid": 0,
+    "wrong_in_list": 1265,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8756067961165048
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.923268205041828,
+    "hits@1": 0.8720565942395149,
+    "hits@3": 0.9701869631126832,
+    "hits@10": 1.0
+  },
+  "listed_minus_b1_generate_em": -0.010005053057099533,
+  "listed_closed_set_minus_b1_generate_em": 0.021930267812026227,
+  "listed_closed_set_minus_b1_closed_set_em": 0.0031328954017180166,
+  "listed_closed_set_minus_listed_generate_em": 0.03193532086912576,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode",
+    "copied_at_utc": "2026-10-13T12:22:48+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Closed-set EM is argmax over the official 10-way continuations. A paper signal needs listed closed-set > B1 generate on the official NELL23K test split. Current slice: full. B1 predictions were copied from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode and were not re-decoded."
+}
+
+=== closed-set comparison ===
+{
+  "output_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/full_decode",
+  "eval_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json",
+  "eval_name": "full",
+  "created_at_utc": "2026-10-13T15:03:38.480817+00:00",
+  "b1_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.8502273875694796
+    },
+    "wrong_in_list": 1160,
+    "wrong_out_of_list": 322,
+    "test": {
+      "count": 4944,
+      "em": 0.8491100323624595
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8513431629973742
+    }
+  },
+  "listed_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.84022233451238
+    },
+    "candidate_valid_rate": 0.9479535118746841,
+    "candidate_invalid": 515,
+    "wrong_in_list": 1074,
+    "wrong_out_of_list": 507,
+    "test": {
+      "count": 4944,
+      "em": 0.841626213592233
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8388204403150878
+    }
+  },
+  "b1_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8690247599797878
+    },
+    "wrong_in_list": 1296,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8693365695792881
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.9209662969112187,
+    "hits@1": 0.8690247599797878,
+    "hits@3": 0.9674583122789288,
+    "hits@10": 1.0
+  },
+  "listed_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8721576553815058
+    },
+    "candidate_valid_rate": 1.0,
+    "candidate_invalid": 0,
+    "wrong_in_list": 1265,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8756067961165048
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.923268205041828,
+    "hits@1": 0.8720565942395149,
+    "hits@3": 0.9701869631126832,
+    "hits@10": 1.0
+  },
+  "listed_minus_b1_generate_em": -0.010005053057099533,
+  "listed_closed_set_minus_b1_generate_em": 0.021930267812026227,
+  "listed_closed_set_minus_b1_closed_set_em": 0.0031328954017180166,
+  "listed_closed_set_minus_listed_generate_em": 0.03193532086912576,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode",
+    "copied_at_utc": "2026-10-13T12:22:48+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Closed-set EM is argmax over the official 10-way continuations. A paper signal needs listed closed-set > B1 generate on the official NELL23K test split. Current slice: full. B1 predictions were copied from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode and were not re-decoded."
+}
+[decode] listed-only done 2026-10-13T15:03:39+00:00
+listed-only decode completed listed=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/b1/adapter b1=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_b1_full/full_decode
+[archive] SKIP_RESULT_ARCHIVE=1; not snapshotting
+[b1] full evaluation complete 2026-10-13T15:03:39+00:00
