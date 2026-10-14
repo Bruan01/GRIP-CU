@@ -1,0 +1,10 @@
+scale=full
+decode=both
+adapter_run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_soft_mix_control_full
+listed_adapter=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261013_accumfix_soft_mix_control_full/listed/adapter
+b1_decode_run=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode
+eval_file=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json
+run_dir=/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261014_accumfix_soft_mix_full_decode
+wait_for_pattern=
+tmux_session=accumfix-softmix-decode-20261014
+2026-10-14T07:07:15+00:00

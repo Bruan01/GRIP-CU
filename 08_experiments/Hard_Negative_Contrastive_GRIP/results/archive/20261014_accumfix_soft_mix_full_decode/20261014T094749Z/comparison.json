@@ -1,0 +1,92 @@
+{
+  "output_dir": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20261014_accumfix_soft_mix_full_decode",
+  "eval_file": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/data/nell23k/recurrent_relation_prediction_full.aligned.json",
+  "eval_name": "full",
+  "created_at_utc": "2026-10-14T09:47:47.291419+00:00",
+  "b1_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.8502273875694796
+    },
+    "wrong_in_list": 1160,
+    "wrong_out_of_list": 322,
+    "test": {
+      "count": 4944,
+      "em": 0.8491100323624595
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8513431629973742
+    }
+  },
+  "listed_generate": {
+    "all": {
+      "count": 9895,
+      "em": 0.870843860535624
+    },
+    "candidate_valid_rate": 0.9342091965639212,
+    "candidate_invalid": 651,
+    "wrong_in_list": 627,
+    "wrong_out_of_list": 651,
+    "test": {
+      "count": 4944,
+      "em": 0.8693365695792881
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8723490203999192
+    }
+  },
+  "b1_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.8690247599797878
+    },
+    "wrong_in_list": 1296,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.8693365695792881
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.8687133912340941
+    },
+    "mrr": 0.9209662969112187,
+    "hits@1": 0.8690247599797878,
+    "hits@3": 0.9674583122789288,
+    "hits@10": 1.0
+  },
+  "listed_closed_set": {
+    "all": {
+      "count": 9895,
+      "em": 0.9171298635674583
+    },
+    "candidate_valid_rate": 1.0,
+    "candidate_invalid": 0,
+    "wrong_in_list": 820,
+    "wrong_out_of_list": 0,
+    "test": {
+      "count": 4944,
+      "em": 0.9186893203883495
+    },
+    "validation": {
+      "count": 4951,
+      "em": 0.9155726115936175
+    },
+    "mrr": 0.9523959110341123,
+    "hits@1": 0.9171298635674583,
+    "hits@3": 0.9873673572511369,
+    "hits@10": 1.0
+  },
+  "listed_minus_b1_generate_em": 0.02061647296614444,
+  "listed_closed_set_minus_b1_generate_em": 0.06690247599797872,
+  "listed_closed_set_minus_b1_closed_set_em": 0.048105103587670506,
+  "listed_closed_set_minus_listed_generate_em": 0.04628600303183428,
+  "b1_source": {
+    "source": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode",
+    "copied_at_utc": "2026-10-14T07:07:15+00:00",
+    "note": "Frozen generation-only B1. lambda=0 never used listed negatives."
+  },
+  "note": "Closed-set EM is argmax over the official 10-way continuations. A paper signal needs listed closed-set > B1 generate on the official NELL23K test split. Current slice: full. B1 predictions were copied from /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/20260915_140500_qwen7b_full_decode and were not re-decoded."
+}

@@ -1,0 +1,18 @@
+{
+  "all": {
+    "count": 9895,
+    "em": 0.870843860535624
+  },
+  "candidate_valid_rate": 0.9342091965639212,
+  "candidate_invalid": 651,
+  "wrong_in_list": 627,
+  "wrong_out_of_list": 651,
+  "test": {
+    "count": 4944,
+    "em": 0.8693365695792881
+  },
+  "validation": {
+    "count": 4951,
+    "em": 0.8723490203999192
+  }
+}
