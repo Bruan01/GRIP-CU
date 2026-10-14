@@ -1,0 +1,14 @@
+{
+  "n_samples": 12014,
+  "batch": 1,
+  "requested_accum": 512,
+  "effective_accum": 512,
+  "epochs": 10.0,
+  "steps_per_epoch": 24,
+  "total_steps": 240,
+  "accum_clamped": false,
+  "underfit": false,
+  "tail_policy": "keep_incomplete_window",
+  "trainer_max_steps": 240,
+  "trainer_global_step": 240
+}

@@ -1,0 +1,16 @@
+{
+  "all": {
+    "count": 96,
+    "em": 0.8645833333333334
+  },
+  "wrong_in_list": 10,
+  "wrong_out_of_list": 3,
+  "test": {
+    "count": 64,
+    "em": 0.859375
+  },
+  "validation": {
+    "count": 32,
+    "em": 0.875
+  }
+}
