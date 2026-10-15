@@ -1,0 +1,11 @@
+{
+  "source": "WFRaain/TAG_datasets/FB15K237",
+  "triples": {
+    "train.txt": 272115,
+    "valid.txt": 17535,
+    "test.txt": 20466
+  },
+  "relations_in_splits": 237,
+  "rel2text": 237,
+  "entities": 14515
+}

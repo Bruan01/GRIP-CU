@@ -1,0 +1,950 @@
+[
+    {
+        "name": "Country's Government Form",
+        "description": "Describes the type of government that administers a country."
+    },
+    {
+        "name": "TV Program Regular Actors",
+        "description": "Lists actors who regularly appear in a specific television program."
+    },
+    {
+        "name": "Netflix Genre Titles",
+        "description": "Categorizes titles (movies, series) under specific genres as classified by Netflix."
+    },
+    {
+        "name": "Awards Won by an Individual",
+        "description": "Details the awards that an individual has won over their career."
+    },
+    {
+        "name": "Current Football Team Roster by Position",
+        "description": "Specifies the current roster of a football team, detailing each player's playing position."
+    },
+    {
+        "name": "Current Soccer Team Roster by Position",
+        "description": "Identifies the position assignments for current members of a soccer team roster."
+    },
+    {
+        "name": "Films Featuring an Actor",
+        "description": "Enumerates films in which a particular actor has performed."
+    },
+    {
+        "name": "Award Nominees",
+        "description": "Lists individuals or entities nominated for a specific award category."
+    },
+    {
+        "name": "Nominations Received by an Award Nominee",
+        "description": "Specifies the award nominations received by an individual or entity."
+    },
+    {
+        "name": "Regular Performance Roles in Music",
+        "description": "Identifies the regular roles or positions held by individuals within music performances or groups."
+    },
+    {
+        "name": "Award Ceremony for Category Winners",
+        "description": "Specifies the ceremony at which awards in a particular category are presented."
+    },
+    {
+        "name": "Film Release Medium and Date",
+        "description": "Details the medium (theater, DVD, streaming, etc.) and date a film was released in different regions."
+    },
+    {
+        "name": "Awards Won by Works",
+        "description": "Lists the awards won by specific works, such as films or books."
+    },
+    {
+        "name": "Film Release Region and Date",
+        "description": "Specifies the regions and respective dates where a film was released."
+    },
+    {
+        "name": "Film Language",
+        "description": "Indicates the language(s) in which a film is available."
+    },
+    {
+        "name": "Geographical Containment",
+        "description": "Indicates that a specific location is geographically contained within another."
+    },
+    {
+        "name": "Organization Headquarters Country",
+        "description": "Specifies the country in which an organization's headquarters are located."
+    },
+    {
+        "name": "Person's Profession",
+        "description": "Describes the profession or job held by a person."
+    },
+    {
+        "name": "Region's Predominant Religions",
+        "description": "Details the major religions and their percentage of adherence within a statistical region."
+    },
+    {
+        "name": "Award Nominations Received",
+        "description": "Lists the nominations received for specific awards."
+    },
+    {
+        "name": "Artists within a Music Genre",
+        "description": "Lists artists that are prominent within a specific music genre."
+    },
+    {
+        "name": "Influences on Individuals or Works",
+        "description": "Details the influences on individuals or creative works, tracing back to earlier sources or individuals."
+    },
+    {
+        "name": "Graduates of Educational Institution",
+        "description": "Lists students who have graduated from a specified educational institution."
+    },
+    {
+        "name": "Members of an Organization",
+        "description": "Indicates individuals who are official members of a specified organization."
+    },
+    {
+        "name": "Birthplace of a Person",
+        "description": "Specifies the geographical location where a person was born."
+    },
+    {
+        "name": "Webpage Categories",
+        "description": "Categorizes webpages under specific topics or types."
+    },
+    {
+        "name": "Film Crew Roles",
+        "description": "Lists various roles within a film's crew, such as cinematographers, editors, etc."
+    },
+    {
+        "name": "Award Winners at a Ceremony",
+        "description": "Details the individuals or entities that won awards at a specific ceremony."
+    },
+    {
+        "name": "Film's Country of Production",
+        "description": "Specifies the country where a film was produced."
+    },
+    {
+        "name": "Olympic Athletes by Country",
+        "description": "Lists athletes participating in the Olympics, categorized by their country."
+    },
+    {
+        "name": "Awards Won by a Work",
+        "description": "Enumerates the awards won by a particular creative work."
+    },
+    {
+        "name": "Film Genres",
+        "description": "Categorizes films into specific genres such as action, comedy, drama, etc."
+    },
+    {
+        "name": "Films Distributed by Company",
+        "description": "Lists films distributed by a particular company, detailing the relationship between the distributor and the films."
+    },
+    {
+        "name": "Average Rent by Currency",
+        "description": "Indicates the average rent prices for a statistical region, represented in the local currency."
+    },
+    {
+        "name": "Film's Estimated Budget",
+        "description": "Specifies the estimated budget of a film, presented in the applicable currency."
+    },
+    {
+        "name": "Legislative Members by District",
+        "description": "Lists members of a legislative session and the districts they represent."
+    },
+    {
+        "name": "American Football Roster Positions",
+        "description": "Details the positions held by players on an American football team's historical roster."
+    },
+    {
+        "name": "Office Holders by Jurisdiction",
+        "description": "Lists individuals holding office in a specific jurisdiction and the categories of those offices."
+    },
+    {
+        "name": "Award Nominations for Individuals",
+        "description": "Enumerates the award nominations received by individuals."
+    },
+    {
+        "name": "Place of Death",
+        "description": "Specifies the geographical location where a person has died."
+    },
+    {
+        "name": "Teams of a Professional Athlete",
+        "description": "Lists all the teams a professional athlete has been part of during their career."
+    },
+    {
+        "name": "Music Track Contributions",
+        "description": "Details the roles and contributions of artists to music tracks."
+    },
+    {
+        "name": "Instrumentalists of a Music Instrument",
+        "description": "Lists musicians known for playing a specific musical instrument."
+    },
+    {
+        "name": "Gender of a Person",
+        "description": "Indicates the gender of a person."
+    },
+    {
+        "name": "People Holding a Job Title",
+        "description": "Lists individuals who have held a specific job title within a company."
+    },
+    {
+        "name": "Friendships Among Celebrities",
+        "description": "Details the friendships between celebrities."
+    },
+    {
+        "name": "Industry of a Business Operation",
+        "description": "Specifies the industry in which a business operation is categorized."
+    },
+    {
+        "name": "Award Winners",
+        "description": "Lists individuals or entities that have won a specific award."
+    },
+    {
+        "name": "Nationality of a Person",
+        "description": "Specifies the nationality of a person."
+    },
+    {
+        "name": "Baseball Team Roster Positions",
+        "description": "Details the positions on a baseball team's roster."
+    },
+    {
+        "name": "Cause of Death",
+        "description": "Specifies the cause of death for individuals."
+    },
+    {
+        "name": "Languages of a TV Program",
+        "description": "Lists the languages in which a TV program is available."
+    },
+    {
+        "name": "Parent Genre of Music",
+        "description": "Indicates the broader genre category that a specific music genre belongs to."
+    },
+    {
+        "name": "Breakups Among Celebrities",
+        "description": "Details the breakups between celebrity participants."
+    },
+    {
+        "name": "Capital of a Country",
+        "description": "Specifies the capital city of a country."
+    },
+    {
+        "name": "Special Film Performance Types",
+        "description": "Enumerates special types of film performances, such as voice acting or motion capture."
+    },
+    {
+        "name": "Place in HUD County",
+        "description": "Identifies a place within a HUD-designated county area."
+    },
+    {
+        "name": "Guest Performances in Music",
+        "description": "Lists guest performances by artists in various music recordings."
+    },
+    {
+        "name": "Adjoining Locations",
+        "description": "Specifies locations that adjoin or are contiguous to each other."
+    },
+    {
+        "name": "Subject of Films",
+        "description": "Lists films that focus on a specific subject or theme."
+    },
+    {
+        "name": "Net Worth in Currency",
+        "description": "Indicates the net worth of a person or entity, represented in a specific currency."
+    },
+    {
+        "name": "Colors of an Educational Institution",
+        "description": "Lists the official colors of an educational institution."
+    },
+    {
+        "name": "Administrative Parent of an Area",
+        "description": "Specifies the higher administrative area that governs a specific area."
+    },
+    {
+        "name": "Leadership Roles in an Organization",
+        "description": "Details the leadership roles held by individuals within an organization."
+    },
+    {
+        "name": "Members of a Legislative Session",
+        "description": "Lists the members of a legislative session."
+    },
+    {
+        "name": "Sports in Olympic Games",
+        "description": "Enumerates the sports included in the Olympic Games."
+    },
+    {
+        "name": "Places Lived by a Person",
+        "description": "Lists all the locations where a person has lived."
+    },
+    {
+        "name": "Disciplines or Subjects of an Award Category",
+        "description": "Specifies the disciplines or subjects associated with a specific award category."
+    },
+    {
+        "name": "Draft Picks from Schools by Sports Teams",
+        "description": "Lists the draft picks made by professional sports teams, categorized by the schools the athletes attended."
+    },
+    {
+        "name": "Medals Won by Countries in Olympics",
+        "description": "Lists the medals won by participating countries in the Olympic Games."
+    },
+    {
+        "name": "Countries Where Language is Spoken",
+        "description": "Lists the countries where a specific human language is spoken."
+    },
+    {
+        "name": "Ethnic Groups and Their People",
+        "description": "Details the people associated with specific ethnic groups."
+    },
+    {
+        "name": "Olympic Athletes by Olympics",
+        "description": "Lists athletes participating in specific Olympic Games, categorized by the event."
+    },
+    {
+        "name": "Olympic Medals by Type",
+        "description": "Enumerates the types of Olympic medals won by participants."
+    },
+    {
+        "name": "Film Crew Members",
+        "description": "Lists members of a film's crew, detailing specific roles within the crew."
+    },
+    {
+        "name": "Track Performances by Artists",
+        "description": "Details performances by artists on specific music tracks."
+    },
+    {
+        "name": "Artists Signed by a Record Label",
+        "description": "Lists artists who are signed to a specific record label."
+    },
+    {
+        "name": "Celebrities Who Dated",
+        "description": "Details the romantic relationships between celebrities."
+    },
+    {
+        "name": "Countries Within Continents",
+        "description": "Lists the countries that are part of a specific continent."
+    },
+    {
+        "name": "Schools from Which Draft Picks are Chosen",
+        "description": "Lists the schools from which draft picks are chosen by sports leagues."
+    },
+    {
+        "name": "Sport of a Sports Team",
+        "description": "Specifies the sport played by a particular sports team."
+    },
+    {
+        "name": "Educational Institution of a Campus",
+        "description": "Specifies the main educational institution to which a campus belongs."
+    },
+    {
+        "name": "Religion of a Person",
+        "description": "Specifies the religious affiliation of a person."
+    },
+    {
+        "name": "Headquarters City of an Organization",
+        "description": "Specifies the city where an organization's headquarters are located."
+    },
+    {
+        "name": "Producers of a Film",
+        "description": "Lists the producers involved in the creation of a film."
+    },
+    {
+        "name": "Marriage Type",
+        "description": "Specifies the type of union in a marriage, such as civil or religious."
+    },
+    {
+        "name": "Production Companies of a Film",
+        "description": "Lists the production companies involved in the making of a film."
+    },
+    {
+        "name": "Second Level Divisions of a Country",
+        "description": "Lists the second-level administrative divisions within a country, such as provinces or states."
+    },
+    {
+        "name": "Entities Involved in an Event",
+        "description": "Details the entities involved in a specific cultural or historical event."
+    },
+    {
+        "name": "People with an Educational Degree",
+        "description": "Lists individuals who have obtained a specific educational degree from an institution."
+    },
+    {
+        "name": "Film Distribution Medium",
+        "description": "Specifies the medium through which a film is distributed, such as theatrical or streaming."
+    },
+    {
+        "name": "Producer Type for TV Programs",
+        "description": "Details the type of producer associated with TV programs, such as executive or line producer."
+    },
+    {
+        "name": "Regular Performances by Music Groups",
+        "description": "Lists regular performances by members of music groups."
+    },
+    {
+        "name": "Government Positions Held During Legislative Sessions",
+        "description": "Lists the government positions held by politicians during specific legislative sessions."
+    },
+    {
+        "name": "Teams Based in a Location",
+        "description": "Lists sports teams based in a specific location."
+    },
+    {
+        "name": "Colors of Sports Teams",
+        "description": "Specifies the official colors of sports teams."
+    },
+    {
+        "name": "Draft Picks in Professional Sports",
+        "description": "Details the draft picks made by professional sports teams during drafts."
+    },
+    {
+        "name": "Nominated Works for Awards",
+        "description": "Lists works that have been nominated for specific awards."
+    },
+    {
+        "name": "Baseball Team Statistics by Season",
+        "description": "Details the statistical performance of a baseball team for specific seasons."
+    },
+    {
+        "name": "Philosophical Interests of a Philosopher",
+        "description": "Lists the specific areas of interest or study for a philosopher."
+    },
+    {
+        "name": "Languages Spoken by a Person",
+        "description": "Lists the languages a person can speak."
+    },
+    {
+        "name": "Major Field of Study for Graduates",
+        "description": "Details the major fields of study pursued by students at an educational institution."
+    },
+    {
+        "name": "Films Directed by a Director",
+        "description": "Lists the films that have been directed by a specific director."
+    },
+    {
+        "name": "Honored Individuals at an Award Ceremony",
+        "description": "Details the individuals who were honored at a specific award ceremony."
+    },
+    {
+        "name": "Olympic Athletes by Sport",
+        "description": "Lists athletes participating in specific sports at the Olympic Games."
+    },
+    {
+        "name": "Costume Design by for Films",
+        "description": "Lists individuals responsible for costume design in films."
+    },
+    {
+        "name": "Film Locations Featured",
+        "description": "Details the locations featured within a film."
+    },
+    {
+        "name": "TV Program Genres",
+        "description": "Categorizes TV programs into specific genres, such as drama, comedy, or reality."
+    },
+    {
+        "name": "Endowment in Currency",
+        "description": "Specifies the endowment funds of an organization, represented in a specific currency."
+    },
+    {
+        "name": "Writers of a Film",
+        "description": "Lists the writers involved in the creation of a film."
+    },
+    {
+        "name": "TV Programs Produced by a Producer",
+        "description": "Lists TV programs produced by a specific producer, detailing the type of producer involved."
+    },
+    {
+        "name": "County in HUD County Place",
+        "description": "Specifies the county within a HUD-designated place."
+    },
+    {
+        "name": "Major Field of Study for Degree Holders",
+        "description": "Lists the major fields of study pursued by individuals holding a specific educational degree."
+    },
+    {
+        "name": "Phone Number Category for Organizations",
+        "description": "Categorizes the phone numbers used by organizations, such as customer service or corporate."
+    },
+    {
+        "name": "SNL Cast Members by Season",
+        "description": "Lists the cast members of Saturday Night Live for specific seasons."
+    },
+    {
+        "name": "Film Formats",
+        "description": "Details the formats in which a film is available, such as 2D, 3D, IMAX, etc."
+    },
+    {
+        "name": "Music in Films",
+        "description": "Specifies the music featured in a film, listing the composers and musicians involved."
+    },
+    {
+        "name": "Football Roster Positions",
+        "description": "Details the roster positions in American football teams, including the specific roles played."
+    },
+    {
+        "name": "Taxonomy Subject Entries",
+        "description": "Lists the entries in a taxonomy subject, detailing the classifications used."
+    },
+    {
+        "name": "Celebrity Friends",
+        "description": "Details the friendships between celebrities, highlighting the individuals involved."
+    },
+    {
+        "name": "Estimated Number of Mortgages in HUD Foreclosure Area",
+        "description": "Indicates the estimated number of mortgages in a HUD-designated foreclosure area."
+    },
+    {
+        "name": "Current Clubs of World Cup Squad",
+        "description": "Lists the current clubs associated with members of a World Cup squad."
+    },
+    {
+        "name": "Vacationers at a Location",
+        "description": "Lists individuals who have vacationed at a specific location, detailing their vacation choices."
+    },
+    {
+        "name": "Celebrities Who Canoodled",
+        "description": "Details the casual romantic encounters between celebrities."
+    },
+    {
+        "name": "School Types of Educational Institutions",
+        "description": "Categorizes educational institutions by type, such as public, private, or charter."
+    },
+    {
+        "name": "Pro Athletes in Sports",
+        "description": "Lists professional athletes and the sports they play."
+    },
+    {
+        "name": "Hall of Fame Inductees",
+        "description": "Details the individuals who have been inducted into a specific hall of fame."
+    },
+    {
+        "name": "State of a Bibs Location",
+        "description": "Specifies the state within which a bibs location is situated."
+    },
+    {
+        "name": "Local Tuition in Currency",
+        "description": "Specifies the local tuition fees for a university, represented in the local currency."
+    },
+    {
+        "name": "Revenue in Currency",
+        "description": "Details the revenue of a business operation, represented in the specific currency."
+    },
+    {
+        "name": "Sports Position Players",
+        "description": "Lists players who hold specific positions in sports teams."
+    },
+    {
+        "name": "Combatants in a Military Conflict",
+        "description": "Details the groups involved as combatants in a military conflict."
+    },
+    {
+        "name": "Sports Teams in a League",
+        "description": "Lists the sports teams that are part of a specific sports league."
+    },
+    {
+        "name": "Country of a Bibs Location",
+        "description": "Specifies the country where a bibs location is situated."
+    },
+    {
+        "name": "Group Membership Roles",
+        "description": "Details the roles held by individuals in music group memberships."
+    },
+    {
+        "name": "Country of an Administrative Division",
+        "description": "Specifies the country associated with a particular administrative division."
+    },
+    {
+        "name": "Executive Producers of a Film",
+        "description": "Lists the executive producers involved in the production of a film."
+    },
+    {
+        "name": "Nutrients in Food",
+        "description": "Details the nutrients contained in a specific food item."
+    },
+    {
+        "name": "Music Group Membership",
+        "description": "Lists the members of a music group and their specific roles."
+    },
+    {
+        "name": "GDP Per Capita in Currency",
+        "description": "Indicates the GDP per capita of a statistical region, represented in a specific currency."
+    },
+    {
+        "name": "Students Majoring in a Field",
+        "description": "Lists the students majoring in a specific field of study at an educational institution."
+    },
+    {
+        "name": "Honored Works in Awards",
+        "description": "Details the works that have been honored or recognized in specific award ceremonies."
+    },
+    {
+        "name": "Basketball Roster Positions",
+        "description": "Details the roster positions on a basketball team, specifying the roles played."
+    },
+    {
+        "name": "State or Province of Organization Headquarters",
+        "description": "Specifies the state or province where an organization's headquarters is located."
+    },
+    {
+        "name": "Capital of an Administrative Area",
+        "description": "Indicates the capital of an administrative area."
+    },
+    {
+        "name": "TV Programs Produced by a Producer",
+        "description": "Lists the TV programs produced by a specific producer, detailing the producer type involved."
+    },
+    {
+        "name": "Campuses of an Educational Institution",
+        "description": "Lists the campuses associated with a specific educational institution."
+    },
+    {
+        "name": "Film Distribution Regions",
+        "description": "Specifies the regions where a film is distributed."
+    },
+    {
+        "name": "Climate of a Travel Destination",
+        "description": "Details the typical climate conditions for each month at a travel destination."
+    },
+    {
+        "name": "Notable People with a Disease",
+        "description": "Lists notable individuals who have been diagnosed with a specific disease."
+    },
+    {
+        "name": "Phone Service Location",
+        "description": "Indicates the location where a specific phone service is provided for an organization."
+    },
+    {
+        "name": "Geographic Distribution of an Ethnicity",
+        "description": "Details the geographic distribution of a specific ethnicity."
+    },
+    {
+        "name": "Combatants in Military Conflicts",
+        "description": "Lists the combatant groups involved in specific military conflicts."
+    },
+    {
+        "name": "Personal Appearances in Films",
+        "description": "Details the individuals making personal appearances in films."
+    },
+    {
+        "name": "Time Zones of a Location",
+        "description": "Lists the time zones associated with a specific location."
+    },
+    {
+        "name": "Story By Credits in Films",
+        "description": "Indicates the individuals credited with the story in a film."
+    },
+    {
+        "name": "Top Dog Breeds in a City",
+        "description": "Lists the top dog breeds in a specific city."
+    },
+    {
+        "name": "Participating Countries in the Olympic Games",
+        "description": "Lists the countries that have participated in specific Olympic Games."
+    },
+    {
+        "name": "TV Programs on a Network",
+        "description": "Lists TV programs broadcasted by a specific TV network."
+    },
+    {
+        "name": "Employment History of a Person",
+        "description": "Details the employment history of a person, including the companies where they have worked."
+    },
+    {
+        "name": "Origin of an Artist",
+        "description": "Specifies the geographical or cultural origin of an artist."
+    },
+    {
+        "name": "Marriage Unions and Their Locations",
+        "description": "Details the types of marriage unions and the locations where the ceremonies took place."
+    },
+    {
+        "name": "TV Programs Written by a Writer",
+        "description": "Lists TV programs for which a specific writer has been credited."
+    },
+    {
+        "name": "Locations of Events",
+        "description": "Details the specific locations where events have occurred."
+    },
+    {
+        "name": "Sexual Relationships Among Celebrities",
+        "description": "Details the sexual relationships between celebrities."
+    },
+    {
+        "name": "Politicians in a Political Party",
+        "description": "Lists the politicians who have been members of a specific political party."
+    },
+    {
+        "name": "Domestic Tuition in Currency",
+        "description": "Specifies the domestic tuition fees for a university, represented in the local currency."
+    },
+    {
+        "name": "Registration of Non-Profit Organizations",
+        "description": "Details the registration of non-profit organizations with specific registering agencies."
+    },
+    {
+        "name": "International Organizations and Member States",
+        "description": "Lists the member states of specific international organizations."
+    },
+    {
+        "name": "Current Football Roster Positions",
+        "description": "Details the positions on the current roster of an American football team."
+    },
+    {
+        "name": "Current Team of a Football Player",
+        "description": "Specifies the current team of a football player."
+    },
+    {
+        "name": "Olympic Medals Awarded",
+        "description": "Lists the Olympic medals awarded during specific Olympic Games."
+    },
+    {
+        "name": "Items Appearing in Ranked Lists",
+        "description": "Details the items that appear in ranked lists, such as 'top 10' or 'best of' lists."
+    },
+    {
+        "name": "Film Sets Designed by a Set Designer",
+        "description": "Lists the film sets designed by a specific set designer."
+    },
+    {
+        "name": "Sports in the Olympic Games",
+        "description": "Lists the sports included in specific Olympic Games."
+    },
+    {
+        "name": "Siblings of a Person",
+        "description": "Lists the siblings of a specific person."
+    },
+    {
+        "name": "NCAA Basketball Tournament Seeds",
+        "description": "Details the seeds assigned to teams in the NCAA basketball tournament."
+    },
+    {
+        "name": "Artist Contributions to Music",
+        "description": "Details the contributions made by artists to music, including specific roles in performances."
+    },
+    {
+        "name": "Players by Sports Position in Team Roster",
+        "description": "Lists players associated with specific positions on a sports team's roster."
+    },
+    {
+        "name": "Basic Titles Held by Politicians",
+        "description": "Lists the basic titles or positions held by politicians."
+    },
+    {
+        "name": "Players by Position in Historical Football Roster",
+        "description": "Details the historical positions held by players in an American football team roster."
+    },
+    {
+        "name": "Specializations Within a Profession",
+        "description": "Details the specializations within a specific profession."
+    },
+    {
+        "name": "Categories Within an Award Category",
+        "description": "Lists the subcategories within a broader award category."
+    },
+    {
+        "name": "Cinematography in Films",
+        "description": "Specifies the individuals responsible for cinematography in films."
+    },
+    {
+        "name": "Production Design in Films",
+        "description": "Details the production design in films, listing the designers involved."
+    },
+    {
+        "name": "Country of Origin of a TV Program",
+        "description": "Specifies the country where a TV program was originally produced."
+    },
+    {
+        "name": "Editors of a Film",
+        "description": "Lists the editors involved in the creation of a film."
+    },
+    {
+        "name": "Regular TV Appearances by a Personality",
+        "description": "Lists the regular TV appearances made by a specific TV personality."
+    },
+    {
+        "name": "Major Field of Study for Students",
+        "description": "Details the major fields of study pursued by students at an educational institution."
+    },
+    {
+        "name": "Degree Holders from an Institution",
+        "description": "Lists individuals who have obtained a specific degree from an educational institution."
+    },
+    {
+        "name": "County Seat of a US County",
+        "description": "Specifies the county seat of a specific US county."
+    },
+    {
+        "name": "Film Festivals Featuring a Film",
+        "description": "Lists the film festivals where a specific film has been featured."
+    },
+    {
+        "name": "Spouses in a Marriage",
+        "description": "Details the individuals who are spouses in a specific marriage."
+    },
+    {
+        "name": "Runtime of Films by Region",
+        "description": "Specifies the runtime of films in different regions, often differing due to cuts or edits."
+    },
+    {
+        "name": "Administrative Divisions and Their Capitals",
+        "description": "Lists the capitals of specific administrative divisions, such as states or provinces."
+    },
+    {
+        "name": "Types of Administrative Areas",
+        "description": "Categorizes the types of administrative areas, such as municipal, provincial, or regional."
+    },
+    {
+        "name": "Peers in an Influence Network",
+        "description": "Details the peers within an influence network, specifying the relationships between them."
+    },
+    {
+        "name": "Members of a Governmental Body",
+        "description": "Lists the members of a governmental body, such as a parliament or council."
+    },
+    {
+        "name": "Service Language of a Phone Number",
+        "description": "Specifies the language supported by a phone service for an organization."
+    },
+    {
+        "name": "Place Founded of an Organization",
+        "description": "Indicates the location where an organization was founded."
+    },
+    {
+        "name": "Diet Practiced",
+        "description": "Details the specific diets practiced by individuals or recommended in dietary guides."
+    },
+    {
+        "name": "Creator of a TV Program",
+        "description": "Specifies the creator or creators of a TV program."
+    },
+    {
+        "name": "Place of Burial",
+        "description": "Specifies the place where a deceased person has been buried."
+    },
+    {
+        "name": "Regional Debut Venue for a Film",
+        "description": "Details the specific venue where a film made its regional debut."
+    },
+    {
+        "name": "Hockey Team Roster Positions",
+        "description": "Lists the roster positions on a hockey team, detailing the roles played."
+    },
+    {
+        "name": "First Level Division of an Administrative Division",
+        "description": "Specifies the first-level administrative division, such as a state or province, within a larger region."
+    },
+    {
+        "name": "Real GDP by Currency",
+        "description": "Indicates the real GDP of a region, adjusted for inflation and represented in a specific currency."
+    },
+    {
+        "name": "Child Organizations",
+        "description": "Lists the child organizations or subsidiaries under a parent organization."
+    },
+    {
+        "name": "Assets of a Business Operation",
+        "description": "Details the total assets of a business operation, represented in the local currency."
+    },
+    {
+        "name": "Type of Appearance in Films",
+        "description": "Specifies the type of appearance made by a person or entity in films, such as cameo or leading role."
+    },
+    {
+        "name": "Recurring Events",
+        "description": "Lists specific instances of recurring events, such as annual festivals or regular meetings."
+    },
+    {
+        "name": "Regular Personal Appearances on TV",
+        "description": "Details the regular personal appearances made by individuals on TV shows."
+    },
+    {
+        "name": "Special Performance Type in Films",
+        "description": "Specifies the special performance types in films, such as voice acting or motion capture."
+    },
+    {
+        "name": "Operating Income of a Business",
+        "description": "Specifies the operating income of a business, presented in the local currency."
+    },
+    {
+        "name": "Languages Spoken by Ethnic Groups",
+        "description": "Details the languages spoken by specific ethnic groups."
+    },
+    {
+        "name": "Celebrity Impersonations",
+        "description": "Lists celebrities who have been impersonated by celebrity impressionists."
+    },
+    {
+        "name": "Symptoms and Their Conditions",
+        "description": "Details the conditions associated with specific symptoms."
+    },
+    {
+        "name": "Fraternities and Sororities at a University",
+        "description": "Lists the fraternities and sororities available at a specific university."
+    },
+    {
+        "name": "Export Destinations",
+        "description": "Lists the destinations to which a statistical region exports goods."
+    },
+    {
+        "name": "Nominal GDP by Currency",
+        "description": "Indicates the nominal GDP of a region, represented in the local currency."
+    },
+    {
+        "name": "Transportation to a Travel Destination",
+        "description": "Details the modes of transportation available for reaching a specific travel destination."
+    },
+    {
+        "name": "Official Language of a Country",
+        "description": "Specifies the official language or languages of a country."
+    },
+    {
+        "name": "Partial Containment of Locations",
+        "description": "Indicates that one location is partially contained within another, such as a city within a larger metropolitan area."
+    },
+    {
+        "name": "Art Direction in Films",
+        "description": "Details the art direction in films, listing the directors involved."
+    },
+    {
+        "name": "Location of Marriage Ceremonies",
+        "description": "Specifies the locations where marriage ceremonies have taken place."
+    },
+    {
+        "name": "International Tuition in Currency",
+        "description": "Specifies the international tuition fees for a university, represented in the local currency."
+    },
+    {
+        "name": "Founders and Their Organizations",
+        "description": "Lists the individuals who founded organizations and the organizations they founded."
+    },
+    {
+        "name": "Dubbing Performances in Films",
+        "description": "Details the dubbing performances in films, specifying the actors involved."
+    },
+    {
+        "name": "Hints for Gardening",
+        "description": "Provides hints or tips for gardening, focusing on specific practices or plants."
+    },
+    {
+        "name": "Risk Factors for Diseases",
+        "description": "Lists the risk factors associated with specific diseases."
+    },
+    {
+        "name": "Prequel of a Film",
+        "description": "Specifies the prequel to a particular film, detailing the film that precedes the main storyline."
+    },
+    {
+        "name": "Produce Available by Season",
+        "description": "Details the produce available in specific months, indicating the seasonality of various fruits and vegetables."
+    },
+    {
+        "name": "Dubbing Performances by Language",
+        "description": "Lists the dubbing performances in films by language, specifying the actors and languages involved."
+    },
+    {
+        "name": "Artists in Broadcast Content",
+        "description": "Lists the artists featured in broadcast content, such as radio or television programs."
+    },
+    {
+        "name": "GNI Per Capita in PPP Dollars",
+        "description": "Indicates the Gross National Income per capita of a region, adjusted for purchasing power parity and represented in dollars."
+    },
+    {
+        "name": "Family of Musical Instruments",
+        "description": "Categorizes musical instruments into families based on their characteristics and common features."
+    },
+    {
+        "name": "Jurisdiction of Office for Politicians",
+        "description": "Specifies the jurisdiction of office held by politicians, detailing the areas they represent or govern."
+    }
+]
