@@ -108,11 +108,17 @@ def canonical_rollout_candidate(value: str) -> str:
     return value
 
 
-def is_relation_gold(gold: str, text: str) -> bool:
+def is_relation_gold(
+    gold: str, text: str, *, relation_alias_index: dict[str, str] | None = None
+) -> bool:
     label = normalize_relation(gold)
     if not label or label.lower() in YES_NO:
         return False
     if label.startswith("concept:"):
+        return True
+    # FB15K-237 relation descriptions contain spaces. Require both a relation
+    # question and membership in the train vocabulary to distinguish entities.
+    if RELATION_QUESTION_RE.search(text) and relation_alias_index and label in relation_alias_index:
         return True
     if RELATION_QUESTION_RE.search(text) and " " not in label and not label.startswith("concept_"):
         return True
@@ -430,7 +436,7 @@ def build_qa_assets_from_task_texts(
         listed: list[str] = []
         lambda_candidate = None
         matched = match_train_relation(gold, alias_index) if use_train_graph else None
-        if is_relation_gold(gold, text):
+        if is_relation_gold(gold, text, relation_alias_index=alias_index):
             if listed_negative_source in {"score_hard", "rollout_hard"}:
                 if matched is not None:
                     row = score_hard_manifest.get(question_id)
@@ -487,7 +493,7 @@ def build_qa_assets_from_task_texts(
         expected_ids = {
             resolved_ids[index]
             for index, text in enumerate(qa_texts)
-            if is_relation_gold(assistant_gold(text), text)
+            if is_relation_gold(assistant_gold(text), text, relation_alias_index=alias_index)
             and match_train_relation(assistant_gold(text), alias_index) is not None
         }
         missing_ids = expected_ids.difference(score_hard_manifest)

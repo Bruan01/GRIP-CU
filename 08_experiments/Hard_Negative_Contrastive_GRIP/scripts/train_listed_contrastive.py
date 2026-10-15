@@ -44,7 +44,9 @@ from grip.tasks.recurrent_tasks.task_dataset import (  # noqa: E402
 from grip.tasks.train_tasks.gen_context import GenGraphContextTask  # noqa: E402
 from grip.tasks.train_tasks.task_dataset import TaskDataset  # noqa: E402
 from grip.training.train import load_trainer  # noqa: E402
-from hard_negative_grip.decode_io import append_jsonl  # noqa: E402
+from hard_negative_grip.decode_io import (  # noqa: E402
+    append_jsonl, eval_samples, load_jsonl, merge_resumed_rows, write_jsonl,
+)
 from hard_negative_grip.listed_training import (  # noqa: E402
     ListedContrastiveTrainer,
     ListedDataCollator,
@@ -81,6 +83,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     load_json_payload,
     load_score_hard_manifest,
     original_question_ids_from_payload,
+    train_relation_alias_index,
 )
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
 from utils import set_random_seed  # noqa: E402
@@ -179,6 +182,10 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_RAW_NELL23K,
         help="NELL23K raw split directory (train.txt) for train_graph negatives.",
+    )
+    parser.add_argument(
+        "--relation_text_file", type=Path, default=None,
+        help="Explicit raw-relation to text mapping (FB15K-237 rel2text.json).",
     )
     parser.add_argument(
         "--listed_negative_seed",
@@ -760,16 +767,29 @@ def evaluate_variant(
     tokenizer=None,
 ) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
+    pred_path = output_dir / "predictions_correct.jsonl"
+    samples = eval_samples(record)
+    kept, missing = merge_resumed_rows(
+        samples, [] if args.no_resume else load_jsonl(pred_path)
+    )
+    # Canonicalize the file first, removing a possibly truncated last line.
+    write_jsonl(pred_path, kept)
     owns_model = model is None
-    if owns_model:
+    if owns_model and missing:
         model, tokenizer = load_adapter(args, adapter_dir, trainable=False)
     try:
-        rows = evaluate_adapter(model, tokenizer, record, args.gen_max_length)
+        new_rows = []
+        if missing:
+            new_rows = evaluate_adapter(
+                model, tokenizer, record, args.gen_max_length,
+                skip_question_ids={str(row["question_id"]) for row in kept},
+                pred_path=pred_path,
+            )
+        rows, missing = merge_resumed_rows(samples, kept + new_rows)
+        if missing:
+            raise RuntimeError(f"evaluation incomplete: {len(missing)} questions missing")
+        write_jsonl(pred_path, rows)
         summary = em_summary(rows)
-        pred_path = output_dir / "predictions_correct.jsonl"
-        with pred_path.open("w", encoding="utf-8") as stream:
-            for row in rows:
-                stream.write(json.dumps(row, ensure_ascii=False) + "\n")
         (output_dir / "summary.json").write_text(
             json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
         )
@@ -818,6 +838,9 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "embed_pool_size": int(args.embed_pool_size),
         "embed_sample_temperature": float(args.embed_sample_temperature),
         "raw_dir": str(args.raw_dir),
+        "relation_text_file": (
+            str(args.relation_text_file) if getattr(args, "relation_text_file", None) else None
+        ),
         "skip_train": bool(args.skip_train),
         "save_steps": int(args.save_steps),
         "save_total_limit": int(args.save_total_limit),
@@ -859,7 +882,9 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             raw_dir = Path(args.raw_dir)
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
-            relation_order = load_train_relation_order(raw_dir)
+            relation_order = load_train_relation_order(
+                raw_dir, relation_text_file=getattr(args, "relation_text_file", None)
+            )
         if args.listed_negative_source in {"score_hard", "rollout_hard"}:
             if args.score_hard_manifest is None:
                 raise ValueError(
@@ -891,8 +916,10 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             question_ids=question_ids,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
+        relation_aliases = train_relation_alias_index(relation_order or [])
         relation_n = sum(
-            1 for text in qa_texts if is_relation_gold(assistant_gold(text), text)
+            1 for text in qa_texts
+            if is_relation_gold(assistant_gold(text), text, relation_alias_index=relation_aliases)
         )
         skipped_n = relation_n - listed_n
         exact_n = sum(

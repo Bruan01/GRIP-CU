@@ -58,13 +58,13 @@ def clean_graph(edge_list: list[list], edge_index: np.ndarray) -> tuple[list, np
     result_edge_list = []
     result_edge_index = []
     edge_set = set()
-    for src, tgt in edge_index:
+    for index, (src, tgt) in enumerate(edge_index):
         if src == tgt:
             continue
         edge = (src, tgt)
         if edge not in edge_set:
             edge_set.add(edge)
-            result_edge_list.append(edge_list[len(result_edge_index)])
+            result_edge_list.append(edge_list[index])
             result_edge_index.append(edge)
     return result_edge_list, np.array(result_edge_index)
 

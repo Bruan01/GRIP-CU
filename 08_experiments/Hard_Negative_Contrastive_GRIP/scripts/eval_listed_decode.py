@@ -206,9 +206,9 @@ def write_decode_comparison(
         raise FileNotFoundError(f"need listed generate or closed-set summaries under {output_dir}")
     slice_name = eval_name or "eval"
     note = (
-        "Closed-set EM is argmax over the official 10-way continuations. "
-        "A paper signal needs listed closed-set > B1 generate on the official "
-        f"NELL23K test split. Current slice: {slice_name}."
+        "Closed-set EM is argmax over the frozen 10-way continuations. "
+        "Compare listed with B1 under the same decoding rule, and report "
+        f"validation and test separately. Current slice: {slice_name}."
     )
     if frozen:
         note += (

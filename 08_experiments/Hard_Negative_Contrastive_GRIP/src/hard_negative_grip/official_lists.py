@@ -14,6 +14,7 @@ a different 10-way list. This module rebuilds the frozen paper lists.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Iterable
 
@@ -57,9 +58,24 @@ def train_relation_insertion_order(train_triples: Iterable[tuple[str, str, str]]
     return relations
 
 
-def load_train_relation_order(raw_dir: Path) -> list[str]:
-    """Train-graph relation vocabulary in ``process.py`` insertion order."""
-    return train_relation_insertion_order(load_triples(raw_dir / "train.txt"))
+def load_train_relation_order(
+    raw_dir: Path, *, relation_text_file: Path | None = None
+) -> list[str]:
+    """Train-only vocabulary; an explicit mapping enables FB text relations.
+
+    NELL keeps its original insertion order. Text relations use sorted order,
+    matching the deterministic FB15K-237 preparation protocol.
+    """
+    relations = train_relation_insertion_order(load_triples(raw_dir / "train.txt"))
+    if relation_text_file is None:
+        return relations
+    mapping = json.loads(relation_text_file.read_text(encoding="utf-8"))
+    mapped = [mapping[relation] for relation in relations]
+    if any(not isinstance(value, str) or not value.strip() for value in mapped):
+        raise ValueError("relation text mapping must contain non-empty strings")
+    # The official FB processor samples a set of relation TEXTS. Multiple raw
+    # relation IDs can share one answer string (237 IDs -> 233 texts).
+    return sorted(set(mapped))
 
 
 def sample_official_candidates(
