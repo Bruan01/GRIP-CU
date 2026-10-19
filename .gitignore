@@ -44,6 +44,9 @@ outputs/
 **/logs/*.log
 **/logs/*.txt
 
+# Local benchmark data and task files (kept outside Git)
+04_benchmark/data/
+
 # Temporary files
 *.log
 *.tmp

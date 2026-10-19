@@ -6,9 +6,9 @@
 
 | 项目 | 当前约定 |
 |---|---|
-| branch | `codex/boundary-negative-recurrentgrip` |
+| branch | `caiyang-method` |
 | parent | `origin/main` |
-| sibling | `origin/recurrentgrip-nell23k-20260904` |
+| datasets | NELL23K、FB15K237-2 |
 | baseline | original GRIP，`13_base_method/grip-exp` |
 | method | candidate relation learning + ErrorMemory-9 + InfoNCE |
 | recurrence | not used |
@@ -16,7 +16,7 @@
 
 ## 固定协议
 
-- dataset：NELL23K；
+- dataset：NELL23K、FB15K237-2；
 - train-only error memory and known-fact filtering；
 - candidate vocabulary：`train.txt` relations；
 - `K=9`；
@@ -36,10 +36,10 @@
 GRIP_BASELINE_DIR=/path/to/GRIP-CU/13_base_method/grip-exp
 INPUT_FILE=/path/to/full/grip_nell23k_tasks.json
 EVAL_FILE=/path/to/processed_test.json
-RAW_DIR=$GRIP_BASELINE_DIR/data/raw_datasets/nell23k
+RAW_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/<dataset>/raw
 ```
 
-`INPUT_FILE` 必须是原始 GRIP task JSON，包含 `context_samples` 和 `qa_samples`；`EVAL_FILE` 必须是标准 graph record，包含 `title`、`graph`、`questions`、`answers`、`id`。不能再使用递归关系预测文件。
+`INPUT_FILE` 必须是原始 GRIP task JSON，包含 `context_samples` 和 `qa_samples`；`EVAL_FILE` 必须是标准 graph record，包含 `title`、`graph`、`questions`、`answers`、`id`。FB15K237-2 还必须传入 `RAW_DIR/rel2text.json`；不能再使用递归关系预测文件。
 
 ## 分阶段命令
 
@@ -69,7 +69,7 @@ ALLOW_TRAIN=1 STEP=train \
 - [ ] baseline 子模块已经初始化，且 `GRIP_BASELINE_DIR` 正确；
 - [ ] 原始 task JSON 是完整文件，不是 smoke/截断文件；
 - [ ] `processed_test.json` 是标准 `questions/answers/graph` 格式；
-- [ ] `RAW_DIR` 的 `train.txt/valid.txt/test.txt` 与本次 NELL23K 数据版本一致；
+- [ ] `RAW_DIR` 的 `train.txt/valid.txt/test.txt` 与本次数据集版本一致；
 - [ ] S1/B1 adapter 和本地模型 cache 已核对 hash；
 - [ ] `STEP=preflight` 通过且没有 GPU 工作；
 - [ ] rollout/score metadata 都是 `split=train`、`filter_splits=["train"]`；

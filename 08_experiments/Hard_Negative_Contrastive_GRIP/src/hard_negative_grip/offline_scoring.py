@@ -80,7 +80,7 @@ def parse_matchable_relation_qa(
 ) -> dict | None:
     """Return one Stage-2 relation QA item if its gold maps onto the train vocabulary."""
     gold = assistant_gold(text)
-    if not is_relation_gold(gold, text):
+    if not is_relation_gold(gold, text, relation_alias_index=alias_index):
         return None
     matched = match_train_relation(gold, alias_index)
     if matched is None:

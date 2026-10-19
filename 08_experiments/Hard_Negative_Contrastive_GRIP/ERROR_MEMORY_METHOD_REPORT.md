@@ -1,9 +1,9 @@
 # ErrorMemory-9 方法落地报告
 
 日期：2026-10-19
-分支：`codex/boundary-negative-recurrentgrip`
+分支：`caiyang-method`
 父线：`origin/main`
-并行对照：`origin/recurrentgrip-nell23k-20260904`
+数据集：NELL23K、FB15K237-2
 基线：原始 GRIP，代码位于 `13_base_method/grip-exp`
 
 ## 方法定位

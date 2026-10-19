@@ -110,7 +110,7 @@ def parse_args() -> argparse.Namespace:
         help="s1 = shared graph storage; b1/listed = Stage-2 forks; compare = merge EM summaries",
     )
     parser.add_argument("--s1_adapter", type=Path, default=None)
-    parser.add_argument("--model_name", default="qwen-0.5b")
+    parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", default="model_cache")
     parser.add_argument("--lora_r", type=int, default=4)
     parser.add_argument("--lora_alpha", type=int, default=8)
@@ -199,7 +199,13 @@ def parse_args() -> argparse.Namespace:
         "--raw_dir",
         type=Path,
         default=DEFAULT_RAW_NELL23K,
-        help="NELL23K raw split directory (train.txt) for train_graph negatives.",
+        help="Raw split directory (train.txt) for train_graph negatives.",
+    )
+    parser.add_argument(
+        "--relation_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
     )
     parser.add_argument(
         "--listed_negative_seed",
@@ -931,7 +937,9 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             raw_dir = Path(args.raw_dir)
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
-            relation_order = load_train_relation_order(raw_dir)
+            relation_order = load_train_relation_order(
+                raw_dir, relation_text_file=args.relation_text_file
+            )
         if args.listed_negative_source == "error_memory":
             if args.error_memory_manifest is None:
                 raise ValueError(

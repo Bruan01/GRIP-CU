@@ -13,6 +13,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     assistant_answer_prefix,
     assistant_gold,
     build_qa_assets_from_task_texts,
+    canonical_rollout_candidate,
     is_grip_task_file,
     is_relation_gold,
     load_graph_record,
@@ -64,6 +65,20 @@ def test_relation_detection_excludes_entity_and_yes_no_answers() -> None:
     assert is_relation_gold(assistant_gold(relation), relation)
     assert not is_relation_gold(assistant_gold(entity), entity)
     assert not is_relation_gold(assistant_gold(yes_no), yes_no)
+
+
+def test_fb_text_relation_aliases_are_canonicalized() -> None:
+    question = _qa("what is the relation between x and y?", "Adjoining Locations")
+    alias_index = train_relation_alias_index(["Adjoining Locations", "People Person"])
+    assert canonical_rollout_candidate(
+        "Adjoining Locations", relation_alias_index=alias_index
+    ) == "Adjoining Locations"
+    assert is_relation_gold(
+        assistant_gold(question), question, relation_alias_index=alias_index
+    )
+    assert not is_relation_gold(
+        "not a train relation", question, relation_alias_index=alias_index
+    )
 
 
 def test_random_control_uses_train_relation_vocabulary() -> None:

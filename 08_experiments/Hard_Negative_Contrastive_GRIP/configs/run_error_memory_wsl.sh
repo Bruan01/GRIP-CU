@@ -22,23 +22,48 @@ HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REPO_ROOT="$(cd "$HNG/../.." && pwd)"
 BASELINE_DIR="${GRIP_BASELINE_DIR:-$REPO_ROOT/13_base_method/grip-exp}"
 CODE_DIR="${CODE_DIR:-$BASELINE_DIR}"
-PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
+PYTHON="${PYTHON:-/home/kieran/miniconda3/envs/guardenv/bin/python}"
 
 STEP="${STEP:-preflight}"
 SEED="${SEED:-2026}"
+DATASET="${DATASET:-nell23k}"
+DATA_ROOT="${DATA_ROOT:-$REPO_ROOT/04_benchmark/data/$DATASET}"
 MODEL_NAME="${MODEL_NAME:-qwen-7b}"
-MODEL_CACHE_DIR="${MODEL_CACHE_DIR:-$CODE_DIR/model_cache}"
-INPUT_FILE="${INPUT_FILE:-$HNG/data/grip_nell23k_tasks.json}"
-EVAL_FILE="${EVAL_FILE:-$CODE_DIR/outputs/data/nell23k/processed_test.json}"
-RAW_DIR="${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
-S1_ADAPTER="${S1_ADAPTER:-$CODE_DIR/artifacts/nell23k_paper_7b/lora_adapter}"
-B1_ADAPTER="${B1_ADAPTER:-$CODE_DIR/artifacts/nell23k_paper_7b/lora_adapter}"
+if [[ -d /mnt/e/GRIP-CU/model_cache ]]; then
+  DEFAULT_MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache
+else
+  DEFAULT_MODEL_CACHE_DIR="$CODE_DIR/model_cache"
+fi
+MODEL_CACHE_DIR="${MODEL_CACHE_DIR:-$DEFAULT_MODEL_CACHE_DIR}"
+INPUT_FILE="${INPUT_FILE:-$DATA_ROOT/tasks/grip_${DATASET}_tasks.json}"
+EVAL_FILE="${EVAL_FILE:-$DATA_ROOT/processed/processed_test.json}"
+RAW_DIR="${RAW_DIR:-$DATA_ROOT/raw}"
+case "$DATASET" in
+  nell23k)
+    DEFAULT_S1_ADAPTER="$CODE_DIR/artifacts/nell23k_paper_7b/lora_adapter"
+    DEFAULT_B1_ADAPTER="$CODE_DIR/artifacts/nell23k_paper_7b/lora_adapter"
+    DEFAULT_EXPECTED_LISTED=3253
+    ;;
+  fb15k237_2)
+    # E: retains FB provenance/configuration, but not adapter weight files.
+    DEFAULT_S1_ADAPTER=""
+    DEFAULT_B1_ADAPTER=""
+    DEFAULT_EXPECTED_LISTED=3109
+    ;;
+  *)
+    echo "error: unsupported DATASET=$DATASET (expected nell23k or fb15k237_2)" >&2
+    exit 1
+    ;;
+esac
+S1_ADAPTER="${S1_ADAPTER:-$DEFAULT_S1_ADAPTER}"
+B1_ADAPTER="${B1_ADAPTER:-$DEFAULT_B1_ADAPTER}"
+RELATION_TEXT_FILE="${RELATION_TEXT_FILE:-}"
 ARTIFACT_ROOT="${ARTIFACT_ROOT:-$HNG/results/runs/error_memory_artifacts}"
 SCORES_DIR="${SCORES_DIR:-$ARTIFACT_ROOT/b1_train_scores}"
 ROLLOUT_MANIFEST="${ROLLOUT_MANIFEST:-$ARTIFACT_ROOT/b1_train_rollout.jsonl}"
 SAMPLER_DIR="${SAMPLER_DIR:-$ARTIFACT_ROOT/error_memory_bank}"
 MANIFEST="${MANIFEST:-$SAMPLER_DIR/error_memory_k.jsonl}"
-EXPECTED_LISTED="${EXPECTED_LISTED:-3253}"
+EXPECTED_LISTED="${EXPECTED_LISTED:-$DEFAULT_EXPECTED_LISTED}"
 RUN_ID="${RUN_ID:-error_memory_k9_full_$(date +%Y%m%d)}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/$RUN_ID}"
 SWANLAB_PROJECT="${SWANLAB_PROJECT:-}"
@@ -60,6 +85,10 @@ export PYTHONPATH="$CODE_DIR:$HNG/src:$HNG/scripts${PYTHONPATH:+:$PYTHONPATH}"
 export GRIP_BASELINE_DIR="$BASELINE_DIR"
 export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+RELATION_TEXT_ARGS=()
+if [[ -n "$RELATION_TEXT_FILE" ]]; then
+  RELATION_TEXT_ARGS+=(--relation_text_file "$RELATION_TEXT_FILE")
+fi
 
 require_file() {
   if [[ ! -f "$1" ]]; then
@@ -73,6 +102,19 @@ require_dir() {
     echo "error: missing required directory: $1" >&2
     exit 1
   fi
+}
+
+require_adapter_dir() {
+  local label="$1"
+  local path="$2"
+  # A config-only directory is not a usable LoRA adapter. Check the weight
+  # file here so an expensive GPU stage cannot start with incomplete assets.
+  if [[ -z "$path" ]]; then
+    echo "error: $label adapter is not configured; set its path explicitly" >&2
+    exit 1
+  fi
+  require_file "$path/adapter_config.json"
+  require_file "$path/adapter_model.safetensors"
 }
 
 check_cuda_and_model() {
@@ -114,6 +156,7 @@ write_environment_record() {
     echo "input_file=$INPUT_FILE"
     echo "eval_file=$EVAL_FILE"
     echo "raw_dir=$RAW_DIR"
+    echo "relation_text_file=$RELATION_TEXT_FILE"
     echo "s1_adapter=$S1_ADAPTER"
     echo "b1_adapter=$B1_ADAPTER"
     echo "scores_dir=$SCORES_DIR"
@@ -138,6 +181,7 @@ write_environment_record() {
 check_common_assets() {
   require_file "$INPUT_FILE"
   require_file "$RAW_DIR/train.txt"
+  if [[ -n "$RELATION_TEXT_FILE" ]]; then require_file "$RELATION_TEXT_FILE"; fi
   require_dir "$HNG/src"
   require_dir "$BASELINE_DIR"
 }
@@ -145,8 +189,7 @@ check_common_assets() {
 check_train_assets() {
   check_common_assets
   require_file "$EVAL_FILE"
-  require_file "$S1_ADAPTER/adapter_config.json"
-  require_file "$S1_ADAPTER/adapter_model.safetensors"
+  require_adapter_dir "S1" "$S1_ADAPTER"
   require_file "$MANIFEST"
   check_cuda_and_model
 }
@@ -161,8 +204,7 @@ case "$STEP" in
     ;;
   rollout)
     check_common_assets
-    require_file "$B1_ADAPTER/adapter_config.json"
-    require_file "$B1_ADAPTER/adapter_model.safetensors"
+    require_adapter_dir "B1" "$B1_ADAPTER"
     check_cuda_and_model
     mkdir -p "$(dirname "$ROLLOUT_MANIFEST")"
     cd "$CODE_DIR"
@@ -170,6 +212,7 @@ case "$STEP" in
       --input_file "$INPUT_FILE" \
       --b1_adapter "$B1_ADAPTER" \
       --raw_dir "$RAW_DIR" \
+      "${RELATION_TEXT_ARGS[@]}" \
       --output "$ROLLOUT_MANIFEST" \
       --model_name "$MODEL_NAME" \
       --model_cache_dir "$MODEL_CACHE_DIR" \
@@ -182,14 +225,14 @@ case "$STEP" in
     ;;
   score)
     check_common_assets
-    require_file "$B1_ADAPTER/adapter_config.json"
-    require_file "$B1_ADAPTER/adapter_model.safetensors"
+    require_adapter_dir "B1" "$B1_ADAPTER"
     check_cuda_and_model
     mkdir -p "$SCORES_DIR"
     cd "$CODE_DIR"
     "$PYTHON" "$HNG/scripts/score_relation_candidates_offline.py" \
       --task_file "$INPUT_FILE" \
       --raw_dir "$RAW_DIR" \
+      "${RELATION_TEXT_ARGS[@]}" \
       --b1_adapter "$B1_ADAPTER" \
       --output_dir "$SCORES_DIR" \
       --model_name "$MODEL_NAME" \
@@ -218,6 +261,7 @@ case "$STEP" in
       --rollout_manifest "$ROLLOUT_MANIFEST" \
       --output_dir "$SAMPLER_DIR" \
       --raw_dir "$RAW_DIR" \
+      "${RELATION_TEXT_ARGS[@]}" \
       --total_k 9 \
       --uniform_mix "${ERROR_MEMORY_UNIFORM_MIX:-0.3333333333333333}" \
       --error_weight "${ERROR_MEMORY_WEIGHT:-1.0}" \
@@ -233,6 +277,7 @@ case "$STEP" in
       --task_file "$INPUT_FILE" \
       --manifest "$MANIFEST" \
       --raw_dir "$RAW_DIR" \
+      "${RELATION_TEXT_ARGS[@]}" \
       --expected_listed "$EXPECTED_LISTED" \
       --output "${WIRE_OUTPUT:-$SAMPLER_DIR/wiring.json}"
     ;;
@@ -257,6 +302,7 @@ case "$STEP" in
       --task_file "$INPUT_FILE" \
       --manifest "$MANIFEST" \
       --raw_dir "$RAW_DIR" \
+      "${RELATION_TEXT_ARGS[@]}" \
       --expected_listed "$EXPECTED_LISTED" \
       --output "$RUN_DIR/wiring.json" | tee "$RUN_DIR/wiring.log"
 
@@ -319,6 +365,7 @@ PY
       --error_memory_violation_weight "${ERROR_MEMORY_VIOLATION_WEIGHT:-1.0}" \
       --error_memory_temperature "${ERROR_MEMORY_TEMPERATURE:-0.25}" \
       --raw_dir "$RAW_DIR" \
+      "${RELATION_TEXT_ARGS[@]}" \
       --save_steps "${SAVE_STEPS:-10}" \
       --save_total_limit "${SAVE_TOTAL_LIMIT:-2}" \
       "${SWANLAB_FLAGS[@]}" \

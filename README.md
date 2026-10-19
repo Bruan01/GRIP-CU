@@ -1,6 +1,6 @@
 # GRIP-CU
 
-AI-assisted research workflow for GRIP and RecurrentGRIP.
+AI-assisted research workflow for GRIP candidate-relation learning.
 
 这是一套适合计算机 / AI / 机器学习研究的科研项目模板。
 
@@ -107,23 +107,23 @@ AI 不应该替代：
 
 ---
 
-## 当前研究主线：RecurrentGRIP
+## 当前研究主线：GRIP 候选关系学习
 
-更新日期：2026-08-29
+更新日期：2026-10-19
 
-本项目当前聚焦：
+本项目当前只保留三条可比较路径：
 
-> 将 GRIP 的图专属 LoRA 从静态事实存储提升为可被共享递归模块反复调用的可执行参数图程序，并区分 graph storage、retrieval 与 execution。
+1. **Original GRIP/B1**：原始 GRIP 的 generation-only 基线；
+2. **Random-9 + InfoNCE**：同一训练预算下随机采样 9 个候选负样本；
+3. **ErrorMemory-9 + InfoNCE**：从冻结 B1 的训练集错误和候选分数违例中构造 9 个边界负样本。
+
+两套首轮数据集为 NELL23K 和 FB15K237-2。三条路径保持原始 GRIP 的 graph-context、LoRA 和生成目标不变，只在 Stage 2 的候选关系学习阶段加入对比约束。
 
 当前执行入口：
 
-0. [`TODO_WSL3090.md`](TODO_WSL3090.md) — WSL2 RTX 3090 环境、测试与单图 smoke 交接
 1. [`RESEARCH_STATUS.md`](RESEARCH_STATUS.md)
-2. [`01_problem/problem_statement.md`](01_problem/problem_statement.md)
-3. [`03_gap_analysis/gap_matrix.md`](03_gap_analysis/gap_matrix.md)
-4. [`07_method_versions/v1_first_core_idea/recurrentgrip_design.md`](07_method_versions/v1_first_core_idea/recurrentgrip_design.md)
-5. [`08_experiments/PILOT_PLAN.md`](08_experiments/PILOT_PLAN.md)
-6. [`11_paper/paper_outline.md`](11_paper/paper_outline.md)
+2. [`04_benchmark/README.md`](04_benchmark/README.md)
+3. [`08_experiments/Hard_Negative_Contrastive_GRIP/README.md`](08_experiments/Hard_Negative_Contrastive_GRIP/README.md)
+4. [`08_experiments/Hard_Negative_Contrastive_GRIP/configs/run_error_memory_wsl.sh`](08_experiments/Hard_Negative_Contrastive_GRIP/configs/run_error_memory_wsl.sh)
 
-当前原则：先在 NELL23K 上完成 Original GRIP/RecurrentGRIP 的 WSL smoke 和固定深度 Pilot；只有出现可信的 recurrence 信号，才运行 CLEGR 严格 K↔hop 机制确认，并在通过决策门后进入动态停止、机制干预和多数据集实验。
-
+当前原则：先完成两个数据集的完整 task、B1 错误/分数冻结、Random-9 与 ErrorMemory-9 的配对训练和审计，再报告候选关系 MRR/Hits、free-generation EM、wrong-in-list、OOV 和候选有效率。没有实验结果前不宣称提升。

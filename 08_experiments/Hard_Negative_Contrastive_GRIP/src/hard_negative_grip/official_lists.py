@@ -62,6 +62,24 @@ def train_relation_insertion_order(train_triples: Iterable[tuple[str, str, str]]
     return relations
 
 
+def load_relation_text_mapping(path: Path | None) -> dict[str, str]:
+    """Load an optional raw-relation to task-label mapping.
+
+    FB15K237-2 stores relation IDs in triples but emits human-readable
+    relation descriptions in task answers. Keeping this conversion explicit
+    prevents raw IDs and answer labels from being mixed during filtering.
+    """
+    if path is None:
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError(f"relation text mapping must be an object: {path}")
+    mapping = {str(key): str(value).strip() for key, value in payload.items()}
+    if any(not value for value in mapping.values()):
+        raise ValueError("relation text mapping must contain non-empty strings")
+    return mapping
+
+
 def load_train_relation_order(
     raw_dir: Path, *, relation_text_file: Path | None = None
 ) -> list[str]:
@@ -73,7 +91,15 @@ def load_train_relation_order(
     relations = train_relation_insertion_order(load_triples(raw_dir / "train.txt"))
     if relation_text_file is None:
         return relations
-    mapping = json.loads(relation_text_file.read_text(encoding="utf-8"))
+    # The mapping must cover every train relation before we build the frozen
+    # candidate vocabulary; silently dropping an ID would change the protocol.
+    mapping = load_relation_text_mapping(relation_text_file)
+    missing = [relation for relation in relations if relation not in mapping]
+    if missing:
+        raise ValueError(
+            f"relation text mapping is missing {len(missing)} train relations; "
+            f"examples={missing[:3]}"
+        )
     mapped = [mapping[relation] for relation in relations]
     if any(not isinstance(value, str) or not value.strip() for value in mapped):
         raise ValueError("relation text mapping must contain non-empty strings")

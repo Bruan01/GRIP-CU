@@ -67,6 +67,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task_file", type=Path, required=True)
     parser.add_argument("--raw_dir", type=Path, required=True)
+    parser.add_argument(
+        "--relation_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
+    )
     parser.add_argument("--b1_adapter", type=Path, required=True)
     parser.add_argument("--output_dir", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
@@ -306,9 +312,15 @@ def main() -> None:
     if args.shard_id < 0 or args.shard_id >= args.num_shards:
         raise ValueError("shard_id must satisfy 0 <= shard_id < num_shards")
 
-    relation_order = load_train_relation_order(args.raw_dir)
+    relation_order = load_train_relation_order(
+        args.raw_dir, relation_text_file=args.relation_text_file
+    )
     alias_index = train_relation_alias_index(relation_order)
-    known_relations = known_pair_relations(args.raw_dir, splits=tuple(args.filter_splits))
+    known_relations = known_pair_relations(
+        args.raw_dir,
+        splits=tuple(args.filter_splits),
+        relation_text_file=args.relation_text_file,
+    )
     items = load_matchable(args, alias_index)
     items = shard_items(items, num_shards=args.num_shards, shard_id=args.shard_id)
     if args.compare_reference is not None:

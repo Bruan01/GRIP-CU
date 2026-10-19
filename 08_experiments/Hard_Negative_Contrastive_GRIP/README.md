@@ -1,6 +1,6 @@
 # ErrorMemory-9 + InfoNCE for original GRIP
 
-本目录是一个与 `origin/recurrentgrip-nell23k-20260904` 同级的实验分支方法目录。它只在原始 GRIP 的候选关系学习阶段加入：
+本目录是当前主线的唯一方法实验目录。它只在原始 GRIP 的候选关系学习阶段加入：
 
 1. 冻结 B1 在训练问题上的生成错误，构建 gold-conditioned ErrorMemory；
 2. 用 B1 的候选分数违例度和 ErrorMemory 组合采样 9 个边界负样本；
@@ -36,8 +36,9 @@ p(r|q) = rho / |P_q| + (1-rho) * softmax(u(q,r) / tau)
 ## 数据与基线
 
 - baseline code：`13_base_method/grip-exp`；
-- raw NELL23K：`13_base_method/grip-exp/data/raw_datasets/nell23k`；
-- 评估文件：原始 GRIP 生成的标准 `processed_test.json`，记录包含 `title/graph/questions/answers/id`；
+- raw NELL23K：`04_benchmark/data/nell23k/raw`；
+- raw FB15K237-2：`04_benchmark/data/fb15k237_2/raw`；关系文本映射为 `rel2text.json`；
+- 评估文件：对应数据集的标准 `processed_test.json`，记录包含 `title/graph/questions/answers/id`；
 - 训练 task JSON：包含原始 GRIP 的 `context_samples` 和 `qa_samples`。正式训练必须显式提供完整文件，不能用 smoke 子集替代。
 
 ## WSL 命令
@@ -47,10 +48,16 @@ p(r|q) = rho / |P_q| + (1-rho) * softmax(u(q,r) / tau)
 ```bash
 cd /path/to/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP
 GRIP_BASELINE_DIR=/path/to/GRIP-CU/13_base_method/grip-exp \
-INPUT_FILE=/path/to/grip_nell23k_tasks.json \
-EVAL_FILE=/path/to/processed_test.json \
+INPUT_FILE=/path/to/GRIP-CU/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json \
+EVAL_FILE=/path/to/GRIP-CU/04_benchmark/data/nell23k/processed/processed_test.json \
+RAW_DIR=/path/to/GRIP-CU/04_benchmark/data/nell23k/raw \
+MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache \
+S1_ADAPTER=/path/to/GRIP-CU/13_base_method/grip-exp/artifacts/nell23k_paper_7b/lora_adapter \
+B1_ADAPTER=/path/to/GRIP-CU/13_base_method/grip-exp/artifacts/nell23k_paper_7b/lora_adapter \
 STEP=preflight bash configs/run_error_memory_wsl.sh
 ```
+
+FB15K237-2 使用同一入口，将 `INPUT_FILE`、`EVAL_FILE`、`RAW_DIR` 改成 `04_benchmark/data/fb15k237_2/`，并额外设置 `RELATION_TEXT_FILE=$RAW_DIR/rel2text.json`。Qwen2.5-7B 基座位于 `/mnt/e/GRIP-CU/model_cache/`；历史 FB 目录位于 `/mnt/e/GRIP-CU/artifacts/info_nce_fb15k237_qwen7b_20260921/`，但当前只保留 adapter 配置/Tokenizer，未发现完整 `adapter_model.safetensors`。FB GPU 步骤必须显式传入已恢复或新训练的完整 `S1_ADAPTER`/`B1_ADAPTER`，运行前在 `environment.txt` 中记录实际路径和 hash。
 
 经审核后按以下顺序执行：
 

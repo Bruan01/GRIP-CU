@@ -1,80 +1,29 @@
-# Problem Statement: Executable Parametric Graph Memory
+# Problem Statement: Candidate Relation Learning in GRIP
 
-更新日期：2026-08-28
+更新日期：2026-10-19
 
 ## 1. 研究对象
 
-GRIP 将一张图转换为训练任务，并通过图专属 LoRA 将图知识写入语言模型参数。推理时模型只接收问题，不接收原图。
+GRIP 将图信息写入图专属 LoRA，并在推理时通过问题和参数化图记忆回答关系问题。当前实验不改变图存储机制，而聚焦候选关系学习阶段：模型面对一个 gold relation 和若干候选关系时，负样本是否足够接近真实决策边界。
 
-当前尚不清楚的是：写入参数的图知识究竟是静态事实集合、问题—答案模板、关系路径模式，还是能够被反复调用的图转移算子。
+## 2. 基线问题
 
-## 2. 核心问题
+Original GRIP/B1 的候选负样本没有利用模型自身暴露出的训练错误结构：
 
-现有 GRIP 可以证明部分图知识被参数化存储，却没有证明模型能够以逐跳、可组合和可解释的方式执行该参数记忆。
+- 完全随机的候选可能远离决策边界；
+- 只按当前分数选 hard negative 可能放大偶然误差；
+- 已知事实没有被稳定地从负样本池中剔除。
 
-形式上，现有范式近似为：
+## 3. 当前问题
 
-\[
-y = f_{\theta,\Delta W_G}(q).
-\]
+> 在相同的 Original GRIP 生成目标和 Stage 2 预算下，使用冻结 B1 的训练集错误记忆与候选分数违例构造的 ErrorMemory-9，是否比 compute-matched Random-9 更能改善候选关系辨别，同时不损害自由生成？
 
-它没有显式区分图存储与图执行，也没有中间计算状态，因此多跳成功不能直接说明模型执行了图算法。
+## 4. 比较路径
 
-## 3. 目标问题
+1. Original GRIP/B1；
+2. Random-9 + InfoNCE；
+3. ErrorMemory-9 + InfoNCE。
 
-本项目研究：
+## 5. 证据范围
 
-> 能否把图专属 LoRA 解释和训练为可执行图程序，使一个跨图共享的递归模块在无图输入条件下反复调用该参数记忆，并产生与真实图搜索过程一致的中间状态？
-
-目标形式为：
-
-\[
-Z^{(0)}=E(q),\qquad
-Z^{(k+1)}=F_{\phi,\Delta W_G}(Z^{(k)},e_k),\qquad
-y=D(Z^{(K)}).
-\]
-
-其中：
-
-- \(\phi\) 是跨图共享的执行机制；
-- \(\Delta W_G\) 是图专属参数记忆；
-- 每次 recurrence 尝试执行一次隐式 graph hop；
-- 推理阶段不输入邻接表、三元组或检索子图。
-
-## 4. 为什么值得研究
-
-如果成立，本项目将把参数化图记忆从“事实压缩”推进为“可执行程序”，并回答以下问题：
-
-1. 参数化图知识如何被调用；
-2. 存储成功为何不总能转化为多跳推理成功；
-3. 测试时增加递归计算能否带来路径长度外推；
-4. 模型中间状态是否对应真实图算法状态；
-5. 参数记忆与显式 KG-RAG 的能力边界在哪里。
-
-## 5. 问题类型
-
-这是一个组合研究问题：
-
-- **算法问题**：设计共享递归执行器；
-- **机制问题**：验证隐状态是否对应 graph frontier；
-- **泛化问题**：测试未见路径长度、关系组合和图规模；
-- **评价协议问题**：建立 storage、retrieval、execution 分离的评测。
-
-## 6. 不属于主贡献的内容
-
-以下内容只作为 baseline、训练配方或消融：
-
-- 数据重采样；
-- 增加 reasoning QA 数量；
-- 普通蒸馏；
-- 单纯修改 LoRA rank；
-- 单纯增加层数或推理 token；
-- 多次把答案放回 prompt 的 self-refinement。
-
-## 7. 预期输出
-
-1. RecurrentGRIP 方法；
-2. 六数据集闭卷图推理协议；
-3. hop–recurrence alignment 指标；
-4. frontier probing 与 activation patching 证据；
-5. 参数图记忆从 storage 到 execution 的边界结论。
+首轮在 NELL23K 和 FB15K237-2 上运行。主指标包括 free-generation EM、closed-set relation MRR/Hits、wrong-in-list、OOV、候选有效率和 train-only provenance。该实验不研究递归执行器、不声称解决 OOV，也不提出通用 KG 负采样理论。

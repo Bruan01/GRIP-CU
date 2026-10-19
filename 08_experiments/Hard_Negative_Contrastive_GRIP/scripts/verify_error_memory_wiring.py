@@ -38,6 +38,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--task_file", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--raw_dir", type=Path, required=True)
+    parser.add_argument(
+        "--relation_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
+    )
     parser.add_argument("--expected_listed", type=int, default=3253)
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
@@ -50,7 +56,9 @@ def main() -> None:
         raise ValueError(f"{args.task_file} is not a GRIP task file")
     qa_texts = list(payload["qa_samples"])
     question_ids = original_question_ids_from_payload(payload, len(qa_texts))
-    relation_order = load_train_relation_order(args.raw_dir)
+    relation_order = load_train_relation_order(
+        args.raw_dir, relation_text_file=args.relation_text_file
+    )
     manifest = load_error_memory_manifest(args.manifest)
     validate_error_memory_manifest(manifest)
     resolved_ids = question_ids or [f"task_qa:{index}" for index in range(len(qa_texts))]

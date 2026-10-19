@@ -1,6 +1,8 @@
 {
   "pair_name": "error_memory9_vs_random9",
-  "dataset": "NELL23K",
+  "datasets": ["nell23k", "fb15k237_2"],
+  "data_root": "04_benchmark/data/<dataset>",
+  "relation_text_file": "raw/rel2text.json when present",
   "baseline": "original GRIP generation baseline",
   "baseline_code": "13_base_method/grip-exp",
   "eval_format": "standard processed GRIP graph record",

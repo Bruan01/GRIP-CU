@@ -1,72 +1,59 @@
-# RecurrentGRIP Research Status
+# GRIP-CU Research Status
 
-更新日期：2026-08-29
+更新日期：2026-10-19
 
 ## 当前主线
 
-**RecurrentGRIP: Compiling Graphs into Executable Parametric Programs for Closed-Book Graph Reasoning**
+当前只研究原始 GRIP 的候选关系学习改进，不再运行或维护 RecurrentGRIP、递归执行器和 0.5B smoke 旧流程。
 
-核心问题不是继续优化 GRIP 的训练配方，而是区分：
+固定比较为：
 
-- 图是否成功写入参数（storage）；
-- 参数化图是否能被模型逐步调用（retrieval）；
-- 被调用的图知识是否能形成可重复执行的多步计算（execution）。
+- **Original GRIP/B1**：原始 graph-context/QA generation-only 基线；
+- **Random-9 + InfoNCE**：从训练关系词表随机采样 9 个合法负样本；
+- **ErrorMemory-9 + InfoNCE**：由冻结 B1 的训练集生成错误、候选分数违例和均匀概率下限共同构造 9 个负样本。
 
-## 当前主张
+方法只改 Stage 2 候选关系学习：
 
-RecurrentGRIP 将模型拆分为共享问题编码器、共享递归图执行器、图专属 LoRA
-参数记忆和答案解码器。图专属 LoRA 定义“执行哪张图”，共享递归模块学习“如何
-重复执行一步”；推理时不提供原图。
+```text
+original GRIP generation loss
+    + candidate InfoNCE(gold relation, 9 negatives)
+```
 
-## 当前实验决策
+Stage 1 graph-context 训练、LoRA 结构、prompt 和自由生成评估保持不变。
 
-首轮 WSL2 RTX 3090 验证改为 **NELL23K-first**：
+## 数据集
 
-1. NELL23K 已随 GRIP 代码提供，不需要先下载 CLEGR；
-2. 先验证 recurrent executor、adapter scope、CUDA 重载和 K sweep；
-3. 先回答 RecurrentGRIP 是否在 Original GRIP 数据集上产生收益；
-4. NELL23K 出现可信 recurrence 信号后，再运行 CLEGR 的严格 K↔hop 机制实验。
+首轮固定使用：
 
-## 当前阶段
+- `NELL23K`：当前原始 GRIP 复现锚点；
+- `FB15K237-2`：仓库中原始 GRIP 的 FB15K-237 文本关系版本。
 
-- [x] 研究问题与 RecurrentGRIP 机制确定
-- [x] 初步 novelty check
-- [x] Fixed-Depth v1 实现
-- [x] CLEGR schema/hop split 实现并冻结在 v1
-- [x] NELL23K-first v1.1 独立快照
-- [x] NELL23K train/valid/test 数据适配与结构距离分析
-- [x] NELL23K WSL smoke/pilot 脚本
-- [ ] WSL2 RTX 3090 ML 集成测试
-- [ ] NELL23K Qwen2.5-0.5B smoke
-- [ ] Original GRIP 公平对照
-- [ ] NELL23K 两小时 Pilot
-- [ ] CLEGR 严格机制确认
-- [ ] 多数据集实验
-- [ ] 机制分析与论文写作
+本地数据统一放在 `04_benchmark/data/`，该目录已加入 `.gitignore`，不提交大文件和 task JSON。
 
-## 当前代码版本
+## 当前假设
 
-- Original GRIP：`13_base_method/grip-exp/`，保持 clean；
-- CLEGR-first v1：`08_experiments/RecurrentGRIP/v1_fixed_depth_2026-08-28/`，冻结保留；
-- 当前 NELL23K-first v1.1：`08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/`；
-- macOS：代码、版本管理、静态检查和纯 Python 数据测试；
-- WSL2 + RTX 3090：Torch/Transformers/PEFT 集成、训练、推理和正式结果。
+在相同模型、Stage 1 adapter、Stage 2 预算、候选数 `K=9`、seed 和生成目标下，B1 自身暴露的训练集边界错误应比纯随机负样本更接近候选决策边界。
 
-## 立即执行顺序
+可证伪预测：
 
-1. WSL 拉取最新仓库与 Original GRIP submodule；
-2. 进入 NELL23K-first v1.1；
-3. 安装环境并运行全部 unittest；
-4. 从仓库自带 NELL23K 文件生成 64/32/64 smoke 输入；
-5. 运行 Qwen2.5-0.5B、K=1/2、correct/none smoke；
-6. 分析输出并记录 CUDA、显存、延迟和准确率；
-7. Smoke 通过后才准备 512/128/512 两小时 Pilot；
-8. NELL23K 出现机制信号后再执行 CLEGR。
+1. ErrorMemory-9 的 closed-set relation MRR/Hits 优于 Random-9；
+2. free-generation EM 不低于 Original GRIP/B1；
+3. 若只改善候选排序而不改善自由生成，只能声称候选辨别改善；
+4. 若不优于 Random-9，则保留完整失败记录，不宣称 hard negative 必然有效。
 
-## 核心入口
+## 当前状态
 
-- `TODO_WSL3090.md`
-- `08_experiments/PILOT_PLAN.md`
-- `08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/README.md`
-- `08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/design/NELL23K_FIRST_PLAN.md`
-- `08_experiments/CLEGR_MECHANISM_PLAN.md`
+- [x] 原始 GRIP/B1、Random-9、ErrorMemory-9 方法目录和测试；
+- [x] 删除 RecurrentGRIP smoke 旧实验树及无关候选方法目录；
+- [x] NELL23K、FB15K237-2 数据整理到 `04_benchmark/data/`；
+- [x] `/mnt/e/GRIP-CU` Qwen2.5-7B 基座、NELL adapter 和 FB15K237-2 历史资产核对；
+- [x] 两个数据集的 read-only preflight；
+- [ ] 恢复或重新训练可用的 FB15K237-2 B1/S1 adapter 权重；
+- [ ] B1 train-only rollout 和全关系候选 score；
+- [ ] ErrorMemory-9 bank freeze、wiring 审计；
+- [ ] Original GRIP/B1、Random-9、ErrorMemory-9 配对训练；
+- [ ] 结果分析和论文结论。
+
+## 证据边界
+
+训练前必须记录 branch HEAD、Original GRIP 子模块 commit、数据和 adapter hash、模型缓存、seed、GPU、训练预算以及复现命令。valid/test 不能进入 ErrorMemory、候选分数或已知事实过滤。实验完成前不声称性能提升、OOV 修复或通用 KG 负采样理论。

@@ -55,6 +55,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input_file", type=Path, required=True)
     parser.add_argument("--b1_adapter", type=Path, required=True)
     parser.add_argument("--raw_dir", type=Path, required=True)
+    parser.add_argument(
+        "--relation_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", type=Path, required=True)
@@ -105,8 +111,8 @@ def encode(tokenizer, text: str) -> list[int]:
     return [0 if unk is None else unk]
 
 
-def canonical_candidate(value: str) -> str:
-    return canonical_rollout_candidate(value)
+def canonical_candidate(value: str, *, relation_alias_index: dict[str, str]) -> str:
+    return canonical_rollout_candidate(value, relation_alias_index=relation_alias_index)
 
 
 def generate_one(model, tokenizer, prefix: str, max_new_tokens: int) -> tuple[str, str]:
@@ -155,11 +161,17 @@ def main() -> None:
     payload = load_json_payload(args.input_file)
     if not isinstance(payload, dict) or "qa_samples" not in payload:
         raise ValueError(f"{args.input_file} is not a GRIP task file")
-    relation_order = load_train_relation_order(args.raw_dir)
+    relation_order = load_train_relation_order(
+        args.raw_dir, relation_text_file=args.relation_text_file
+    )
     alias_index = train_relation_alias_index(relation_order)
     if args.filter_splits != ["train"]:
         raise ValueError("error-memory rollout mining requires --filter_splits train")
-    known_relations = known_pair_relations(args.raw_dir, splits=("train",))
+    known_relations = known_pair_relations(
+        args.raw_dir,
+        splits=("train",),
+        relation_text_file=args.relation_text_file,
+    )
     model, tokenizer = load_b1(args)
     rng = random.Random(args.seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -180,7 +192,7 @@ def main() -> None:
             if question_id in completed_ids:
                 continue
             gold = assistant_gold(text)
-            if not is_relation_gold(gold, text):
+            if not is_relation_gold(gold, text, relation_alias_index=alias_index):
                 continue
             matched = match_train_relation(gold, alias_index)
             if matched is None:
@@ -193,15 +205,10 @@ def main() -> None:
             )
             pair = question_entity_pair(text)
             excluded = known_relations.get(pair, set()) if pair else set()
-            predicted = canonical_candidate(parsed)
+            predicted = canonical_candidate(parsed, relation_alias_index=alias_index)
             hard: list[str] = []
-            excluded_canonical = {
-                rel if rel.startswith("concept:") else f"concept:{rel}"
-                for rel in excluded
-            }
-            predicted_canonical = (
-                predicted if predicted.startswith("concept:") else f"concept:{predicted}"
-            ) if predicted else ""
+            excluded_canonical = {alias_index.get(rel, rel) for rel in excluded}
+            predicted_canonical = alias_index.get(predicted, predicted) if predicted else ""
             if (
                 predicted
                 and predicted_canonical not in excluded_canonical

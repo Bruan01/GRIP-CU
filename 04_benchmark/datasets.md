@@ -1,66 +1,24 @@
-# Dataset Roles
+# Dataset roles
 
-更新日期：2026-08-28
+更新日期：2026-10-19
 
-## 总体原则
+当前主线只保留 NELL23K 和 FB15K237-2，两个数据集都跑同一组三臂比较：Original GRIP/B1、Random-9 + InfoNCE、ErrorMemory-9 + InfoNCE。
 
-六个数据集不承担相同作用。CLEGR 和 Scene Graph 提供主要机制证据，四个 KG 验证真实闭卷调用和关系组合。
+| 数据集 | 本地目录 | 主要作用 | 关系标签 |
+|---|---|---|---|
+| NELL23K | `04_benchmark/data/nell23k/` | 原始 GRIP 复现锚点、长尾实体和多关系候选学习 | `concept:*`，直接读取 `train.txt` |
+| FB15K237-2 | `04_benchmark/data/fb15k237_2/` | 外部多关系 KG 验证、关系文本和候选边界泛化 | `rel2text.json` 映射后的文本关系 |
 
-| 数据集 | 核心角色 | 主要实验 |
-|---|---|---|
-| CLEGR | 主机制数据集 | hop 外推、图规模 OOD、frontier、因果干预 |
-| Scene Graph | 自然语义图验证 | 空间/对象关系组合、场景间泛化 |
-| FB15K237 | 多关系 KG | relation composition、路径 OOD、多答案 |
-| WN18RR | 层次语义 KG | 上下位、逆关系、层次传播 |
-| CoDEx-Medium | 稀疏复杂 KG | 低频关系、度数偏移、复杂路径 |
-| NELL23K | 当前复现锚点 | 闭卷事实调用、长尾实体、多跳扩展 |
+## 数据目录合同
 
-## CLEGR
+每个数据集必须包含：
 
-### 用途
+- `raw/train.txt`、`raw/valid.txt`、`raw/test.txt`；
+- `processed/processed_val.json` 和 `processed/processed_test.json`；
+- `tasks/` 下的完整 Original GRIP task JSON，不能用 smoke 或截断文件替代正式训练。
 
-- 控制真实最短路径长度；
-- 获得每一步 BFS frontier ground truth；
-- 控制节点数、平均度、分支因子、环比例；
-- 生成训练长度之外的测试实例。
+ErrorMemory-9 的错误记忆、候选分数和已知事实过滤只能使用 `raw/train.txt`。`valid.txt` 和 `test.txt` 只能进入评估。
 
-### 推荐切分
+## FB15K237-2 说明
 
-- ID train：1–2 hop，小图；
-- ID validation：1–2 hop，小图；
-- Length OOD：3–8 hop；
-- Size OOD：更大节点数；
-- Density OOD：不同平均度；
-- Label OOD：全部节点随机重命名。
-
-## Scene Graph
-
-### 用途
-
-测试符号机制能否迁移到自然场景关系，包括：
-
-- left/right；
-- above/below；
-- inside/contains；
-- overlap/near；
-- object–attribute–relation composition。
-
-### 注意
-
-必须避免问题文本直接泄漏目标对象，并区分单跳属性问答与真正关系组合。
-
-## FB15K237 / WN18RR / CoDEx-Medium / NELL23K
-
-对每个 KG 额外构造 path-query 集合：
-
-1. 从源实体采样关系约束路径；
-2. 计算真实最短有效路径；
-3. 删除存在一跳答案捷径的样本；
-4. 保存每一步 frontier；
-5. 创建 relation-sequence OOD split；
-6. 创建 entity alias / random label 版本；
-7. 对多答案问题保存完整目标集合。
-
-## 扩展数据集
-
-WebQSP 和 CWQ 可作为后续 KGQA 外部验证，但不进入第一轮主实验。只有六数据集主协议稳定后才加入，避免范围失控。
+这里使用 GRIP 代码中的 `fb15k237_2` 版本，而不是另一个空的下载占位目录 `fb15k237/`。FB 的 raw relation ID 通过 `raw/rel2text.json` 转成 task 中使用的文本关系；runner 需要显式传入这个映射文件。

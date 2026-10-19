@@ -1,8 +1,8 @@
 # 实验前审核报告：ErrorMemory-9 + InfoNCE
 
 日期：2026-10-19
-当前分支：`codex/boundary-negative-recurrentgrip`
-分支关系：从 `origin/main` 分叉，与 `origin/recurrentgrip-nell23k-20260904` 同级
+当前分支：`caiyang-method`
+分支关系：从 `origin/main` 分叉；当前实验不依赖 RecurrentGRIP
 当前状态：只完成算法落地和静态检查入口；没有启动 GPU、训练或 SwanLab 在线实验。
 
 ## 1. 当前的基线问题是什么？
@@ -61,8 +61,8 @@ p(r|q) = rho / |P_q| + (1-rho) softmax(u(q,r) / tau)
 
 ## 6. 涉及数据集是什么？
 
-- 数据集：NELL23K；
-- 原始数据：`13_base_method/grip-exp/data/raw_datasets/nell23k/{train,valid,test}.txt`；
+- 数据集：NELL23K、FB15K237-2；
+- 原始数据：`04_benchmark/data/<dataset>/raw/{train,valid,test}.txt`；
 - 训练输入：完整原始 GRIP task JSON，必须包含 `context_samples` 和 `qa_samples`；
 - 评估输入：原始 GRIP 生成的标准 `processed_test.json`，记录必须包含 `title`、`graph`、`questions`、`answers`、`id`；
 - 负样本过滤：只使用 `train.txt`，避免 valid/test KG 事实泄漏；
@@ -129,6 +129,6 @@ ALLOW_TRAIN=1 STEP=train \
 
 - 不启动 GPU rollout、score 或训练；
 - 不引入递归执行器或递归深度；
-- 不把 `origin/recurrentgrip-nell23k-20260904` 当作本实验父分支；
+- 不引入 RecurrentGRIP 运行时、递归深度或 0.5B smoke 依赖；
 - 不删除 `origin/main` 中已有的历史快照；它不属于本方法分支新增依赖；
 - 不在没有实验结果时声称显著提升、解决 OOV 或提出通用理论。

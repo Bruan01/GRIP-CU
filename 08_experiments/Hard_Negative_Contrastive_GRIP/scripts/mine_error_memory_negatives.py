@@ -39,7 +39,13 @@ def parse_args() -> argparse.Namespace:
         "--raw_dir",
         type=Path,
         required=True,
-        help=f"NELL23K raw split directory; default convention is {DEFAULT_RAW_NELL23K}.",
+        help=f"Raw split directory; default convention is {DEFAULT_RAW_NELL23K}.",
+    )
+    parser.add_argument(
+        "--relation_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
     )
     parser.add_argument("--total_k", type=int, default=DEFAULT_TOTAL_K)
     parser.add_argument("--uniform_mix", type=float, default=DEFAULT_UNIFORM_MIX)
@@ -64,7 +70,9 @@ def main() -> None:
     args = parse_args()
     if args.total_k != DEFAULT_TOTAL_K:
         raise ValueError("the current GRIP decision-set contract is fixed K=9")
-    relation_order = load_train_relation_order(args.raw_dir)
+    relation_order = load_train_relation_order(
+        args.raw_dir, relation_text_file=args.relation_text_file
+    )
     result = freeze_error_memory_bank(
         scores_path=args.scores,
         metadata_path=args.metadata,

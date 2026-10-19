@@ -2,8 +2,7 @@
 
 ## Baseline boundary
 
-The branch is based on `origin/main` and is a sibling of
-`origin/recurrentgrip-nell23k-20260904`. The runtime baseline is the original
+The active branch is `caiyang-method`, based on `origin/main`. The runtime baseline is the original
 GRIP implementation in `13_base_method/grip-exp`. No recursive executor,
 recursive depth, or recursive task schema is part of this experiment.
 
@@ -62,7 +61,8 @@ it needs:
   `qa_samples`;
 - `EVAL_FILE`: standard processed graph record with `graph`, `questions`, and
   `answers`;
-- NELL23K `train.txt`, `valid.txt`, and `test.txt` under `RAW_DIR`;
+- NELL23K or FB15K237-2 `train.txt`, `valid.txt`, and `test.txt` under `RAW_DIR`;
+- FB15K237-2 `rel2text.json` through `RELATION_TEXT_FILE`;
 - frozen S1/B1 adapters and the local model cache before GPU stages.
 
 The default runner step is read-only `preflight`; no training starts unless

@@ -15,7 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .official_lists import official_negatives
+from .official_lists import load_relation_text_mapping, official_negatives
 
 ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
 RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
@@ -105,16 +105,27 @@ def normalize_relation(label: str) -> str:
     return label.strip().rstrip(".")
 
 
-def canonical_rollout_candidate(value: str) -> str:
-    """Keep relation-shaped rollout output, including OOV concept labels."""
+def canonical_rollout_candidate(
+    value: str, *, relation_alias_index: dict[str, str] | None = None
+) -> str:
+    """Normalize one generated relation before train-vocabulary matching.
+
+    ``concept:...`` labels are already canonical for NELL23K. FB15K237-2
+    instead needs the alias index to map a generated text description back to
+    the exact frozen train-vocabulary label.
+    """
     value = str(value or "").strip()
     value = value.replace("<answer>", "").replace("</answer>", "").strip()
     if not value or value.lower() in {"yes", "no", "i don't know"}:
         return ""
-    if not value.lower().startswith("concept:"):
-        return ""
+    # Reject transport artifacts before alias lookup; otherwise a malformed
+    # multi-line answer could become a candidate relation by accident.
     if "\n" in value or "<" in value or ">" in value:
         return ""
+    if value.lower().startswith("concept:"):
+        return value
+    if relation_alias_index is not None:
+        return relation_alias_index.get(normalize_relation(value), "")
     return value
 
 
@@ -124,11 +135,12 @@ def is_relation_gold(
     label = normalize_relation(gold)
     if not label or label.lower() in YES_NO:
         return False
+    # FB15K-237 relation descriptions contain spaces. When a train vocabulary
+    # is available, membership is the authoritative relation-vs-entity check;
+    # this also keeps entity-style answers out of the ErrorMemory bank.
+    if RELATION_QUESTION_RE.search(text) and relation_alias_index is not None:
+        return label in relation_alias_index
     if label.startswith("concept:"):
-        return True
-    # FB15K-237 relation descriptions contain spaces. Require both a relation
-    # question and membership in the train vocabulary to distinguish entities.
-    if RELATION_QUESTION_RE.search(text) and relation_alias_index and label in relation_alias_index:
         return True
     if RELATION_QUESTION_RE.search(text) and " " not in label and not label.startswith("concept_"):
         return True
@@ -336,6 +348,7 @@ def known_pair_relations(
     raw_dir: Path,
     *,
     splits: tuple[str, ...] = VALID_FILTER_SPLITS,
+    relation_text_file: Path | None = None,
 ) -> dict[tuple[str, str], set[str]]:
     """Index triples from selected dataset splits for false-negative filtering."""
     unknown = set(splits).difference(VALID_FILTER_SPLITS)
@@ -344,6 +357,7 @@ def known_pair_relations(
             f"unknown filter split(s): {sorted(unknown)}; "
             f"expected a subset of {VALID_FILTER_SPLITS}"
         )
+    relation_mapping = load_relation_text_mapping(relation_text_file)
     known: dict[tuple[str, str], set[str]] = {}
     for split in splits:
         filename = f"{split}.txt"
@@ -355,6 +369,7 @@ def known_pair_relations(
             if len(fields) != 3:
                 continue
             source, relation, target = fields
+            relation = relation_mapping.get(relation, relation)
             known.setdefault((source, target), set()).add(relation)
     return known
 
