@@ -63,6 +63,36 @@ DEFAULT_PAIRS = {
         "left_label": "B1 (37 QA epochs, compute-matched)",
         "right": NELL_RK_2026, "right_label": "Random-K",
     },
+    # Sampler ablation on NELL23K (seed 2026, same Stage 1, same post-fix trainer).
+    # kind="ablation" keeps these out of the seed summary.
+    "nell23k_calibrated": {
+        "dataset": "nell23k", "seed": 2026, "kind": "ablation",
+        "eval_file": NELL_EVAL, "vocab": "nell_train",
+        "left": RUNS / "20261013_accumfix_b1_full/full_decode/listed", "left_label": "B1",
+        "right": RUNS / "20261011_accumfix_full_decode/calibrated/listed",
+        "right_label": "Calibrated",
+    },
+    "nell23k_soft_mix": {
+        "dataset": "nell23k", "seed": 2026, "kind": "ablation",
+        "eval_file": NELL_EVAL, "vocab": "nell_train",
+        "left": RUNS / "20261013_accumfix_b1_full/full_decode/listed", "left_label": "B1",
+        "right": RUNS / "20261014_accumfix_soft_mix_full_decode/listed",
+        "right_label": "Soft-Mix",
+    },
+    "nell23k_calibrated_vs_random_k": {
+        "dataset": "nell23k", "seed": 2026, "kind": "ablation",
+        "eval_file": NELL_EVAL, "vocab": "nell_train",
+        "left": NELL_RK_2026, "left_label": "Random-K",
+        "right": RUNS / "20261011_accumfix_full_decode/calibrated/listed",
+        "right_label": "Calibrated",
+    },
+    "nell23k_soft_mix_vs_random_k": {
+        "dataset": "nell23k", "seed": 2026, "kind": "ablation",
+        "eval_file": NELL_EVAL, "vocab": "nell_train",
+        "left": NELL_RK_2026, "left_label": "Random-K",
+        "right": RUNS / "20261014_accumfix_soft_mix_full_decode/listed",
+        "right_label": "Soft-Mix",
+    },
     "nell23k_seed2027": {
         "dataset": "nell23k", "seed": 2027, "kind": "main", "optional": True,
         "eval_file": NELL_EVAL, "vocab": "nell_train",
