@@ -48,6 +48,7 @@ def parse_args() -> argparse.Namespace:
         help="Subset of random_k / top_k_hard / coverage_adaptive_k / soft_mix / calibrated.",
     )
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--relation_text_file", type=Path, default=None)
     return parser.parse_args()
 
 
@@ -70,6 +71,7 @@ def main() -> None:
         expected_n=args.expected_n,
         expected_listed=args.expected_listed,
         variants=tuple(requested),
+        relation_text_file=args.relation_text_file,
     )
     compact = compact_wiring_payload(payload)
     if args.output is not None:

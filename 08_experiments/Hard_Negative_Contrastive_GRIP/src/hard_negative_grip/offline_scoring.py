@@ -77,15 +77,22 @@ def parse_matchable_relation_qa(
     index: int,
     text: str,
     alias_index: dict[str, str],
+    *,
+    pair_fn=None,
 ) -> dict | None:
-    """Return one Stage-2 relation QA item if its gold maps onto the train vocabulary."""
+    """Return one Stage-2 relation QA item if its gold maps onto the train vocabulary.
+
+    ``pair_fn`` overrides the NELL entity-pair regex (FB entity texts contain
+    spaces). The alias index is passed to ``is_relation_gold`` so multi-word FB
+    relation texts are recognised exactly as in training.
+    """
     gold = assistant_gold(text)
-    if not is_relation_gold(gold, text):
+    if not is_relation_gold(gold, text, relation_alias_index=alias_index):
         return None
     matched = match_train_relation(gold, alias_index)
     if matched is None:
         return None
-    pair = question_entity_pair(text)
+    pair = (pair_fn or question_entity_pair)(text)
     return {
         "qa_id": f"task_qa:{index}",
         "text": text,

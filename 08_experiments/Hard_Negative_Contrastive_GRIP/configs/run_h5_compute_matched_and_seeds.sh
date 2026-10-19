@@ -14,8 +14,8 @@
 # adapter of each dataset (20260913 for NELL, 20261015 for FB) and is not retrained.
 #
 # Resume: trainer checkpoints every 10 steps (keep 2) under each train dir,
-# decode appends per question. Disk is tight (~21 GB free on 2026-10-18), so a
-# variant's trainer_* checkpoints are deleted once its final adapter exists.
+# decode appends per question. Once a variant's final adapter exists only its
+# newest checkpoint is kept, with weights hardlinked to the adapter (no extra disk).
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -80,12 +80,20 @@ check_disk() {
 
 adapter_done() { [[ -f "$1/adapter_config.json" && -f "$1/adapter_model.safetensors" ]]; }
 
-prune_checkpoints() {  # <train_dir> <variant>; only after the final adapter exists
-  local dir="$1" variant="$2"
-  if adapter_done "$dir/$variant/adapter" && [[ -d "$dir/trainer_$variant" ]]; then
-    log "prune $dir/trainer_$variant (final adapter saved)"
-    rm -rf -- "$dir/trainer_$variant"
+prune_checkpoints() {  # <train_dir> <variant>; keep newest checkpoint, hardlink its weights
+  local dir="$1" variant="$2" trainer last ckpt
+  trainer="$dir/trainer_$variant"
+  adapter_done "$dir/$variant/adapter" && [[ -d "$trainer" ]] || return 0
+  last=$(find "$trainer" -maxdepth 1 -type d -name 'checkpoint-*' | sort -t- -k2 -n | tail -1)
+  [[ -n "$last" ]] || return 0
+  for ckpt in "$trainer"/checkpoint-*; do
+    [[ "$ckpt" == "$last" ]] || { log "drop older $ckpt"; rm -rf -- "$ckpt"; }
+  done
+  if cmp -s "$dir/$variant/adapter/adapter_model.safetensors" "$last/adapter_model.safetensors"; then
+    ln -f "$dir/$variant/adapter/adapter_model.safetensors" "$last/adapter_model.safetensors.tmp"
+    mv -f "$last/adapter_model.safetensors.tmp" "$last/adapter_model.safetensors"
   fi
+  log "kept $last (final adapter saved)"
 }
 
 common_args=(

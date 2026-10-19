@@ -93,6 +93,22 @@ DEFAULT_PAIRS = {
         "right": RUNS / "20261014_accumfix_soft_mix_full_decode/listed",
         "right_label": "Soft-Mix",
     },
+    # FB15K-237 Calibrated (seed 2026, same FB Stage 1); queued after the H5 seeds.
+    "fb15k237_calibrated": {
+        "dataset": "fb15k237", "seed": 2026, "kind": "ablation", "optional": True,
+        "eval_file": FB_EVAL, "vocab": "fb_manifest",
+        "left": RUNS / "20261015_fb15k237_qwen7b_b1_randomk/full/b1", "left_label": "B1",
+        "right": RUNS / "20261019_fb15k237_calibrated/full/listed",
+        "right_label": "Calibrated",
+    },
+    "fb15k237_calibrated_vs_random_k": {
+        "dataset": "fb15k237", "seed": 2026, "kind": "ablation", "optional": True,
+        "eval_file": FB_EVAL, "vocab": "fb_manifest",
+        "left": RUNS / "20261015_fb15k237_qwen7b_b1_randomk/full/listed",
+        "left_label": "Random-K",
+        "right": RUNS / "20261019_fb15k237_calibrated/full/listed",
+        "right_label": "Calibrated",
+    },
     "nell23k_seed2027": {
         "dataset": "nell23k", "seed": 2027, "kind": "main", "optional": True,
         "eval_file": NELL_EVAL, "vocab": "nell_train",

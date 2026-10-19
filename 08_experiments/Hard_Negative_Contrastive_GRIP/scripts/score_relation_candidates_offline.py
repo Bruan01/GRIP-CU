@@ -31,6 +31,11 @@ sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
 from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE  # noqa: E402
+from hard_negative_grip.fb_pairs import (  # noqa: E402
+    fb_known_pair_relations,
+    fb_question_entity_pairs,
+    load_fb_entity_text,
+)
 from hard_negative_grip.official_lists import load_train_relation_order  # noqa: E402
 from hard_negative_grip.offline_mining import (  # noqa: E402
     SCORING_VERSION,
@@ -106,6 +111,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--compare_count", type=int, default=20)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument(
+        "--relation_text_file",
+        type=Path,
+        default=None,
+        help="FB15K-237 rel2text.json: score relation texts and parse FB entity text.",
+    )
     return parser.parse_args()
 
 
@@ -152,13 +163,15 @@ def peak_gpu_bytes() -> int | None:
     return int(torch.cuda.max_memory_allocated())
 
 
-def load_matchable(args: argparse.Namespace, alias_index: dict[str, str]) -> list[dict]:
+def load_matchable(
+    args: argparse.Namespace, alias_index: dict[str, str], pair_fn=None
+) -> list[dict]:
     payload = load_json_payload(args.task_file)
     if not isinstance(payload, dict) or "qa_samples" not in payload:
         raise ValueError(f"{args.task_file} is not a GRIP task file")
     items = []
     for index, text in enumerate(payload["qa_samples"]):
-        item = parse_matchable_relation_qa(index, str(text), alias_index)
+        item = parse_matchable_relation_qa(index, str(text), alias_index, pair_fn=pair_fn)
         if item is not None:
             items.append(item)
     return items
@@ -298,10 +311,30 @@ def main() -> None:
     if args.shard_id < 0 or args.shard_id >= args.num_shards:
         raise ValueError("shard_id must satisfy 0 <= shard_id < num_shards")
 
-    relation_order = load_train_relation_order(args.raw_dir)
+    relation_order = load_train_relation_order(
+        args.raw_dir, relation_text_file=args.relation_text_file
+    )
     alias_index = train_relation_alias_index(relation_order)
-    known_relations = known_pair_relations(args.raw_dir, splits=tuple(args.filter_splits))
-    items = load_matchable(args, alias_index)
+    pair_fn = None
+    if args.relation_text_file is None:
+        known_relations = known_pair_relations(args.raw_dir, splits=tuple(args.filter_splits))
+    else:
+        relation_text = json.loads(args.relation_text_file.read_text(encoding="utf-8"))
+        entity_text = load_fb_entity_text(args.raw_dir)
+        entity_texts = set(entity_text.values())
+        known_relations = fb_known_pair_relations(
+            args.raw_dir,
+            entity_text=entity_text,
+            relation_text=relation_text,
+            splits=tuple(args.filter_splits),
+        )
+
+        def pair_fn(text: str):
+            # Observed FB task file: every parsable question has exactly one split.
+            pairs = fb_question_entity_pairs(text, entity_texts)
+            return pairs[0] if len(pairs) == 1 else None
+
+    items = load_matchable(args, alias_index, pair_fn)
     items = shard_items(items, num_shards=args.num_shards, shard_id=args.shard_id)
     if args.compare_reference is not None:
         reference_rows = load_jsonl(args.compare_reference)

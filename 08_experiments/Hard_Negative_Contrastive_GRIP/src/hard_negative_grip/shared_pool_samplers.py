@@ -988,6 +988,7 @@ def verify_listed_manifest_wiring(
     expected_n: int | None = None,
     expected_listed: int | None = None,
     variants: tuple[str, ...] | None = None,
+    relation_text_file: Path | None = None,
 ) -> dict:
     """Attach frozen sampler manifests to a task file without loading a model."""
     payload = load_json_payload(task_path)
@@ -1006,7 +1007,7 @@ def verify_listed_manifest_wiring(
         identity = "positional"
     if expected_n is not None and len(qa_texts) != expected_n:
         raise ValueError(f"{task_path} has {len(qa_texts)} QA rows, expected {expected_n}")
-    relation_order = load_train_relation_order(raw_dir)
+    relation_order = load_train_relation_order(raw_dir, relation_text_file=relation_text_file)
     golds = {question_id: assistant_gold(text) for question_id, text in zip(question_ids, qa_texts)}
     resolved_variants = tuple(variants) if variants is not None else tuple(manifest_paths)
     if not resolved_variants:
