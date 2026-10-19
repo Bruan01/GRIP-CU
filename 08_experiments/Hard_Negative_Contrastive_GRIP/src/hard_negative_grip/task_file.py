@@ -15,6 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
+from .counterfactuals import STRUCTURE_COUNTERFACTUAL_SOURCE
 from .official_lists import load_relation_text_mapping, official_negatives
 
 ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
@@ -24,6 +25,7 @@ LISTED_NEGATIVE_K = 9  # official 10-way = 1 gold + 9 distractors; independent o
 LISTED_NEGATIVE_SOURCES = (
     "train_graph",
     "error_memory",
+    "structure_counterfactual",
 )
 CONCEPT_PREFIX = "concept:"
 
@@ -311,6 +313,11 @@ def load_error_memory_manifest(path: Path) -> dict[str, dict]:
     return rows
 
 
+def load_counterfactual_manifest(path: Path) -> dict[str, dict]:
+    """Load the immutable structure-counterfactual JSONL bank."""
+    return load_error_memory_manifest(path)
+
+
 def validate_error_memory_manifest(rows: dict[str, dict], *, k: int = LISTED_NEGATIVE_K) -> None:
     """Reject a non-frozen or non-train-only error-memory bank."""
     if k != LISTED_NEGATIVE_K or not rows:
@@ -338,6 +345,42 @@ def validate_error_memory_manifest(rows: dict[str, dict], *, k: int = LISTED_NEG
         ):
             raise ValueError(
                 f"{question_id}: error-memory manifest provenance/K/parameter mismatch"
+            )
+
+
+def validate_structure_counterfactual_manifest(
+    rows: dict[str, dict], *, k: int = LISTED_NEGATIVE_K
+) -> None:
+    """Reject a bank without structural counterfactual provenance."""
+    if k != LISTED_NEGATIVE_K or not rows:
+        raise ValueError("structure-counterfactual sampling requires K=9 and a non-empty bank")
+    for question_id, row in rows.items():
+        negatives = row["negative_relations"]
+        selected = row.get("selected_negatives")
+        if (
+            row.get("negative_source") != STRUCTURE_COUNTERFACTUAL_SOURCE
+            or row.get("filter_splits") != ["train"]
+            or row.get("counterfactual_operation")
+            != "replace_relation_on_observed_entity_pair"
+            or row.get("counterfactual_validation")
+            != "candidate_absent_from_train_known_pair"
+            or row.get("k") != len(negatives)
+            or row.get("actual_k") != len(negatives)
+            or row.get("requested_k") != k
+            or len(negatives) != k
+            or len(negatives) != len(set(negatives))
+            or not isinstance(selected, list)
+            or len(selected) != len(negatives)
+            or [item.get("relation") for item in selected] != negatives
+            or any(item.get("counterfactual_valid") is not True for item in selected)
+            or row.get("selection_rule") is None
+            or not 0.0 <= float(row.get("uniform_mix", -1.0)) <= 1.0
+            or float(row.get("structure_weight", -1.0)) < 0
+            or float(row.get("violation_weight", -1.0)) < 0
+            or float(row.get("sampling_temperature", 0.0)) <= 0
+        ):
+            raise ValueError(
+                f"{question_id}: structure-counterfactual manifest provenance/K/parameter mismatch"
             )
 
 
@@ -426,6 +469,7 @@ def build_qa_assets_from_task_texts(
     listed_negative_source: str = "train_graph",
     relation_order: list[str] | None = None,
     error_memory_manifest: dict[str, dict] | None = None,
+    counterfactual_manifest: dict[str, dict] | None = None,
     question_ids: list[str] | None = None,
 ) -> tuple[list[str], list[dict]]:
     if not qa_texts:
@@ -438,8 +482,16 @@ def build_qa_assets_from_task_texts(
             f"got {listed_negative_source!r}"
         )
     error_memory_manifest = error_memory_manifest or {}
+    counterfactual_manifest = counterfactual_manifest or {}
     if listed_negative_source == "error_memory" and not error_memory_manifest:
         raise ValueError("error_memory negatives require a non-empty manifest")
+    if (
+        listed_negative_source == "structure_counterfactual"
+        and not counterfactual_manifest
+    ):
+        raise ValueError(
+            "structure_counterfactual negatives require a non-empty manifest"
+        )
     if not relation_order:
         raise ValueError("candidate sampling requires a non-empty relation_order")
     alias_index = train_relation_alias_index(relation_order)
@@ -465,9 +517,14 @@ def build_qa_assets_from_task_texts(
         lambda_candidate = None
         matched = match_train_relation(gold, alias_index)
         if is_relation_gold(gold, text, relation_alias_index=alias_index):
-            if listed_negative_source == "error_memory":
+            if listed_negative_source in {"error_memory", "structure_counterfactual"}:
                 if matched is not None:
-                    row = error_memory_manifest.get(question_id)
+                    manifest = (
+                        error_memory_manifest
+                        if listed_negative_source == "error_memory"
+                        else counterfactual_manifest
+                    )
+                    row = manifest.get(question_id)
                     if row is None:
                         raise ValueError(
                             f"{listed_negative_source} manifest has no row for {question_id!r}"
@@ -500,14 +557,19 @@ def build_qa_assets_from_task_texts(
                 "lambda_candidate": lambda_candidate,
             }
         )
-    if listed_negative_source == "error_memory":
+    if listed_negative_source in {"error_memory", "structure_counterfactual"}:
+        manifest = (
+            error_memory_manifest
+            if listed_negative_source == "error_memory"
+            else counterfactual_manifest
+        )
         expected_ids = {
             resolved_ids[index]
             for index, text in enumerate(qa_texts)
             if is_relation_gold(assistant_gold(text), text, relation_alias_index=alias_index)
             and match_train_relation(assistant_gold(text), alias_index) is not None
         }
-        missing_ids = expected_ids.difference(error_memory_manifest)
+        missing_ids = expected_ids.difference(manifest)
         if missing_ids:
             raise ValueError(
                 f"error_memory manifest is missing {len(missing_ids)} question rows"

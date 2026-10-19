@@ -6,6 +6,11 @@
 2. 用 B1 的候选分数违例度和 ErrorMemory 组合采样 9 个边界负样本；
 3. 在原始 GRIP 的生成损失之外加入候选关系 InfoNCE。
 
+当前分支同时提供一个结构反事实候选分支 `structure_counterfactual`：它在训练图
+关系画像相近、但对当前实体对不属于 train-known fact 的关系中，结合冻结 B1 的
+分数违例度采样 9 个候选。该分支复用原始 GRIP 的 prompt、生成损失和 InfoNCE，
+只替换冻结的候选关系 bank。
+
 这里没有递归执行器、递归深度、`recurrent_questions` 数据契约或 RecurrentGRIP 运行时依赖。原始 GRIP 代码通过 `13_base_method/grip-exp` 子模块提供。
 
 ## 方法契约
@@ -20,14 +25,28 @@ p(r|q) = rho / |P_q| + (1-rho) * softmax(u(q,r) / tau)
 
 默认参数为 `K=9`、`rho=1/3`、`alpha=1`、`beta=1`、`tau=0.25`。所有错误记忆和分数只来自训练 split；冻结后训练只读取 JSONL bank，不在线重采样。Random-9 使用同一训练关系词表、同一 `K`、同一训练过滤和同一训练预算。
 
+结构反事实分支的候选 utility 为：
+
+```text
+s(q,r) = relation_profile_similarity(train_graph, gold(q), r)
+u(q,r) = alpha * s(q,r) + beta * V_B1(q,r)
+p(r|q) = rho / |P_q| + (1-rho) * softmax(u(q,r) / tau)
+```
+
+这里的“反事实”是严格的 train-only 操作契约：在已观测实体对上替换关系标签，
+并过滤 train split 中已经存在的关系；它不把开放世界知识图谱中的未知事实宣称
+为绝对真或假。bank 冻结后训练不再在线重采样。
+
 ## 目录
 
 - `src/hard_negative_grip/error_memory_sampling.py`：冻结 ErrorMemory-9 bank。
+- `src/hard_negative_grip/counterfactuals.py`：冻结结构反事实关系 bank。
 - `src/hard_negative_grip/listed_training.py`：原始 GRIP 生成损失 + 候选 InfoNCE。
 - `src/hard_negative_grip/task_file.py`：标准 GRIP task/graph record 与 manifest 校验。
 - `scripts/mine_rollout_hard_negatives.py`：冻结 B1 训练问题生成错误。
 - `scripts/score_relation_candidates_offline.py`：冻结 B1 对训练关系词表的分数。
 - `scripts/mine_error_memory_negatives.py`：CPU 冻结 ErrorMemory-9。
+- `scripts/build_structure_counterfactual_bank.py`：CPU 冻结结构反事实 bank。
 - `scripts/verify_error_memory_wiring.py`：CPU 接线和泄漏检查。
 - `scripts/train_listed_contrastive.py`：只负责原始 GRIP 的候选关系学习阶段及评估。
 - `configs/run_error_memory_wsl.sh`：WSL 分阶段入口，默认只做 preflight。
@@ -75,6 +94,25 @@ ALLOW_TRAIN=1 STEP=train \
 
 `STEP=train` 只在显式设置 `ALLOW_TRAIN=1` 后运行，并通过 `--listed_negative_source error_memory` 和 `--negative_sampling_mode error_memory` 启用主方法。SwanLab 是可选的；设置 `SWANLAB_PROJECT` 后记录训练配置、阶段 loss、评估摘要和运行状态。
 
+结构反事实分支跳过 rollout，但仍需要先用冻结 B1 完成 train-only candidate score：
+
+```bash
+STEP=score NEGATIVE_SOURCE=structure_counterfactual bash configs/run_error_memory_wsl.sh
+STEP=freeze NEGATIVE_SOURCE=structure_counterfactual bash configs/run_error_memory_wsl.sh
+STEP=wire NEGATIVE_SOURCE=structure_counterfactual bash configs/run_error_memory_wsl.sh
+ALLOW_TRAIN=1 STEP=train NEGATIVE_SOURCE=structure_counterfactual \
+  SWANLAB_PROJECT=grip-negative-sampling \
+  SWANLAB_GROUP=structure-counterfactual-k9 \
+  bash configs/run_error_memory_wsl.sh
+```
+
+训练入口会把完整 `run_config.json` 传给 SwanLab，并额外记录扁平化的数值超参数快照，
+包括学习率、LoRA、batch/accumulation、epoch、seed、InfoNCE 权重/温度、负样本
+来源以及结构采样的 `uniform_mix/structure_weight/violation_weight/temperature`。
+
 ## 论文叙事边界
 
-主比较是：原始 GRIP/B1、Random-9 + InfoNCE、ErrorMemory-9 + InfoNCE。论文可以声称“训练集上的冻结 GRIP 错误与候选分数违例被转化为固定大小的候选决策集”，但在实验完成前不能声称提升、解决 OOV 或提出通用 KG 负采样理论。
+主比较是：原始 GRIP/B1、Random-9 + InfoNCE、ErrorMemory-9 + InfoNCE、
+Structure-Counterfactual-9 + InfoNCE。当前实现首先覆盖关系候选型 task；在四数据集
+正式实验前，仍需为 WN18RR/CLEGR 完成对应 task 生成与 runner adapter，并通过同一
+train-only bank/wiring gate。实验完成前不能声称提升、解决 OOV 或提出通用 KG 负采样理论。

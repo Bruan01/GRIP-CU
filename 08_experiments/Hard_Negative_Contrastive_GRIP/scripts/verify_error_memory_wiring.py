@@ -18,9 +18,11 @@ from hard_negative_grip.task_file import (  # noqa: E402
     is_grip_task_file,
     is_relation_gold,
     load_json_payload,
+    load_counterfactual_manifest,
     load_error_memory_manifest,
     original_question_ids_from_payload,
     train_relation_alias_index,
+    validate_structure_counterfactual_manifest,
     validate_error_memory_manifest,
 )
 
@@ -45,6 +47,11 @@ def parse_args() -> argparse.Namespace:
         help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
     )
     parser.add_argument("--expected_listed", type=int, default=3253)
+    parser.add_argument(
+        "--negative_source",
+        choices=("error_memory", "structure_counterfactual"),
+        default="error_memory",
+    )
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -59,16 +66,23 @@ def main() -> None:
     relation_order = load_train_relation_order(
         args.raw_dir, relation_text_file=args.relation_text_file
     )
-    manifest = load_error_memory_manifest(args.manifest)
-    validate_error_memory_manifest(manifest)
+    if args.negative_source == "error_memory":
+        manifest = load_error_memory_manifest(args.manifest)
+        validate_error_memory_manifest(manifest)
+    else:
+        manifest = load_counterfactual_manifest(args.manifest)
+        validate_structure_counterfactual_manifest(manifest)
     resolved_ids = question_ids or [f"task_qa:{index}" for index in range(len(qa_texts))]
     _, metas = build_qa_assets_from_task_texts(
         qa_texts,
         seed=2026,
         listed_negative_k=9,
-        listed_negative_source="error_memory",
+        listed_negative_source=args.negative_source,
         relation_order=relation_order,
-        error_memory_manifest=manifest,
+        error_memory_manifest=manifest if args.negative_source == "error_memory" else None,
+        counterfactual_manifest=(
+            manifest if args.negative_source == "structure_counterfactual" else None
+        ),
         question_ids=resolved_ids,
     )
     alias_index = train_relation_alias_index(relation_order)
@@ -81,7 +95,8 @@ def main() -> None:
     listed_n = sum(1 for count in listed_counts if count > 0)
     if args.expected_listed >= 0 and listed_n != args.expected_listed:
         raise ValueError(
-            f"error-memory bank attaches to {listed_n} QA rows, expected {args.expected_listed}"
+            f"{args.negative_source} bank attaches to {listed_n} QA rows, "
+            f"expected {args.expected_listed}"
         )
     if listed_n != relation_n:
         raise ValueError(
@@ -93,6 +108,7 @@ def main() -> None:
     output = {
         "task_file": str(args.task_file),
         "manifest": str(args.manifest),
+        "negative_source": args.negative_source,
         "manifest_sha256": file_sha256(args.manifest),
         "raw_dir": str(args.raw_dir),
         "n_qa": len(qa_texts),

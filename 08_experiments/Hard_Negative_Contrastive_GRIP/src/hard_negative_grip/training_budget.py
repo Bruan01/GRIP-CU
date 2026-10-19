@@ -76,8 +76,11 @@ def assert_error_memory_training_budget(
     requested_accum: int = DEFAULT_ACCUM,
     epochs: float = DEFAULT_EPOCHS,
 ) -> dict | None:
-    """Require a full task budget for the ErrorMemory-9 training arm."""
-    if skip_train or allow_underfit or listed_negative_source != "error_memory":
+    """Require a full task budget for frozen candidate-bank training arms."""
+    if skip_train or allow_underfit or listed_negative_source not in {
+        "error_memory",
+        "structure_counterfactual",
+    }:
         return None
     return refuse_underfit_listed_budget(
         n_samples,

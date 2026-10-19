@@ -20,6 +20,10 @@ from hard_negative_grip.task_file import (  # noqa: E402
     parse_model_answer,
     sample_listed_negatives,
     train_relation_alias_index,
+    validate_structure_counterfactual_manifest,
+)
+from hard_negative_grip.counterfactuals import (  # noqa: E402
+    STRUCTURE_COUNTERFACTUAL_SOURCE,
 )
 
 
@@ -131,6 +135,48 @@ def test_error_memory_manifest_is_attached_by_original_task_id() -> None:
     )
     assert metas[0]["listed_relations"] == ["concept:hard"]
     assert metas[1]["listed_relations"] == ["concept:hard"]
+
+
+def test_structure_counterfactual_manifest_is_attached_by_original_task_id() -> None:
+    negatives = [f"concept:negative_{index}" for index in range(9)]
+    manifest = {
+        "task_qa:0": {
+            "question_id": "task_qa:0",
+            "positive_relation": "concept:gold",
+            "matched_train_relation": "concept:gold",
+            "gold_relation": "concept:gold",
+            "hard_negative_relations": negatives,
+            "uniform_negative_relations": [],
+            "negative_relations": negatives,
+            "negative_source": STRUCTURE_COUNTERFACTUAL_SOURCE,
+            "filter_splits": ["train"],
+            "counterfactual_operation": "replace_relation_on_observed_entity_pair",
+            "counterfactual_validation": "candidate_absent_from_train_known_pair",
+            "k": 9,
+            "actual_k": 9,
+            "requested_k": 9,
+            "selected_negatives": [
+                {"relation": relation, "counterfactual_valid": True}
+                for relation in negatives
+            ],
+            "selection_rule": "synthetic-test-rule",
+            "uniform_mix": 1 / 3,
+            "structure_weight": 1.0,
+            "violation_weight": 1.0,
+            "sampling_temperature": 0.25,
+        }
+    }
+    validate_structure_counterfactual_manifest(manifest)
+    texts, metas = build_qa_assets_from_task_texts(
+        [_qa("what is the relation between a and b?", "concept:gold")],
+        seed=2026,
+        listed_negative_source="structure_counterfactual",
+        relation_order=["concept:gold", *negatives],
+        counterfactual_manifest=manifest,
+        question_ids=["task_qa:0"],
+    )
+    assert len(texts) == 1
+    assert metas[0]["listed_relations"] == negatives
 
 
 def test_basic_helpers_are_deterministic() -> None:

@@ -27,6 +27,7 @@ PYTHON="${PYTHON:-/home/kieran/miniconda3/envs/guardenv/bin/python}"
 STEP="${STEP:-preflight}"
 SEED="${SEED:-2026}"
 DATASET="${DATASET:-nell23k}"
+NEGATIVE_SOURCE="${NEGATIVE_SOURCE:-error_memory}"
 DATA_ROOT="${DATA_ROOT:-$REPO_ROOT/04_benchmark/data/$DATASET}"
 MODEL_NAME="${MODEL_NAME:-qwen-7b}"
 if [[ -d /mnt/e/GRIP-CU/model_cache ]]; then
@@ -61,15 +62,28 @@ RELATION_TEXT_FILE="${RELATION_TEXT_FILE:-}"
 ARTIFACT_ROOT="${ARTIFACT_ROOT:-$HNG/results/runs/error_memory_artifacts}"
 SCORES_DIR="${SCORES_DIR:-$ARTIFACT_ROOT/b1_train_scores}"
 ROLLOUT_MANIFEST="${ROLLOUT_MANIFEST:-$ARTIFACT_ROOT/b1_train_rollout.jsonl}"
-SAMPLER_DIR="${SAMPLER_DIR:-$ARTIFACT_ROOT/error_memory_bank}"
-MANIFEST="${MANIFEST:-$SAMPLER_DIR/error_memory_k.jsonl}"
+if [[ "$NEGATIVE_SOURCE" == "structure_counterfactual" ]]; then
+  DEFAULT_SAMPLER_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank"
+  DEFAULT_MANIFEST_NAME="counterfactual_bank.jsonl"
+else
+  DEFAULT_SAMPLER_DIR="$ARTIFACT_ROOT/error_memory_bank"
+  DEFAULT_MANIFEST_NAME="error_memory_k.jsonl"
+fi
+SAMPLER_DIR="${SAMPLER_DIR:-$DEFAULT_SAMPLER_DIR}"
+MANIFEST="${MANIFEST:-$SAMPLER_DIR/$DEFAULT_MANIFEST_NAME}"
+COUNTERFACTUAL_METADATA="${COUNTERFACTUAL_METADATA:-$SAMPLER_DIR/metadata.json}"
 EXPECTED_LISTED="${EXPECTED_LISTED:-$DEFAULT_EXPECTED_LISTED}"
 RUN_ID="${RUN_ID:-error_memory_k9_full_$(date +%Y%m%d)}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/$RUN_ID}"
 SWANLAB_PROJECT="${SWANLAB_PROJECT:-}"
 SWANLAB_EXPERIMENT_NAME="${SWANLAB_EXPERIMENT_NAME:-$RUN_ID}"
-SWANLAB_GROUP="${SWANLAB_GROUP:-error-memory-k9}"
+SWANLAB_GROUP="${SWANLAB_GROUP:-${NEGATIVE_SOURCE}-k9}"
 SWANLAB_MODE="${SWANLAB_MODE:-online}"
+
+if [[ "$NEGATIVE_SOURCE" != "error_memory" && "$NEGATIVE_SOURCE" != "structure_counterfactual" ]]; then
+  echo "error: NEGATIVE_SOURCE must be error_memory or structure_counterfactual" >&2
+  exit 1
+fi
 
 if [[ "$STEP" != "preflight" && "$STEP" != "rollout" && "$STEP" != "score" && \
       "$STEP" != "freeze" && "$STEP" != "wire" && "$STEP" != "train" ]]; then
@@ -156,12 +170,14 @@ write_environment_record() {
     echo "input_file=$INPUT_FILE"
     echo "eval_file=$EVAL_FILE"
     echo "raw_dir=$RAW_DIR"
+    echo "negative_source=$NEGATIVE_SOURCE"
     echo "relation_text_file=$RELATION_TEXT_FILE"
     echo "s1_adapter=$S1_ADAPTER"
     echo "b1_adapter=$B1_ADAPTER"
     echo "scores_dir=$SCORES_DIR"
     echo "rollout_manifest=$ROLLOUT_MANIFEST"
     echo "sampler_dir=$SAMPLER_DIR"
+    echo "counterfactual_metadata=$COUNTERFACTUAL_METADATA"
     echo "seed=$SEED"
     echo "swanlab_project=$SWANLAB_PROJECT"
     echo "swanlab_group=$SWANLAB_GROUP"
@@ -170,7 +186,7 @@ write_environment_record() {
     uname -a
     "$PYTHON" -c "import sys,torch; print('python', sys.version); print('torch', torch.__version__); print('cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
     command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi || true
-    for path in "$INPUT_FILE" "$EVAL_FILE" "$RAW_DIR/train.txt" "$S1_ADAPTER/adapter_model.safetensors" "$B1_ADAPTER/adapter_model.safetensors" "$SCORES_DIR/candidate_scores.jsonl" "$SCORES_DIR/metadata.json" "$ROLLOUT_MANIFEST" "$MANIFEST"; do
+    for path in "$INPUT_FILE" "$EVAL_FILE" "$RAW_DIR/train.txt" "$S1_ADAPTER/adapter_model.safetensors" "$B1_ADAPTER/adapter_model.safetensors" "$SCORES_DIR/candidate_scores.jsonl" "$SCORES_DIR/metadata.json" "$ROLLOUT_MANIFEST" "$MANIFEST" "$COUNTERFACTUAL_METADATA"; do
       if [[ -f "$path" ]]; then
         sha256sum "$path"
       fi
@@ -249,26 +265,41 @@ case "$STEP" in
     check_common_assets
     require_file "$SCORES_DIR/candidate_scores.jsonl"
     require_file "$SCORES_DIR/metadata.json"
-    require_file "$ROLLOUT_MANIFEST"
     mkdir -p "$SAMPLER_DIR"
     FREEZE_FLAGS=()
     if [[ "${OVERWRITE_BANK:-0}" == "1" ]]; then
       FREEZE_FLAGS+=(--overwrite)
     fi
-    "$PYTHON" "$HNG/scripts/mine_error_memory_negatives.py" \
-      --scores "$SCORES_DIR/candidate_scores.jsonl" \
-      --metadata "$SCORES_DIR/metadata.json" \
-      --rollout_manifest "$ROLLOUT_MANIFEST" \
-      --output_dir "$SAMPLER_DIR" \
-      --raw_dir "$RAW_DIR" \
-      "${RELATION_TEXT_ARGS[@]}" \
-      --total_k 9 \
-      --uniform_mix "${ERROR_MEMORY_UNIFORM_MIX:-0.3333333333333333}" \
-      --error_weight "${ERROR_MEMORY_WEIGHT:-1.0}" \
-      --violation_weight "${ERROR_MEMORY_VIOLATION_WEIGHT:-1.0}" \
-      --sampling_temperature "${ERROR_MEMORY_TEMPERATURE:-0.25}" \
-      --seed "$SEED" \
-      "${FREEZE_FLAGS[@]}"
+    if [[ "$NEGATIVE_SOURCE" == "error_memory" ]]; then
+      require_file "$ROLLOUT_MANIFEST"
+      "$PYTHON" "$HNG/scripts/mine_error_memory_negatives.py" \
+        --scores "$SCORES_DIR/candidate_scores.jsonl" \
+        --metadata "$SCORES_DIR/metadata.json" \
+        --rollout_manifest "$ROLLOUT_MANIFEST" \
+        --output_dir "$SAMPLER_DIR" \
+        --raw_dir "$RAW_DIR" \
+        "${RELATION_TEXT_ARGS[@]}" \
+        --total_k 9 \
+        --uniform_mix "${ERROR_MEMORY_UNIFORM_MIX:-0.3333333333333333}" \
+        --error_weight "${ERROR_MEMORY_WEIGHT:-1.0}" \
+        --violation_weight "${ERROR_MEMORY_VIOLATION_WEIGHT:-1.0}" \
+        --sampling_temperature "${ERROR_MEMORY_TEMPERATURE:-0.25}" \
+        --seed "$SEED" \
+        "${FREEZE_FLAGS[@]}"
+    else
+      "$PYTHON" "$HNG/scripts/build_structure_counterfactual_bank.py" \
+        --scores "$SCORES_DIR/candidate_scores.jsonl" \
+        --raw_dir "$RAW_DIR" \
+        --output_dir "$SAMPLER_DIR" \
+        "${RELATION_TEXT_ARGS[@]}" \
+        --total_k 9 \
+        --uniform_mix "${COUNTERFACTUAL_UNIFORM_MIX:-0.3333333333333333}" \
+        --structure_weight "${COUNTERFACTUAL_STRUCTURE_WEIGHT:-1.0}" \
+        --violation_weight "${COUNTERFACTUAL_VIOLATION_WEIGHT:-1.0}" \
+        --temperature "${COUNTERFACTUAL_TEMPERATURE:-0.25}" \
+        --seed "$SEED" \
+        "${FREEZE_FLAGS[@]}"
+    fi
     ;;
   wire)
     check_common_assets
@@ -279,6 +310,7 @@ case "$STEP" in
       --raw_dir "$RAW_DIR" \
       "${RELATION_TEXT_ARGS[@]}" \
       --expected_listed "$EXPECTED_LISTED" \
+      --negative_source "$NEGATIVE_SOURCE" \
       --output "${WIRE_OUTPUT:-$SAMPLER_DIR/wiring.json}"
     ;;
   train)
@@ -304,6 +336,7 @@ case "$STEP" in
       --raw_dir "$RAW_DIR" \
       "${RELATION_TEXT_ARGS[@]}" \
       --expected_listed "$EXPECTED_LISTED" \
+      --negative_source "$NEGATIVE_SOURCE" \
       --output "$RUN_DIR/wiring.json" | tee "$RUN_DIR/wiring.log"
 
     "$PYTHON" - <<PY
@@ -332,6 +365,29 @@ PY
     if [[ "${NO_RESUME:-0}" == "1" ]]; then TRAIN_FLAGS+=(--no_resume); fi
     if [[ -n "${RESUME_FROM_CHECKPOINT:-}" ]]; then TRAIN_FLAGS+=(--resume_from_checkpoint "$RESUME_FROM_CHECKPOINT"); fi
     if [[ "${SKIP_TRAIN:-0}" == "1" && -f "$RUN_DIR/listed/adapter/adapter_config.json" ]]; then TRAIN_FLAGS+=(--skip_train); fi
+    NEGATIVE_TRAIN_FLAGS=()
+    if [[ "$NEGATIVE_SOURCE" == "error_memory" ]]; then
+      NEGATIVE_TRAIN_FLAGS+=(
+        --listed_negative_source error_memory
+        --negative_sampling_mode error_memory
+        --error_memory_manifest "$MANIFEST"
+        --error_memory_uniform_mix "${ERROR_MEMORY_UNIFORM_MIX:-0.3333333333333333}"
+        --error_memory_weight "${ERROR_MEMORY_WEIGHT:-1.0}"
+        --error_memory_violation_weight "${ERROR_MEMORY_VIOLATION_WEIGHT:-1.0}"
+        --error_memory_temperature "${ERROR_MEMORY_TEMPERATURE:-0.25}"
+      )
+    else
+      NEGATIVE_TRAIN_FLAGS+=(
+        --listed_negative_source structure_counterfactual
+        --negative_sampling_mode structure_counterfactual
+        --counterfactual_manifest "$MANIFEST"
+        --counterfactual_metadata "$COUNTERFACTUAL_METADATA"
+        --counterfactual_uniform_mix "${COUNTERFACTUAL_UNIFORM_MIX:-0.3333333333333333}"
+        --counterfactual_structure_weight "${COUNTERFACTUAL_STRUCTURE_WEIGHT:-1.0}"
+        --counterfactual_violation_weight "${COUNTERFACTUAL_VIOLATION_WEIGHT:-1.0}"
+        --counterfactual_temperature "${COUNTERFACTUAL_TEMPERATURE:-0.25}"
+      )
+    fi
 
     cd "$CODE_DIR"
     "$PYTHON" "$HNG/scripts/train_listed_contrastive.py" \
@@ -357,17 +413,12 @@ PY
       --temperature 1.0 \
       --gen_max_length 32 \
       --seed "$SEED" \
-      --listed_negative_source error_memory \
-      --negative_sampling_mode error_memory \
-      --error_memory_manifest "$MANIFEST" \
-      --error_memory_uniform_mix "${ERROR_MEMORY_UNIFORM_MIX:-0.3333333333333333}" \
-      --error_memory_weight "${ERROR_MEMORY_WEIGHT:-1.0}" \
-      --error_memory_violation_weight "${ERROR_MEMORY_VIOLATION_WEIGHT:-1.0}" \
-      --error_memory_temperature "${ERROR_MEMORY_TEMPERATURE:-0.25}" \
+      --dataset "$DATASET" \
       --raw_dir "$RAW_DIR" \
       "${RELATION_TEXT_ARGS[@]}" \
       --save_steps "${SAVE_STEPS:-10}" \
       --save_total_limit "${SAVE_TOTAL_LIMIT:-2}" \
+      "${NEGATIVE_TRAIN_FLAGS[@]}" \
       "${SWANLAB_FLAGS[@]}" \
       "${TRAIN_FLAGS[@]}" \
       2>&1 | tee "$RUN_DIR/run.log"

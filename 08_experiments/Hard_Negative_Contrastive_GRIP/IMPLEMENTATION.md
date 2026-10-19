@@ -20,6 +20,13 @@ control path. `ListedContrastiveTrainer` computes the same continuation score
 for the positive relation and the nine candidate relations, then applies
 cross-entropy over that decision set.
 
+The active innovation branch is `structure_counterfactual`. It consumes a
+frozen, train-only JSONL bank whose candidates are absent from the known train
+relations for the current entity pair. Candidate utility combines train-graph
+relation-profile similarity to the gold relation with frozen-B1 score
+violation. The training prompt and loss are unchanged; only candidate
+identities differ.
+
 ## ErrorMemory-9 boundary sampler
 
 The sampler is a frozen, train-only preprocessing step:
@@ -41,10 +48,13 @@ predictions never enter the bank.
 - `task_file.py`: original GRIP task JSON and standard processed graph record.
 - `official_lists.py`: train relation vocabulary and paper candidate protocol.
 - `error_memory_sampling.py`: ErrorMemory construction and frozen K=9 bank.
+- `counterfactuals.py`: relation profiles, structure-counterfactual sampling,
+  and immutable bank artifacts.
 - `listed_training.py`: candidate InfoNCE and unchanged generation objective.
 - `mine_rollout_hard_negatives.py`: B1 train-only free-generation errors.
 - `score_relation_candidates_offline.py`: B1 train-only full-vocabulary scores.
 - `mine_error_memory_negatives.py`: CPU-only bank freezer.
+- `build_structure_counterfactual_bank.py`: CPU-only structure bank freezer.
 - `verify_error_memory_wiring.py`: CPU-only leakage, ID, vocabulary, and K checks.
 - `train_listed_contrastive.py`: original GRIP model loading, Stage 2 training,
   standard graph evaluation, and SwanLab callbacks.
@@ -64,6 +74,11 @@ it needs:
 - NELL23K or FB15K237-2 `train.txt`, `valid.txt`, and `test.txt` under `RAW_DIR`;
 - FB15K237-2 `rel2text.json` through `RELATION_TEXT_FILE`;
 - frozen S1/B1 adapters and the local model cache before GPU stages.
+
+For the structure-counterfactual arm, the frozen B1 candidate score dump is
+still required, but the free-generation rollout is not. `NEGATIVE_SOURCE` in
+`run_error_memory_wsl.sh` selects the bank and propagates every sampler
+hyperparameter into `run_config.json` and optional SwanLab logging.
 
 The default runner step is read-only `preflight`; no training starts unless
 `ALLOW_TRAIN=1 STEP=train` is explicitly set.

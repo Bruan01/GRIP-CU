@@ -71,9 +71,11 @@ from hard_negative_grip.task_file import (  # noqa: E402
     load_graph_record,
     load_json_payload,
     load_error_memory_manifest,
+    load_counterfactual_manifest,
     original_question_ids_from_payload,
     parse_model_answer,
     train_relation_alias_index,
+    validate_structure_counterfactual_manifest,
     validate_error_memory_manifest,
 )
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
@@ -156,7 +158,11 @@ def parse_args() -> argparse.Namespace:
         "--listed_negative_source",
         choices=list(LISTED_NEGATIVE_SOURCES),
         default="train_graph",
-        help="train_graph = matched Random-9 control; error_memory = frozen train-only GRIP-conditioned bank.",
+        help=(
+            "train_graph = matched Random-9 control; error_memory = frozen "
+            "train-only GRIP-conditioned bank; structure_counterfactual = "
+            "frozen train-only graph-profile bank."
+        ),
     )
     parser.add_argument(
         "--error_memory_manifest",
@@ -165,11 +171,38 @@ def parse_args() -> argparse.Namespace:
         help="Immutable ErrorMemory-9 JSONL manifest; required for error_memory.",
     )
     parser.add_argument(
+        "--counterfactual_manifest",
+        type=Path,
+        default=None,
+        help=(
+            "Immutable structure-counterfactual JSONL manifest; required for "
+            "structure_counterfactual."
+        ),
+    )
+    parser.add_argument(
+        "--counterfactual_metadata",
+        type=Path,
+        default=None,
+        help="Optional sampler metadata JSON recorded with the run configuration.",
+    )
+    parser.add_argument("--counterfactual_uniform_mix", type=float, default=1.0 / 3.0)
+    parser.add_argument("--counterfactual_structure_weight", type=float, default=1.0)
+    parser.add_argument("--counterfactual_violation_weight", type=float, default=1.0)
+    parser.add_argument("--counterfactual_temperature", type=float, default=0.25)
+    parser.add_argument(
+        "--dataset",
+        default="",
+        help="Dataset label for provenance and SwanLab tags; inferred when omitted.",
+    )
+    parser.add_argument(
         "--negative_sampling_mode",
-        choices=("random", "error_memory"),
+        choices=("random", "error_memory", "structure_counterfactual"),
         default="random",
-        help="For paired Random-9/ErrorMemory-9 runs. error_memory requires the "
-        "train-only error-memory manifest; default preserves legacy behavior.",
+        help=(
+            "For paired listed-negative runs. error_memory and "
+            "structure_counterfactual require their frozen train-only manifest; "
+            "default preserves legacy behavior."
+        ),
     )
     parser.add_argument(
         "--error_memory_uniform_mix",
@@ -850,8 +883,22 @@ def evaluate_variant(
 
 
 def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
+    dataset_name = str(getattr(args, "dataset", "") or "").strip()
+    if not dataset_name:
+        for part in args.input_file.parts:
+            if part in {"nell23k", "fb15k237_2", "wn18rr", "clegr_reasoning"}:
+                dataset_name = part
+                break
+    if not dataset_name:
+        dataset_name = "unknown"
     payload = {
         "stage": args.stage,
+        "dataset": dataset_name,
+        "method_name": (
+            "structure_counterfactual_contrastive_grip"
+            if args.listed_negative_source == "structure_counterfactual"
+            else "listed_contrastive_grip"
+        ),
         "input_file": str(args.input_file),
         "eval_file": str(args.eval_file) if args.eval_file else None,
         "output_dir": str(output_dir),
@@ -866,15 +913,27 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "per_device_train_batch_size": args.per_device_train_batch_size,
         "gradient_accumulation_steps": args.gradient_accumulation_steps,
         "learning_rate": args.learning_rate,
+        "weight_decay": args.weight_decay,
         "adam_epsilon": getattr(args, "adam_epsilon", 1e-8),
+        "max_grad_norm": args.max_grad_norm,
         "lambda_candidate": args.lambda_candidate,
         "memory_size": args.memory_size,
         "temperature": args.temperature,
+        "gen_max_length": args.gen_max_length,
         "seed": args.seed,
         "swanlab_project": getattr(args, "swanlab_project", ""),
         "swanlab_group": getattr(args, "swanlab_group", ""),
         "swanlab_mode": getattr(args, "swanlab_mode", "online"),
         "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
+        "training_arguments": {
+            "bf16": True,
+            "tf32": False,
+            "lr_scheduler_type": "linear",
+            "logging_strategy": "steps",
+            "logging_steps": 1,
+            "remove_unused_columns": False,
+            "ddp_find_unused_parameters": False,
+        },
         "listed_negative_k": args.listed_negative_k,
         "listed_negative_source": args.listed_negative_source,
         "negative_sampling_mode": getattr(args, "negative_sampling_mode", "random"),
@@ -890,6 +949,26 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "error_memory_manifest": (
             str(args.error_memory_manifest) if args.error_memory_manifest else None
         ),
+        "counterfactual_manifest": (
+            str(args.counterfactual_manifest) if args.counterfactual_manifest else None
+        ),
+        "counterfactual_metadata": (
+            str(args.counterfactual_metadata) if args.counterfactual_metadata else None
+        ),
+        "counterfactual_sampling": {
+            "uniform_mix": float(
+                getattr(args, "counterfactual_uniform_mix", 1.0 / 3.0)
+            ),
+            "structure_weight": float(
+                getattr(args, "counterfactual_structure_weight", 1.0)
+            ),
+            "violation_weight": float(
+                getattr(args, "counterfactual_violation_weight", 1.0)
+            ),
+            "temperature": float(
+                getattr(args, "counterfactual_temperature", 0.25)
+            ),
+        },
         "raw_dir": str(args.raw_dir),
         "skip_train": bool(args.skip_train),
         "save_steps": int(args.save_steps),
@@ -906,9 +985,11 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             "A paper task JSON trains S1 on context+summarization and S2 on generated QA; "
             "relation-like QA items sample 9 negatives from the official train-graph "
             "relation vocabulary with the process.py permutation rule "
-            "(--listed_negative_source train_graph), while error_memory accepts "
-            "a frozen train-only GRIP-conditioned error-memory bank. These modes "
-            "only change negative identities. "
+            "(--listed_negative_source train_graph), error_memory accepts "
+            "a frozen train-only GRIP-conditioned error-memory bank, and "
+            "structure_counterfactual accepts a frozen train-only bank scored "
+            "by relation-profile similarity plus B1 score violation. These "
+            "modes only change negative identities. "
             "Prompts stay unchanged. Val/test EM uses the standard processed GRIP "
             "graph record. Both Stage-2 arms use the full QA "
             "epoch budget (no S2 early stop) so the generation objective is compute-matched."
@@ -933,7 +1014,12 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         context_samples = list(payload["context_samples"])
         relation_order = None
         error_memory_manifest = None
-        if args.listed_negative_source in {"train_graph", "error_memory"}:
+        counterfactual_manifest = None
+        if args.listed_negative_source in {
+            "train_graph",
+            "error_memory",
+            "structure_counterfactual",
+        }:
             raw_dir = Path(args.raw_dir)
             if not (raw_dir / "train.txt").is_file():
                 raise FileNotFoundError(f"missing NELL23K train.txt under {raw_dir}")
@@ -946,6 +1032,14 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
                     f"{args.listed_negative_source} requires --error_memory_manifest"
                 )
             error_memory_manifest = load_error_memory_manifest(args.error_memory_manifest)
+        if args.listed_negative_source == "structure_counterfactual":
+            if args.counterfactual_manifest is None:
+                raise ValueError(
+                    "structure_counterfactual requires --counterfactual_manifest"
+                )
+            counterfactual_manifest = load_counterfactual_manifest(
+                args.counterfactual_manifest
+            )
         if args.listed_negative_source == "error_memory":
             if args.negative_sampling_mode != "error_memory":
                 raise ValueError(
@@ -958,10 +1052,24 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
                 error_memory_manifest or {},
                 k=args.listed_negative_k,
             )
-        elif args.negative_sampling_mode == "error_memory":
+        if args.listed_negative_source == "structure_counterfactual":
+            if args.negative_sampling_mode != "structure_counterfactual":
+                raise ValueError(
+                    "listed_negative_source=structure_counterfactual requires "
+                    "--negative_sampling_mode structure_counterfactual"
+                )
+            if args.listed_negative_k != LISTED_NEGATIVE_K:
+                raise ValueError(
+                    "structure-counterfactual sampling requires listed_negative_k=9"
+                )
+            validate_structure_counterfactual_manifest(
+                counterfactual_manifest or {},
+                k=args.listed_negative_k,
+            )
+        elif args.negative_sampling_mode != "random":
             raise ValueError(
-                "--negative_sampling_mode error_memory requires "
-                "--listed_negative_source error_memory"
+                "non-random negative_sampling_mode requires a matching "
+                "listed_negative_source"
             )
         listed_seed = args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
         qa_samples = list(payload["qa_samples"])
@@ -973,6 +1081,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             listed_negative_source=args.listed_negative_source,
             relation_order=relation_order,
             error_memory_manifest=error_memory_manifest,
+            counterfactual_manifest=counterfactual_manifest,
             question_ids=question_ids,
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])

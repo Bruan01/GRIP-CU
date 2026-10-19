@@ -23,6 +23,18 @@ def _numeric(values: dict) -> dict[str, float | int]:
     }
 
 
+def _flatten_numeric(values: dict, prefix: str = "hparams") -> dict[str, float | int]:
+    """Flatten numeric nested config fields for an explicit SwanLab snapshot."""
+    flattened: dict[str, float | int] = {}
+    for key, value in values.items():
+        name = f"{prefix}/{key}"
+        if isinstance(value, dict):
+            flattened.update(_flatten_numeric(value, name))
+        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+            flattened[name] = value
+    return flattened
+
+
 class SwanLabTracker:
     def __init__(
         self,
@@ -57,11 +69,15 @@ class SwanLabTracker:
             raise RuntimeError("SwanLab run already started")
         import swanlab
 
+        dataset = str(config.get("dataset") or "unknown")
+        method = str(config.get("method_name") or "listed_contrastive_grip")
+        negative_source = str(config.get("listed_negative_source") or "random")
+        tags = ["GRIP", dataset, method, negative_source, str(config.get("model_name") or "unknown")]
         run = swanlab.init(
             project=self.project,
             experiment_name=self.experiment_name,
             group=self.group,
-            tags=["GRIP", "NELL23K", "Stage2", str(config.get("negative_sampling_mode", "random"))],
+            tags=tags,
             mode=self.mode,
             config=config,
             logdir=str(self.output_dir / "swanlab"),
@@ -71,6 +87,10 @@ class SwanLabTracker:
         self.started = True
         self._write_status("running", stage=config.get("stage"), experiment_name=self.experiment_name)
         self._event("started", swanlab_run_id=self.run_id, stage=config.get("stage"))
+        numeric_config = _flatten_numeric(config)
+        if numeric_config:
+            self._swanlab.log(numeric_config, step=0)
+        self._event("config", config=config, numeric_snapshot=numeric_config)
         (self.output_dir / "swanlab_run.json").write_text(
             json.dumps({"project": self.project, "group": self.group,
                         "experiment_name": self.experiment_name, "mode": self.mode,
