@@ -1,0 +1,20 @@
+[project]
+name = "grip"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "accelerate>=1.10.1",
+    "anthropic>=0.66.0",
+    "datasets>=4.0.0",
+    "matplotlib>=3.10.6",
+    "numpy>=2.2.6",
+    "openai>=1.107.0",
+    "peft>=0.17.1",
+    "tenacity>=9.1.2",
+    "torch-geometric>=2.6.1",
+    "torchmetrics>=1.8.2",
+    "vllm>=0.10.1.1",
+    "wandb>=0.21.3",
+]

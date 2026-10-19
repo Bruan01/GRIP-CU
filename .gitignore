@@ -47,6 +47,15 @@ outputs/
 # Local benchmark data and task files (kept outside Git)
 04_benchmark/data/
 
+# Vendored GRIP baseline: source stays in this monorepo, while raw datasets
+# and local experiment artifacts remain machine-local.
+13_base_method/grip-exp/artifacts/
+13_base_method/grip-exp/outputs/
+13_base_method/grip-exp/data/raw_datasets/**
+!13_base_method/grip-exp/data/raw_datasets/**/
+!13_base_method/grip-exp/data/raw_datasets/__init__.py
+!13_base_method/grip-exp/data/raw_datasets/**/*.py
+
 # Temporary files
 *.log
 *.tmp
