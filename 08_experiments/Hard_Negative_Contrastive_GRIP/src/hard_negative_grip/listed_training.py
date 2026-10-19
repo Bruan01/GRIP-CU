@@ -1,0 +1,397 @@
+"""Listed-decision-set contrastive trainer pieces.
+
+These wrap Hugging Face ``Trainer`` without changing the original GRIP
+generation baseline. Candidate-level InfoNCE is added only in the relation
+learning stage when ``lambda_candidate > 0``.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
+
+import torch
+from transformers import DataCollatorForLanguageModeling, Trainer
+
+from .losses import candidate_infonce_loss
+from .official_lists import listed_relations_from_sample
+from .scoring import (  # re-exported for tests and eval scripts
+    encode_without_specials,
+    pack_decision_set_rows,
+    score_candidate_rows,
+    unwrap_for_scoring,
+)
+
+
+EXTRA_KEYS = (
+    "listed_relations",
+    "positive_relation",
+    "prefix_text",
+    "prefix_ids",
+    "relation_ids",
+    "lambda_candidate",
+)
+
+
+def format_answer_prefix(
+    tokenizer,
+    *,
+    title: str,
+    question: str,
+    system_prompt: str,
+    question_template: str,
+) -> str:
+    """Chat prefix ending immediately after the literal ``<answer>`` tag."""
+    user_content = question_template.format(title=title, question=question)
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_content},
+    ]
+    base = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    return base + "<answer>"
+
+
+def listed_negatives(sample: dict) -> list[str]:
+    """Non-gold relations from the question's own 10-way list."""
+    positive = str(sample.get("answer", ""))
+    return [rel for rel in listed_relations_from_sample(sample) if rel and rel != positive]
+
+
+@dataclass
+class ListedDataCollator:
+    tokenizer: Any
+
+    def __post_init__(self) -> None:
+        self.inner = DataCollatorForLanguageModeling(tokenizer=self.tokenizer, mlm=False)
+
+    def __call__(self, features: list[dict]) -> dict:
+        extra = {key: [feature.pop(key, None) for feature in features] for key in EXTRA_KEYS}
+        batch = self.inner(features)
+        batch.update(extra)
+        return batch
+
+
+def pick_closed_set_answer(relations: list[str], scores: list[float]) -> str:
+    """Argmax over listed continuations; earlier prompt order wins ties."""
+    if not relations:
+        raise ValueError("relations must be non-empty")
+    if len(relations) != len(scores):
+        raise ValueError("relations and scores must have the same length")
+    best_index = 0
+    best_score = scores[0]
+    for index, score in enumerate(scores):
+        if score > best_score:
+            best_index = index
+            best_score = score
+    return relations[best_index]
+
+
+class ListedQADataset(torch.utils.data.Dataset):
+    """Tokenized QA strings plus the 10-way list used at evaluation."""
+
+    def __init__(
+        self,
+        texts: list[str],
+        metas: list[dict],
+        tokenizer,
+    ) -> None:
+        if len(texts) != len(metas):
+            raise ValueError("texts and metas must have the same length")
+        self.tokenizer = tokenizer
+        self.items = [
+            self._encode_item(text, meta, tokenizer) for text, meta in zip(texts, metas)
+        ]
+
+    @staticmethod
+    def _encode_item(text: str, meta: dict, tokenizer) -> dict:
+        encoded = tokenizer(text, truncation=True, padding=False)
+        prefix = meta.get("prefix_text") or ""
+        positive = meta.get("positive_relation") or ""
+        listed = [rel for rel in (meta.get("listed_relations") or []) if rel and rel != positive]
+        prefix_ids: list[int] = []
+        relation_ids: list[list[int]] = []
+        if prefix and positive:
+            prefix_ids = encode_without_specials(tokenizer, prefix)
+            relation_ids = [encode_without_specials(tokenizer, positive)]
+            relation_ids.extend(encode_without_specials(tokenizer, rel) for rel in listed)
+        weight = meta.get("lambda_candidate")
+        return {
+            "input_ids": list(encoded["input_ids"]),
+            "attention_mask": list(encoded["attention_mask"]),
+            "listed_relations": list(meta.get("listed_relations") or []),
+            "positive_relation": positive,
+            "prefix_text": prefix,
+            "prefix_ids": prefix_ids,
+            "relation_ids": relation_ids,
+            "lambda_candidate": None if weight is None else float(weight),
+        }
+
+    def __len__(self) -> int:
+        return len(self.items)
+
+    def __getitem__(self, index: int) -> dict:
+        item = self.items[index]
+        return {
+            "input_ids": list(item["input_ids"]),
+            "attention_mask": list(item["attention_mask"]),
+            "listed_relations": list(item["listed_relations"]),
+            "positive_relation": item["positive_relation"],
+            "prefix_text": item["prefix_text"],
+            "prefix_ids": list(item["prefix_ids"]),
+            "relation_ids": [list(row) for row in item["relation_ids"]],
+            "lambda_candidate": item.get("lambda_candidate"),
+        }
+
+
+class ListedContrastiveTrainer(Trainer):
+    """Generation loss plus optional listed-candidate InfoNCE."""
+
+    def __init__(
+        self,
+        *args,
+        lambda_candidate: float = 0.0,
+        temperature: float = 1.0,
+        memory_size: int = 0,
+        **kwargs,
+    ) -> None:
+        super().__init__(*args, **kwargs)
+        # compute_loss returns one microbatch and ignores num_items_in_batch.
+        # Tell Trainer to divide by the actual accumulation-window size.
+        self.model_accepts_loss_kwargs = False
+        if lambda_candidate < 0:
+            raise ValueError("lambda_candidate must be non-negative")
+        if temperature <= 0:
+            raise ValueError("temperature must be positive")
+        if memory_size < 0:
+            raise ValueError("memory_size must be non-negative")
+        self.lambda_candidate = lambda_candidate
+        self.temperature = temperature
+        self.memory_size = memory_size
+        self.relation_memory: list[list[int]] = []
+        self.candidate_forwards = 0
+        self.memory_forwards = 0
+        self.last_generation_loss = 0.0
+        self.last_candidate_loss = 0.0
+        self.last_lambda_candidate = float(lambda_candidate)
+        self._reset_loss_window()
+        self.logged_loss_fields: dict[str, float | int] = {}
+        self.trainer_max_steps: int | None = None
+
+    def _reset_loss_window(self) -> None:
+        self._window_samples = 0
+        self._window_generation_sum = 0.0
+        self._window_weighted_candidate_sum = 0.0
+        self._window_contrastive_samples = 0
+        self._window_contrastive_loss_sum = 0.0
+        self._window_lambda_sum = 0.0
+
+    def listed_log_fields(self) -> dict[str, float | int]:
+        """Window means. ``last_*`` remains the final microbatch only."""
+        samples = self._window_samples
+        contrastive = self._window_contrastive_samples
+        return {
+            "generation_loss": (
+                self._window_generation_sum / samples if samples else 0.0
+            ),
+            "candidate_loss": (
+                self._window_weighted_candidate_sum / samples if samples else 0.0
+            ),
+            "contrastive_candidate_loss": (
+                self._window_contrastive_loss_sum / contrastive if contrastive else 0.0
+            ),
+            "lambda_candidate": (
+                self._window_lambda_sum / contrastive if contrastive else 0.0
+            ),
+            "candidate_forwards": int(self.candidate_forwards),
+            "last_microbatch_generation_loss": float(self.last_generation_loss),
+            "last_microbatch_candidate_loss": float(self.last_candidate_loss),
+            "last_microbatch_lambda_candidate": float(self.last_lambda_candidate),
+        }
+
+    def log(self, logs, start_time=None):
+        fields = self.listed_log_fields()
+        self.logged_loss_fields = fields
+        merged = {**logs, **fields}
+        self._reset_loss_window()
+        return super().log(merged, start_time=start_time)
+
+    def create_optimizer_and_scheduler(self, num_training_steps: int):
+        self.trainer_max_steps = int(num_training_steps)
+        return super().create_optimizer_and_scheduler(num_training_steps)
+
+    def _batch_lambda(self, weights, n_items: int, device) -> torch.Tensor:
+        """Per-QA InfoNCE weights; missing values fall back to the global lambda."""
+        if not weights:
+            values = [self.lambda_candidate] * n_items
+        else:
+            values = [
+                self.lambda_candidate if weight is None else float(weight)
+                for weight in weights
+            ]
+            if any(value < 0 for value in values):
+                raise ValueError("lambda_candidate must be non-negative")
+            if len(values) != n_items:
+                raise ValueError(
+                    f"lambda_candidate batch has {len(values)} entries, expected {n_items}"
+                )
+        return torch.tensor(values, dtype=torch.float32, device=device)
+
+    def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        listed_batch = inputs.pop("listed_relations", None)
+        positive_batch = inputs.pop("positive_relation", None)
+        prefix_batch = inputs.pop("prefix_text", None)
+        prefix_ids_batch = inputs.pop("prefix_ids", None)
+        relation_ids_batch = inputs.pop("relation_ids", None)
+        lambda_batch = inputs.pop("lambda_candidate", None)
+        outputs = model(**inputs)
+        generation_loss = outputs.loss
+        candidate_loss = generation_loss.new_zeros(())
+        sample_losses: list[torch.Tensor] = []
+        n_items = len(prefix_ids_batch or prefix_batch or [])
+        weights = self._batch_lambda(lambda_batch, n_items, generation_loss.device)
+        if bool((weights > 0).any()):
+            candidate_loss, sample_losses = self._listed_candidate_loss(
+                model,
+                prefix_ids_batch or [],
+                relation_ids_batch or [],
+                prefixes=prefix_batch or [],
+                positives=positive_batch or [],
+                listed_lists=listed_batch or [],
+                weights=weights,
+            )
+        generation_value = float(generation_loss.detach())
+        candidate_value = float(candidate_loss.detach())
+        self.last_generation_loss = generation_value
+        self.last_candidate_loss = candidate_value
+        self.last_lambda_candidate = (
+            float(weights.mean().detach()) if n_items else float(self.lambda_candidate)
+        )
+        contrastive_losses = [loss for loss in sample_losses if loss is not None]
+        contrastive_weights = [
+            float(weights[index].detach())
+            for index, loss in enumerate(sample_losses)
+            if loss is not None
+        ]
+        self._window_samples += n_items
+        self._window_generation_sum += generation_value * n_items
+        self._window_weighted_candidate_sum += candidate_value * n_items
+        self._window_contrastive_samples += len(contrastive_losses)
+        self._window_contrastive_loss_sum += sum(float(loss.detach()) for loss in contrastive_losses)
+        self._window_lambda_sum += sum(contrastive_weights)
+        loss = generation_loss + candidate_loss
+        return (loss, outputs) if return_outputs else loss
+
+    def _listed_candidate_loss(
+        self,
+        model,
+        prefix_ids_batch,
+        relation_ids_batch,
+        *,
+        prefixes,
+        positives,
+        listed_lists,
+        weights: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, list[torch.Tensor | None]]:
+        tokenizer = self.processing_class
+        scorer = unwrap_for_scoring(model, getattr(self, "accelerator", None))
+        device = next(scorer.parameters()).device
+        rows: list[list[int]] = []
+        prefix_lens: list[int] = []
+        group_sizes: list[int] = []
+        for prefix_ids, relation_ids, prefix, positive, listed in zip(
+            prefix_ids_batch,
+            relation_ids_batch,
+            prefixes,
+            positives,
+            listed_lists,
+        ):
+            packed_ids, packed_prefix = self._candidate_token_rows(
+                tokenizer,
+                prefix_ids=prefix_ids,
+                relation_ids=relation_ids,
+                prefix=prefix,
+                positive=positive,
+                listed=listed,
+                memory=self.relation_memory,
+                memory_size=self.memory_size,
+            )
+            if packed_ids is None:
+                group_sizes.append(0)
+                continue
+            rows.extend(packed_ids)
+            prefix_lens.extend([packed_prefix] * len(packed_ids))
+            group_sizes.append(len(packed_ids))
+        if not rows:
+            return next(scorer.parameters()).new_zeros(()), [None] * len(group_sizes)
+        scores = self._score_candidate_rows(scorer, tokenizer, rows, prefix_lens, device)
+        losses = []
+        sample_losses: list[torch.Tensor | None] = []
+        offset = 0
+        for index, size in enumerate(group_sizes):
+            if size < 2:
+                offset += size
+                sample_losses.append(None)
+                continue
+            group = scores[offset : offset + size]
+            offset += size
+            sample_loss = candidate_infonce_loss(
+                group[:1],
+                group[1:].unsqueeze(0),
+                temperature=self.temperature,
+            )
+            weight = 1.0 if weights is None else weights[index]
+            sample_losses.append(sample_loss)
+            losses.append(weight * sample_loss)
+        if self.memory_size > 0:
+            fresh = []
+            for relation_ids in relation_ids_batch:
+                for row in relation_ids[1:]:
+                    if row and tuple(row) not in {tuple(item) for item in self.relation_memory + fresh}:
+                        fresh.append(list(row))
+            self.relation_memory = (self.relation_memory + fresh)[-self.memory_size:]
+        if not losses:
+            return next(scorer.parameters()).new_zeros(()), sample_losses
+        return torch.stack(losses).mean(), sample_losses
+
+    def _candidate_token_rows(
+        self,
+        tokenizer,
+        *,
+        prefix_ids,
+        relation_ids,
+        prefix,
+        positive,
+        listed,
+        memory,
+        memory_size,
+    ) -> tuple[list[list[int]] | None, int]:
+        ids = [list(row) for row in (relation_ids or []) if row]
+        pids = list(prefix_ids or [])
+        if (not pids or len(ids) < 2) and prefix and positive:
+            pids = encode_without_specials(tokenizer, prefix)
+            negatives = [rel for rel in (listed or []) if rel and rel != positive]
+            if negatives:
+                ids = [encode_without_specials(tokenizer, positive)]
+                ids.extend(encode_without_specials(tokenizer, rel) for rel in negatives)
+        if memory_size > 0 and memory:
+            seen = {tuple(row) for row in ids}
+            for row in memory:
+                if tuple(row) not in seen:
+                    ids.append(list(row))
+                    seen.add(tuple(row))
+                if len(ids) >= 2 + len(memory):
+                    break
+        if not pids or len(ids) < 2:
+            return None, 0
+        return [pids + continuation for continuation in ids], len(pids)
+
+    def _score_candidate_rows(self, scorer, tokenizer, rows, prefix_lens, device) -> torch.Tensor:
+        self.candidate_forwards += len(rows)
+        return score_candidate_rows(
+            scorer,
+            tokenizer,
+            rows,
+            prefix_lens,
+            device,
+            accelerator=getattr(self, "accelerator", None),
+        )

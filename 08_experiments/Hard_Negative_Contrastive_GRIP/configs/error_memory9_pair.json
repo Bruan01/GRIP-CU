@@ -1,0 +1,36 @@
+{
+  "pair_name": "error_memory9_vs_random9",
+  "dataset": "NELL23K",
+  "baseline": "original GRIP generation baseline",
+  "baseline_code": "13_base_method/grip-exp",
+  "eval_format": "standard processed GRIP graph record",
+  "runner": "configs/run_error_memory_wsl.sh",
+  "task_file_scope": "full_paper_task_file",
+  "listed_negative_k": 9,
+  "info_nce_lambda": 1.0,
+  "negative_sampling_mode": "error_memory",
+  "negative_bank": "error_memory_k.jsonl",
+  "error_memory_uniform_mix": 0.3333333333333333,
+  "error_memory_weight": 1.0,
+  "error_memory_violation_weight": 1.0,
+  "error_memory_temperature": 0.25,
+  "false_negative_filter_splits": [
+    "train"
+  ],
+  "prompts_unchanged": true,
+  "generation_loss_unchanged": true,
+  "candidate_learning_stage_only": true,
+  "compute_match": {
+    "stage1_adapter": "same_frozen_stage1",
+    "stage2_epochs": 10,
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 512,
+    "seed": 2026
+  },
+  "control": {
+    "negative_sampling_mode": "random",
+    "negative_bank": "deterministic_train_graph_sampler",
+    "same_task_seed_and_budget": true
+  },
+  "claim_boundary": "The primary test is whether train-only GRIP-conditioned error memory improves generation and closed-set relation selection over a compute-matched Random-9 control. It does not claim OOV correction, recurrence, or a new generic KG negative-sampling theory."
+}

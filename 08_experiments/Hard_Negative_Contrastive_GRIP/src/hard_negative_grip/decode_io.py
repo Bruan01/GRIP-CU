@@ -1,0 +1,101 @@
+"""JSONL helpers so listed-only decode can resume after a kill."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+def question_key(row: dict, fallback_index: int | None = None) -> str:
+    qid = row.get("question_id")
+    if qid:
+        return str(qid)
+    split = row.get("split", "")
+    question = row.get("question", "")
+    if split or question:
+        return f"{split}:{question}"
+    if fallback_index is None:
+        raise ValueError("row needs question_id, question, or a fallback index")
+    return f"index:{fallback_index}"
+
+
+def load_jsonl(path: Path) -> list[dict]:
+    if not path.is_file():
+        return []
+    rows: list[dict] = []
+    with path.open(encoding="utf-8") as stream:
+        for line in stream:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return rows
+
+
+def write_jsonl(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as stream:
+        for row in rows:
+            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+    tmp.replace(path)
+
+
+def append_jsonl(path: Path, row: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as stream:
+        stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+def index_by_question_id(rows: list[dict]) -> dict[str, dict]:
+    indexed: dict[str, dict] = {}
+    for index, row in enumerate(rows):
+        indexed[question_key(row, fallback_index=index)] = row
+    return indexed
+
+
+def eval_samples(record: dict) -> list[dict]:
+    """Expand one standard processed GRIP graph record into eval rows."""
+    questions = record.get("questions")
+    answers = record.get("answers")
+    if not isinstance(questions, list) or not isinstance(answers, list):
+        raise ValueError("graph record must contain list-valued questions and answers")
+    if len(questions) != len(answers):
+        raise ValueError("graph record questions and answers must have equal length")
+    graph_id = str(record.get("id") or record.get("title") or "graph")
+    split = str(record.get("split") or "test")
+    return [
+        {
+            "question_id": f"{graph_id}:{split}:{index}",
+            "source_triple_index": index,
+            "split": split,
+            "question": question,
+            "answer": answer,
+        }
+        for index, (question, answer) in enumerate(zip(questions, answers))
+    ]
+
+
+def merge_resumed_rows(
+    samples: list[dict], existing_rows: list[dict]
+) -> tuple[list[dict], list[dict]]:
+    """Keep finished rows in eval order and return samples still missing."""
+    done = index_by_question_id(existing_rows)
+    kept: list[dict] = []
+    missing: list[dict] = []
+    for index, sample in enumerate(samples):
+        key = question_key(sample, fallback_index=index)
+        if key in done:
+            kept.append(done[key])
+        else:
+            missing.append(sample)
+    return kept, missing
+
+
+def predictions_complete(path: Path, n_eval: int) -> bool:
+    if n_eval <= 0:
+        return False
+    return len(index_by_question_id(load_jsonl(path))) >= n_eval
