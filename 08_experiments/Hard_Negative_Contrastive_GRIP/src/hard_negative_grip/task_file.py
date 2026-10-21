@@ -23,9 +23,9 @@ RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
 YES_NO = {"yes", "no"}
 LISTED_NEGATIVE_K = 9  # official 10-way = 1 gold + 9 distractors; independent of |A|
 LISTED_NEGATIVE_SOURCES = (
+    "structure_counterfactual",
     "train_graph",
     "error_memory",
-    "structure_counterfactual",
 )
 CONCEPT_PREFIX = "concept:"
 

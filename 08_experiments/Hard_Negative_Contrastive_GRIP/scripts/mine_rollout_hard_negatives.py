@@ -32,7 +32,7 @@ GRIP_EXP = Path(
 sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
-from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE  # noqa: E402
+from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE, TORCH_DTYPE_NAME  # noqa: E402
 from hard_negative_grip.official_lists import load_train_relation_order  # noqa: E402
 from hard_negative_grip.task_file import (  # noqa: E402
     assistant_answer_prefix,
@@ -64,6 +64,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", type=Path, required=True)
+    parser.add_argument(
+        "--dtype",
+        choices=("bfloat16", "float16", "float32"),
+        default=os.environ.get("GRIP_TORCH_DTYPE", TORCH_DTYPE_NAME),
+        help="model dtype; use float16 on Volta/V100",
+    )
     parser.add_argument("--total_k", type=int, default=9)
     parser.add_argument("--candidate_batch_size", type=int, default=1)
     parser.add_argument("--max_new_tokens", type=int, default=32)
@@ -92,7 +98,7 @@ def load_b1(args: argparse.Namespace):
         model_source="local",
         model_cache_dir=str(args.model_cache_dir),
         local_files_only=True,
-        dtype=TORCH_DTYPE["bfloat16"],
+        dtype=TORCH_DTYPE[args.dtype],
         peft=False,
         device_map=None,
     )

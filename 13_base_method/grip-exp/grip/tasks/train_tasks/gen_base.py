@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import random
 from pathlib import Path
 from abc import abstractmethod, ABC
@@ -127,6 +128,10 @@ class GenGraphTaskBase(ABC):
                             "response": response,
                         }, ensure_ascii=False) + "\n")
                     stream.flush()
+                    # Make every completed batch durable.  A long 7B task
+                    # generation run must be restartable after power loss or
+                    # a killed process, not only after a clean Python exit.
+                    os.fsync(stream.fileno())
                     progress.update(len(indices))
             finally:
                 progress.close()

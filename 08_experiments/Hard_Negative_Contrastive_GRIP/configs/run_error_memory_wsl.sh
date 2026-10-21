@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
-# GRIP-conditioned error-memory experiment runner for WSL.
+# Listed-negative experiment runner for WSL.
+#
+# The primary route is Structure-Counterfactual-9 + InfoNCE. The historical
+# ErrorMemory-9 route remains available by setting NEGATIVE_SOURCE=error_memory
+# explicitly and is treated as an ablation.
 #
 # This script is intentionally staged. The default STEP=preflight performs
 # read-only checks only. GPU work is explicit:
-#   STEP=rollout  -> frozen-B1 free-generation errors on train QA
+#   STEP=rollout  -> legacy ErrorMemory-only B1 free-generation errors on train QA
 #   STEP=score    -> frozen-B1 candidate scores with train-only filtering
-#   STEP=freeze   -> CPU-only error-memory bank construction
+#   STEP=freeze   -> CPU-only selected negative-bank construction
 #   STEP=wire     -> CPU-only full-task manifest attachment check
 #   STEP=train    -> Stage-2 GRIP + InfoNCE training, only with ALLOW_TRAIN=1
 #
 # Example (after the user has approved the corresponding expensive step):
-#   STEP=rollout bash configs/run_error_memory_wsl.sh
-#   STEP=score bash configs/run_error_memory_wsl.sh
-#   STEP=freeze bash configs/run_error_memory_wsl.sh
-#   STEP=wire bash configs/run_error_memory_wsl.sh
+#   STEP=score bash configs/run_structure_counterfactual_wsl.sh
+#   STEP=freeze bash configs/run_structure_counterfactual_wsl.sh
+#   STEP=wire bash configs/run_structure_counterfactual_wsl.sh
 #   ALLOW_TRAIN=1 STEP=train SWANLAB_PROJECT=grip-negative-sampling \
-#     bash configs/run_error_memory_wsl.sh
+#     bash configs/run_structure_counterfactual_wsl.sh
 set -euo pipefail
 
 HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -27,7 +30,7 @@ PYTHON="${PYTHON:-/home/kieran/miniconda3/envs/guardenv/bin/python}"
 STEP="${STEP:-preflight}"
 SEED="${SEED:-2026}"
 DATASET="${DATASET:-nell23k}"
-NEGATIVE_SOURCE="${NEGATIVE_SOURCE:-error_memory}"
+NEGATIVE_SOURCE="${NEGATIVE_SOURCE:-structure_counterfactual}"
 DATA_ROOT="${DATA_ROOT:-$REPO_ROOT/04_benchmark/data/$DATASET}"
 MODEL_NAME="${MODEL_NAME:-qwen-7b}"
 if [[ -d /mnt/e/GRIP-CU/model_cache ]]; then
@@ -36,6 +39,7 @@ else
   DEFAULT_MODEL_CACHE_DIR="$CODE_DIR/model_cache"
 fi
 MODEL_CACHE_DIR="${MODEL_CACHE_DIR:-$DEFAULT_MODEL_CACHE_DIR}"
+TORCH_DTYPE="${TORCH_DTYPE:-${GRIP_TORCH_DTYPE:-bfloat16}}"
 INPUT_FILE="${INPUT_FILE:-$DATA_ROOT/tasks/grip_${DATASET}_tasks.json}"
 EVAL_FILE="${EVAL_FILE:-$DATA_ROOT/processed/processed_test.json}"
 RAW_DIR="${RAW_DIR:-$DATA_ROOT/raw}"
@@ -59,7 +63,7 @@ esac
 S1_ADAPTER="${S1_ADAPTER:-$DEFAULT_S1_ADAPTER}"
 B1_ADAPTER="${B1_ADAPTER:-$DEFAULT_B1_ADAPTER}"
 RELATION_TEXT_FILE="${RELATION_TEXT_FILE:-}"
-ARTIFACT_ROOT="${ARTIFACT_ROOT:-$HNG/results/runs/error_memory_artifacts}"
+ARTIFACT_ROOT="${ARTIFACT_ROOT:-$HNG/results/runs/structure_counterfactual_artifacts}"
 SCORES_DIR="${SCORES_DIR:-$ARTIFACT_ROOT/b1_train_scores}"
 ROLLOUT_MANIFEST="${ROLLOUT_MANIFEST:-$ARTIFACT_ROOT/b1_train_rollout.jsonl}"
 if [[ "$NEGATIVE_SOURCE" == "structure_counterfactual" ]]; then
@@ -73,7 +77,7 @@ SAMPLER_DIR="${SAMPLER_DIR:-$DEFAULT_SAMPLER_DIR}"
 MANIFEST="${MANIFEST:-$SAMPLER_DIR/$DEFAULT_MANIFEST_NAME}"
 COUNTERFACTUAL_METADATA="${COUNTERFACTUAL_METADATA:-$SAMPLER_DIR/metadata.json}"
 EXPECTED_LISTED="${EXPECTED_LISTED:-$DEFAULT_EXPECTED_LISTED}"
-RUN_ID="${RUN_ID:-error_memory_k9_full_$(date +%Y%m%d)}"
+RUN_ID="${RUN_ID:-structure_counterfactual_k9_full_$(date +%Y%m%d)}"
 RUN_DIR="${RUN_DIR:-$HNG/results/runs/$RUN_ID}"
 SWANLAB_PROJECT="${SWANLAB_PROJECT:-}"
 SWANLAB_EXPERIMENT_NAME="${SWANLAB_EXPERIMENT_NAME:-$RUN_ID}"
@@ -84,6 +88,11 @@ if [[ "$NEGATIVE_SOURCE" != "error_memory" && "$NEGATIVE_SOURCE" != "structure_c
   echo "error: NEGATIVE_SOURCE must be error_memory or structure_counterfactual" >&2
   exit 1
 fi
+
+case "$TORCH_DTYPE" in
+  bfloat16|float16|float32) ;;
+  *) echo "error: unsupported TORCH_DTYPE=$TORCH_DTYPE (choose bfloat16, float16, or float32)" >&2; exit 1 ;;
+esac
 
 if [[ "$STEP" != "preflight" && "$STEP" != "rollout" && "$STEP" != "score" && \
       "$STEP" != "freeze" && "$STEP" != "wire" && "$STEP" != "train" ]]; then
@@ -97,6 +106,7 @@ if [[ ! -x "$PYTHON" ]]; then
 fi
 export PYTHONPATH="$CODE_DIR:$HNG/src:$HNG/scripts${PYTHONPATH:+:$PYTHONPATH}"
 export GRIP_BASELINE_DIR="$BASELINE_DIR"
+export GRIP_TORCH_DTYPE="$TORCH_DTYPE"
 export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 RELATION_TEXT_ARGS=()
@@ -215,10 +225,19 @@ case "$STEP" in
     check_common_assets
     echo "[preflight] read-only algorithm preflight passed"
     echo "[preflight] code=$HNG"
-    echo "[preflight] next explicit steps: rollout -> score -> freeze -> wire -> train"
+    if [[ "$NEGATIVE_SOURCE" == "structure_counterfactual" ]]; then
+      echo "[preflight] mainline steps: score -> freeze -> wire -> train"
+      echo "[preflight] rollout is not required for Structure-Counterfactual-9"
+    else
+      echo "[preflight] ablation steps: rollout -> score -> freeze -> wire -> train"
+    fi
     echo "[preflight] no GPU work was started"
     ;;
   rollout)
+    if [[ "$NEGATIVE_SOURCE" == "structure_counterfactual" ]]; then
+      echo "error: rollout is not part of the Structure-Counterfactual-9 mainline; use STEP=score" >&2
+      exit 2
+    fi
     check_common_assets
     require_adapter_dir "B1" "$B1_ADAPTER"
     check_cuda_and_model
@@ -232,6 +251,7 @@ case "$STEP" in
       --output "$ROLLOUT_MANIFEST" \
       --model_name "$MODEL_NAME" \
       --model_cache_dir "$MODEL_CACHE_DIR" \
+      --dtype "$TORCH_DTYPE" \
       --total_k 9 \
       --max_new_tokens "${MAX_NEW_TOKENS:-32}" \
       --seed "$SEED" \
@@ -253,6 +273,7 @@ case "$STEP" in
       --output_dir "$SCORES_DIR" \
       --model_name "$MODEL_NAME" \
       --model_cache_dir "$MODEL_CACHE_DIR" \
+      --dtype "$TORCH_DTYPE" \
       --split train \
       --filter_splits train \
       --candidate_batch_size "${CANDIDATE_BATCH_SIZE:-8}" \
@@ -398,6 +419,7 @@ PY
       --s1_adapter "$S1_ADAPTER" \
       --model_name "$MODEL_NAME" \
       --model_cache_dir "$MODEL_CACHE_DIR" \
+      --dtype "$TORCH_DTYPE" \
       --lora_r 4 \
       --lora_alpha 8 \
       --target_modules down_proj up_proj gate_proj \

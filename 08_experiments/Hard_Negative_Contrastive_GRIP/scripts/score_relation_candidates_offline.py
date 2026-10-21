@@ -32,7 +32,7 @@ GRIP_EXP = Path(
 sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
-from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE  # noqa: E402
+from constants import HF_DECODER_ONLY_LLMS, TORCH_DTYPE, TORCH_DTYPE_NAME  # noqa: E402
 from hard_negative_grip.official_lists import load_train_relation_order  # noqa: E402
 from hard_negative_grip.offline_mining import (  # noqa: E402
     SCORING_VERSION,
@@ -77,6 +77,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output_dir", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", type=Path, required=True)
+    parser.add_argument(
+        "--dtype",
+        choices=("bfloat16", "float16", "float32"),
+        default=os.environ.get("GRIP_TORCH_DTYPE", TORCH_DTYPE_NAME),
+        help="model dtype; use float16 on Volta/V100",
+    )
     parser.add_argument(
         "--limit",
         type=int,
@@ -125,7 +131,7 @@ def load_b1(args: argparse.Namespace):
         model_source="local",
         model_cache_dir=str(args.model_cache_dir),
         local_files_only=True,
-        dtype=TORCH_DTYPE["bfloat16"],
+        dtype=TORCH_DTYPE[args.dtype],
         peft=False,
         device_map=None,
     )
@@ -340,7 +346,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     checkpoint = str(args.b1_adapter)
-    dtype_name = str(TORCH_DTYPE["bfloat16"]).replace("torch.", "")
+    dtype_name = args.dtype
     model, tokenizer = load_b1(args)
     tokenizer_name = type(tokenizer).__name__
 

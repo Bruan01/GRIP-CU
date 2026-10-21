@@ -1,0 +1,41 @@
+{
+  "experiment_id": "HNG-STRUCTURE-CF9-MAIN-20261020",
+  "role": "mainline_method",
+  "datasets": ["nell23k", "fb15k237_2"],
+  "pending_extension_datasets": ["wn18rr", "clegr_facts", "clegr_reasoning"],
+  "data_root": "04_benchmark/data/<dataset>",
+  "task_file": "<data_root>/tasks/grip_<dataset>_tasks.json",
+  "eval_file": "<data_root>/processed/processed_test.json",
+  "raw_dir": "<data_root>/raw",
+  "baseline": "original GRIP generation baseline",
+  "baseline_code": "13_base_method/grip-exp",
+  "runner": "configs/run_structure_counterfactual_wsl.sh",
+  "model_name": "qwen-7b",
+  "task_file_scope": "full_paper_task_file",
+  "listed_negative_source": "structure_counterfactual",
+  "negative_sampling_mode": "structure_counterfactual",
+  "negative_bank": "counterfactual_bank.jsonl",
+  "listed_negative_k": 9,
+  "uniform_mix": 0.3333333333333333,
+  "structure_weight": 1.0,
+  "violation_weight": 1.0,
+  "sampling_temperature": 0.25,
+  "lambda_candidate": 1.0,
+  "false_negative_filter_splits": ["train"],
+  "prompts_unchanged": true,
+  "generation_loss_unchanged": true,
+  "candidate_learning_stage_only": true,
+  "compute_match": {
+    "stage1_adapter": "same_frozen_stage1",
+    "stage2_epochs": 10,
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 512,
+    "seed": 2026
+  },
+  "controls": {
+    "baseline": "original GRIP/B1 generation-only",
+    "random9": "Random-9 + InfoNCE with the same task, budget, and train-only filter",
+    "error_memory9": "optional legacy ErrorMemory-9 + InfoNCE ablation"
+  },
+  "claim_boundary": "The main claim tests whether train-only graph-structure counterfactual negatives plus frozen-B1 score violation improve candidate relation learning over compute-matched Random-9, without changing prompts or the generation objective. It does not claim OOV correction, recurrence, or a generic KG negative-sampling theory."
+}

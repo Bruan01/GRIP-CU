@@ -1,3 +1,5 @@
+import os
+
 import torch
 
 HF_DECODER_ONLY_LLMS = {
@@ -34,6 +36,15 @@ TORCH_DTYPE = {
     "long": torch.long,
     "bool": torch.bool,
 }
+
+# Keep bfloat16 as the historical default, while allowing a run to select
+# FP16 explicitly on Volta/V100 hardware.
+TORCH_DTYPE_NAME = os.environ.get("GRIP_TORCH_DTYPE", "bfloat16").strip().lower()
+if TORCH_DTYPE_NAME not in TORCH_DTYPE:
+    raise ValueError(
+        f"Unsupported GRIP_TORCH_DTYPE={TORCH_DTYPE_NAME!r}; "
+        f"choose one of {sorted(TORCH_DTYPE)}"
+    )
 
 NODE_TAG = "node"
 EDGE_TAG = "rel"

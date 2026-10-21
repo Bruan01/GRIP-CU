@@ -1,4 +1,6 @@
 {
+  "role": "legacy_ablation",
+  "mainline": false,
   "pair_name": "error_memory9_vs_random9",
   "datasets": ["nell23k", "fb15k237_2"],
   "data_root": "04_benchmark/data/<dataset>",
@@ -34,5 +36,5 @@
     "negative_bank": "deterministic_train_graph_sampler",
     "same_task_seed_and_budget": true
   },
-  "claim_boundary": "The primary test is whether train-only GRIP-conditioned error memory improves generation and closed-set relation selection over a compute-matched Random-9 control. It does not claim OOV correction, recurrence, or a new generic KG negative-sampling theory."
+  "claim_boundary": "Legacy ablation only: test whether train-only GRIP-conditioned error memory adds signal beyond a compute-matched Random-9 control. It is not the current mainline and does not claim OOV correction, recurrence, or a new generic KG negative-sampling theory."
 }

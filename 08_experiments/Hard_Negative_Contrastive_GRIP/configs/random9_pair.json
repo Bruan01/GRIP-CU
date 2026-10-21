@@ -1,5 +1,6 @@
 {
-  "experiment_id": "HNG-NELL-ERROR-MEMORY9-20261019",
+  "experiment_id": "HNG-STRUCTURE-CF9-RANDOM-CONTROL-20261020",
+  "role": "mainline_control",
   "datasets": ["nell23k", "fb15k237_2"],
   "baseline": "original GRIP generation baseline",
   "baseline_code": "13_base_method/grip-exp",

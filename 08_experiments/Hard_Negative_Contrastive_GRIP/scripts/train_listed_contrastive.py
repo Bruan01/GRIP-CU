@@ -1,9 +1,9 @@
-"""Train original GRIP with candidate-level InfoNCE.
+"""Train original GRIP with Structure-Counterfactual-9 candidate InfoNCE.
 
-The ``train_graph`` arm is the matched Random-9 control. The ``error_memory``
-arm reads the frozen train-only ErrorMemory-9 bank produced by
-``scripts/mine_error_memory_negatives.py``. Evaluation uses a standard GRIP
-processed graph record supplied by ``--eval_file``.
+The mainline reads the frozen train-only structure-counterfactual bank. The
+``train_graph`` arm is the matched Random-9 control, while ``error_memory`` is
+retained as a legacy ablation. Evaluation uses a standard GRIP processed graph
+record supplied by ``--eval_file``.
 """
 
 from __future__ import annotations
@@ -32,7 +32,12 @@ GRIP_EXP = Path(
 sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 
-from constants import HF_DECODER_ONLY_LLMS, SYSTEM_PROMPT, TORCH_DTYPE  # noqa: E402
+from constants import (  # noqa: E402
+    HF_DECODER_ONLY_LLMS,
+    SYSTEM_PROMPT,
+    TORCH_DTYPE,
+    TORCH_DTYPE_NAME,
+)
 from evaluation.utils import normalize_answer  # noqa: E402
 from grip.tasks.eval_tasks.grip_eval import GRIPEvalDataset  # noqa: E402
 from grip.tasks.train_tasks.gen_context import GenGraphContextTask  # noqa: E402
@@ -59,7 +64,7 @@ from hard_negative_grip.run_protection import (  # noqa: E402
 )
 from hard_negative_grip.swanlab_tracking import SwanLabTracker  # noqa: E402
 from hard_negative_grip.training_budget import (  # noqa: E402
-    assert_error_memory_training_budget,
+    assert_listed_training_budget,
 )
 from hard_negative_grip.task_file import (  # noqa: E402
     LISTED_NEGATIVE_K,
@@ -114,6 +119,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--s1_adapter", type=Path, default=None)
     parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", default="model_cache")
+    parser.add_argument(
+        "--dtype",
+        choices=("bfloat16", "float16", "float32"),
+        default=os.environ.get("GRIP_TORCH_DTYPE", TORCH_DTYPE_NAME),
+        help="model/autocast dtype; use float16 on Volta/V100",
+    )
     parser.add_argument("--lora_r", type=int, default=4)
     parser.add_argument("--lora_alpha", type=int, default=8)
     parser.add_argument(
@@ -354,7 +365,8 @@ def training_arguments(
         logging_steps=1,
         report_to="none",
         include_num_input_tokens_seen="all",
-        bf16=True,
+        bf16=args.dtype == "bfloat16",
+        fp16=args.dtype == "float16",
         tf32=False,
         seed=args.seed,
         remove_unused_columns=False,
@@ -388,7 +400,7 @@ def load_base_lora(args: argparse.Namespace):
         model_source="local",
         model_cache_dir=args.model_cache_dir,
         local_files_only=True,
-        dtype=TORCH_DTYPE["bfloat16"],
+        dtype=TORCH_DTYPE[args.dtype],
         peft=False,
     )
     model = get_lora_model(
@@ -411,7 +423,7 @@ def load_adapter(args: argparse.Namespace, adapter_dir: Path, *, trainable: bool
         model_source="local",
         model_cache_dir=args.model_cache_dir,
         local_files_only=True,
-        dtype=TORCH_DTYPE["bfloat16"],
+        dtype=TORCH_DTYPE[args.dtype],
         peft=False,
         device_map=None,
     )
@@ -795,6 +807,7 @@ def write_comparison(
     s1_adapter: Path,
     lambda_candidate: float,
     model_name: str,
+    listed_negative_source: str,
 ) -> dict:
     b1_path = output_dir / "b1" / "summary.json"
     listed_path = output_dir / "listed" / "summary.json"
@@ -808,22 +821,30 @@ def write_comparison(
     b1_source = None
     if frozen_path.is_file():
         b1_source = json.loads(frozen_path.read_text(encoding="utf-8"))
+    method_label = {
+        "structure_counterfactual": "Structure-Counterfactual-9",
+        "error_memory": "legacy ErrorMemory-9 ablation",
+        "train_graph": "Random-9 control",
+    }.get(listed_negative_source, listed_negative_source)
     note = (
-        "A method result requires listed EM > B1 on generation. "
-        "A listed win here is still a thin GRIP extension, not a new negative-sampling theory."
+        f"{method_label} is compared against the frozen generation-only B1 arm. "
+        "The mainline claim requires candidate and generation metrics to be reported "
+        "with the train-only bank provenance."
     )
     if b1_source:
         note = (
             "Listed is this run. B1 is the frozen generation-only adapter "
             f"from {b1_source.get('source', 'another run')} "
             "(lambda=0 never used InfoNCE negatives). "
-            "A method result requires listed EM > B1 on generation."
+            f"The selected arm is {method_label}; candidate and generation metrics "
+            "must be interpreted with its frozen-bank provenance."
         )
     comparison = {
         "input_file": str(input_file),
         "s1_adapter": str(s1_adapter),
         "model_name": model_name,
         "lambda_candidate": lambda_candidate,
+        "listed_negative_source": listed_negative_source,
         "b1": b1,
         "listed": listed,
         "listed_minus_b1_em": listed["all"]["em"] - b1["all"]["em"],
@@ -904,6 +925,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "output_dir": str(output_dir),
         "s1_adapter": str(args.s1_adapter) if args.s1_adapter else None,
         "model_name": args.model_name,
+        "dtype": args.dtype,
         "lora_r": args.lora_r,
         "lora_alpha": args.lora_alpha,
         "target_modules": args.target_modules,
@@ -926,7 +948,8 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "swanlab_mode": getattr(args, "swanlab_mode", "online"),
         "s1_gradient_checkpointing": bool(args.s1_gradient_checkpointing),
         "training_arguments": {
-            "bf16": True,
+            "bf16": args.dtype == "bfloat16",
+            "fp16": args.dtype == "float16",
             "tf32": False,
             "lr_scheduler_type": "linear",
             "logging_strategy": "steps",
@@ -1134,6 +1157,7 @@ def _run_main(args: argparse.Namespace) -> None:
             s1_adapter=s1_adapter,
             lambda_candidate=args.lambda_candidate,
             model_name=args.model_name,
+            listed_negative_source=args.listed_negative_source,
         )
         return
 
@@ -1151,7 +1175,7 @@ def _run_main(args: argparse.Namespace) -> None:
             and not args.skip_train
             and (args.no_resume or not adapter_is_complete(listed_adapter))
         )
-        budget = assert_error_memory_training_budget(
+        budget = assert_listed_training_budget(
             len(qa_texts),
             listed_negative_source=args.listed_negative_source,
             skip_train=not will_train_listed,
@@ -1257,6 +1281,7 @@ def _run_main(args: argparse.Namespace) -> None:
             s1_adapter=s1_adapter,
             lambda_candidate=args.lambda_candidate,
             model_name=args.model_name,
+            listed_negative_source=args.listed_negative_source,
         )
     if tracker is not None:
         tracker.complete(stage=args.stage, summaries=summaries)

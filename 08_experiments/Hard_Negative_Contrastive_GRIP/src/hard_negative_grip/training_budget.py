@@ -66,6 +66,30 @@ def refuse_underfit_listed_budget(
     return budget
 
 
+def assert_listed_training_budget(
+    n_samples: int,
+    *,
+    listed_negative_source: str,
+    skip_train: bool = False,
+    allow_underfit: bool = False,
+    batch: int = DEFAULT_BATCH,
+    requested_accum: int = DEFAULT_ACCUM,
+    epochs: float = DEFAULT_EPOCHS,
+) -> dict | None:
+    """Require a full task budget for the selected listed-negative method."""
+    if skip_train or allow_underfit or listed_negative_source not in {
+        "error_memory",
+        "structure_counterfactual",
+    }:
+        return None
+    return refuse_underfit_listed_budget(
+        n_samples,
+        batch=batch,
+        requested_accum=requested_accum,
+        epochs=epochs,
+    )
+
+
 def assert_error_memory_training_budget(
     n_samples: int,
     *,
@@ -76,14 +100,12 @@ def assert_error_memory_training_budget(
     requested_accum: int = DEFAULT_ACCUM,
     epochs: float = DEFAULT_EPOCHS,
 ) -> dict | None:
-    """Require a full task budget for frozen candidate-bank training arms."""
-    if skip_train or allow_underfit or listed_negative_source not in {
-        "error_memory",
-        "structure_counterfactual",
-    }:
-        return None
-    return refuse_underfit_listed_budget(
+    """Backward-compatible alias for the pre-mainline budget guard."""
+    return assert_listed_training_budget(
         n_samples,
+        listed_negative_source=listed_negative_source,
+        skip_train=skip_train,
+        allow_underfit=allow_underfit,
         batch=batch,
         requested_accum=requested_accum,
         epochs=epochs,

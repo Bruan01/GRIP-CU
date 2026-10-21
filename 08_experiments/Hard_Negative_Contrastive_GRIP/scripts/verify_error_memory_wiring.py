@@ -1,4 +1,8 @@
-"""CPU-only wiring gate for the frozen error-memory bank."""
+"""CPU-only wiring gate for a frozen listed-negative bank.
+
+The historical filename is retained for compatibility; pass
+``--negative_source structure_counterfactual`` for the mainline bank.
+"""
 
 from __future__ import annotations
 
