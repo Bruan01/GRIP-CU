@@ -77,6 +77,8 @@ def parse_matchable_relation_qa(
     index: int,
     text: str,
     alias_index: dict[str, str],
+    *,
+    entity_pairs: set[tuple[str, str]] | dict[tuple[str, str], tuple[str, str]] | None = None,
 ) -> dict | None:
     """Return one Stage-2 relation QA item if its gold maps onto the train vocabulary."""
     gold = assistant_gold(text)
@@ -85,7 +87,7 @@ def parse_matchable_relation_qa(
     matched = match_train_relation(gold, alias_index)
     if matched is None:
         return None
-    pair = question_entity_pair(text)
+    pair = question_entity_pair(text, entity_pairs=entity_pairs)
     return {
         "qa_id": f"task_qa:{index}",
         "text": text,
@@ -101,10 +103,14 @@ def parse_matchable_relation_qa(
 def iter_matchable_relation_qa(
     qa_texts: list[str],
     alias_index: dict[str, str],
+    *,
+    entity_pairs: set[tuple[str, str]] | dict[tuple[str, str], tuple[str, str]] | None = None,
 ) -> Iterable[dict]:
     """Yield Stage-2 relation QA items whose gold maps onto the train vocabulary."""
     for index, text in enumerate(qa_texts):
-        item = parse_matchable_relation_qa(index, str(text), alias_index)
+        item = parse_matchable_relation_qa(
+            index, str(text), alias_index, entity_pairs=entity_pairs
+        )
         if item is not None:
             yield item
 

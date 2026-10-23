@@ -90,7 +90,17 @@ def load_train_relation_order(
     """
     relations = train_relation_insertion_order(load_triples(raw_dir / "train.txt"))
     if relation_text_file is None:
-        return relations
+        # WN18RR stores relation IDs as ``_relation_name`` while the released
+        # GRIP task files expose the human-readable label ``relation name``.
+        # Keep NELL/other raw IDs unchanged, but canonicalize this explicit
+        # WN-style encoding so task answers and candidate continuations share
+        # one vocabulary.
+        return [
+            " ".join(value.split("_")[1:]).strip()
+            if value.startswith("_") and "_" in value
+            else value
+            for value in relations
+        ]
     # The mapping must cover every train relation before we build the frozen
     # candidate vocabulary; silently dropping an ID would change the protocol.
     mapping = load_relation_text_mapping(relation_text_file)

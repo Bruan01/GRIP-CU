@@ -392,6 +392,7 @@ def known_pair_relations(
     *,
     splits: tuple[str, ...] = VALID_FILTER_SPLITS,
     relation_text_file: Path | None = None,
+    entity_text_file: Path | None = None,
 ) -> dict[tuple[str, str], set[str]]:
     """Index triples from selected dataset splits for false-negative filtering."""
     unknown = set(splits).difference(VALID_FILTER_SPLITS)
@@ -401,6 +402,13 @@ def known_pair_relations(
             f"expected a subset of {VALID_FILTER_SPLITS}"
         )
     relation_mapping = load_relation_text_mapping(relation_text_file)
+    entity_mapping: dict[str, str] = {}
+    if entity_text_file is not None:
+        for line in entity_text_file.read_text(encoding="utf-8").splitlines():
+            fields = line.split("\t", 1)
+            if len(fields) != 2:
+                continue
+            entity_mapping[fields[0]] = fields[1]
     known: dict[tuple[str, str], set[str]] = {}
     for split in splits:
         filename = f"{split}.txt"
@@ -412,21 +420,71 @@ def known_pair_relations(
             if len(fields) != 3:
                 continue
             source, relation, target = fields
+            source = entity_mapping.get(source, source)
+            target = entity_mapping.get(target, target)
             relation = relation_mapping.get(relation, relation)
+            if relation.startswith("_") and "_" in relation:
+                relation = " ".join(relation.split("_")[1:]).strip()
             known.setdefault((source, target), set()).add(relation)
     return known
 
 
-def question_entity_pair(text: str) -> tuple[str, str] | None:
-    """Extract the ordered entity pair from a generated relation question."""
+def question_entity_pair(
+    text: str,
+    *,
+    entity_pairs: set[tuple[str, str]] | dict[tuple[str, str], tuple[str, str]] | None = None,
+) -> tuple[str, str] | None:
+    """Extract an ordered pair from a generated relation question.
+
+    The old ``\S+`` parser truncated WN18RR entity descriptions at the first
+    space and consequently disabled train-known-fact filtering.  When the
+    train graph is available, try every ``and`` boundary and retain the pair
+    that is an actual train edge.  The fallback keeps the original parser for
+    NELL/FB task formats where entities are single tokens or are otherwise
+    already unambiguous.
+    """
+    # The WN18RR entity descriptions themselves contain quoted examples with
+    # question marks.  Prefer the task template's ``Response`` delimiter and
+    # only use a terminal question mark for compact non-chat strings.
     match = re.search(
-        r"relation between (?:word node )?(\S+) and (?:word node )?([^?]+)\?",
+        r"relation between\s+(.*?)\?\s*Response\s+in\s+the\s+following\s+format",
         text,
-        flags=re.I,
+        flags=re.I | re.S,
     )
+    if match is None:
+        match = re.search(
+            r"relation between\s+(.*?)\?\s*$",
+            text,
+            flags=re.I | re.S,
+        )
     if not match:
         return None
-    return match.group(1).strip(), match.group(2).strip()
+    body = re.sub(r"^word node\s+", "", match.group(1).strip(), flags=re.I)
+    body = re.sub(r"\s+word node\s+", " ", body, flags=re.I)
+    body = body.rstrip().rstrip("?").strip()
+    if entity_pairs:
+        if isinstance(entity_pairs, dict):
+            lower_pairs = entity_pairs
+        else:
+            lower_pairs = {
+                (str(left).casefold(), str(right).casefold()): (str(left), str(right))
+                for left, right in entity_pairs
+            }
+        for boundary in re.finditer(r"\s+and\s+", body, flags=re.I):
+            left = body[: boundary.start()].strip()
+            right = body[boundary.end() :].strip()
+            candidate = lower_pairs.get((left.casefold(), right.casefold()))
+            if candidate is not None:
+                return candidate
+        # A supplied train-pair index is authoritative: returning an
+        # unverified textual split would silently disable the known-fact
+        # filter downstream.
+        return None
+    # Conservative fallback for the compact relation-question formats.
+    pieces = re.split(r"\s+and\s+", body, maxsplit=1, flags=re.I)
+    if len(pieces) == 2 and pieces[0].strip() and pieces[1].strip():
+        return pieces[0].strip(), pieces[1].strip()
+    return None
 
 
 def normalize_manifest_row(

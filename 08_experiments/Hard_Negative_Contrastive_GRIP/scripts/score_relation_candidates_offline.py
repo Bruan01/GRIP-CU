@@ -73,6 +73,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
     )
+    parser.add_argument(
+        "--entity_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw entity-id to text mapping, required to recover WN18RR pairs.",
+    )
     parser.add_argument("--b1_adapter", type=Path, required=True)
     parser.add_argument("--output_dir", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
@@ -167,7 +173,12 @@ def peak_gpu_bytes() -> int | None:
     return int(torch.cuda.max_memory_allocated())
 
 
-def load_matchable(args: argparse.Namespace, alias_index: dict[str, str]) -> list[dict]:
+def load_matchable(
+    args: argparse.Namespace,
+    alias_index: dict[str, str],
+    *,
+    entity_pairs: set[tuple[str, str]] | None = None,
+) -> list[dict]:
     payload = load_json_payload(args.task_file)
     if not isinstance(payload, dict) or "qa_samples" not in payload:
         raise ValueError(f"{args.task_file} is not a GRIP task file")
@@ -177,7 +188,9 @@ def load_matchable(args: argparse.Namespace, alias_index: dict[str, str]) -> lis
     ) or [f"task_qa:{index}" for index in range(len(payload["qa_samples"]))]
     items = []
     for index, text in enumerate(payload["qa_samples"]):
-        item = parse_matchable_relation_qa(index, str(text), alias_index)
+        item = parse_matchable_relation_qa(
+            index, str(text), alias_index, entity_pairs=entity_pairs
+        )
         if item is not None:
             item["qa_id"] = question_ids[index]
             items.append(item)
@@ -326,8 +339,13 @@ def main() -> None:
         args.raw_dir,
         splits=tuple(args.filter_splits),
         relation_text_file=args.relation_text_file,
+        entity_text_file=args.entity_text_file,
     )
-    items = load_matchable(args, alias_index)
+    entity_pair_index = {
+        (str(left).casefold(), str(right).casefold()): (str(left), str(right))
+        for left, right in known_relations
+    }
+    items = load_matchable(args, alias_index, entity_pairs=entity_pair_index)
     items = shard_items(items, num_shards=args.num_shards, shard_id=args.shard_id)
     if args.compare_reference is not None:
         reference_rows = load_jsonl(args.compare_reference)

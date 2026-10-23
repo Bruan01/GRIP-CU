@@ -61,6 +61,12 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
     )
+    parser.add_argument(
+        "--entity_text_file",
+        type=Path,
+        default=None,
+        help="Optional raw entity-id to text mapping, required to recover WN18RR pairs.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", type=Path, required=True)
@@ -177,7 +183,12 @@ def main() -> None:
         args.raw_dir,
         splits=("train",),
         relation_text_file=args.relation_text_file,
+        entity_text_file=args.entity_text_file,
     )
+    entity_pair_index = {
+        (str(left).casefold(), str(right).casefold()): (str(left), str(right))
+        for left, right in known_relations
+    }
     model, tokenizer = load_b1(args)
     rng = random.Random(args.seed)
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -209,7 +220,7 @@ def main() -> None:
             raw, parsed = generate_one(
                 model, tokenizer, assistant_answer_prefix(text), args.max_new_tokens
             )
-            pair = question_entity_pair(text)
+            pair = question_entity_pair(text, entity_pairs=entity_pair_index)
             excluded = known_relations.get(pair, set()) if pair else set()
             predicted = canonical_candidate(parsed, relation_alias_index=alias_index)
             hard: list[str] = []
@@ -226,7 +237,7 @@ def main() -> None:
                 if predicted not in relation_order:
                     stats["rollout_oov"] += 1
 
-            pair = question_entity_pair(text)
+            pair = question_entity_pair(text, entity_pairs=entity_pair_index)
             excluded = known_relations.get(pair, set()) if pair else set()
             pool = [
                 rel
