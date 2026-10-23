@@ -471,10 +471,14 @@ case "$STEP" in
       source "$HNG/configs/tmux_guard.sh"
       tmux_guard_reexec "$0" "$@"
     fi
-    if [[ -e "$RUN_DIR" ]]; then
-      echo "error: RUN_DIR already exists; choose a new RUN_ID/RUN_DIR instead of overwriting: $RUN_DIR" >&2
+    if [[ -e "$RUN_DIR" && "${NO_RESUME:-0}" == "1" ]]; then
+      echo "error: NO_RESUME=1 cannot reuse an existing RUN_DIR: $RUN_DIR" >&2
       exit 1
     fi
+    # An interrupted listed run is intentionally restarted with the same
+    # directory. train_listed_contrastive.py resumes its latest Trainer
+    # checkpoint and rewrites only atomic metadata/prediction artifacts.
+    mkdir -p "$RUN_DIR"
     start_stage_recording
     if [[ "${ALLOW_TRAIN:-0}" != "1" ]]; then
       echo "error: training is gated; set ALLOW_TRAIN=1 only after reviewing the preflight/wiring records" >&2
