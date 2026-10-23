@@ -6,6 +6,7 @@ https://github.com/microsoft/graphrag
 import asyncio
 import json
 import os
+import time
 from abc import abstractmethod
 from datetime import datetime
 from typing import Optional, Union, Any, cast
@@ -175,7 +176,9 @@ class ChatOpenAI(BaseOpenAILLM):
             organization=self.organization,
             # Retry Configuration
             timeout=self.request_timeout,
-            max_retries=self.max_retries,
+            # Tenacity below owns retries so one failed request is not retried
+            # once by the SDK and then again by this wrapper.
+            max_retries=0,
         )
 
         async_client = self._new_async_client()
@@ -195,7 +198,7 @@ class ChatOpenAI(BaseOpenAILLM):
             organization=self.organization,
             # Retry Configuration
             timeout=self.request_timeout,
-            max_retries=self.max_retries,
+            max_retries=0,
         )
 
     def create_single_input(
@@ -238,6 +241,24 @@ class ChatOpenAI(BaseOpenAILLM):
         status_code = getattr(error, "status_code", None)
         return status_code not in {400, 401, 403, 404, 422}
 
+    @staticmethod
+    def _before_retry(retry_state) -> None:
+        """Log retry metadata without logging prompts or credentials."""
+        error = retry_state.outcome.exception() if retry_state.outcome else None
+        status_code = getattr(error, "status_code", None)
+        request_id = getattr(error, "request_id", None)
+        sleep_seconds = getattr(retry_state.next_action, "sleep", None)
+        message = (
+            "[ChatOpenAI] retry "
+            f"attempt={retry_state.attempt_number} "
+            f"error={type(error).__name__ if error else 'unknown'} "
+            f"status={status_code if status_code is not None else '-'} "
+            f"request_id={request_id or '-'}"
+        )
+        if sleep_seconds is not None:
+            message += f" sleep={sleep_seconds:.1f}s"
+        print(message, flush=True)
+
     async def _agenerate(
             self,
             messages: Union[str, list[Any]],
@@ -268,9 +289,10 @@ class ChatOpenAI(BaseOpenAILLM):
         try:
             retryer = Retrying(
                 stop=stop_after_attempt(self.max_retries),
-                wait=wait_exponential_jitter(max=10),
+                wait=wait_exponential_jitter(max=5),
                 reraise=True,
                 retry=retry_if_exception(self._retryable_exception),
+                before_sleep=self._before_retry,
             )
             for attempt in retryer:
                 with attempt:
@@ -315,16 +337,24 @@ class ChatOpenAI(BaseOpenAILLM):
         try:
             retryer = AsyncRetrying(
                 stop=stop_after_attempt(self.max_retries),
-                wait=wait_exponential_jitter(max=10),
+                wait=wait_exponential_jitter(max=5),
                 reraise=True,
                 retry=retry_if_exception(self._retryable_exception),
+                before_sleep=self._before_retry,
             )
             async for attempt in retryer:
                 with attempt:
+                    request_started = time.monotonic()
                     response = await self._agenerate(
                         messages=messages,
                         **kwargs,
                     )
+                    elapsed = time.monotonic() - request_started
+                    if elapsed >= 10:
+                        print(
+                            f"[ChatOpenAI] slow_request elapsed={elapsed:.1f}s",
+                            flush=True,
+                        )
                     return {
                         "query": messages[1]["content"],
                         "response": response,

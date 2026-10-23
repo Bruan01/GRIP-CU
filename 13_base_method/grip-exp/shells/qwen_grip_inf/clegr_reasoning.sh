@@ -50,7 +50,9 @@ fi
     --overwrite False \
     --task_generator_model_name Qwen/Qwen2.5-7B-Instruct \
     --task_generator_use_vllm False \
-    --task_generator_batch_size 16 \
+    --task_generator_batch_size 3 \
+    --task_generator_max_retries 3 \
+    --task_generator_request_timeout 60 \
     --task_cache_dir /mnt/e/GRIP-CU/artifacts/grip_paper_tasks_siliconflow_qwen7b/clegr_reasoning \
     --use_openai_api True \
     --api_base https://api.siliconflow.cn/v1 \

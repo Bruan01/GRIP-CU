@@ -130,6 +130,8 @@ class GripTaskGeneration():
             api_base=self.kwargs.get("api_base", "https://api.openai.com/v1/"),
             api_version=self.kwargs.get("api_version"),
             use_openai_api=self.kwargs.get("use_openai_api", False),
+            max_retries=self.kwargs.get("task_generator_max_retries", 3),
+            request_timeout=self.kwargs.get("task_generator_request_timeout", 60.0),
         )
 
     def unload_model(self):

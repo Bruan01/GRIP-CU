@@ -48,6 +48,16 @@ class TaskArguments:
         metadata={"help": "HF task-generator batch size. Keep 1 on a 24 GB GPU for long prompts."}
     )
 
+    task_generator_max_retries: int = field(
+        default=3,
+        metadata={"help": "Maximum retries for one OpenAI-compatible task-generation request."}
+    )
+
+    task_generator_request_timeout: float = field(
+        default=60.0,
+        metadata={"help": "Timeout in seconds for one OpenAI-compatible task-generation request."}
+    )
+
     task_cache_dir: str = field(
         default=None,
         metadata={"help": "Optional JSONL cache for generated training tasks; makes long task generation resumable."}
