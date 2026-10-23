@@ -23,11 +23,11 @@ if [[ ! -f "$CLEGR_PAPER_SPLIT_DIR/processed_train.json" || \
         --seed 2026
 fi
 
-# The paper release uses vLLM batches of four.  This fits the 24 GB RTX 3090
-# with the Qwen2.5-7B task generator and is faster than serial generation
-# while preserving the generated-task protocol.  CLEGR's paper metric is
-# evaluated afterward by scripts/judge_clegr_siliconflow.py, not by the local
-# EM/F1 diagnostics.
+# Use a serial task-generator batch on the 24 GB RTX 3090.  The batch size is
+# an execution detail and does not change the paper task budget; serial mode
+# avoids the stalled vLLM batch observed in the first run.  CLEGR's paper
+# metric is evaluated afterward by scripts/judge_clegr_siliconflow.py, not by
+# the local EM/F1 diagnostics.
 "$PYTHON" scripts/mp_wrapper.py \
     --script scripts/run_grip.py \
     --num_process 1 \
@@ -40,7 +40,7 @@ fi
     --overwrite False \
     --task_generator_model_name qwen-7b \
     --task_generator_use_vllm True \
-    --task_generator_batch_size 4 \
+    --task_generator_batch_size 1 \
     --task_cache_dir /mnt/e/GRIP-CU/artifacts/grip_paper_tasks_3090/clegr_reasoning \
     --model_source local \
     --model_cache_dir /mnt/e/GRIP-CU/model_cache \
