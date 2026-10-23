@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import torch
-from transformers import DataCollatorForLanguageModeling, Trainer
+from transformers import DataCollatorForLanguageModeling, Trainer, TrainerCallback
 
 from .losses import candidate_infonce_loss
 from .official_lists import listed_relations_from_sample
@@ -27,6 +27,31 @@ from .scoring import (  # re-exported for tests and eval scripts
 # trains only on tokens after the last marker: GRIP Eq. L_QA = -log P(a|q).
 ASSISTANT_MARKER = "<|im_start|>assistant\n"
 IGNORE_INDEX = -100
+
+
+class EarlyStoppingOnLoggedKey(TrainerCallback):
+    """GRIP's S2 early stop (loss < threshold after min_epoch) on a chosen log key.
+
+    ``key="loss"`` matches ``grip.training.utils.EarlyStoppingOnTrainLossCallback``.
+    ``key="generation_loss"`` stops contrastive arms on the same L_QA criterion as
+    B1 (for B1 the two keys are equal), so InfoNCE does not change the stop epoch.
+    """
+
+    def __init__(self, threshold: float, min_epoch: float = 1, key: str = "loss"):
+        self.threshold = threshold
+        self.min_epoch = min_epoch
+        self.key = key
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        if not logs or self.key not in logs or "epoch" not in logs:
+            return
+        if logs[self.key] < self.threshold and logs["epoch"] >= self.min_epoch:
+            control.should_training_stop = True
+            print(
+                f"\nStopping early: {self.key} {logs[self.key]:.4f} < {self.threshold:.4f} "
+                f"at epoch {logs['epoch']:.2f} (min_epoch {self.min_epoch}).\n",
+                flush=True,
+            )
 
 
 EXTRA_KEYS = (

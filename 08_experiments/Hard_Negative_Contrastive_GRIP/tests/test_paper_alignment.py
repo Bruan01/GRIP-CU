@@ -148,3 +148,21 @@ def test_s2_early_stop_callback_matches_grip(script) -> None:
     assert not control.should_training_stop
     callback.on_log(None, None, control, logs={"loss": 0.1, "epoch": 1.0})
     assert control.should_training_stop
+
+
+def test_s2_early_stop_on_generation_loss_ignores_infonce() -> None:
+    from hard_negative_grip.listed_training import EarlyStoppingOnLoggedKey
+
+    callback = EarlyStoppingOnLoggedKey(threshold=0.15, min_epoch=1, key="generation_loss")
+    control = SimpleNamespace(should_training_stop=False)
+    # total loss is high because of InfoNCE, generation loss is not yet below threshold
+    callback.on_log(None, None, control, logs={"loss": 0.9, "generation_loss": 0.2, "epoch": 2.0})
+    assert not control.should_training_stop
+    callback.on_log(None, None, control, logs={"loss": 0.9, "generation_loss": 0.1, "epoch": 0.5})
+    assert not control.should_training_stop
+    callback.on_log(None, None, control, logs={"loss": 0.9, "generation_loss": 0.1, "epoch": 1.0})
+    assert control.should_training_stop
+    default = EarlyStoppingOnLoggedKey(threshold=0.15, min_epoch=1)
+    control = SimpleNamespace(should_training_stop=False)
+    default.on_log(None, None, control, logs={"loss": 0.9, "generation_loss": 0.1, "epoch": 1.0})
+    assert not control.should_training_stop

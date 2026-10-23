@@ -46,11 +46,12 @@ from grip.tasks.recurrent_tasks.task_dataset import (  # noqa: E402
 from grip.tasks.train_tasks.gen_context import GenGraphContextTask  # noqa: E402
 from grip.tasks.train_tasks.task_dataset import TaskDataset  # noqa: E402
 from grip.training.train import load_trainer  # noqa: E402
-from grip.training.utils import EarlyStoppingOnTrainLossCallback  # noqa: E402
+from grip.training.utils import EarlyStoppingOnTrainLossCallback  # noqa: E402,F401
 from hard_negative_grip.decode_io import (  # noqa: E402
     append_jsonl, eval_samples, load_jsonl, merge_resumed_rows, write_jsonl,
 )
 from hard_negative_grip.listed_training import (  # noqa: E402
+    EarlyStoppingOnLoggedKey,
     ListedContrastiveTrainer,
     ListedDataCollator,
     ListedQADataset,
@@ -130,6 +131,13 @@ def parse_args() -> argparse.Namespace:
         "threshold after --s2_min_epoch. Default None keeps the old full budget.",
     )
     parser.add_argument("--s2_min_epoch", type=float, default=1)
+    parser.add_argument(
+        "--s2_stop_loss_key",
+        choices=["loss", "generation_loss"],
+        default="loss",
+        help="Log key for the S2 early stop. generation_loss stops contrastive arms on L_QA "
+        "only (same criterion as B1); loss is the logged total (generation + weighted InfoNCE).",
+    )
     parser.add_argument(
         "--qa_loss_mask",
         choices=["full", "answer_only"],
@@ -592,13 +600,15 @@ def train_stage2(
         gradient_checkpointing=use_checkpointing,
     )
     # Default: full QA epoch budget. --s2_stop_loss_threshold restores GRIP's
-    # S2 early stop on the logged train loss (generation + weighted InfoNCE).
+    # S2 early stop on --s2_stop_loss_key (total loss, or generation loss only).
     callbacks = []
     s2_threshold = getattr(args, "s2_stop_loss_threshold", None)
     if s2_threshold is not None:
         callbacks.append(
-            EarlyStoppingOnTrainLossCallback(
-                threshold=s2_threshold, min_epoch=getattr(args, "s2_min_epoch", 1)
+            EarlyStoppingOnLoggedKey(
+                threshold=s2_threshold,
+                min_epoch=getattr(args, "s2_min_epoch", 1),
+                key=getattr(args, "s2_stop_loss_key", "loss"),
             )
         )
     trainer = ListedContrastiveTrainer(
@@ -656,6 +666,7 @@ def train_stage2(
             "trainer_global_step": int(trainer.state.global_step),
             "trainer_epoch": float(trainer.state.epoch or 0.0),
             "s2_stop_loss_threshold": s2_threshold,
+            "s2_stop_loss_key": getattr(args, "s2_stop_loss_key", "loss"),
             "qa_loss_mask": "answer_only" if answer_only else "full",
             "per_device_train_batch_size": stage_args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
@@ -904,6 +915,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "s1_stop_loss_threshold": args.s1_stop_loss_threshold,
         "s2_stop_loss_threshold": args.s2_stop_loss_threshold,
         "s2_min_epoch": args.s2_min_epoch,
+        "s2_stop_loss_key": args.s2_stop_loss_key,
         "qa_loss_mask": args.qa_loss_mask,
         "weight_decay": args.weight_decay,
         "adam_epsilon": args.adam_epsilon,

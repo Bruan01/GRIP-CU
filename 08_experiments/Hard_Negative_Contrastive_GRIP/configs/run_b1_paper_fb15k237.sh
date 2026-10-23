@@ -1,60 +1,6 @@
 #!/usr/bin/env bash
-# Strict-paper GRIP B1 on FB15K-237 (GRIP KDD'26 Sec. 4 + Table 13). Not run yet:
-# review before launching. Differs from NELL23K only in Table 13 values:
-# LoRA r=24 / alpha=48 and S2 max 5 epochs. Eval = the 10,000 random test questions.
+# Strict-paper GRIP B1 on FB15K-237 only (tasks -> S1 -> S2 B1 per seed). Not run yet.
+# Thin wrapper: every paper setting lives in run_paper_pipeline.sh. Seeds via SEEDS="2026 2027".
 set -euo pipefail
-HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CODE_DIR="$(cd "$HNG/../RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp" && pwd)"
-export PYTHON="${PYTHON:-$CODE_DIR/.venv/bin/python}"
-SEED="${SEED:-2026}"
-export RUN_DIR="${RUN_DIR:-$HNG/results/runs/paper_b1_fb15k237_seed$SEED}"
-TMUX_SESSION="${TMUX_SESSION:-paper-b1-fb15k237-$SEED}"
-DATA_DIR="${DATA_DIR:-$HNG/data/fb15k237}"
-RAW_DIR="${RAW_DIR:-$HNG/data/raw_datasets/fb15k237}"
-EVAL_FILE="${EVAL_FILE:-$DATA_DIR/recurrent_relation_prediction_full.json}"
-TASK_FILE="$RUN_DIR/tasks/grip_fb15k237_paper_tasks.json"
-TASK_CACHE_DIR="$RUN_DIR/tasks/cache"
-source "$HNG/configs/tmux_guard.sh"
-tmux_guard_reexec "$0" "$@"
-[[ -x "$PYTHON" ]] || { echo "error: missing Python: $PYTHON" >&2; exit 1; }
-mkdir -p "$RUN_DIR/tasks"
-exec 9>"$RUN_DIR/pipeline.lock"
-flock -n 9 || { echo "Pipeline already running: $RUN_DIR" >&2; exit 1; }
-exec > >(tee -a "$RUN_DIR/run.log") 2>&1
-cd "$CODE_DIR"
-export PYTHONPATH="$CODE_DIR:$HNG/src:$HNG/scripts${PYTHONPATH:+:$PYTHONPATH}"
-export TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
-export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
-echo "[paper-b1] FB15K-237 seed=$SEED started $(date --iso-8601=seconds)"
-"$PYTHON" "$HNG/scripts/prepare_fb15k237.py" --raw_dir "$RAW_DIR" --out_dir "$DATA_DIR"
-"$PYTHON" "$CODE_DIR/scripts/generate_nell23k_tasks.py" \
-  --input-file "$DATA_DIR/processed_train.json" \
-  --ref-file "$DATA_DIR/processed_train.json" --require-train-ref \
-  --task-file "$TASK_FILE" --task-cache-dir "$TASK_CACHE_DIR" \
-  --seed 2026 --model-name qwen-7b --model-source local \
-  --model-cache-dir "$CODE_DIR/model_cache" --local-files-only \
-  --task-generator-model-name qwen-7b --no-task-generator-use-vllm \
-  --task-generator-batch-size 1 --task-gen-max-length 1000 \
-  --num-context-qa 8000 --num-reason-qa 2000 --num-summarization 6000 \
-  --sample-node-attribute-task --no-repharse-context-qa --no-context-upsampling \
-  --no-format-as-instruction --uniform-sampling --rooted-reasoning-subgraph \
-  --random-reasoning-type --keep-parallel-edges --train-entity-nodes-only \
-  --involve-qa-epochs 5
-COMMON=(
-  "$PYTHON" "$HNG/scripts/train_listed_contrastive.py"
-  --input_file "$TASK_FILE" --eval_file "$EVAL_FILE" --eval_splits test
-  --output_dir "$RUN_DIR" --model_name qwen-7b --model_cache_dir "$CODE_DIR/model_cache"
-  --raw_dir "$RAW_DIR" --relation_text_file "$RAW_DIR/rel2text.json"
-  --listed_negative_source train_graph
-  --lora_r 24 --lora_alpha 48 --target_modules down_proj up_proj gate_proj
-  --num_train_epochs 1 --s1_stop_loss_threshold 0.15
-  --involve_qa_epochs 5 --s2_stop_loss_threshold 0.15 --s2_min_epoch 1
-  --qa_loss_mask answer_only
-  --per_device_train_batch_size 1 --gradient_accumulation_steps 512 --s1_gradient_checkpointing
-  --learning_rate 1e-3 --weight_decay 0 --adam_epsilon 1e-4 --max_grad_norm 1.0
-  --lambda_candidate 0 --gen_max_length 32 --seed "$SEED"
-  --save_steps 10 --save_total_limit 2
-)
-"${COMMON[@]}" --stage s1
-"${COMMON[@]}" --stage b1
-echo "[paper-b1] completed $(date --iso-8601=seconds); headline = b1/summary.json test.official_em"
+export DATASET=fb15k237 STEPS="${STEPS:-tasks s1 b1}"
+exec bash "$(dirname "${BASH_SOURCE[0]}")/run_paper_pipeline.sh" "$@"
