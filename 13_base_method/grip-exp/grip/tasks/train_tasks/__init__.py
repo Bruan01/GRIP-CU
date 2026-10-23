@@ -126,6 +126,10 @@ class GripTaskGeneration():
             model_source=self.kwargs.get("model_source", "auto"),
             model_cache_dir=self.kwargs.get("model_cache_dir", "model_cache"),
             local_files_only=self.kwargs.get("local_files_only", False),
+            api_key=self.kwargs.get("api_key", "${OPENAI_API_KEY}"),
+            api_base=self.kwargs.get("api_base", "https://api.openai.com/v1/"),
+            api_version=self.kwargs.get("api_version"),
+            use_openai_api=self.kwargs.get("use_openai_api", False),
         )
 
     def unload_model(self):
