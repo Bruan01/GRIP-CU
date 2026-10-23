@@ -84,19 +84,22 @@ class GenGraphTaskBase(ABC):
 
         self.task_cache_dir.mkdir(parents=True, exist_ok=True)
         cache_path = self.task_cache_dir / f"{stage}.jsonl"
-        cached: dict[tuple[int, str], dict] = {}
+        # The prompt digest is the stable identity.  Including the position in
+        # the key makes resume unsafe when an earlier completed graph is
+        # removed from a pending subset and all later prompt indices shift.
+        cached: dict[str, dict] = {}
         if cache_path.is_file():
             with cache_path.open("r", encoding="utf-8") as stream:
                 for line in stream:
                     try:
                         row = json.loads(line)
                         if isinstance(row.get("response"), dict):
-                            cached[(row["index"], row["prompt_sha256"])] = row["response"]
+                            cached[row["prompt_sha256"]] = row["response"]
                     except (KeyError, TypeError, json.JSONDecodeError):
                         continue
 
         digests = [hashlib.sha256(prompt.encode("utf-8")).hexdigest() for prompt in prompts]
-        results: list[Optional[dict]] = [cached.get((index, digest)) for index, digest in enumerate(digests)]
+        results: list[Optional[dict]] = [cached.get(digest) for digest in digests]
         missing = [index for index, result in enumerate(results) if result is None]
         if not missing:
             print(f"Task cache hit: {stage} ({len(prompts)} prompts)")
