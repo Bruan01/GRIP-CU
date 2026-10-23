@@ -18,7 +18,7 @@ from tenacity import (
     AsyncRetrying,
     RetryError,
     Retrying,
-    retry_if_exception_type,
+    retry_if_exception,
     stop_after_attempt,
     wait_exponential_jitter,
 )
@@ -178,7 +178,18 @@ class ChatOpenAI(BaseOpenAILLM):
             max_retries=self.max_retries,
         )
 
-        async_client = AsyncOpenAI(
+        async_client = self._new_async_client()
+        self.set_clients(sync_client=sync_client, async_client=async_client)
+
+    def _new_async_client(self) -> AsyncOpenAI:
+        """Create an async client for exactly one asyncio event loop.
+
+        The task generator calls ``inference`` repeatedly.  Reusing one
+        AsyncOpenAI/httpx connection pool across separate ``asyncio.run``
+        calls can bind the pool to a closed event loop after the first batch.
+        A fresh client per inference call avoids that cross-loop lifetime bug.
+        """
+        return AsyncOpenAI(
             api_key=self.api_key,
             base_url=self.api_base,
             organization=self.organization,
@@ -186,7 +197,6 @@ class ChatOpenAI(BaseOpenAILLM):
             timeout=self.request_timeout,
             max_retries=self.max_retries,
         )
-        self.set_clients(sync_client=sync_client, async_client=async_client)
 
     def create_single_input(
             self,
@@ -222,6 +232,12 @@ class ChatOpenAI(BaseOpenAILLM):
         )  # type: ignore
         return response.choices[0].message.content or ""  # type: ignore
 
+    @staticmethod
+    def _retryable_exception(error: BaseException) -> bool:
+        """Retry transport/provider failures, but not permanent 4xx errors."""
+        status_code = getattr(error, "status_code", None)
+        return status_code not in {400, 401, 403, 404, 422}
+
     async def _agenerate(
             self,
             messages: Union[str, list[Any]],
@@ -254,7 +270,7 @@ class ChatOpenAI(BaseOpenAILLM):
                 stop=stop_after_attempt(self.max_retries),
                 wait=wait_exponential_jitter(max=10),
                 reraise=True,
-                retry=retry_if_exception_type(self.retry_error_types),
+                retry=retry_if_exception(self._retryable_exception),
             )
             for attempt in retryer:
                 with attempt:
@@ -273,6 +289,16 @@ class ChatOpenAI(BaseOpenAILLM):
             return {
                 "query": messages[1]["content"],
                 "error": str(e),
+                "timestamp": datetime.now().isoformat(),
+                "status": "error"
+            }
+        except Exception as e:
+            # Keep one bad request from taking down the whole durable batch.
+            # infer_cached will refuse to persist this error as a successful
+            # task and the next restart can retry the missing prompt.
+            return {
+                "query": messages[1]["content"],
+                "error": f"{type(e).__name__}: {e}",
                 "timestamp": datetime.now().isoformat(),
                 "status": "error"
             }
@@ -312,6 +338,13 @@ class ChatOpenAI(BaseOpenAILLM):
                 "timestamp": datetime.now().isoformat(),
                 "status": "error"
             }
+        except Exception as e:
+            return {
+                "query": messages[1]["content"],
+                "error": f"{type(e).__name__}: {e}",
+                "timestamp": datetime.now().isoformat(),
+                "status": "error"
+            }
         else:
             # TODO: why not just throw in this case?
             return ""
@@ -341,8 +374,62 @@ class ChatOpenAI(BaseOpenAILLM):
                            for input_text, history in zip(batch_input, histories)]
         else:
             batch_input = [self.create_single_input(input_text, system_prompt) for input_text in batch_input]
-        responses = await asyncio.gather(*[self.agenerate(message) for message in batch_input])
-        return responses
+        responses = await asyncio.gather(
+            *[self.agenerate(message) for message in batch_input],
+            return_exceptions=True,
+        )
+        normalized = []
+        for message, response in zip(batch_input, responses):
+            if isinstance(response, BaseException):
+                normalized.append({
+                    "query": message[1]["content"],
+                    "error": f"{type(response).__name__}: {response}",
+                    "timestamp": datetime.now().isoformat(),
+                    "status": "error",
+                })
+            else:
+                normalized.append(response)
+        return normalized
+
+    async def _run_async_inference(
+            self,
+            user_contents: list[Union[str, dict]],
+            system_prompt: Optional[str] = None,
+            histories: Optional[list[list]] = None,
+    ) -> list[dict]:
+        """Run all API batches in one loop and close that loop's client."""
+        try:
+            if self.batch_size == -1:
+                return await self.abatch_inference(user_contents, system_prompt, histories)
+
+            results = []
+            for start_index in trange(
+                    0,
+                    len(user_contents),
+                    self.batch_size,
+                    desc="Batches",
+                    disable=False,
+            ):
+                batch_contents = user_contents[start_index:start_index + self.batch_size]
+                batch_histories = histories[start_index:start_index + self.batch_size] if histories else None
+                batch_result = await self.abatch_inference(
+                    batch_contents,
+                    system_prompt,
+                    batch_histories,
+                )
+                results.extend(batch_result)
+            return results
+        finally:
+            client = self.async_client
+            if client is not None:
+                try:
+                    await client.close()
+                except Exception:
+                    # The client is best-effort closed before asyncio.run
+                    # tears down the loop; a close failure must not erase the
+                    # already durable task batches.
+                    pass
+            self._async_client = None
 
     def inference(
             self,
@@ -352,16 +439,11 @@ class ChatOpenAI(BaseOpenAILLM):
     ) -> list[dict]:
         if isinstance(user_contents[0], dict):
             user_contents = [user_content["query"] for user_content in user_contents]
-        if self.batch_size == -1:
-            return asyncio.run(self.abatch_inference(user_contents, system_prompt, histories))
-        else:
-            results = []
-            for start_index in trange(0, len(user_contents), self.batch_size, desc=f"Batches", disable=False, ):
-                batch_contents = user_contents[start_index: start_index + self.batch_size]
-                batch_histories = histories[start_index: start_index + self.batch_size] if histories else None
-                batch_result = asyncio.run(self.abatch_inference(batch_contents, system_prompt, batch_histories))
-                results.extend(batch_result)
-            return results
+        # Do not call asyncio.run once per batch.  That closes the event loop
+        # while the shared AsyncOpenAI/httpx pool is still alive and breaks on
+        # the second API batch.  One client and one loop cover this call.
+        self._async_client = self._new_async_client()
+        return asyncio.run(self._run_async_inference(user_contents, system_prompt, histories))
 
     def save_results(self, results: list[dict], filename: str):
         with open(filename, 'w') as f:

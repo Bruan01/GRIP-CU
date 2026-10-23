@@ -123,6 +123,22 @@ class GenGraphTaskBase(ABC):
                     batch_results = self.task_generator.inference(batch_prompts, system_prompt)
                     if len(batch_results) != len(indices):
                         raise RuntimeError(f"Task generator returned {len(batch_results)} results for {len(indices)} prompts in {stage}.")
+                    failed = [
+                        (index, response)
+                        for index, response in zip(indices, batch_results)
+                        if not isinstance(response, dict) or response.get("status") != "success"
+                    ]
+                    if failed:
+                        preview = []
+                        for index, response in failed[:3]:
+                            if isinstance(response, dict):
+                                preview.append(f"index={index}: {response.get('error', 'unknown API error')}")
+                            else:
+                                preview.append(f"index={index}: invalid response type {type(response).__name__}")
+                        raise RuntimeError(
+                            f"Task generation batch failed for {stage}; no failed responses were cached. "
+                            + "; ".join(preview)
+                        )
                     for index, response in zip(indices, batch_results):
                         results[index] = response
                         stream.write(json.dumps({
