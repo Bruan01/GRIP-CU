@@ -92,7 +92,7 @@ if ! adapter_ready "$RUN_ROOT/train/listed/adapter"; then
     ALLOW_TRAIN=1 \
     SAVE_STEPS=10 SAVE_TOTAL_LIMIT=2 \
     TRAIN_LORA_R=24 TRAIN_LORA_ALPHA=48 INVOLVE_QA_EPOCHS=5 \
-    PER_DEVICE_TRAIN_BATCH_SIZE=4 GRADIENT_ACCUMULATION_STEPS=128
+    PER_DEVICE_TRAIN_BATCH_SIZE=2 GRADIENT_ACCUMULATION_STEPS=256
 else
   echo "[pipeline] listed adapter already complete; reusing $RUN_ROOT/train/listed/adapter"
 fi

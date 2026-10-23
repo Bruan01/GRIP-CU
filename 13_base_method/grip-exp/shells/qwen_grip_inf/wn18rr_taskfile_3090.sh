@@ -25,8 +25,8 @@ exec > >(tee -a "$OUTPUT_DIR/launcher.log") 2>&1
     --paper_protocol wn18rr \
     --dtype bfloat16 \
     --tokenize_max_length 4096 \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 128 \
+    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 256 \
     --gradient_checkpointing \
     --stage1_checkpoint_interval 25 \
     --stage2_checkpoint_interval 10
