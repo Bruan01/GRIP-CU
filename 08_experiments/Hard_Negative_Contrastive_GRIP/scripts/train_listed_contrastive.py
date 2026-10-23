@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import gc
 import json
+import re
 import sys
 import time
 from copy import copy
@@ -36,6 +37,7 @@ sys.path.insert(0, str(HNG / "src"))
 
 from constants import HF_DECODER_ONLY_LLMS, SYSTEM_PROMPT, TORCH_DTYPE  # noqa: E402
 from evaluation.recurrent_metrics import exact_match, parse_recurrent_answer  # noqa: E402
+from evaluation.utils import normalize_answer  # noqa: E402
 from grip.tasks.eval_tasks.grip_eval import GRIPEvalDataset  # noqa: E402
 from grip.tasks.recurrent_tasks.task_dataset import (  # noqa: E402
     QUESTION_TEMPLATE,
@@ -44,6 +46,7 @@ from grip.tasks.recurrent_tasks.task_dataset import (  # noqa: E402
 from grip.tasks.train_tasks.gen_context import GenGraphContextTask  # noqa: E402
 from grip.tasks.train_tasks.task_dataset import TaskDataset  # noqa: E402
 from grip.training.train import load_trainer  # noqa: E402
+from grip.training.utils import EarlyStoppingOnTrainLossCallback  # noqa: E402
 from hard_negative_grip.decode_io import (  # noqa: E402
     append_jsonl, eval_samples, load_jsonl, merge_resumed_rows, write_jsonl,
 )
@@ -119,10 +122,31 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--num_train_epochs", type=float, default=1)
     parser.add_argument("--involve_qa_epochs", type=float, default=10)
     parser.add_argument("--s1_stop_loss_threshold", type=float, default=0.15)
+    parser.add_argument(
+        "--s2_stop_loss_threshold",
+        type=float,
+        default=None,
+        help="GRIP Table 13 S2 early stop (0.15): stop once logged train loss < "
+        "threshold after --s2_min_epoch. Default None keeps the old full budget.",
+    )
+    parser.add_argument("--s2_min_epoch", type=float, default=1)
+    parser.add_argument(
+        "--qa_loss_mask",
+        choices=["full", "answer_only"],
+        default="full",
+        help="answer_only = GRIP L_QA = -log P(a|q): mask system/user tokens. "
+        "full = old behaviour (loss on the whole chat string).",
+    )
     parser.add_argument("--per_device_train_batch_size", type=int, default=8)
     parser.add_argument("--gradient_accumulation_steps", type=int, default=64)
     parser.add_argument("--learning_rate", type=float, default=1e-3)
     parser.add_argument("--weight_decay", type=float, default=1e-4)
+    parser.add_argument(
+        "--adam_epsilon",
+        type=float,
+        default=1e-8,
+        help="GRIP Table 13 lists Adam epsilon 1e-4. Default 1e-8 keeps old runs reproducible.",
+    )
     parser.add_argument("--max_grad_norm", type=float, default=1.0)
     parser.add_argument("--lambda_candidate", type=float, default=1.0)
     parser.add_argument(
@@ -133,6 +157,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--gen_max_length", type=int, default=32)
+    parser.add_argument(
+        "--eval_splits",
+        nargs="+",
+        choices=["validation", "test"],
+        default=["validation", "test"],
+        help="Splits decoded after training. GRIP reports test only.",
+    )
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument(
         "--s1_gradient_checkpointing",
@@ -295,7 +326,7 @@ def training_arguments(
         weight_decay=args.weight_decay,
         adam_beta1=0.9,
         adam_beta2=0.98,
-        adam_epsilon=1e-8,
+        adam_epsilon=getattr(args, "adam_epsilon", 1e-8),
         max_grad_norm=args.max_grad_norm,
         logging_strategy="steps",
         logging_steps=1,
@@ -343,6 +374,23 @@ def load_base_lora(args: argparse.Namespace):
         lora_alpha=args.lora_alpha,
         target_modules=args.target_modules,
     )
+    return model, tokenizer
+
+
+def load_base_model(args: argparse.Namespace):
+    """Base LLM with no LoRA, for the GRIP no-context baseline row."""
+    release_cuda()
+    model, tokenizer = get_hf_llm_tokenizer(
+        model_name=HF_DECODER_ONLY_LLMS[args.model_name],
+        model_source="local",
+        model_cache_dir=args.model_cache_dir,
+        local_files_only=True,
+        dtype=TORCH_DTYPE["bfloat16"],
+        peft=False,
+        device_map=None,
+    )
+    if torch.cuda.is_available():
+        model.to("cuda")
     return model, tokenizer
 
 
@@ -516,7 +564,8 @@ def train_stage2(
         if record is None:
             raise ValueError("Stage 2 needs QA texts or a graph record")
         texts, metas = build_qa_assets(record, tokenizer)
-    dataset = ListedQADataset(texts, metas, tokenizer)
+    answer_only = getattr(args, "qa_loss_mask", "full") == "answer_only"
+    dataset = ListedQADataset(texts, metas, tokenizer, answer_only=answer_only)
     stage_args = copy(args)
     use_checkpointing = lambda_candidate > 0
     if use_checkpointing:
@@ -529,7 +578,7 @@ def train_stage2(
     print(
         f"[{variant}] qa samples: {len(dataset)} listed_mean="
         f"{sum(len(m['listed_relations']) for m in metas) / len(metas):.1f} "
-        f"lambda={lambda_candidate} "
+        f"lambda={lambda_candidate} qa_loss_mask={'answer_only' if answer_only else 'full'} "
         f"per_qa_lambda={sum(1 for meta in metas if meta.get('lambda_candidate') is not None)} "
         f"batch={stage_args.per_device_train_batch_size} "
         f"accum={stage_args.gradient_accumulation_steps}",
@@ -542,7 +591,16 @@ def train_stage2(
         len(dataset),
         gradient_checkpointing=use_checkpointing,
     )
-    # Full QA epoch budget; do not early-stop on the mixed contrastive loss.
+    # Default: full QA epoch budget. --s2_stop_loss_threshold restores GRIP's
+    # S2 early stop on the logged train loss (generation + weighted InfoNCE).
+    callbacks = []
+    s2_threshold = getattr(args, "s2_stop_loss_threshold", None)
+    if s2_threshold is not None:
+        callbacks.append(
+            EarlyStoppingOnTrainLossCallback(
+                threshold=s2_threshold, min_epoch=getattr(args, "s2_min_epoch", 1)
+            )
+        )
     trainer = ListedContrastiveTrainer(
         model=model,
         args=training_args,
@@ -552,6 +610,7 @@ def train_stage2(
         lambda_candidate=lambda_candidate,
         temperature=args.temperature,
         memory_size=args.memory_size,
+        callbacks=callbacks,
     )
     started = time.time()
     trainer_dir = output_dir / f"trainer_{variant}"
@@ -595,6 +654,9 @@ def train_stage2(
             "last_microbatch_lambda_candidate": trainer.last_lambda_candidate,
             "trainer_max_steps": int(trainer.state.max_steps),
             "trainer_global_step": int(trainer.state.global_step),
+            "trainer_epoch": float(trainer.state.epoch or 0.0),
+            "s2_stop_loss_threshold": s2_threshold,
+            "qa_loss_mask": "answer_only" if answer_only else "full",
             "per_device_train_batch_size": stage_args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
             "gradient_checkpointing": use_checkpointing,
@@ -608,6 +670,16 @@ def train_stage2(
     release_cuda()
     print(f"[{variant}] saved {adapter_dir}", flush=True)
     return adapter_dir, model, tokenizer
+
+
+def official_parse_answer(raw: str) -> str:
+    """Official GRIP ``extract_tag_content(text, "answer")`` joined by "; "."""
+    return "; ".join(re.findall(r"<answer>(.*?)</answer>", raw))
+
+
+def official_exact_match(prediction: str, targets: list[str]) -> bool:
+    """Official ``compute_em_score``: max over targets of normalized equality."""
+    return any(normalize_answer(target) == normalize_answer(prediction) for target in targets)
 
 
 def _parse_target(answer: object) -> list[str]:
@@ -624,10 +696,9 @@ def evaluate_adapter(
     progress_every: int = 0,
     skip_question_ids: set[str] | None = None,
     pred_path: Path | None = None,
+    splits: tuple[str, ...] | list[str] = ("validation", "test"),
 ) -> list[dict]:
-    samples = [
-        item for item in record["recurrent_questions"] if item["split"] in {"validation", "test"}
-    ]
+    samples = eval_samples(record, splits)
     skip = skip_question_ids or set()
     dataset = GRIPEvalDataset(
         questions=[item["question"] for item in samples],
@@ -660,6 +731,7 @@ def evaluate_adapter(
             raw = tokenizer.decode(generated[0][input_ids.shape[-1] :], skip_special_tokens=True)
             parsed = parse_recurrent_answer(raw)
             target = _parse_target(answer)
+            official = official_parse_answer(raw)
             listed = listed_negatives(samples[index]) + [samples[index]["answer"]]
             rows.append(
                 {
@@ -670,6 +742,8 @@ def evaluate_adapter(
                     "raw_response": raw.strip(),
                     "response": parsed,
                     "correct": exact_match(parsed, target),
+                    "official_response": official,
+                    "official_correct": official_exact_match(official, target),
                     "in_list": parsed in listed,
                     "candidate_valid": parsed in listed,
                 }
@@ -689,9 +763,14 @@ def evaluate_adapter(
 
 
 def em_summary(rows: list[dict]) -> dict:
+    """``em`` = project parser; ``official_em`` = GRIP strict tag parser (headline)."""
     buckets: dict[str, list[bool]] = {}
+    official: dict[str, list[bool]] = {}
     for row in rows:
-        buckets.setdefault(str(row.get("split", "unknown")), []).append(bool(row["correct"]))
+        split = str(row.get("split", "unknown"))
+        buckets.setdefault(split, []).append(bool(row["correct"]))
+        if "official_correct" in row:
+            official.setdefault(split, []).append(bool(row["official_correct"]))
     all_values = [bool(row["correct"]) for row in rows]
     in_list_wrong = [row for row in rows if not row["correct"] and row.get("in_list")]
     oov_wrong = [row for row in rows if not row["correct"] and not row.get("in_list")]
@@ -705,6 +784,11 @@ def em_summary(rows: list[dict]) -> dict:
     }
     for split, values in sorted(buckets.items()):
         summary[split] = {"count": len(values), "em": sum(values) / len(values) if values else 0.0}
+        if split in official and len(official[split]) == len(values):
+            summary[split]["official_em"] = sum(official[split]) / len(values)
+    all_official = [value for values in official.values() for value in values]
+    if all_official and len(all_official) == len(all_values):
+        summary["all"]["official_em"] = sum(all_official) / len(all_official)
     return summary
 
 
@@ -768,7 +852,8 @@ def evaluate_variant(
 ) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
     pred_path = output_dir / "predictions_correct.jsonl"
-    samples = eval_samples(record)
+    splits = tuple(getattr(args, "eval_splits", ("validation", "test")))
+    samples = eval_samples(record, splits)
     kept, missing = merge_resumed_rows(
         samples, [] if args.no_resume else load_jsonl(pred_path)
     )
@@ -784,6 +869,7 @@ def evaluate_variant(
                 model, tokenizer, record, args.gen_max_length,
                 skip_question_ids={str(row["question_id"]) for row in kept},
                 pred_path=pred_path,
+                splits=splits,
             )
         rows, missing = merge_resumed_rows(samples, kept + new_rows)
         if missing:
@@ -816,6 +902,13 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "num_train_epochs": args.num_train_epochs,
         "involve_qa_epochs": args.involve_qa_epochs,
         "s1_stop_loss_threshold": args.s1_stop_loss_threshold,
+        "s2_stop_loss_threshold": args.s2_stop_loss_threshold,
+        "s2_min_epoch": args.s2_min_epoch,
+        "qa_loss_mask": args.qa_loss_mask,
+        "weight_decay": args.weight_decay,
+        "adam_epsilon": args.adam_epsilon,
+        "max_grad_norm": args.max_grad_norm,
+        "eval_splits": list(args.eval_splits),
         "per_device_train_batch_size": args.per_device_train_batch_size,
         "gradient_accumulation_steps": args.gradient_accumulation_steps,
         "learning_rate": args.learning_rate,
@@ -859,8 +952,10 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             "(--listed_negative_source train_graph). embed_sim keeps that vocabulary "
             "but prefers Stage-1 cosine-similar relations. qa_vocab restores the older "
             "370-relation QA-gold pool. Prompts stay unchanged. Val/test EM still uses "
-            "the aligned relation-prediction split. Both Stage-2 arms use the full QA "
-            "epoch budget (no S2 early stop) so the generation objective is compute-matched."
+            "the aligned relation-prediction split. Without --s2_stop_loss_threshold both "
+            "Stage-2 arms use the full QA epoch budget (compute-matched, not GRIP); with it, "
+            "S2 stops like GRIP Table 13. S2 always builds a fresh AdamW: the paper is "
+            "silent and the official code reuses the S1 optimizer object in-process."
         ),
     }
     (output_dir / "run_config.json").write_text(

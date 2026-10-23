@@ -4,7 +4,7 @@ import numpy as np
 from transformers import PreTrainedTokenizer
 
 from constants import ANSWER_TAG, SYSTEM_PROMPT
-from grip.tasks.utils import shuffle_graph, clean_graph, compute_node_edge_weight
+from grip.tasks.utils import shuffle_graph, clean_graph, compute_node_edge_weight, dedup_triples
 from models import BaseInferenceModel
 from .gen_base import GenGraphTaskBase
 
@@ -75,11 +75,22 @@ class GenGraphContextTask(GenGraphTaskBase):
             edge_list = graph["edge_list"]
             edge_index = np.array(graph["edge_index"])
 
-            # clean graph, remove repeated edges and self-loops
-            edge_list, edge_index = clean_graph(edge_list, edge_index)
+            if self.kwargs.get("keep_parallel_edges", False):
+                # Paper L_context: every edge text. Only exact duplicate triples go.
+                edge_list, edge_index = dedup_triples(edge_list, edge_index)
+            else:
+                # clean graph, remove repeated edges and self-loops
+                edge_list, edge_index = clean_graph(edge_list, edge_index)
 
             # random shuffle the graph order
             node_list, edge_list, edge_index = shuffle_graph(node_list, edge_list, edge_index)
+
+            if self.kwargs.get("train_entity_nodes_only", False):
+                # Recite only entities that occur in the (train) edges.
+                keep = set(edge_index.reshape(-1).tolist())
+                node_keep = [i in keep for i in range(len(node_list))]
+            else:
+                node_keep = [True] * len(node_list)
 
             num_node = len(node_list)
             num_edge = len(edge_list)
@@ -92,7 +103,9 @@ class GenGraphContextTask(GenGraphTaskBase):
                 node_up_sampling = [1 for _ in range(num_node)]
                 edge_up_sampling = [1 for _ in range(num_edge)]
 
-            for node, up_sample_num in zip(node_list, node_up_sampling):
+            for node, up_sample_num, kept in zip(node_list, node_up_sampling, node_keep):
+                if not kept:
+                    continue
                 node_text = self.node_context_format.format(node=node, title=title)
                 for _ in range(up_sample_num):
                     if self.format_as_instruction:

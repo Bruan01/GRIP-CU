@@ -5,7 +5,7 @@ import numpy as np
 from transformers import PreTrainedTokenizer
 
 from constants import ANSWER_TAG, SYSTEM_PROMPT
-from grip.tasks.utils import shuffle_graph, clean_graph, compute_node_edge_weight, weighted_sampling
+from grip.tasks.utils import shuffle_graph, clean_graph, compute_node_edge_weight, weighted_sampling, sample_indices
 from models import BaseInferenceModel
 from .gen_base import GenGraphTaskBase
 
@@ -106,13 +106,14 @@ class GenContextQATask(GenGraphTaskBase):
             num_nodes = len(node_list)
             node_weight, edge_weight = compute_node_edge_weight(edge_index, num_nodes)
 
+            uniform = self.kwargs.get("uniform_sampling", False)
             for _ in range(self.num_qa):
                 if self.sample_node_attribute_task:
-                    sampled_node = weighted_sampling(list(range(len(node_list))), node_weight, 1)[0]
+                    sampled_node = sample_indices(len(node_list), node_weight, 1, uniform)[0]
                     node = node_list[sampled_node]
                     node_attribute_tasks.append(self.node_attribute_user_prompt.format(node=node))
 
-                sampled_edge = weighted_sampling(list(range(len(edge_list))), edge_weight, 1)[0]
+                sampled_edge = sample_indices(len(edge_list), edge_weight, 1, uniform)[0]
                 edge = edge_list[sampled_edge]
                 question_type = random.choice(["lp", "src", "tgt"])
                 if question_type == "lp":

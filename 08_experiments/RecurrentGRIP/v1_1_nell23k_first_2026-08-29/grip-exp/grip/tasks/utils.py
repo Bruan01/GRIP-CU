@@ -160,3 +160,50 @@ def weighted_sampling(
         indices = np.random.choice(len(elements), size=k, p=weights, replace=False)
         samples = [elements[i] for i in indices]
     return list(samples)
+
+def dedup_triples(edge_list: list[list], edge_index: np.ndarray) -> tuple[list, np.ndarray]:
+    """Drop exact duplicate (src, rel, tgt) triples only.
+
+    ``clean_graph`` keeps one edge per (src, tgt) pair, so a pair with two
+    train relations loses one of them. GRIP's L_context covers every edge.
+    """
+    result_edge_list = []
+    result_edge_index = []
+    seen = set()
+    for index, (src, tgt) in enumerate(edge_index):
+        key = (int(src), str(edge_list[index][1]), int(tgt))
+        if key in seen:
+            continue
+        seen.add(key)
+        result_edge_list.append(edge_list[index])
+        result_edge_index.append((src, tgt))
+    return result_edge_list, np.array(result_edge_index).reshape(-1, 2)
+
+
+def sample_indices(num: int, weights: np.ndarray, k: int, uniform: bool = False) -> list[int]:
+    """Uniform (paper: "randomly sample") or degree-weighted (official code) draws."""
+    if uniform:
+        return np.random.randint(0, num, size=k).tolist()
+    return weighted_sampling(list(range(num)), weights, k)
+
+
+def sample_rooted_subgraph_edges(
+        edge_index: np.ndarray,
+        num_nodes: int,
+        root: int,
+        hop: int = 3,
+        max_nodes_per_hop: int = 3,
+) -> list[int]:
+    """Edge positions of a rooted ``hop``-hop subgraph (GRIP Appendix A.1).
+
+    Same expansion as the summarization task, but stores ``position + 1`` in the
+    sparse matrix so edge 0 is not dropped as an explicit zero, and removes the
+    duplicate rows created by sampling the fringe with replacement.
+    ``edge_index`` must hold at most one edge per (src, tgt) pair (``clean_graph``).
+    """
+    positions = np.arange(1, len(edge_index) + 1)
+    _, sub_edges = sample_fixed_hop_size_neighbor(
+        edge_index.T, positions, int(root), num_nodes,
+        hop=hop, max_nodes_per_hop=max_nodes_per_hop,
+    )
+    return sorted({int(value) - 1 for value in sub_edges.data if value > 0})

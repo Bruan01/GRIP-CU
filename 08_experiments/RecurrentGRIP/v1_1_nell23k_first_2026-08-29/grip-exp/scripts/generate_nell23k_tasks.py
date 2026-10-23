@@ -40,6 +40,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('--context-upsampling', action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument('--format-as-instruction', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--involve-qa-epochs', type=int, default=10)
+    # Strict-paper options (GRIP Sec. 4.2-4.3, App. A.1). Defaults keep the official code.
+    parser.add_argument('--uniform-sampling', action=argparse.BooleanOptionalAction, default=False,
+                        help='Uniform random nodes/edges/roots instead of degree-weighted draws.')
+    parser.add_argument('--rooted-reasoning-subgraph', action=argparse.BooleanOptionalAction, default=False,
+                        help='Reasoning QA on a rooted 3-hop x 3-neighbor subgraph, not 6 weighted edges.')
+    parser.add_argument('--random-reasoning-type', action=argparse.BooleanOptionalAction, default=False,
+                        help='Pick the reasoning question type at random per subgraph, not round-robin.')
+    parser.add_argument('--keep-parallel-edges', action=argparse.BooleanOptionalAction, default=False,
+                        help='Context memorization keeps every train triple (no (src, tgt) collapse).')
+    parser.add_argument('--train-entity-nodes-only', action=argparse.BooleanOptionalAction, default=False,
+                        help='Context memorization recites only entities that appear in train edges.')
+    parser.add_argument('--require-train-ref', action=argparse.BooleanOptionalAction, default=False,
+                        help='Fail unless --ref-file is a train split (k-shot exemplars must come from train).')
     return parser.parse_args()
 
 
@@ -66,6 +79,10 @@ def main() -> None:
         raise FileNotFoundError(f'Input graph file does not exist: {args.input_file}')
     set_random_seed(args.seed)
     input_data = load_list_json(args.input_file)
+    if args.require_train_ref and 'train' not in Path(args.ref_file).name:
+        raise ValueError(f'k-shot reference must be a train split, got {args.ref_file}')
+    if args.require_train_ref and not Path(args.ref_file).is_file():
+        raise FileNotFoundError(f'k-shot reference file does not exist: {args.ref_file}')
     ref_data = load_list_json(args.ref_file) if Path(args.ref_file).is_file() else None
     log_event("stage1_input_loaded", input_file=str(Path(args.input_file).resolve()), graph_records=len(input_data),
               ref_file=str(Path(args.ref_file).resolve()), ref_records=len(ref_data) if ref_data is not None else 0)
@@ -109,6 +126,11 @@ def main() -> None:
         context_upsampling=args.context_upsampling,
         format_as_instruction=args.format_as_instruction,
         involve_qa_epochs=args.involve_qa_epochs,
+        uniform_sampling=args.uniform_sampling,
+        rooted_reasoning_subgraph=args.rooted_reasoning_subgraph,
+        random_reasoning_type=args.random_reasoning_type,
+        keep_parallel_edges=args.keep_parallel_edges,
+        train_entity_nodes_only=args.train_entity_nodes_only,
         model_source=args.model_source,
         model_cache_dir=args.model_cache_dir,
         local_files_only=args.local_files_only,
@@ -133,6 +155,14 @@ def main() -> None:
             'num_summarization': args.num_summarization,
             'context_upsampling': args.context_upsampling,
             'format_as_instruction': args.format_as_instruction,
+            'sample_node_attribute_task': args.sample_node_attribute_task,
+            'repharse_context_qa': args.repharse_context_qa,
+            'uniform_sampling': args.uniform_sampling,
+            'rooted_reasoning_subgraph': args.rooted_reasoning_subgraph,
+            'random_reasoning_type': args.random_reasoning_type,
+            'keep_parallel_edges': args.keep_parallel_edges,
+            'train_entity_nodes_only': args.train_entity_nodes_only,
+            'ref_file': str(Path(args.ref_file).resolve()),
             'task_cache_dir': str(Path(args.task_cache_dir).resolve()),
         },
         'context_samples': dataset.context_samples,

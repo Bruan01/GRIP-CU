@@ -23,6 +23,12 @@ from .scoring import (  # re-exported for tests and eval scripts
 )
 
 
+# Qwen chat marker that opens the assistant turn. ``answer_only`` QA loss
+# trains only on tokens after the last marker: GRIP Eq. L_QA = -log P(a|q).
+ASSISTANT_MARKER = "<|im_start|>assistant\n"
+IGNORE_INDEX = -100
+
+
 EXTRA_KEYS = (
     "listed_relations",
     "positive_relation",
@@ -57,8 +63,39 @@ def listed_negatives(sample: dict) -> list[str]:
     return [rel for rel in listed_relations_from_sample(sample) if rel and rel != positive]
 
 
+def answer_start_char(text: str, marker: str = ASSISTANT_MARKER) -> int:
+    """Character offset where the final assistant answer begins."""
+    index = text.rfind(marker)
+    if index < 0:
+        raise ValueError("answer_only QA loss needs an assistant turn in every QA sample")
+    return index + len(marker)
+
+
+def answer_only_labels(text: str, input_ids: list[int], tokenizer) -> list[int]:
+    """Copy ``input_ids`` as labels, masking every token before the answer."""
+    start = answer_start_char(text)
+    try:
+        encoded = tokenizer(
+            text, truncation=True, padding=False, return_offsets_mapping=True
+        )
+        offsets = encoded["offset_mapping"]
+    except (NotImplementedError, KeyError, TypeError):
+        offsets = None
+    if offsets is not None and len(offsets) == len(input_ids):
+        keep = [begin >= start and end > begin for begin, end in offsets]
+    else:
+        prompt_len = len(tokenizer(text[:start], truncation=True, padding=False)["input_ids"])
+        keep = [index >= prompt_len for index in range(len(input_ids))]
+    labels = [token if flag else IGNORE_INDEX for token, flag in zip(input_ids, keep)]
+    if all(label == IGNORE_INDEX for label in labels):
+        raise ValueError("answer_only QA loss masked every token; sample was truncated")
+    return labels
+
+
 @dataclass
 class ListedDataCollator:
+    """LM collator. Per-item ``labels`` (answer-only masking) survive padding."""
+
     tokenizer: Any
 
     def __post_init__(self) -> None:
@@ -66,7 +103,18 @@ class ListedDataCollator:
 
     def __call__(self, features: list[dict]) -> dict:
         extra = {key: [feature.pop(key, None) for feature in features] for key in EXTRA_KEYS}
+        own_labels = [feature.pop("labels", None) for feature in features]
         batch = self.inner(features)
+        if any(labels is not None for labels in own_labels):
+            if any(labels is None for labels in own_labels):
+                raise ValueError("mixed answer-only and full-sequence labels in one batch")
+            width = batch["input_ids"].shape[1]
+            left = getattr(self.tokenizer, "padding_side", "right") == "left"
+            rows = []
+            for labels in own_labels:
+                pad = [IGNORE_INDEX] * (width - len(labels))
+                rows.append(pad + list(labels) if left else list(labels) + pad)
+            batch["labels"] = torch.tensor(rows, dtype=torch.long)
         batch.update(extra)
         return batch
 
@@ -94,16 +142,20 @@ class ListedQADataset(torch.utils.data.Dataset):
         texts: list[str],
         metas: list[dict],
         tokenizer,
+        *,
+        answer_only: bool = False,
     ) -> None:
         if len(texts) != len(metas):
             raise ValueError("texts and metas must have the same length")
         self.tokenizer = tokenizer
+        self.answer_only = answer_only
         self.items = [
-            self._encode_item(text, meta, tokenizer) for text, meta in zip(texts, metas)
+            self._encode_item(text, meta, tokenizer, answer_only=answer_only)
+            for text, meta in zip(texts, metas)
         ]
 
     @staticmethod
-    def _encode_item(text: str, meta: dict, tokenizer) -> dict:
+    def _encode_item(text: str, meta: dict, tokenizer, *, answer_only: bool = False) -> dict:
         encoded = tokenizer(text, truncation=True, padding=False)
         prefix = meta.get("prefix_text") or ""
         positive = meta.get("positive_relation") or ""
@@ -115,7 +167,7 @@ class ListedQADataset(torch.utils.data.Dataset):
             relation_ids = [encode_without_specials(tokenizer, positive)]
             relation_ids.extend(encode_without_specials(tokenizer, rel) for rel in listed)
         weight = meta.get("lambda_candidate")
-        return {
+        item = {
             "input_ids": list(encoded["input_ids"]),
             "attention_mask": list(encoded["attention_mask"]),
             "listed_relations": list(meta.get("listed_relations") or []),
@@ -125,6 +177,9 @@ class ListedQADataset(torch.utils.data.Dataset):
             "relation_ids": relation_ids,
             "lambda_candidate": None if weight is None else float(weight),
         }
+        if answer_only:
+            item["labels"] = answer_only_labels(text, item["input_ids"], tokenizer)
+        return item
 
     def __len__(self) -> int:
         return len(self.items)
@@ -140,6 +195,7 @@ class ListedQADataset(torch.utils.data.Dataset):
             "prefix_ids": list(item["prefix_ids"]),
             "relation_ids": [list(row) for row in item["relation_ids"]],
             "lambda_candidate": item.get("lambda_candidate"),
+            **({"labels": list(item["labels"])} if "labels" in item else {}),
         }
 
 

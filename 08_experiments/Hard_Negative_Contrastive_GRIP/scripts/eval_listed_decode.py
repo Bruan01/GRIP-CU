@@ -48,6 +48,7 @@ from train_listed_contrastive import (  # noqa: E402
     em_summary,
     evaluate_adapter,
     load_adapter,
+    load_base_model,
     release_cuda,
 )
 
@@ -55,6 +56,18 @@ from train_listed_contrastive import (  # noqa: E402
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--adapter_dir", type=Path, default=None)
+    parser.add_argument(
+        "--no_adapter",
+        action="store_true",
+        help="Decode the base LLM without any LoRA (GRIP 'no context' baseline row).",
+    )
+    parser.add_argument(
+        "--splits",
+        nargs="+",
+        choices=["validation", "test"],
+        default=["validation", "test"],
+        help="Splits to decode. GRIP headline numbers are test only.",
+    )
     parser.add_argument("--eval_file", type=Path, required=True)
     parser.add_argument("--output_dir", type=Path, required=True)
     parser.add_argument("--model_name", default="qwen-7b")
@@ -124,10 +137,9 @@ def evaluate_closed_set(
     progress_every: int = 16,
     skip_question_ids: set[str] | None = None,
     pred_path: Path | None = None,
+    splits: tuple[str, ...] | list[str] = ("validation", "test"),
 ) -> list[dict]:
-    samples = [
-        item for item in record["recurrent_questions"] if item["split"] in {"validation", "test"}
-    ]
+    samples = eval_samples(record, splits)
     skip = skip_question_ids or set()
     title = record.get("title", "nell23k")
     device = next(model.parameters()).device
@@ -278,10 +290,14 @@ def _resume_rows(path: Path, samples: list[dict], no_resume: bool) -> tuple[list
 
 
 def evaluate_one(args: argparse.Namespace) -> None:
-    if args.adapter_dir is None:
-        raise ValueError("--adapter_dir is required unless --compare is set")
+    if args.adapter_dir is None and not args.no_adapter:
+        raise ValueError("--adapter_dir or --no_adapter is required unless --compare is set")
+    if args.adapter_dir is not None and args.no_adapter:
+        raise ValueError("--adapter_dir and --no_adapter are mutually exclusive")
     record = load_graph_record(args.eval_file)
-    samples = eval_samples(record)
+    splits = tuple(args.splits)
+    samples = eval_samples(record, splits)
+    label = args.adapter_dir if args.adapter_dir is not None else "base-model(no adapter)"
     args.output_dir.mkdir(parents=True, exist_ok=True)
     need_generate = args.decode in {"generate", "both"}
     need_closed = args.decode in {"closed_set", "both"}
@@ -300,6 +316,7 @@ def evaluate_one(args: argparse.Namespace) -> None:
             write_json(args.output_dir / "summary.json", summary)
             print(
                 f"[eval generate] resume complete EM={summary['all']['em']:.4f} "
+                f"official_EM={summary['all'].get('official_em', float('nan')):.4f} "
                 f"n={summary['all']['count']}",
                 flush=True,
             )
@@ -318,7 +335,10 @@ def evaluate_one(args: argparse.Namespace) -> None:
         model_name=args.model_name,
         model_cache_dir=args.model_cache_dir,
     )
-    model, tokenizer = load_adapter(load_args, args.adapter_dir, trainable=False)
+    if args.no_adapter:
+        model, tokenizer = load_base_model(load_args)
+    else:
+        model, tokenizer = load_adapter(load_args, args.adapter_dir, trainable=False)
     try:
         if need_generate:
             kept, skip_ids = _resume_rows(gen_path, samples, args.no_resume)
@@ -334,13 +354,15 @@ def evaluate_one(args: argparse.Namespace) -> None:
                     progress_every=args.progress_every,
                     skip_question_ids=skip_ids,
                     pred_path=gen_path,
+                    splits=splits,
                 )
             rows, _missing = merge_resumed_rows(samples, kept + new_rows)
             summary = em_summary(rows)
             write_jsonl(gen_path, rows)
             write_json(args.output_dir / "summary.json", summary)
             print(
-                f"[eval generate] {args.adapter_dir} EM={summary['all']['em']:.4f} "
+                f"[eval generate] {label} EM={summary['all']['em']:.4f} "
+                f"official_EM={summary['all'].get('official_em', float('nan')):.4f} "
                 f"n={summary['all']['count']}",
                 flush=True,
             )
@@ -357,13 +379,14 @@ def evaluate_one(args: argparse.Namespace) -> None:
                     progress_every=args.progress_every,
                     skip_question_ids=skip_ids,
                     pred_path=closed_path,
+                    splits=splits,
                 )
             rows, _missing = merge_resumed_rows(samples, kept + new_rows)
             summary = closed_set_summary(rows)
             write_jsonl(closed_path, rows)
             write_json(args.output_dir / "summary_closed_set.json", summary)
             print(
-                f"[eval closed_set] {args.adapter_dir} EM={summary['all']['em']:.4f} "
+                f"[eval closed_set] {label} EM={summary['all']['em']:.4f} "
                 f"hits@1={summary['hits@1']:.4f} n={summary['all']['count']}",
                 flush=True,
             )

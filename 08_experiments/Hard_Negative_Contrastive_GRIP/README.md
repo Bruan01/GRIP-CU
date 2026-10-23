@@ -30,9 +30,11 @@ This is a working title, not a novelty claim. The literature review in `RESEARCH
 
 H2: `path_local` is not harder than uniform; `tail_range` is a weak signal. Do not train B2–B10 on those families. Official 10-way alignment passed listed-vs-uniform as a hygiene check (159/160), not a novelty result.
 
-Method gate: Qwen2.5-7B listed contrast vs original GRIP on official NELL23K val/test (9895). Generation test EM 84.91% → 89.12%; closed-set 86.93% → 92.05%. The 0.5B 96-question smoke still fails (43.8% vs 51.0%). Compute-matched H5 is not done. Details: `汇报_进展与实验结果.md`.
+Correction (2026-10-23): see `论文对齐与勘误.md`. The B1 below is not a strict paper reproduction (12,014 vs 20,000 QA, val-set k-shot, full-sequence loss, no S2 early stop, eps 1e-8), the gate is project-defined, and the 10-way lists are re-draws with the `process.py` rule. Strict-paper configs: `configs/run_b1_paper_nell23k.sh`, `configs/run_b1_paper_fb15k237.sh`, `configs/run_no_adapter_baseline.sh` (not run yet).
 
-Negative sampling: the official 10-way distractors are uniform draws over the 198 train relations. Homologous uniform negatives (experiment H) beat Stage-1 cosine-pool negatives (experiment I, +0.82 pp on the full 9895), and an offline audit shows why — the cosine top-40 pool captures less of the true distractor mass than uniform sampling does. Partial PCA whitening (experiment I2) repairs the degenerate embedding geometry (mean pairwise cosine 0.8776 → −0.0049, effective negatives 39.1/40 → 15.5) but cannot raise the coverage ceiling of a restricted pool. Details: `汇报_进展与实验结果.md` §4.9–4.10.
+Method gate (project-defined; historical, pre trainer fix): Qwen2.5-7B listed contrast vs our B1 on NELL23K test (4,944). Generation EM 84.91% → 89.12%; closed-set 86.93% → 92.05%. After the trainer fix: B1 84.16% → Random-K 88.61% (seed 2026), but only 83.92% → 84.51% with seed 2027. The 0.5B 96-question smoke still fails (43.8% vs 51.0%). Compute-matched H5 is not done. Details: `汇报_进展与实验结果.md`.
+
+Negative sampling: the 10-way distractors (`process.py` rule) are uniform draws over the 198 relations in our raw files (the paper reports 200). Homologous uniform negatives (experiment H) beat Stage-1 cosine-pool negatives (experiment I, +0.82 pp on the full 9895), and an offline audit shows why — the cosine top-40 pool captures less of the true distractor mass than uniform sampling does. Partial PCA whitening (experiment I2) repairs the degenerate embedding geometry (mean pairwise cosine 0.8776 → −0.0049, effective negatives 39.1/40 → 15.5) but cannot raise the coverage ceiling of a restricted pool. Details: `汇报_进展与实验结果.md` §4.9–4.10.
 
 ## Listed vs original GRIP training
 
@@ -41,7 +43,7 @@ Shared Stage 1 uses the `quick01_storage_quick` recipe (MLP LoRA r=4/alpha=8, fu
 - `b1`: generation loss only (original GRIP)
 - `listed`: generation + InfoNCE over 9 distractors. Default pool is the official 198 train-graph relations, sampled with the `process.py` rule. `LISTED_NEGATIVE_SOURCE=embed_sim` keeps that vocabulary but prefers Stage-1 cosine neighbors. `LISTED_NEGATIVE_SOURCE=qa_vocab` restores the older 370-relation QA-gold pool used by the 20260913 run.
 
-Both Stage 2 arms use the full QA epoch budget (no S2 early stop). Primary metric is greedy generation exact match.
+Both Stage 2 arms in these historical runs use the full QA epoch budget (no S2 early stop; the paper stops at loss 0.15). Primary metric is greedy generation exact match.
 
 Server jobs auto-enter a detached tmux session and write mid-run HuggingFace checkpoints (`--save_steps 10`, keep 2). Re-running the same `RUN_DIR` resumes from `trainer_*/checkpoint-*`. `SKIP_TMUX=1` is only for short debug. `FORCE_NEW=1` or `--no_resume` starts a directory/stage from scratch.
 

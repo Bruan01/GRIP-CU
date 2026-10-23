@@ -5,7 +5,8 @@ import numpy as np
 from transformers import PreTrainedTokenizer
 
 from constants import SYSTEM_PROMPT, ANSWER_TAG, TUPLE_DELIMITER
-from grip.tasks.utils import sample_fixed_hop_size_neighbor, clean_graph, shuffle_graph, compute_node_edge_weight, weighted_sampling
+from grip.tasks.utils import (sample_fixed_hop_size_neighbor, clean_graph, shuffle_graph, compute_node_edge_weight,
+                              weighted_sampling, sample_indices, sample_rooted_subgraph_edges)
 from models import BaseInferenceModel
 from .gen_base import GenGraphTaskBase
 
@@ -217,12 +218,35 @@ class GenReasoningQATask(GenGraphTaskBase):
             num_nodes = len(node_list)
 
             node_weights, edge_weights = compute_node_edge_weight(edge_index, num_nodes)
+            # Paper (Sec. 4.3, App. A.1): rooted 3-hop subgraph, <=3 sampled
+            # neighbors per hop, one randomly chosen question type per subgraph.
+            # Defaults keep the official code: 6 degree-weighted edges, round-robin.
+            rooted = self.kwargs.get("rooted_reasoning_subgraph", False)
+            random_type = self.kwargs.get("random_reasoning_type", False)
+            uniform = self.kwargs.get("uniform_sampling", False)
+            available_types = [0, 1, 2, 3] if self.add_kshot_qa else [0, 1, 2]
 
             question_type = 0
             for _ in range(self.num_qa):
 
-                sample_edge_index = weighted_sampling(list(range(len(edge_list))), edge_weights, 6)
+                if rooted:
+                    sample_edge_index = []
+                    for _attempt in range(100):
+                        root = sample_indices(num_nodes, node_weights, 1, uniform)[0]
+                        sample_edge_index = sample_rooted_subgraph_edges(
+                            edge_index, num_nodes, root,
+                            hop=self.kwargs.get("subgraph_hop", 3),
+                            max_nodes_per_hop=self.kwargs.get("subgraph_max_nodes_per_hop", 3),
+                        )
+                        if sample_edge_index:
+                            break
+                    if not sample_edge_index:
+                        raise RuntimeError("could not sample a non-empty rooted subgraph in 100 tries")
+                else:
+                    sample_edge_index = weighted_sampling(list(range(len(edge_list))), edge_weights, 6)
                 subgraph_edges = [edge_list[e] for e in sample_edge_index]
+                if random_type:
+                    question_type = random.choice(available_types)
 
                 context = ""
                 entry_format = "the {src} is {rel} the {tgt}; "

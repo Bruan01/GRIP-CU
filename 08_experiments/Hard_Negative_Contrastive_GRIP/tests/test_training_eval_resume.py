@@ -17,7 +17,7 @@ def test_evaluate_variant_resumes_without_redecoding_finished_question(tmp_path,
     path.write_text(json.dumps(first) + '\n{"question_id":')
     calls = []
 
-    def evaluate(model, tokenizer, record, max_length, *, skip_question_ids, pred_path):
+    def evaluate(model, tokenizer, record, max_length, *, skip_question_ids, pred_path, splits=None):
         calls.append(skip_question_ids)
         assert skip_question_ids == {"test:0"}
         row = dict(first, question_id="test:1", question="q1")

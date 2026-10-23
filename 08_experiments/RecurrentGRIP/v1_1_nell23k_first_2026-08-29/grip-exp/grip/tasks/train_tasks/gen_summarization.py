@@ -2,7 +2,8 @@ import numpy as np
 from transformers import PreTrainedTokenizer
 
 from constants import SYSTEM_PROMPT, ANSWER_TAG
-from grip.tasks.utils import sample_fixed_hop_size_neighbor, clean_graph, shuffle_graph, compute_node_edge_weight, weighted_sampling
+from grip.tasks.utils import (sample_fixed_hop_size_neighbor, clean_graph, shuffle_graph, compute_node_edge_weight,
+                              weighted_sampling, sample_indices, sample_rooted_subgraph_edges)
 from .gen_base import GenGraphTaskBase
 
 
@@ -93,10 +94,15 @@ class GenSummarizationTask(GenGraphTaskBase):
             node_weight, edge_weight = compute_node_edge_weight(edge_index, num_nodes)
 
 
+            # Paper: "randomly sample Ns nodes, Ns edges, and Ns subgraphs ... rooted
+            # at a randomly selected node". uniform_sampling follows that; the default
+            # keeps the official degree-weighted draws.
+            uniform = self.kwargs.get("uniform_sampling", False)
+
             # stage 1. generate initial summaries
             for _ in range(self.num_summarization):
                 # node summarization
-                sampled_node = weighted_sampling(list(range(len(node_list))), node_weight, 1)[0]
+                sampled_node = sample_indices(len(node_list), node_weight, 1, uniform)[0]
                 context = node_list[sampled_node]
                 summary_task = self.gen_user_s1_prompt.format(context=context)
                 summary_s1_tasks.append(summary_task)
@@ -105,7 +111,7 @@ class GenSummarizationTask(GenGraphTaskBase):
                 context_list.append(context)
 
                 # edge summarization
-                sampled_edge = weighted_sampling(list(range(len(edge_list))), edge_weight, 1)[0]
+                sampled_edge = sample_indices(len(edge_list), edge_weight, 1, uniform)[0]
                 edge = edge_list[sampled_edge]
                 edge_format = "the {src} is {rel} the {tgt}; "
                 context = edge_format.format(src=edge[0], rel=edge[1], tgt=edge[2])
@@ -116,17 +122,27 @@ class GenSummarizationTask(GenGraphTaskBase):
                 context_list.append(context)
 
                 #subgraph summarization
-                root_node = weighted_sampling(list(range(len(node_list))), node_weight, 1)[0]
-                subgraph_nodes, subgraph_edges = sample_fixed_hop_size_neighbor(
-                    edge_index.T,
-                    np.arange(len(edge_list)),
-                    root_node,
-                    num_nodes,
-                    hop=3,
-                    max_nodes_per_hop=3,
-                )
+                if uniform:
+                    # Uniform root; resample sink/isolated roots with no out-edge.
+                    positions = []
+                    for _attempt in range(100):
+                        root_node = sample_indices(num_nodes, node_weight, 1, True)[0]
+                        positions = sample_rooted_subgraph_edges(edge_index, num_nodes, root_node, 3, 3)
+                        if positions:
+                            break
+                    subgraph_edges = [edge_list[e] for e in positions]
+                else:
+                    root_node = weighted_sampling(list(range(len(node_list))), node_weight, 1)[0]
+                    subgraph_nodes, subgraph_edges = sample_fixed_hop_size_neighbor(
+                        edge_index.T,
+                        np.arange(len(edge_list)),
+                        root_node,
+                        num_nodes,
+                        hop=3,
+                        max_nodes_per_hop=3,
+                    )
 
-                subgraph_edges = [edge_list[e] for e in subgraph_edges.data]
+                    subgraph_edges = [edge_list[e] for e in subgraph_edges.data]
 
                 context = "The root node is {root}. The subgraph including edges: ".format(root=node_list[root_node])
                 entry_format = "the source node {src} is {rel} the target node {tgt}; "

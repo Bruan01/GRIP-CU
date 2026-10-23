@@ -57,12 +57,11 @@ def index_by_question_id(rows: list[dict]) -> dict[str, dict]:
     return indexed
 
 
-def eval_samples(record: dict) -> list[dict]:
-    return [
-        item
-        for item in record["recurrent_questions"]
-        if item.get("split") in {"validation", "test"}
-    ]
+def eval_samples(
+    record: dict, splits: tuple[str, ...] | list[str] = ("validation", "test")
+) -> list[dict]:
+    wanted = set(splits)
+    return [item for item in record["recurrent_questions"] if item.get("split") in wanted]
 
 
 def merge_resumed_rows(
