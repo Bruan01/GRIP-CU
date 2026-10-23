@@ -12,6 +12,8 @@ TASK_FILE="$ROOT/../../04_benchmark/data/wn18rr/tasks/grip_wn18rr_tasks.json"
 OUTPUT_DIR="$ROOT/outputs/paper_runs/wn18rr_taskfile_3090"
 cd "$ROOT"
 export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+mkdir -p "$OUTPUT_DIR"
+exec > >(tee -a "$OUTPUT_DIR/launcher.log") 2>&1
 
 "$PYTHON" scripts/train_task_file_adapter.py \
     --task_file "$TASK_FILE" \
@@ -26,4 +28,5 @@ export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 128 \
     --gradient_checkpointing \
-    --stage2_checkpoint_interval 0
+    --stage1_checkpoint_interval 25 \
+    --stage2_checkpoint_interval 10

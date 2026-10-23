@@ -178,6 +178,7 @@ def train(
          candidate_loss_interval: int = 1,
          stage2_checkpoint_dir: Optional[Union[str, Path]] = None,
          stage2_checkpoint_interval: int = 0,
+         resume_stage1_checkpoint: Optional[Union[str, Path]] = None,
          resume_stage2_checkpoint: Optional[Union[str, Path]] = None,
           **kwargs,
 ) -> tuple[Union[PreTrainedModel, PeftModel], PreTrainedTokenizer]:
@@ -197,7 +198,11 @@ def train(
         candidate_loss_weight=0.0,
     )
     if training_args.num_train_epochs > 0:
-        trainer.train()
+        trainer.train(
+            resume_from_checkpoint=(
+                str(resume_stage1_checkpoint) if resume_stage1_checkpoint else None
+            )
+        )
         if stage1_output_dir is not None:
             _save_stage_checkpoint(trainer, tokenizer, stage1_output_dir)
 
@@ -206,6 +211,8 @@ def train(
         training_dataset.enable_qa = True
         training_args_syn = deepcopy(training_args)
         training_args_syn.num_train_epochs = involve_qa_epochs
+        if stage2_checkpoint_dir is not None:
+            training_args_syn.output_dir = str(stage2_checkpoint_dir)
         if stage2_checkpoint_interval > 0:
             if stage2_checkpoint_dir is None:
                 raise ValueError('stage2_checkpoint_dir is required for periodic checkpoints.')

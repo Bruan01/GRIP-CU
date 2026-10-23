@@ -75,7 +75,27 @@ def parse_args() -> argparse.Namespace:
         action=argparse.BooleanOptionalAction,
         default=False,
     )
-    parser.add_argument("--stage2_checkpoint_interval", type=int, default=100)
+    parser.add_argument(
+        "--stage1_checkpoint_interval",
+        type=int,
+        default=25,
+        help="Save resumable Stage-1 Trainer checkpoints every N optimizer steps; 0 disables.",
+    )
+    parser.add_argument(
+        "--stage2_checkpoint_interval",
+        type=int,
+        default=10,
+        help="Save resumable Stage-2 Trainer checkpoints every N optimizer steps; 0 disables.",
+    )
+    parser.add_argument("--stage1_checkpoint_dir", type=Path, default=None)
+    parser.add_argument("--stage2_checkpoint_dir", type=Path, default=None)
+    parser.add_argument("--resume_stage1_checkpoint", type=Path, default=None)
+    parser.add_argument("--resume_stage2_checkpoint", type=Path, default=None)
+    parser.add_argument(
+        "--no_resume",
+        action="store_true",
+        help="Ignore final adapters and Trainer checkpoints and start the run from scratch.",
+    )
     parser.add_argument("--seed", type=int, default=2026)
     return parser.parse_args()
 
@@ -87,10 +107,32 @@ def write_json(path: Path, payload: dict) -> None:
     temporary.replace(path)
 
 
+def adapter_is_complete(path: Path) -> bool:
+    return (
+        (path / "adapter_config.json").is_file()
+        and (path / "adapter_model.safetensors").is_file()
+    )
+
+
+def latest_checkpoint(path: Path) -> Path | None:
+    checkpoints = []
+    for candidate in path.glob("checkpoint-*"):
+        if not candidate.is_dir():
+            continue
+        try:
+            step = int(candidate.name.rsplit("-", 1)[1])
+        except ValueError:
+            continue
+        checkpoints.append((step, candidate))
+    return max(checkpoints, default=(0, None), key=lambda item: item[0])[1]
+
+
 def main() -> None:
     args = parse_args()
     if args.max_context_samples < 0 or args.max_qa_samples < 0:
         raise ValueError("sample caps must be non-negative; 0 means all samples")
+    if args.stage1_checkpoint_interval < 0 or args.stage2_checkpoint_interval < 0:
+        raise ValueError("checkpoint intervals must be non-negative")
     if args.paper_protocol == "clegr_reasoning":
         raise ValueError(
             "The paper CLEGR protocol trains one dedicated adapter per test graph. "
@@ -120,6 +162,23 @@ def main() -> None:
         args.adam_epsilon = protocol.adam_epsilon
         args.gather_batches = protocol.gather_batches
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    stage1_dir = args.output_dir / "stage1_adapter"
+    stage2_dir = args.output_dir / "stage2_adapter"
+    stage1_checkpoint_dir = args.stage1_checkpoint_dir or args.output_dir / "stage1_checkpoints"
+    stage2_checkpoint_dir = args.stage2_checkpoint_dir or args.output_dir / "stage2_checkpoints"
+    stage1_complete = adapter_is_complete(stage1_dir)
+    stage2_complete = adapter_is_complete(stage2_dir)
+    if stage2_complete and not args.no_resume:
+        print(f"[resume] final Stage-2 adapter already exists: {stage2_dir}", flush=True)
+        return
+    resume_stage1 = args.resume_stage1_checkpoint
+    if resume_stage1 is None and not args.no_resume and not stage1_complete:
+        resume_stage1 = latest_checkpoint(stage1_checkpoint_dir)
+    resume_stage2 = args.resume_stage2_checkpoint
+    if resume_stage2 is None and not args.no_resume:
+        resume_stage2 = latest_checkpoint(stage2_checkpoint_dir)
+    load_adapter_dir = stage1_dir if stage1_complete and not args.no_resume else None
+    stage1_epochs_to_run = 0.0 if load_adapter_dir is not None else args.stage1_epochs
     started = time.time()
     heartbeat = args.output_dir / "heartbeat.json"
     config = {
@@ -132,6 +191,16 @@ def main() -> None:
         "task_file": str(args.task_file.resolve()),
         "output_dir": str(args.output_dir.resolve()),
         "config": config,
+        "resumability": {
+            "stage1_checkpoint_dir": str(stage1_checkpoint_dir.resolve()),
+            "stage1_checkpoint_interval": args.stage1_checkpoint_interval,
+            "stage2_checkpoint_dir": str(stage2_checkpoint_dir.resolve()),
+            "stage2_checkpoint_interval": args.stage2_checkpoint_interval,
+            "stage1_adapter_reused": bool(load_adapter_dir),
+            "resume_stage1_checkpoint": str(resume_stage1) if resume_stage1 else None,
+            "resume_stage2_checkpoint": str(resume_stage2) if resume_stage2 else None,
+            "no_resume": args.no_resume,
+        },
         "python": sys.executable,
     }
     write_json(args.output_dir / "metadata.json", metadata)
@@ -173,6 +242,9 @@ def main() -> None:
         "updated_at": now_iso(),
         "context_samples": len(context_samples),
         "qa_samples": len(qa_samples),
+        "stage1_adapter_reused": bool(load_adapter_dir),
+        "resume_stage1_checkpoint": str(resume_stage1) if resume_stage1 else None,
+        "resume_stage2_checkpoint": str(resume_stage2) if resume_stage2 else None,
     })
     tokenizer = get_hf_ft_tokenizer(
         model_name=args.model_name,
@@ -186,6 +258,7 @@ def main() -> None:
     dataset = TaskDataset(context_samples=context_samples, qa_samples=qa_samples, tokenizer=tokenizer)
     model, tokenizer = get_ft_model(
         model_name=args.model_name,
+        load_dir=str(load_adapter_dir) if load_adapter_dir else None,
         model_source=args.model_source,
         model_cache_dir=str(args.model_cache_dir),
         local_files_only=args.local_files_only,
@@ -200,8 +273,8 @@ def main() -> None:
     )
 
     training_args = TrainingArguments(
-        output_dir=str(args.output_dir / "trainer"),
-        num_train_epochs=args.stage1_epochs,
+        output_dir=str(stage1_checkpoint_dir),
+        num_train_epochs=stage1_epochs_to_run,
         per_device_train_batch_size=args.per_device_train_batch_size,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         learning_rate=args.learning_rate,
@@ -214,6 +287,8 @@ def main() -> None:
         logging_strategy="steps",
         logging_steps=1,
         save_strategy="no",
+        save_steps=args.stage1_checkpoint_interval if args.stage1_checkpoint_interval > 0 else 500,
+        save_total_limit=2,
         report_to="none",
         remove_unused_columns=False,
         bf16=args.dtype == "bfloat16",
@@ -224,15 +299,16 @@ def main() -> None:
         data_seed=args.seed,
     )
 
+    if args.stage1_checkpoint_interval > 0 and stage1_epochs_to_run > 0:
+        training_args.save_strategy = "steps"
+        training_args.save_steps = args.stage1_checkpoint_interval
+
     write_json(heartbeat, {
-        "status": "training_stage1",
+        "status": "reusing_stage1_adapter" if load_adapter_dir else "training_stage1",
         "updated_at": now_iso(),
         "context_samples": len(context_samples),
         "qa_samples": len(qa_samples),
     })
-    stage1_dir = args.output_dir / "stage1_adapter"
-    stage2_dir = args.output_dir / "stage2_adapter"
-    checkpoint_dir = args.output_dir / "stage2_checkpoints"
     model, tokenizer = train(
         model=model,
         tokenizer=tokenizer,
@@ -246,8 +322,10 @@ def main() -> None:
         s2_min_epoch=args.s2_min_epoch,
         stage1_output_dir=stage1_dir,
         stage2_output_dir=stage2_dir,
-        stage2_checkpoint_dir=checkpoint_dir,
+        stage2_checkpoint_dir=stage2_checkpoint_dir,
         stage2_checkpoint_interval=args.stage2_checkpoint_interval,
+        resume_stage1_checkpoint=resume_stage1,
+        resume_stage2_checkpoint=resume_stage2,
     )
     summary = {
         "status": "complete",
@@ -257,6 +335,12 @@ def main() -> None:
         "qa_samples": len(qa_samples),
         "stage1_adapter": str(stage1_dir.resolve()),
         "stage2_adapter": str(stage2_dir.resolve()),
+        "stage1_checkpoint_dir": str(stage1_checkpoint_dir.resolve()),
+        "stage2_checkpoint_dir": str(stage2_checkpoint_dir.resolve()),
+        "stage1_checkpoint_interval": args.stage1_checkpoint_interval,
+        "stage2_checkpoint_interval": args.stage2_checkpoint_interval,
+        "resumed_stage1_checkpoint": str(resume_stage1) if resume_stage1 else None,
+        "resumed_stage2_checkpoint": str(resume_stage2) if resume_stage2 else None,
     }
     write_json(args.output_dir / "summary.json", summary)
     write_json(heartbeat, {"status": "complete", "updated_at": now_iso(), **summary})

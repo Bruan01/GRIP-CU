@@ -26,6 +26,7 @@ REPO_ROOT="$(cd "$HNG/../.." && pwd)"
 BASELINE_DIR="${GRIP_BASELINE_DIR:-$REPO_ROOT/13_base_method/grip-exp}"
 CODE_DIR="${CODE_DIR:-$BASELINE_DIR}"
 PYTHON="${PYTHON:-/home/kieran/miniconda3/envs/guardenv/bin/python}"
+RECORD_SCRIPT="$HNG/scripts/record_run_artifacts.py"
 
 STEP="${STEP:-preflight}"
 SEED="${SEED:-2026}"
@@ -55,14 +56,26 @@ case "$DATASET" in
     DEFAULT_B1_ADAPTER=""
     DEFAULT_EXPECTED_LISTED=3109
     ;;
+  wn18rr)
+    # WN18RR is the one-graph paper benchmark.  The baseline adapter is the
+    # full-task, no-graph-context GRIP run; the listed-negative fork starts
+    # from its Stage-1 adapter and uses WN entity text to recover KG pairs.
+    DEFAULT_S1_ADAPTER="$CODE_DIR/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter"
+    DEFAULT_B1_ADAPTER="$CODE_DIR/outputs/paper_runs/wn18rr_taskfile_3090/stage2_adapter"
+    DEFAULT_EXPECTED_LISTED=2709
+    ;;
   *)
-    echo "error: unsupported DATASET=$DATASET (expected nell23k or fb15k237_2)" >&2
+    echo "error: unsupported DATASET=$DATASET (expected nell23k, fb15k237_2, or wn18rr)" >&2
     exit 1
     ;;
 esac
 S1_ADAPTER="${S1_ADAPTER:-$DEFAULT_S1_ADAPTER}"
 B1_ADAPTER="${B1_ADAPTER:-$DEFAULT_B1_ADAPTER}"
 RELATION_TEXT_FILE="${RELATION_TEXT_FILE:-}"
+ENTITY_TEXT_FILE="${ENTITY_TEXT_FILE:-}"
+if [[ "$DATASET" == "wn18rr" && -z "$ENTITY_TEXT_FILE" ]]; then
+  ENTITY_TEXT_FILE="$RAW_DIR/entity2text.txt"
+fi
 ARTIFACT_ROOT="${ARTIFACT_ROOT:-$HNG/results/runs/structure_counterfactual_artifacts}"
 SCORES_DIR="${SCORES_DIR:-$ARTIFACT_ROOT/b1_train_scores}"
 ROLLOUT_MANIFEST="${ROLLOUT_MANIFEST:-$ARTIFACT_ROOT/b1_train_rollout.jsonl}"
@@ -109,9 +122,49 @@ export GRIP_BASELINE_DIR="$BASELINE_DIR"
 export GRIP_TORCH_DTYPE="$TORCH_DTYPE"
 export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+export STEP SEED DATASET NEGATIVE_SOURCE DATA_ROOT MODEL_NAME MODEL_CACHE_DIR
+export TORCH_DTYPE INPUT_FILE EVAL_FILE RAW_DIR S1_ADAPTER B1_ADAPTER
+export ENTITY_TEXT_FILE
+export ARTIFACT_ROOT SCORES_DIR ROLLOUT_MANIFEST SAMPLER_DIR MANIFEST
+export COUNTERFACTUAL_METADATA EXPECTED_LISTED RUN_ID RUN_DIR
+export SWANLAB_PROJECT SWANLAB_EXPERIMENT_NAME SWANLAB_GROUP SWANLAB_MODE
+export LISTED_NEGATIVE_K="${LISTED_NEGATIVE_K:-9}"
+CANDIDATE_BATCH_SIZE="${CANDIDATE_BATCH_SIZE:-8}"
+PROGRESS_EVERY="${PROGRESS_EVERY:-10}"
+export CANDIDATE_BATCH_SIZE PROGRESS_EVERY
 RELATION_TEXT_ARGS=()
 if [[ -n "$RELATION_TEXT_FILE" ]]; then
   RELATION_TEXT_ARGS+=(--relation_text_file "$RELATION_TEXT_FILE")
+fi
+ENTITY_TEXT_ARGS=()
+if [[ -n "$ENTITY_TEXT_FILE" ]]; then
+  ENTITY_TEXT_ARGS+=(--entity_text_file "$ENTITY_TEXT_FILE")
+fi
+
+RUN_COMMAND="${RUN_COMMAND:-STEP=$STEP DATASET=$DATASET NEGATIVE_SOURCE=$NEGATIVE_SOURCE RUN_ID=$RUN_ID ARTIFACT_ROOT=$ARTIFACT_ROOT MODEL_CACHE_DIR=$MODEL_CACHE_DIR bash $0 $*}"
+RECORD_PATH_ARGS=(
+  --input_file "$INPUT_FILE"
+  --eval_file "$EVAL_FILE"
+  --raw_dir "$RAW_DIR"
+  --model_cache_dir "$MODEL_CACHE_DIR"
+  --scores_dir "$SCORES_DIR"
+  --benchmark_dir "$ARTIFACT_ROOT/score_benchmark"
+  --rollout_manifest "$ROLLOUT_MANIFEST"
+  --sampler_dir "$SAMPLER_DIR"
+  --manifest "$MANIFEST"
+  --counterfactual_metadata "$COUNTERFACTUAL_METADATA"
+)
+if [[ -n "$RELATION_TEXT_FILE" ]]; then
+  RECORD_PATH_ARGS+=(--relation_text_file "$RELATION_TEXT_FILE")
+fi
+if [[ -n "$ENTITY_TEXT_FILE" ]]; then
+  RECORD_PATH_ARGS+=(--entity_text_file "$ENTITY_TEXT_FILE")
+fi
+if [[ -n "$S1_ADAPTER" ]]; then
+  RECORD_PATH_ARGS+=(--s1_adapter "$S1_ADAPTER")
+fi
+if [[ -n "$B1_ADAPTER" ]]; then
+  RECORD_PATH_ARGS+=(--b1_adapter "$B1_ADAPTER")
 fi
 
 require_file() {
@@ -160,6 +213,7 @@ raise SystemExit(0 if _is_complete_model_dir(Path(r'$model_dir')) else 1)
 write_environment_record() {
   mkdir -p "$RUN_DIR"
   local git_head=""
+  local -A hashed_paths=()
   git_head="$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null || true)"
   # Windows-created worktrees keep a Windows gitdir pointer that WSL git
   # cannot resolve. Fall back to the Windows Git executable so the run
@@ -182,6 +236,7 @@ write_environment_record() {
     echo "raw_dir=$RAW_DIR"
     echo "negative_source=$NEGATIVE_SOURCE"
     echo "relation_text_file=$RELATION_TEXT_FILE"
+    echo "entity_text_file=$ENTITY_TEXT_FILE"
     echo "s1_adapter=$S1_ADAPTER"
     echo "b1_adapter=$B1_ADAPTER"
     echo "scores_dir=$SCORES_DIR"
@@ -196,18 +251,20 @@ write_environment_record() {
     uname -a
     "$PYTHON" -c "import sys,torch; print('python', sys.version); print('torch', torch.__version__); print('cuda', torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else '')"
     command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi || true
-    for path in "$INPUT_FILE" "$EVAL_FILE" "$RAW_DIR/train.txt" "$S1_ADAPTER/adapter_model.safetensors" "$B1_ADAPTER/adapter_model.safetensors" "$SCORES_DIR/candidate_scores.jsonl" "$SCORES_DIR/metadata.json" "$ROLLOUT_MANIFEST" "$MANIFEST" "$COUNTERFACTUAL_METADATA"; do
-      if [[ -f "$path" ]]; then
+    for path in "$INPUT_FILE" "$EVAL_FILE" "$RAW_DIR/train.txt" "$ENTITY_TEXT_FILE" "$S1_ADAPTER/adapter_model.safetensors" "$B1_ADAPTER/adapter_model.safetensors" "$SCORES_DIR/candidate_scores.jsonl" "$SCORES_DIR/metadata.json" "$ROLLOUT_MANIFEST" "$MANIFEST" "$COUNTERFACTUAL_METADATA"; do
+      if [[ -f "$path" && -z "${hashed_paths[$path]+seen}" ]]; then
         sha256sum "$path"
+        hashed_paths["$path"]=1
       fi
     done
-  } > "$RUN_DIR/environment.txt"
+  } >> "$RUN_DIR/environment.txt"
 }
 
 check_common_assets() {
   require_file "$INPUT_FILE"
   require_file "$RAW_DIR/train.txt"
   if [[ -n "$RELATION_TEXT_FILE" ]]; then require_file "$RELATION_TEXT_FILE"; fi
+  if [[ -n "$ENTITY_TEXT_FILE" ]]; then require_file "$ENTITY_TEXT_FILE"; fi
   require_dir "$HNG/src"
   require_dir "$BASELINE_DIR"
 }
@@ -220,8 +277,62 @@ check_train_assets() {
   check_cuda_and_model
 }
 
+enable_stage_log() {
+  mkdir -p "$RUN_DIR"
+  # Keep one durable launcher log per stage.  The stage recorder also stores
+  # structured status, while this captures validation errors and stdout/stderr.
+  exec > >(tee -a "$RUN_DIR/${STEP}.log") 2>&1
+}
+
+record_stage_start() {
+  "$PYTHON" "$RECORD_SCRIPT" \
+    --run_dir "$RUN_DIR" \
+    --repo_root "$REPO_ROOT" \
+    --baseline_dir "$BASELINE_DIR" \
+    --phase start \
+    --step "$STEP" \
+    --status running \
+    --exit_code 0 \
+    --run_id "$RUN_ID" \
+    --dataset "$DATASET" \
+    --negative_source "$NEGATIVE_SOURCE" \
+    --command "$RUN_COMMAND" \
+    "${RECORD_PATH_ARGS[@]}"
+}
+
+record_stage_finish() {
+  local code=$?
+  trap - EXIT
+  local stage_status=completed
+  if [[ "$code" -ne 0 ]]; then
+    stage_status=failed
+  fi
+  "$PYTHON" "$RECORD_SCRIPT" \
+    --run_dir "$RUN_DIR" \
+    --repo_root "$REPO_ROOT" \
+    --baseline_dir "$BASELINE_DIR" \
+    --phase finish \
+    --step "$STEP" \
+    --status "$stage_status" \
+    --exit_code "$code" \
+    --run_id "$RUN_ID" \
+    --dataset "$DATASET" \
+    --negative_source "$NEGATIVE_SOURCE" \
+    --command "$RUN_COMMAND" \
+    --hash_large \
+    "${RECORD_PATH_ARGS[@]}" || true
+  exit "$code"
+}
+
+start_stage_recording() {
+  enable_stage_log
+  record_stage_start
+  trap 'record_stage_finish' EXIT
+}
+
 case "$STEP" in
   preflight)
+    start_stage_recording
     check_common_assets
     echo "[preflight] read-only algorithm preflight passed"
     echo "[preflight] code=$HNG"
@@ -234,6 +345,7 @@ case "$STEP" in
     echo "[preflight] no GPU work was started"
     ;;
   rollout)
+    start_stage_recording
     if [[ "$NEGATIVE_SOURCE" == "structure_counterfactual" ]]; then
       echo "error: rollout is not part of the Structure-Counterfactual-9 mainline; use STEP=score" >&2
       exit 2
@@ -260,6 +372,7 @@ case "$STEP" in
       --resume
     ;;
   score)
+    start_stage_recording
     check_common_assets
     require_adapter_dir "B1" "$B1_ADAPTER"
     check_cuda_and_model
@@ -269,6 +382,7 @@ case "$STEP" in
       --task_file "$INPUT_FILE" \
       --raw_dir "$RAW_DIR" \
       "${RELATION_TEXT_ARGS[@]}" \
+      "${ENTITY_TEXT_ARGS[@]}" \
       --b1_adapter "$B1_ADAPTER" \
       --output_dir "$SCORES_DIR" \
       --model_name "$MODEL_NAME" \
@@ -283,6 +397,7 @@ case "$STEP" in
       --resume
     ;;
   freeze)
+    start_stage_recording
     check_common_assets
     require_file "$SCORES_DIR/candidate_scores.jsonl"
     require_file "$SCORES_DIR/metadata.json"
@@ -308,6 +423,10 @@ case "$STEP" in
         --seed "$SEED" \
         "${FREEZE_FLAGS[@]}"
     else
+      COUNTERFACTUAL_FLAGS=()
+      if [[ "$DATASET" == "wn18rr" ]]; then
+        COUNTERFACTUAL_FLAGS+=(--strip_first_underscore)
+      fi
       "$PYTHON" "$HNG/scripts/build_structure_counterfactual_bank.py" \
         --scores "$SCORES_DIR/candidate_scores.jsonl" \
         --raw_dir "$RAW_DIR" \
@@ -319,12 +438,16 @@ case "$STEP" in
         --violation_weight "${COUNTERFACTUAL_VIOLATION_WEIGHT:-1.0}" \
         --temperature "${COUNTERFACTUAL_TEMPERATURE:-0.25}" \
         --seed "$SEED" \
+        "${COUNTERFACTUAL_FLAGS[@]}" \
         "${FREEZE_FLAGS[@]}"
     fi
     ;;
   wire)
+    start_stage_recording
     check_common_assets
     require_file "$MANIFEST"
+    WIRE_OUTPUT="${WIRE_OUTPUT:-$RUN_DIR/wiring.json}"
+    mkdir -p "$(dirname "$WIRE_OUTPUT")"
     "$PYTHON" "$HNG/scripts/verify_error_memory_wiring.py" \
       --task_file "$INPUT_FILE" \
       --manifest "$MANIFEST" \
@@ -332,24 +455,32 @@ case "$STEP" in
       "${RELATION_TEXT_ARGS[@]}" \
       --expected_listed "$EXPECTED_LISTED" \
       --negative_source "$NEGATIVE_SOURCE" \
-      --output "${WIRE_OUTPUT:-$SAMPLER_DIR/wiring.json}"
+      --output "$WIRE_OUTPUT"
+    if [[ "$WIRE_OUTPUT" != "$RUN_DIR/wiring.json" ]]; then
+      cp -f "$WIRE_OUTPUT" "$RUN_DIR/wiring.json"
+    fi
+    if [[ "$WIRE_OUTPUT" != "$SAMPLER_DIR/wiring.json" ]]; then
+      mkdir -p "$SAMPLER_DIR"
+      cp -f "$WIRE_OUTPUT" "$SAMPLER_DIR/wiring.json"
+    fi
     ;;
   train)
-    if [[ "${ALLOW_TRAIN:-0}" != "1" ]]; then
-      echo "error: training is gated; set ALLOW_TRAIN=1 only after reviewing the preflight/wiring records" >&2
-      exit 2
-    fi
-    check_train_assets
-    if [[ -e "$RUN_DIR" ]]; then
-      echo "error: RUN_DIR already exists; choose a new RUN_ID/RUN_DIR instead of overwriting: $RUN_DIR" >&2
-      exit 1
-    fi
     if [[ "${SKIP_TMUX:-0}" != "1" ]]; then
       TMUX_SESSION="${TMUX_SESSION:-error-memory-k9-$(date +%Y%m%d)}"
       # shellcheck source=tmux_guard.sh
       source "$HNG/configs/tmux_guard.sh"
       tmux_guard_reexec "$0" "$@"
     fi
+    if [[ -e "$RUN_DIR" ]]; then
+      echo "error: RUN_DIR already exists; choose a new RUN_ID/RUN_DIR instead of overwriting: $RUN_DIR" >&2
+      exit 1
+    fi
+    start_stage_recording
+    if [[ "${ALLOW_TRAIN:-0}" != "1" ]]; then
+      echo "error: training is gated; set ALLOW_TRAIN=1 only after reviewing the preflight/wiring records" >&2
+      exit 2
+    fi
+    check_train_assets
     write_environment_record
     "$PYTHON" "$HNG/scripts/verify_error_memory_wiring.py" \
       --task_file "$INPUT_FILE" \
@@ -410,8 +541,31 @@ PY
       )
     fi
 
+    if [[ "$DATASET" == "wn18rr" ]]; then
+      DEFAULT_TRAIN_LORA_R=24
+      DEFAULT_TRAIN_LORA_ALPHA=48
+      DEFAULT_INVOLVE_QA_EPOCHS=5
+      DEFAULT_PER_DEVICE_TRAIN_BATCH_SIZE=4
+      DEFAULT_GRADIENT_ACCUMULATION_STEPS=128
+    else
+      DEFAULT_TRAIN_LORA_R=4
+      DEFAULT_TRAIN_LORA_ALPHA=8
+      DEFAULT_INVOLVE_QA_EPOCHS=10
+      DEFAULT_PER_DEVICE_TRAIN_BATCH_SIZE=1
+      DEFAULT_GRADIENT_ACCUMULATION_STEPS=512
+    fi
+    TRAIN_LORA_R="${TRAIN_LORA_R:-$DEFAULT_TRAIN_LORA_R}"
+    TRAIN_LORA_ALPHA="${TRAIN_LORA_ALPHA:-$DEFAULT_TRAIN_LORA_ALPHA}"
+    INVOLVE_QA_EPOCHS="${INVOLVE_QA_EPOCHS:-$DEFAULT_INVOLVE_QA_EPOCHS}"
+    PER_DEVICE_TRAIN_BATCH_SIZE="${PER_DEVICE_TRAIN_BATCH_SIZE:-$DEFAULT_PER_DEVICE_TRAIN_BATCH_SIZE}"
+    GRADIENT_ACCUMULATION_STEPS="${GRADIENT_ACCUMULATION_STEPS:-$DEFAULT_GRADIENT_ACCUMULATION_STEPS}"
     cd "$CODE_DIR"
-    "$PYTHON" "$HNG/scripts/train_listed_contrastive.py" \
+    # SwanLab 0.10.x treats SWANLAB_PROJECT as a nested JSON settings object.
+    # The trainer receives the same values explicitly through SWANLAB_FLAGS, so
+    # hide the shell exports from the Python process while retaining them for
+    # tmux re-exec and artifact recording.
+    env -u SWANLAB_PROJECT -u SWANLAB_EXPERIMENT_NAME -u SWANLAB_GROUP -u SWANLAB_MODE \
+      "$PYTHON" "$HNG/scripts/train_listed_contrastive.py" \
       --input_file "$INPUT_FILE" \
       --eval_file "$EVAL_FILE" \
       --output_dir "$RUN_DIR" \
@@ -420,13 +574,13 @@ PY
       --model_name "$MODEL_NAME" \
       --model_cache_dir "$MODEL_CACHE_DIR" \
       --dtype "$TORCH_DTYPE" \
-      --lora_r 4 \
-      --lora_alpha 8 \
+      --lora_r "$TRAIN_LORA_R" \
+      --lora_alpha "$TRAIN_LORA_ALPHA" \
       --target_modules down_proj up_proj gate_proj \
       --num_train_epochs 1 \
-      --involve_qa_epochs "${INVOLVE_QA_EPOCHS:-10}" \
-      --per_device_train_batch_size 1 \
-      --gradient_accumulation_steps "${GRADIENT_ACCUMULATION_STEPS:-512}" \
+      --involve_qa_epochs "$INVOLVE_QA_EPOCHS" \
+      --per_device_train_batch_size "$PER_DEVICE_TRAIN_BATCH_SIZE" \
+      --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \
       --s1_gradient_checkpointing \
       --learning_rate 1e-3 \
       --weight_decay 1e-4 \
