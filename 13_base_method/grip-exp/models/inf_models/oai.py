@@ -317,7 +317,7 @@ class ChatOpenAI(BaseOpenAILLM):
                 stop=stop_after_attempt(self.max_retries),
                 wait=wait_exponential_jitter(max=10),
                 reraise=True,
-                retry=retry_if_exception_type(self.retry_error_types),  # type: ignore
+                retry=retry_if_exception(self._retryable_exception),
             )
             async for attempt in retryer:
                 with attempt:

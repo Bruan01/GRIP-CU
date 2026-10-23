@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import random
+import time
 from pathlib import Path
 from abc import abstractmethod, ABC
 from typing import Optional
@@ -103,11 +104,31 @@ class GenGraphTaskBase(ABC):
         missing = [index for index, result in enumerate(results) if result is None]
         if not missing:
             print(f"Task cache hit: {stage} ({len(prompts)} prompts)")
+            self._write_progress(
+                stage,
+                total=len(prompts),
+                completed=len(prompts),
+                cached=len(prompts),
+                generated=0,
+                started_at=time.monotonic(),
+                status="completed",
+            )
             return results
 
         batch_size = max(1, int(getattr(self.task_generator, "batch_size", 1)))
         cached_count = len(prompts) - len(missing)
         print(f"Task cache: {stage}; reusing {cached_count}/{len(prompts)}, generating {len(missing)}")
+        started_at = time.monotonic()
+        completed_count = cached_count
+        self._write_progress(
+            stage,
+            total=len(prompts),
+            completed=completed_count,
+            cached=cached_count,
+            generated=0,
+            started_at=started_at,
+            status="running",
+        )
         with cache_path.open("a", encoding="utf-8") as stream:
             progress = tqdm(
                 total=len(prompts),
@@ -152,10 +173,83 @@ class GenGraphTaskBase(ABC):
                     # a killed process, not only after a clean Python exit.
                     os.fsync(stream.fileno())
                     progress.update(len(indices))
+                    completed_count += len(indices)
+                    self._write_progress(
+                        stage,
+                        total=len(prompts),
+                        completed=completed_count,
+                        cached=cached_count,
+                        generated=completed_count - cached_count,
+                        started_at=started_at,
+                        status="running" if completed_count < len(prompts) else "completed",
+                    )
+            except Exception as exc:
+                self._write_progress(
+                    stage,
+                    total=len(prompts),
+                    completed=completed_count,
+                    cached=cached_count,
+                    generated=completed_count - cached_count,
+                    started_at=started_at,
+                    status="failed",
+                    error=f"{type(exc).__name__}: {exc}",
+                )
+                raise
+            else:
+                self._write_progress(
+                    stage,
+                    total=len(prompts),
+                    completed=completed_count,
+                    cached=cached_count,
+                    generated=completed_count - cached_count,
+                    started_at=started_at,
+                    status="completed",
+                )
             finally:
                 progress.close()
 
         return results
+
+    def _write_progress(
+            self,
+            stage: str,
+            total: int,
+            completed: int,
+            cached: int,
+            generated: int,
+            started_at: float,
+            status: str,
+            error: Optional[str] = None,
+    ) -> None:
+        """Write a durable, machine-readable progress snapshot for a stage."""
+        if self.task_cache_dir is None:
+            return
+        elapsed = max(0.0, time.monotonic() - started_at)
+        rate = generated / elapsed if elapsed > 0 and generated > 0 else 0.0
+        remaining = max(0, total - completed)
+        eta_seconds = remaining / rate if rate > 0 else None
+        payload = {
+            "stage": stage,
+            "status": status,
+            "total": total,
+            "completed": completed,
+            "cached": cached,
+            "generated": generated,
+            "percent": round(100.0 * completed / total, 4) if total else 100.0,
+            "rate_prompt_per_second": round(rate, 4),
+            "eta_seconds": round(eta_seconds, 2) if eta_seconds is not None else None,
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        }
+        if error:
+            payload["error"] = error[:1000]
+        progress_path = self.task_cache_dir / f"{stage}.progress.json"
+        temp_path = progress_path.with_name(progress_path.name + ".tmp")
+        with temp_path.open("w", encoding="utf-8") as stream:
+            json.dump(payload, stream, ensure_ascii=False, indent=2)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temp_path, progress_path)
 
 
     def sample_post_process(self, text_list: list):
