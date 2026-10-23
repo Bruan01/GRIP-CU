@@ -1,17 +1,33 @@
-PYTHONPATH=. python scripts/mp_wrapper.py \
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
+PYTHON="/home/kieran/miniconda3/envs/guardenv/bin/python"
+cd "$ROOT"
+export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
+export VLLM_USE_FLASHINFER_SAMPLER=0
+
+# Disable the optional FlashInfer sampler because this WSL image has no nvcc;
+# vLLM's prebuilt attention path remains available for task generation.  The
+# paper release uses batches of four for vLLM task generation; this fits the
+# 24 GB RTX 3090 with the local Qwen2.5-7B generator.
+"$PYTHON" scripts/mp_wrapper.py \
     --script scripts/run_grip.py \
     --num_process 1 \
     --dataset wn18rr \
-    --output_file wn18rr_qwen_ultra_fix_instruct_qacontrol_3.json \
+    --output_file wn18rr_qwen_paper_3090.json \
     --do_eval \
     --metrics em f1 hit \
-    --llm_as_judge_model qwen-32b \
-    --report_to_wandb \
-    --wandb_project_name grip \
-    --wandb_run_name wn18rr_qwen_ultra_fix_instruct_qacontrol_3 \
     --subprocess_args \
     --overwrite True \
     --task_generator_model_name qwen-7b \
+    --task_generator_use_vllm True \
+    --task_generator_batch_size 4 \
+    --task_cache_dir /mnt/e/GRIP-CU/artifacts/grip_paper_tasks_3090/wn18rr \
+    --model_source local \
+    --model_cache_dir /mnt/e/GRIP-CU/model_cache \
+    --local_files_only True \
     --num_context_qa 8000 \
     --num_reason_qa 2000 \
     --num_summarization 6000 \
@@ -36,14 +52,13 @@ PYTHONPATH=. python scripts/mp_wrapper.py \
     --continue_training True \
     --remove_unused_columns True \
     --report_to none \
-    --overwrite_output_dir True \
     --per_device_train_batch_size 4 \
     --gradient_accumulation_steps 128 \
     --learning_rate 1e-3 \
     --weight_decay 1e-4 \
     --adam_beta1 0.9 \
     --adam_beta2 0.98 \
-    --adam_epsilon 1e-8 \
+    --adam_epsilon 1e-4 \
     --max_grad_norm 1.0 \
     --log_level info \
     --logging_strategy steps \
@@ -51,7 +66,7 @@ PYTHONPATH=. python scripts/mp_wrapper.py \
     --save_strategy no \
     --bf16 True \
     --tf32 False \
-    --gradient_checkpointing False \
+    --gradient_checkpointing True \
     --lr_scheduler_type linear \
     --no_graph_context True \
     --use_subgraph False \

@@ -260,8 +260,11 @@ class HuggingFaceLLMs(BaseInferenceModel):
             truncation=True,
             max_length=self.tokenize_max_length,
         )["input_ids"]
+        # vLLM 0.30 accepts token-id prompts as the first positional
+        # argument.  Older GRIP code used the removed ``prompt_token_ids``
+        # keyword, which fails after the engine has already loaded.
         outputs = self.model.generate(
-            prompt_token_ids=prompt_token_ids,
+            prompt_token_ids,
             sampling_params=self.sampling_params,
         )
         cleaned_responses = []

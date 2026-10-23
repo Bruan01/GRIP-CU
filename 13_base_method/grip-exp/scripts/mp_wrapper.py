@@ -2,6 +2,8 @@ import argparse
 import os
 import os.path as osp
 import subprocess
+import sys
+from pathlib import Path
 from typing import Optional
 
 import torch
@@ -20,6 +22,7 @@ MP_OUTPUT_DIR = 'outputs/mp/output'
 DATA_DIR = "outputs/data"
 GRIP_INF_OUTPUT_DIR = "outputs/grip_inf"
 LLM_INF_OUTPUT_DIR = "outputs/llm_inf"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def get_local_cache_root(rank: int):
     base = os.environ.get("SLURM_TMPDIR", "/tmp")
@@ -53,19 +56,22 @@ def run_command(
         ref_file: Optional[str] = None, ):
     env = os.environ.copy()
     env['CUDA_VISIBLE_DEVICES'] = str(visible_gpus[rank])
-    env["PYTHONPATH"] = "."
+    existing_pythonpath = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = os.pathsep.join(
+        value for value in (str(PROJECT_ROOT), existing_pythonpath) if value
+    )
     cache_root = get_local_cache_root(rank)
     os.makedirs(cache_root, exist_ok=True)
 
     env["TRITON_CACHE_DIR"] = os.path.join(cache_root, "triton")
     env["TORCHINDUCTOR_CACHE_DIR"] = os.path.join(cache_root, "inductor")
 
-    command = (['python', args.script]
+    command = ([sys.executable, args.script]
                + ['--rank', str(rank)]
                + args.subprocess_args \
                + ['--input_file', input_file,
                   '--output_file', output_file,
-                  '--ref_file', ref_file])
+                  '--ref_file', ref_file or ''])
     print('command: ', command)
     return subprocess.Popen(command, env=env)
 
@@ -141,11 +147,13 @@ def main(args):
     os.makedirs(MP_INPUT_DIR, exist_ok=True)
     os.makedirs(MP_OUTPUT_DIR, exist_ok=True)
 
-    input_file = osp.join(DATA_DIR, args.dataset, "processed_test.json")
-    if osp.exists(osp.join(DATA_DIR, args.dataset, "processed_train.json")):
-        ref_file = osp.join(DATA_DIR, args.dataset, "processed_train.json")
-    elif osp.exists(osp.join(DATA_DIR, args.dataset, "processed_val.json")):
-        ref_file = osp.join(DATA_DIR, args.dataset, "processed_val.json")
+    input_file = args.test_file or osp.join(args.data_dir, args.dataset, "processed_test.json")
+    if args.reference_file:
+        ref_file = args.reference_file
+    elif osp.exists(osp.join(args.data_dir, args.dataset, "processed_train.json")):
+        ref_file = osp.join(args.data_dir, args.dataset, "processed_train.json")
+    elif osp.exists(osp.join(args.data_dir, args.dataset, "processed_val.json")):
+        ref_file = osp.join(args.data_dir, args.dataset, "processed_val.json")
     else:
         ref_file = None
 
@@ -158,6 +166,12 @@ def main(args):
     data = load_list_json(input_file)
 
     if args.num_test:
+        if args.num_test > len(data):
+            raise ValueError(
+                f"Requested num_test={args.num_test}, but {input_file} contains only "
+                f"{len(data)} records. The paper CLEGR protocol needs 400 test graphs; "
+                "use the paper split or explicitly run the local-split variant."
+            )
         data = [data[i] for i in range(args.num_test)]
     else:
         args.num_test = len(data)
@@ -213,6 +227,11 @@ if __name__ == '__main__':
     parser.add_argument('--script', type=str, required=True)
     parser.add_argument('--num_process', type=int, required=True)
     parser.add_argument('--dataset', type=str, required=True)
+    parser.add_argument('--data_dir', type=str, default=DATA_DIR)
+    parser.add_argument('--test_file', type=str, default=None,
+                        help='Explicit JSON/JSONL test file; overrides data_dir/dataset.')
+    parser.add_argument('--reference_file', type=str, default=None,
+                        help='Explicit train/reference file; overrides data_dir/dataset.')
     parser.add_argument('--output_file', type=str, required=True)
     parser.add_argument('--num_test', type=int, default=None)
     parser.add_argument('--do_eval', action='store_true', )
