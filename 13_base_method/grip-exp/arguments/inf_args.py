@@ -18,6 +18,11 @@ class InferenceArguments:
         metadata={"help": "The API version for the OPENAI."}
     )
 
+    use_openai_api: bool = field(
+        default=False,
+        metadata={"help": "Use an OpenAI-compatible chat-completions endpoint instead of a local model."}
+    )
+
     use_vllm: bool = field(
         default=True,
         metadata={"help": "Whether to use vLLM for inference."}

@@ -5,12 +5,14 @@ https://github.com/microsoft/graphrag
 """
 import asyncio
 import json
+import os
 from abc import abstractmethod
 from datetime import datetime
 from typing import Optional, Union, Any, cast
 
 import openai
 import tiktoken
+from dotenv import load_dotenv
 from openai import AsyncOpenAI, OpenAI
 from tenacity import (
     AsyncRetrying,
@@ -124,11 +126,14 @@ class ChatOpenAI(BaseOpenAILLM):
             batch_size: int = -1,
             max_retries: int = 10,
             request_timeout: float = 180.0,
+            temperature: float = 0.6,
+            top_p: float = 0.9,
             retry_error_types: tuple[type[BaseException]] = OPENAI_RETRY_ERROR_TYPES,  # type: ignore
             **kwargs,
     ):
 
-        self.api_key = api_key
+        load_dotenv()
+        self.api_key = self._resolve_api_key(api_key, api_base)
         self.api_base = api_base
         self.api_version = api_version
         self.organization = organization
@@ -138,8 +143,30 @@ class ChatOpenAI(BaseOpenAILLM):
         self.retry_error_types = retry_error_types
         self.gen_max_length = gen_max_length
         self.batch_size = batch_size
+        self.temperature = temperature
+        self.top_p = top_p
         super().__init__()
-        self.tokenizer = tiktoken.encoding_for_model(self.model)
+        try:
+            self.tokenizer = tiktoken.encoding_for_model(self.model)
+        except (KeyError, ValueError):
+            # Qwen/SiliconFlow model IDs are not known to tiktoken.  The
+            # tokenizer is only used for optional accounting in this wrapper;
+            # cl100k_base is a safe fallback for request bookkeeping.
+            self.tokenizer = tiktoken.get_encoding("cl100k_base")
+
+    @staticmethod
+    def _resolve_api_key(api_key: Optional[str], api_base: Optional[str]) -> str:
+        """Resolve provider credentials without exposing them in argv/logs."""
+
+        if api_key and not api_key.startswith("${"):
+            return api_key
+        provider_key = "SILICONFLOW_API_KEY" if "siliconflow" in (api_base or "").lower() else "OPENAI_API_KEY"
+        resolved = os.getenv(provider_key) or os.getenv("SILICONFLOW_API_KEY") or os.getenv("OPENAI_API_KEY")
+        if not resolved:
+            raise RuntimeError(
+                f"Missing API credential. Set {provider_key} or OPENAI_API_KEY in the environment/.env."
+            )
+        return resolved
 
     def _create_openai_client(self):
         sync_client = OpenAI(
@@ -183,11 +210,15 @@ class ChatOpenAI(BaseOpenAILLM):
         model = self.model
         if not model:
             raise ValueError(_MODEL_REQUIRED_MSG)
+        request_kwargs = dict(kwargs)
+        request_kwargs.setdefault("max_tokens", self.gen_max_length)
+        request_kwargs.setdefault("temperature", self.temperature)
+        request_kwargs.setdefault("top_p", self.top_p)
         response = self.sync_client.chat.completions.create(  # type: ignore
             model=model,
             messages=messages,  # type: ignore
             stream=False,
-            **kwargs,
+            **request_kwargs,
         )  # type: ignore
         return response.choices[0].message.content or ""  # type: ignore
 
@@ -199,11 +230,15 @@ class ChatOpenAI(BaseOpenAILLM):
         model = self.model
         if not model:
             raise ValueError(_MODEL_REQUIRED_MSG)
+        request_kwargs = dict(kwargs)
+        request_kwargs.setdefault("max_tokens", self.gen_max_length)
+        request_kwargs.setdefault("temperature", self.temperature)
+        request_kwargs.setdefault("top_p", self.top_p)
         response = await self.async_client.chat.completions.create(  # type: ignore
             model=model,
             messages=messages,  # type: ignore
             stream=False,
-            **kwargs,
+            **request_kwargs,
         )
         return response.choices[0].message.content or ""  # type: ignore
 

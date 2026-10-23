@@ -8,6 +8,16 @@ cd "$ROOT"
 export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 export VLLM_USE_FLASHINFER_SAMPLER=0
 
+# Keep the SiliconFlow credential out of argv and logs.  ChatOpenAI also
+# loads this file, but exporting it here makes the child process behavior
+# explicit for the long-running task-generation job.
+if [[ -f "$ROOT/.env" ]]; then
+    set -a
+    # shellcheck disable=SC1091
+    source "$ROOT/.env"
+    set +a
+fi
+
 # The packaged benchmark has a 300/100/100 development split.  The original
 # GRIP paper evaluates CLEGR on the remaining 400 graphs after a 20% train
 # reference split, so materialize that split before launching the per-graph
@@ -23,11 +33,11 @@ if [[ ! -f "$CLEGR_PAPER_SPLIT_DIR/processed_train.json" || \
         --seed 2026
 fi
 
-# Use a small task-generator batch on the 24 GB RTX 3090.  The batch size is
-# an execution detail and does not change the paper task budget; batch two is
-# a conservative compromise after the first batch-four run stalled. CLEGR's
-# paper metric is evaluated afterward by scripts/judge_clegr_siliconflow.py,
-# not by the local EM/F1 diagnostics.
+# Generate the auxiliary GRIP tasks through the OpenAI-compatible SiliconFlow
+# endpoint.  This changes only the execution backend; the task counts and
+# graph-specific Adapter protocol remain unchanged.  CLEGR's paper metric is
+# evaluated afterward by scripts/judge_clegr_siliconflow.py, not by the local
+# EM/F1 diagnostics.
 "$PYTHON" scripts/mp_wrapper.py \
     --script scripts/run_grip.py \
     --num_process 1 \
@@ -38,10 +48,12 @@ fi
     --num_test 400 \
     --subprocess_args \
     --overwrite False \
-    --task_generator_model_name qwen-7b \
-    --task_generator_use_vllm True \
-    --task_generator_batch_size 2 \
-    --task_cache_dir /mnt/e/GRIP-CU/artifacts/grip_paper_tasks_3090/clegr_reasoning \
+    --task_generator_model_name Qwen/Qwen2.5-7B-Instruct \
+    --task_generator_use_vllm False \
+    --task_generator_batch_size 16 \
+    --task_cache_dir /mnt/e/GRIP-CU/artifacts/grip_paper_tasks_siliconflow_qwen7b/clegr_reasoning \
+    --use_openai_api True \
+    --api_base https://api.siliconflow.cn/v1 \
     --model_source local \
     --model_cache_dir /mnt/e/GRIP-CU/model_cache \
     --local_files_only True \

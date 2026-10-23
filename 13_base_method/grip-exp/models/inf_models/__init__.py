@@ -24,6 +24,7 @@ def get_inf_model(
         api_key: str = "${OPENAI_API_KEY}",
         api_base: str = "https://api.openai.com/v1/",
         api_version: Optional[str] = None,
+        use_openai_api: bool = False,
         **kwargs,
 ) -> BaseInferenceModel:
     if model_name.startswith("claude"):
@@ -33,7 +34,7 @@ def get_inf_model(
             batch_size=batch_size,
             gen_max_length=gen_max_length,
             **kwargs, )
-    elif model_name.startswith("gpt"):
+    elif model_name.startswith("gpt") or use_openai_api:
         return ChatOpenAI(
             api_key=api_key,
             api_base=api_base,
