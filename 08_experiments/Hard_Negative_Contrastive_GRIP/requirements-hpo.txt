@@ -1,0 +1,2 @@
+# Optional orchestration dependency; model-training dependencies remain unchanged.
+optuna>=4.0,<5
