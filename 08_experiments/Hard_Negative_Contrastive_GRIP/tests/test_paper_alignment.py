@@ -166,3 +166,73 @@ def test_s2_early_stop_on_generation_loss_ignores_infonce() -> None:
     control = SimpleNamespace(should_training_stop=False)
     default.on_log(None, None, control, logs={"loss": 0.9, "generation_loss": 0.1, "epoch": 1.0})
     assert not control.should_training_stop
+
+
+def _rows(split: str, flags: list[bool]) -> list[dict]:
+    return [
+        {
+            "question_id": f"nell23k:{split}:{index}",
+            "split": split,
+            "correct": flag,
+            "official_correct": flag,
+            "in_list": True,
+        }
+        for index, flag in enumerate(flags)
+    ]
+
+
+def test_em_summary_official_harness_drops_last_question(script) -> None:
+    rows = _rows("test", [True, False, True, False])[::-1]
+    summary = script.em_summary(rows, drop_last_line=True)
+    assert summary["test"]["official_em"] == pytest.approx(0.5)
+    assert summary["test"]["official_harness_count"] == 3
+    assert summary["test"]["official_harness_em"] == pytest.approx(2 / 3)
+    assert "official_harness_em" not in script.em_summary(rows)["test"]
+    with pytest.raises(ValueError):
+        script.em_summary(_rows("test", [True, True])[1:], drop_last_line=True)
+
+
+def _adamw(params, lr=1e-3):
+    return torch.optim.AdamW(params, lr=lr, betas=(0.9, 0.98), eps=1e-4, weight_decay=1e-4)
+
+
+def test_inherited_optimizer_keeps_moments_and_restarts_schedule() -> None:
+    from hard_negative_grip.listed_training import load_matching_optimizer_state
+
+    torch.manual_seed(0)
+    s1 = torch.nn.Linear(3, 2)
+    opt1 = _adamw(s1.parameters())
+    sched1 = torch.optim.lr_scheduler.LambdaLR(opt1, lambda step: max(0.0, 1 - step / 2))
+    for _ in range(2):
+        s1(torch.randn(4, 3)).sum().backward()
+        opt1.step()
+        sched1.step()
+        opt1.zero_grad()
+    saved = opt1.state_dict()
+    assert saved["param_groups"][0]["lr"] == pytest.approx(0.0)
+
+    s2 = torch.nn.Linear(3, 2)
+    opt2 = _adamw(s2.parameters())
+    load_matching_optimizer_state(opt2, saved)
+    state = opt2.state[next(iter(s2.parameters()))]
+    assert float(state["step"]) == 2.0
+    assert torch.equal(state["exp_avg"], saved["state"][0]["exp_avg"])
+    # Like the official S2: a new linear scheduler starts again from initial_lr.
+    torch.optim.lr_scheduler.LambdaLR(opt2, lambda step: 1 - step / 10)
+    assert opt2.param_groups[0]["lr"] == pytest.approx(1e-3)
+
+
+def test_inherited_optimizer_rejects_shape_mismatch() -> None:
+    from hard_negative_grip.listed_training import load_matching_optimizer_state
+
+    s1 = torch.nn.Linear(3, 2)
+    opt1 = _adamw(s1.parameters())
+    s1(torch.randn(4, 3)).sum().backward()
+    opt1.step()
+    opt2 = _adamw(torch.nn.Linear(4, 2).parameters())
+    with pytest.raises(ValueError, match="shape"):
+        load_matching_optimizer_state(opt2, opt1.state_dict())
+    opt3 = _adamw(torch.nn.Linear(3, 2).parameters(), lr=1e-3)
+    opt3.param_groups[0]["weight_decay"] = 0.0
+    with pytest.raises(ValueError, match="weight_decay"):
+        load_matching_optimizer_state(opt3, opt1.state_dict())

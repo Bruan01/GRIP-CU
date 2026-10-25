@@ -25,19 +25,24 @@ SEEDS="${SEEDS:-2026 2027}"
 S1_SEED="${S1_SEED:-2026}"
 SCORE_SEED="${SCORE_SEED:-2026}"
 STEPS="${STEPS:-tasks s1 b1 score freeze wire train}"
-ROOT="${ROOT:-$HNG/results/runs/paper_$DATASET}"
+# v2 (2026-10-25): S2 inherits the S1 AdamW, weight decay 1e-4, 1000-token decode,
+# validation+test decode. paper_$DATASET holds the v1 runs (fresh S2 AdamW, wd 0).
+ROOT="${ROOT:-$HNG/results/runs/paper_v2_$DATASET}"
 TMUX_SESSION="${TMUX_SESSION:-paper-$DATASET}"
 MIN_FREE_GB="${MIN_FREE_GB:-8}"
 
 case "$DATASET" in
   nell23k)
     RAW_DIR="${RAW_DIR:-$CODE_DIR/data/raw_datasets/nell23k}"
-    # All NELL23K test triples in the raw file (4,944; paper reports 4,952, see docs).
+    # All 4,944 concept-filtered NELL23K test triples (paper 4,952 = before the official
+    # concept filter; official harness scores 4,943, see docs).
     EVAL_FILE="${EVAL_FILE:-$HNG/data/nell23k/recurrent_relation_prediction_full.aligned.json}"
     TRAIN_REF="$ROOT/data/processed_train.json"
     LORA=(--lora_r 4 --lora_alpha 8)
     S2_EPOCHS=10
     REL_TEXT=()
+    # Official process.py drops each raw file's last line: also report the 4,943-question score.
+    HARNESS=(--official_drop_last_line)
     ;;
   fb15k237)
     DATA_DIR="${DATA_DIR:-$HNG/data/fb15k237}"
@@ -48,6 +53,7 @@ case "$DATASET" in
     LORA=(--lora_r 24 --lora_alpha 48)
     S2_EPOCHS=5
     REL_TEXT=(--relation_text_file "$RAW_DIR/rel2text.json")
+    HARNESS=()
     ;;
   *) echo "error: unknown DATASET=$DATASET" >&2; exit 1 ;;
 esac
@@ -77,11 +83,13 @@ check_disk() {
 }
 adapter_done() { [[ -f "$1/adapter_config.json" && -f "$1/adapter_model.safetensors" ]]; }
 
-# Table 13 (Qwen2.5-7B) settings shared by S1 and every S2 arm. Weight decay is not
-# in the paper (project choice: 0); Table 13's 1e-4 is the Adam epsilon.
+# Table 13 (Qwen2.5-7B) settings shared by S1 and every S2 arm. Where the paper is
+# silent we follow the official code: weight decay 1e-4 (official shell; Table 13's
+# 1e-4 is the Adam epsilon), S2 reuses the S1 AdamW state, decode max_new_tokens 1000.
+# Model selection uses validation only; test is reported once per final config.
 COMMON=(
   "$PYTHON" "$HNG/scripts/train_listed_contrastive.py"
-  --input_file "$TASK_FILE" --eval_file "$EVAL_FILE" --eval_splits test
+  --input_file "$TASK_FILE" --eval_file "$EVAL_FILE" --eval_splits validation test "${HARNESS[@]}"
   --model_name qwen-7b --model_cache_dir "$CODE_DIR/model_cache"
   --raw_dir "$RAW_DIR" "${REL_TEXT[@]}"
   "${LORA[@]}" --target_modules down_proj up_proj gate_proj
@@ -89,8 +97,8 @@ COMMON=(
   --involve_qa_epochs "$S2_EPOCHS" --s2_stop_loss_threshold 0.15 --s2_min_epoch 1
   --s2_stop_loss_key generation_loss --qa_loss_mask answer_only
   --per_device_train_batch_size 1 --gradient_accumulation_steps 512 --s1_gradient_checkpointing
-  --learning_rate 1e-3 --weight_decay 0 --adam_epsilon 1e-4 --max_grad_norm 1.0
-  --gen_max_length 32 --save_steps 10 --save_total_limit 2
+  --learning_rate 1e-3 --weight_decay 1e-4 --adam_epsilon 1e-4 --max_grad_norm 1.0
+  --s2_optimizer inherit_s1 --gen_max_length 1000 --save_steps 10 --save_total_limit 2
 )
 
 log "started steps=[$STEPS] seeds=[$SEEDS] root=$ROOT"

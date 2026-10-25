@@ -224,6 +224,40 @@ class ListedQADataset(torch.utils.data.Dataset):
         }
 
 
+def load_matching_optimizer_state(optimizer, state: dict) -> None:
+    """Load a saved optimizer state, refusing silent shape/order mismatches.
+
+    ``Optimizer.load_state_dict`` maps parameters by position and never checks
+    tensor shapes, so a reordered or different LoRA would load garbage moments.
+    """
+    saved_groups = state["param_groups"]
+    groups = optimizer.param_groups
+    if [len(g["params"]) for g in saved_groups] != [len(g["params"]) for g in groups]:
+        raise ValueError(
+            "inherited optimizer has different param groups: "
+            f"{[len(g[params]) for g in saved_groups]} vs {[len(g[params]) for g in groups]}"
+        )
+    for saved, group in zip(saved_groups, groups):
+        for key in ("weight_decay", "eps", "betas"):
+            if key in saved and key in group and tuple(np_tuple(saved[key])) != tuple(np_tuple(group[key])):
+                raise ValueError(f"inherited optimizer {key}={saved[key]} != current {group[key]}")
+        for index, param in zip(saved["params"], group["params"]):
+            slot = state["state"].get(index)
+            if slot is None:
+                continue
+            for name in ("exp_avg", "exp_avg_sq"):
+                if name in slot and tuple(slot[name].shape) != tuple(param.shape):
+                    raise ValueError(
+                        f"inherited {name} for param {index} has shape "
+                        f"{tuple(slot[name].shape)}, expected {tuple(param.shape)}"
+                    )
+    optimizer.load_state_dict(state)
+
+
+def np_tuple(value) -> tuple:
+    return tuple(value) if isinstance(value, (tuple, list)) else (value,)
+
+
 class ListedContrastiveTrainer(Trainer):
     """Generation loss plus optional listed-candidate InfoNCE."""
 
@@ -233,8 +267,10 @@ class ListedContrastiveTrainer(Trainer):
         lambda_candidate: float = 0.0,
         temperature: float = 1.0,
         memory_size: int = 0,
+        inherit_optimizer_state: dict | None = None,
         **kwargs,
     ) -> None:
+        self.inherit_optimizer_state = inherit_optimizer_state
         super().__init__(*args, **kwargs)
         # compute_loss returns one microbatch and ignores num_items_in_batch.
         # Tell Trainer to divide by the actual accumulation-window size.
@@ -299,6 +335,16 @@ class ListedContrastiveTrainer(Trainer):
     def create_optimizer_and_scheduler(self, num_training_steps: int):
         self.trainer_max_steps = int(num_training_steps)
         return super().create_optimizer_and_scheduler(num_training_steps)
+
+    def create_optimizer(self, *args, **kwargs):
+        optimizer = super().create_optimizer(*args, **kwargs)
+        if self.inherit_optimizer_state is not None:
+            # Official GRIP passes the S1 optimizer object into S2
+            # (optimizers=(trainer.optimizer, None)): Adam moments, step count and
+            # initial_lr carry over; the scheduler is rebuilt from initial_lr.
+            load_matching_optimizer_state(optimizer, self.inherit_optimizer_state)
+            self.inherit_optimizer_state = None
+        return optimizer
 
     def _batch_lambda(self, weights, n_items: int, device) -> torch.Tensor:
         """Per-QA InfoNCE weights; missing values fall back to the global lambda."""

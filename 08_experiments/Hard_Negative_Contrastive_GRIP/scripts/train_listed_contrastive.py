@@ -156,6 +156,13 @@ def parse_args() -> argparse.Namespace:
         help="GRIP Table 13 lists Adam epsilon 1e-4. Default 1e-8 keeps old runs reproducible.",
     )
     parser.add_argument("--max_grad_norm", type=float, default=1.0)
+    parser.add_argument(
+        "--s2_optimizer",
+        choices=["fresh", "inherit_s1"],
+        default="fresh",
+        help="inherit_s1 = official GRIP: S2 reuses the S1 AdamW state "
+        "(s1_adapter/s1_optimizer.pt); the LR schedule restarts at learning_rate.",
+    )
     parser.add_argument("--lambda_candidate", type=float, default=1.0)
     parser.add_argument(
         "--memory_size",
@@ -171,6 +178,13 @@ def parse_args() -> argparse.Namespace:
         choices=["validation", "test"],
         default=["validation", "test"],
         help="Splits decoded after training. GRIP reports test only.",
+    )
+    parser.add_argument(
+        "--official_drop_last_line",
+        action="store_true",
+        help="Also report official_harness_em: the official NELL23K process.py reads "
+        "split('\\n')[:-1] and drops the last triple of each raw file (no trailing "
+        "newline), so the official harness scores 4,943 test questions, not 4,944.",
     )
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument(
@@ -522,6 +536,9 @@ def train_stage1(
         print("[s1] start fresh (no checkpoint)", flush=True)
     trainer.train(resume_from_checkpoint=resume_from)
     adapter_dir = output_dir / "s1_adapter"
+    adapter_dir.mkdir(parents=True, exist_ok=True)
+    # Official GRIP hands this optimizer object to S2; keep it for --s2_optimizer inherit_s1.
+    torch.save(trainer.optimizer.state_dict(), adapter_dir / S1_OPTIMIZER_FILE)
     save_adapter(
         model,
         tokenizer,
@@ -543,6 +560,20 @@ def train_stage1(
     release_cuda()
     print(f"[s1] saved {adapter_dir}", flush=True)
     return adapter_dir
+
+
+S1_OPTIMIZER_FILE = "s1_optimizer.pt"
+
+
+def load_s1_optimizer_state(args: argparse.Namespace, s1_adapter: Path) -> dict | None:
+    if getattr(args, "s2_optimizer", "fresh") != "inherit_s1":
+        return None
+    path = Path(s1_adapter) / S1_OPTIMIZER_FILE
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"--s2_optimizer inherit_s1 needs {path}; rerun S1 with this script version"
+        )
+    return torch.load(path, map_location="cpu", weights_only=False)
 
 
 def train_stage2(
@@ -620,6 +651,7 @@ def train_stage2(
         lambda_candidate=lambda_candidate,
         temperature=args.temperature,
         memory_size=args.memory_size,
+        inherit_optimizer_state=load_s1_optimizer_state(args, s1_adapter),
         callbacks=callbacks,
     )
     started = time.time()
@@ -667,6 +699,7 @@ def train_stage2(
             "trainer_epoch": float(trainer.state.epoch or 0.0),
             "s2_stop_loss_threshold": s2_threshold,
             "s2_stop_loss_key": getattr(args, "s2_stop_loss_key", "loss"),
+            "s2_optimizer": getattr(args, "s2_optimizer", "fresh"),
             "qa_loss_mask": "answer_only" if answer_only else "full",
             "per_device_train_batch_size": stage_args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
@@ -773,8 +806,17 @@ def evaluate_adapter(
     return rows
 
 
-def em_summary(rows: list[dict]) -> dict:
-    """``em`` = project parser; ``official_em`` = GRIP strict tag parser (headline)."""
+def _question_index(row: dict) -> int:
+    return int(str(row.get("question_id", "")).rsplit(":", 1)[-1])
+
+
+def em_summary(rows: list[dict], drop_last_line: bool = False) -> dict:
+    """``em`` = project parser; ``official_em`` = GRIP strict tag parser (headline).
+
+    ``drop_last_line`` adds ``official_harness_em``: official_em without the
+    highest-index question of each split (the raw-file last line that the
+    official NELL23K loader drops).
+    """
     buckets: dict[str, list[bool]] = {}
     official: dict[str, list[bool]] = {}
     for row in rows:
@@ -800,6 +842,15 @@ def em_summary(rows: list[dict]) -> dict:
     all_official = [value for values in official.values() for value in values]
     if all_official and len(all_official) == len(all_values):
         summary["all"]["official_em"] = sum(all_official) / len(all_official)
+    if drop_last_line:
+        for split in buckets:
+            split_rows = [row for row in rows if str(row.get("split", "unknown")) == split]
+            last = max(_question_index(row) for row in split_rows)
+            if last != len(split_rows) - 1:
+                raise ValueError(f"{split}: question ids are not 0..{len(split_rows) - 1}")
+            kept = [bool(row["official_correct"]) for row in split_rows if _question_index(row) != last]
+            summary[split]["official_harness_count"] = len(kept)
+            summary[split]["official_harness_em"] = sum(kept) / len(kept) if kept else 0.0
     return summary
 
 
@@ -886,7 +937,7 @@ def evaluate_variant(
         if missing:
             raise RuntimeError(f"evaluation incomplete: {len(missing)} questions missing")
         write_jsonl(pred_path, rows)
-        summary = em_summary(rows)
+        summary = em_summary(rows, drop_last_line=bool(getattr(args, "official_drop_last_line", False)))
         (output_dir / "summary.json").write_text(
             json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
         )
@@ -916,6 +967,8 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "s2_stop_loss_threshold": args.s2_stop_loss_threshold,
         "s2_min_epoch": args.s2_min_epoch,
         "s2_stop_loss_key": args.s2_stop_loss_key,
+        "s2_optimizer": args.s2_optimizer,
+        "official_drop_last_line": bool(args.official_drop_last_line),
         "qa_loss_mask": args.qa_loss_mask,
         "weight_decay": args.weight_decay,
         "adam_epsilon": args.adam_epsilon,
@@ -966,8 +1019,8 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             "370-relation QA-gold pool. Prompts stay unchanged. Val/test EM still uses "
             "the aligned relation-prediction split. Without --s2_stop_loss_threshold both "
             "Stage-2 arms use the full QA epoch budget (compute-matched, not GRIP); with it, "
-            "S2 stops like GRIP Table 13. S2 always builds a fresh AdamW: the paper is "
-            "silent and the official code reuses the S1 optimizer object in-process."
+            "S2 stops like GRIP Table 13. The paper is silent on the S2 optimizer; "
+            "--s2_optimizer inherit_s1 follows the official code (S1 AdamW state reused)."
         ),
     }
     (output_dir / "run_config.json").write_text(

@@ -25,7 +25,7 @@ def test_evaluate_variant_resumes_without_redecoding_finished_question(tmp_path,
         return [row]
 
     monkeypatch.setattr(module, "evaluate_adapter", evaluate)
-    monkeypatch.setattr(module, "em_summary", lambda rows: {"all": {"em": 1.0, "count": len(rows)}})
+    monkeypatch.setattr(module, "em_summary", lambda rows, **_: {"all": {"em": 1.0, "count": len(rows)}})
     args = SimpleNamespace(no_resume=False, gen_max_length=32)
     summary = module.evaluate_variant(args, {"recurrent_questions": samples}, tmp_path / "adapter", tmp_path,
                                       model=object(), tokenizer=object())
