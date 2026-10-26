@@ -1,5 +1,49 @@
 # NELL23K 验证集自动搜索
 
+> 2026-10-26：当前运行已按用户的 2～3 天限制改用 **60 小时方案**，入口为 `configs/run_validation_budget.sh`。下文原 8 次 Optuna 方案保留为历史说明，当前不要重新启动旧入口。
+
+## 当前方案：27 个训练轮次，60 小时总上限
+
+旧策略的前四次均训练 10 轮，缺少计算预算控制。修订发生在第一个 HPO 验证结果产生之前，原因仅为用户要求压缩运行时间，不依据任何新增 validation 或 test 分数。
+
+| 阶段 | 配置 | S2 轮数 |
+| --- | --- | --- |
+| 接收当前运行 | Soft-Mix，scale=1.0 | 10 |
+| 等预算筛选 1 | Soft-Mix，scale=1.0 | 3 |
+| 等预算筛选 2 | Soft-Mix，scale=0.5 | 3 |
+| 等预算筛选 3 | Calibrated，scale=1.0 | 3 |
+| 等预算筛选 4 | Calibrated，scale=0.5 | 3 |
+| 后续轮数检查 | 四个 3 轮配置中 validation 最佳者 | 5 |
+
+共 6 个试验、27 轮训练。四个短训使用完全相同的 3 轮预算，避免用长短不同的结果决定最后的配置。最后 5 轮仍从共享 S1 开始，不直接延长 3 轮 checkpoint，避免混用不同长度的线性学习率计划。这是轮数检查，不是独立种子确认。最终在所有完整验证结果（包括原 10 轮）中选优，平分取较早试验。缩窄范围为两方法 × 两权重，不再声称做连续空间 TPE 搜索；短训排名可能与长训不同，这一限制必须随结果报告。
+
+- 以实测约 160 秒/optimizer step 估计，27 轮约 47 小时训练，加 6 次 validation，预计 50～55 小时；硬上限 60 小时包含已经运行的 anchor 时间、等待、训练和解码。硬上限约束运行时长，不保证所有配置都完成，也不保证超过论文。
+- 原启动时间固定为 `2026-10-26T12:14:42Z`，截止 `2026-10-29T00:14:42Z`（北京时间 10 月 29 日 08:14:42）。恢复不会重置时钟。
+- 当前 10 轮 GPU 子进程继续在原 tmux 中运行；仅暂停旧的搜索父进程，防止它再派发剩余长训。新调度器等待子进程结束后终止旧父进程，获取同一个 `pipeline.lock` 才启动下一项，绝不并发抢 GPU。`/proc` 启动时间和命令校验用于防止 PID 复用误发信号。
+- 原 study 保留当时 RUNNING/WAITING 的历史状态，并在新目录 `handoff.json` / `source_status.json` 中标为 superseded；原 trial_000 成绩由新台账明确接收，不篡改旧 SQLite 参数或指纹。旧命令已被本次计划替代，恢复必须使用新入口。
+- 原模型输入、代码、S1、负样本指纹全部复核；新计划使用独立目录 `results/runs/paper_v2_nell23k/hpo_budget60_seed2026/`，冻结计划、绝对截止时间和代码指纹。
+- 训练仍每 10 optimizer step 保存断点、保留 2 个；原 anchor 异常时也从原目录断点恢复。到时停止当前子进程，保留最近完整 checkpoint 和已写 JSONL，只有完成全部 4,951 题验证的试验有资格入选。`best.json.status` 区分 `COMPLETE`、`BUDGET_EXHAUSTED`、`INTERRUPTED`；超时时如实报告完成数量，不把部分结果算作完成。
+- 仍使用 validation 4,950 题主口径、自由贪心、1000 token、官方答案解析；不缩短解码上限、不用 test。三种子最终复现与 test 不在这 60 小时搜索预算内，须待配置固定后执行。
+
+首次接管命令（PID 为本次已有运行身份，脚本还会验证命令与进程启动时间）：
+
+```bash
+SOURCE_SUPERVISOR_PID=334212 SOURCE_TRAINING_PID=334223 \
+  STARTED_AT=2026-10-26T12:14:42Z TMUX_SESSION=nell-validation-budget60 \
+  bash configs/run_validation_budget.sh
+```
+
+同目录断点恢复（脚本读取已冻结的进程身份和时间，不重新计时）：
+
+```bash
+bash configs/run_validation_budget.sh
+tmux attach -t nell-validation-budget60
+```
+
+总日志为新目录 `run.log`；当前 anchor 日志仍为旧目录 `hpo_seed2026/trial_000/run.log`。新目录 `trials.json`、`VARIANTS.md`、`best.json` 是当前计划结果台账。若超时，先报告已完成结果，不能悄悄延长预算。
+
+## 历史方案：8 次 Optuna 搜索
+
 本入口复用共享 S1 和 train-only 冻结负样本，仅搜索 S2。不会启动 S1、离线打分或 test 解码，也不会修改当前训练队列。Optuna 的 TPE 算法依据已经完成的验证结果提出后续参数；有限预算下只能得到已尝试配置中的最佳结果，不保证全局最优。
 
 ## 搜索空间
