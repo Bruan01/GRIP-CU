@@ -33,12 +33,17 @@ ARGS=(--input_file "$TASK_FILE" --eval_file "$EVAL_FILE" --s1_adapter "$S1_ADAPT
       --source_search_dir "$SOURCE_SEARCH_DIR" --source_supervisor_pid "$SOURCE_SUPERVISOR_PID"
       --source_training_pid "$SOURCE_TRAINING_PID" --started_at "$STARTED_AT"
       --budget_hours "$BUDGET_HOURS" --seed "$SEED")
+RUNNER="$HNG/scripts/search_validation_budget.py"
+if [[ -n "${RECOVERY_HOURS:-}" ]]; then
+  RUNNER="$HNG/scripts/resume_validation_budget.py"
+  ARGS+=(--recovery_hours "$RECOVERY_HOURS")
+fi
 export PYTHONPATH="$CODE_DIR:$HNG/src:$HNG/scripts${PYTHONPATH:+:$PYTHONPATH}"
 export TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 cd "$CODE_DIR"
 if [[ "${DRY_RUN:-0}" == 1 ]]; then
-  exec "$PYTHON" "$HNG/scripts/search_validation_budget.py" "${ARGS[@]}" --dry_run
+  exec "$PYTHON" "$RUNNER" "${ARGS[@]}" --dry_run
 fi
 if [[ -z "${TMUX:-}" ]] && tmux has-session -t "$TMUX_SESSION" 2>/dev/null; then
   echo "Session $TMUX_SESSION already exists; attach: tmux attach -t $TMUX_SESSION"
@@ -46,10 +51,10 @@ if [[ -z "${TMUX:-}" ]] && tmux has-session -t "$TMUX_SESSION" 2>/dev/null; then
 fi
 # Source GPU process deliberately holds pipeline.lock until the adopted anchor exits.
 # The new runner takes that lock before starting any further GPU process.
-"$PYTHON" "$HNG/scripts/search_validation_budget.py" "${ARGS[@]}" --dry_run
+"$PYTHON" "$RUNNER" "${ARGS[@]}" --dry_run
 source "$HNG/configs/tmux_guard.sh"
 tmux_guard_reexec "$0" "$@"
 mkdir -p "$SEARCH_DIR"
 exec > >(tee -a "$SEARCH_DIR/run.log") 2>&1
 echo "[budget] session=$TMUX_SESSION root=$SEARCH_DIR budget_hours=$BUDGET_HOURS"
-"$PYTHON" "$HNG/scripts/search_validation_budget.py" "${ARGS[@]}"
+"$PYTHON" "$RUNNER" "${ARGS[@]}"

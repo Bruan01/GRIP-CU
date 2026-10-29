@@ -183,6 +183,31 @@ def test_reused_pid_never_receives_signal(monkeypatch):
     budget.checked_signal(saved, signal.SIGSTOP)
 
 
+def test_recovery_preserves_original_config_and_cutoff_on_restart(args, monkeypatch):
+    import resume_validation_budget as recovery
+    monkeypatch.setattr(recovery, "budget", budget)
+    budget.run_search(args, execute=lambda _, directory: summary(directory, 0.8), adopt=lambda _: None)
+    config_path = args.search_dir / "search_config.json"
+    before = config_path.read_bytes()
+    original, record = recovery.recovery_record(args, 18)
+    hpo.write_json(args.search_dir / "recovery_config.json", record)
+    monkeypatch.setattr(recovery.time, "time", lambda: 9999999999)
+    assert recovery.recovery_record(args, 18) == (original, record)
+    assert config_path.read_bytes() == before
+    with pytest.raises(ValueError, match="Recovery configuration differs"):
+        recovery.recovery_record(args, 20)
+
+
+def test_recovery_rejects_modified_inputs(args, monkeypatch):
+    import resume_validation_budget as recovery
+    monkeypatch.setattr(recovery, "budget", budget)
+    budget.run_search(args, execute=lambda _, directory: summary(directory, 0.8), adopt=lambda _: None)
+    args.input_file.write_text("changed")
+    with pytest.raises(ValueError, match="configuration/source hashes changed"):
+        recovery.recovery_record(args, 18)
+    assert not (args.search_dir / "recovery_config.json").exists()
+
+
 def test_child_locks_and_timeout_are_enforced(args, monkeypatch):
     def execute(command, *, check, stdout, stderr, pass_fds, timeout):
         import fcntl
