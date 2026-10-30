@@ -1,0 +1,284 @@
+{
+  "created_at": "2026-10-30T14:32:35.620122+00:00",
+  "parent": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k",
+  "question": "Why did prior NELL Stage-2 HPO fail to beat the paper reference?",
+  "scope": "CPU audit of existing artifacts; no new GPU job, training, test selection, or controller change",
+  "execution_envelope": "Existing RTX3090 is occupied by adopted FB prerequisite; this audit uses Python standard library on CPU",
+  "lineage": {
+    "old_initialization": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/artifacts/nell23k_paper_7b/lora_adapter",
+    "old_metadata": {
+      "created_at_utc": "2026-09-10T15:07:34.047740+00:00",
+      "task_file": "/mnt/e/GRIP-CU/tasks/grip_nell23k_tasks.json",
+      "context_samples": 80820,
+      "qa_samples": 12014,
+      "model_name": "qwen-7b",
+      "lora_r": 4,
+      "lora_alpha": 8,
+      "target_modules": [
+        "down_proj",
+        "up_proj",
+        "gate_proj"
+      ],
+      "stage1_epochs": 1.0,
+      "stage2_epochs": 10.0,
+      "seed": 2026
+    },
+    "new_stage1": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter",
+    "new_stage1_manifest": {
+      "record_id": "S2MR-NELL-20261018-R1",
+      "stage": "stage1",
+      "task_sha256": "75f804181261c2bd00e67315fe1cb35d409a1e8a6b0862708627f3f987d3066d",
+      "weight_sha256": "8bbda3aa6ae112e5f9f618490614137bdc7c241a7a152b7c95ca1aeafa62bd88",
+      "weight_file": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter/adapter_model.safetensors",
+      "adapter_config_sha256": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+      "source_stage1": null,
+      "completed_at_utc": "2026-10-18T20:24:29.243835+00:00",
+      "train_metrics": {
+        "train_runtime": 16574.578,
+        "train_samples_per_second": 4.876,
+        "train_steps_per_second": 0.01,
+        "total_flos": 3.1985634314962944e+17,
+        "train_loss": 0.7757505970665172,
+        "epoch": 1.0,
+        "num_input_tokens_seen": 7533020
+      },
+      "swanlab_run_id": "7exzmhco"
+    }
+  },
+  "search": {
+    "trial_count": 12,
+    "states": {
+      "COMPLETE": 1,
+      "PRUNED": 10,
+      "FAIL": 1
+    },
+    "pruned_at_step": {
+      "8.0": 2,
+      "1.0": 5,
+      "2.0": 3
+    },
+    "rungs": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "disk_full_failed_trial": 8,
+    "lambda_zero_control_present": false
+  },
+  "validation": {
+    "b1": {
+      "em": 0.8466666666666667,
+      "errors": {
+        "correct": 254,
+        "wrong_out_of_list": 9,
+        "wrong_in_list": 37
+      }
+    },
+    "step8": {
+      "em": 0.8566666666666667,
+      "errors": {
+        "correct": 257,
+        "wrong_out_of_list": 9,
+        "wrong_in_list": 34
+      }
+    },
+    "step12": {
+      "em": 0.8366666666666667,
+      "errors": {
+        "correct": 251,
+        "wrong_out_of_list": 18,
+        "wrong_in_list": 31
+      }
+    },
+    "step240": {
+      "em": 0.8333333333333334,
+      "errors": {
+        "correct": 250,
+        "wrong_out_of_list": 24,
+        "wrong_in_list": 26
+      }
+    }
+  },
+  "paired_validation": {
+    "b1_to_step8": {
+      "both_correct": 243,
+      "both_wrong": 32,
+      "rescue": 14,
+      "regression": 11,
+      "count": 300,
+      "net_correct_gain": 3,
+      "comparison": "identical question, target, and candidate-list prompt"
+    },
+    "b1_to_step12": {
+      "both_correct": 239,
+      "both_wrong": 34,
+      "rescue": 12,
+      "regression": 15,
+      "count": 300,
+      "net_correct_gain": -3,
+      "comparison": "identical question, target, and candidate-list prompt"
+    },
+    "b1_to_step240": {
+      "both_correct": 237,
+      "both_wrong": 33,
+      "rescue": 13,
+      "regression": 17,
+      "count": 300,
+      "net_correct_gain": -4,
+      "comparison": "identical question, target, and candidate-list prompt"
+    },
+    "step8_to_step12": {
+      "both_correct": 246,
+      "both_wrong": 38,
+      "rescue": 5,
+      "regression": 11,
+      "count": 300,
+      "net_correct_gain": -6,
+      "comparison": "identical question, target, and candidate-list prompt"
+    }
+  },
+  "test": {
+    "count": 4943,
+    "step8_em": 0.876390855755614,
+    "step240_em": 0.8614201901679143,
+    "historical_b1_em": 0.874570099130083,
+    "paper_reference": 0.8774,
+    "same_targets": 4943,
+    "same_question_stems": 4943,
+    "identical_full_prompts": 0,
+    "identical_candidate_sets_ignoring_order": 0,
+    "historical_b1_direct_comparability": false,
+    "step8_errors": {
+      "correct": 4332,
+      "wrong_in_list": 428,
+      "wrong_out_of_list": 183
+    },
+    "test_used_for_new_model_selection_by_this_audit": false
+  },
+  "training_loss_windows": {
+    "step8": [
+      {
+        "step": 1,
+        "generation_loss": 0.15197939664358273,
+        "candidate_loss": 0.010777273336316284,
+        "learning_rate": 0.000947622749310518,
+        "epoch": 0.04261694689528883
+      },
+      {
+        "step": 2,
+        "generation_loss": 0.8224058049381711,
+        "candidate_loss": 0.046311954038251724,
+        "learning_rate": 0.0009436743211883908,
+        "epoch": 0.08523389379057766
+      },
+      {
+        "step": 8,
+        "generation_loss": 0.2457787005987484,
+        "candidate_loss": 0.010243705531365777,
+        "learning_rate": 0.0009199837524556278,
+        "epoch": 0.34093557516231066
+      }
+    ],
+    "step240": [
+      {
+        "step": 1,
+        "generation_loss": 0.15197939664358273,
+        "candidate_loss": 0.010777273336316284,
+        "learning_rate": 0.000947622749310518,
+        "epoch": 0.04261694689528883
+      },
+      {
+        "step": 2,
+        "generation_loss": 0.8190156939672306,
+        "candidate_loss": 0.04616642878773236,
+        "learning_rate": 0.0009436743211883908,
+        "epoch": 0.08523389379057766
+      },
+      {
+        "step": 8,
+        "generation_loss": 0.24658060682122596,
+        "candidate_loss": 0.010813257653353503,
+        "learning_rate": 0.0009199837524556278,
+        "epoch": 0.34093557516231066
+      },
+      {
+        "step": 240,
+        "generation_loss": 0.12790788453416663,
+        "candidate_loss": 0.00010230255894701841,
+        "learning_rate": 3.948428122127159e-06,
+        "epoch": 10.0
+      }
+    ]
+  },
+  "bank_audit": {
+    "old_relation_rows": 3253,
+    "new_verified_rows": 2974,
+    "unverified_rows": 279,
+    "generation_qa_count": 12014,
+    "unverified_is_not_proof_of_wrong_labels": true,
+    "median_selected_negative_score_gap": 3.03125,
+    "negatives_scoring_at_least_gold": 473,
+    "negative_count": 29277,
+    "rows_with_negative_scoring_at_least_gold": 224,
+    "interpretation": "frozen B1 teacher scores only; mixture intentionally includes easy negatives; no isolated causal test"
+  },
+  "inference_boundary": {
+    "observed": [
+      "Initialization was already Stage2-trained B1",
+      "300-item validation gain was net 3 questions",
+      "Out-of-list errors rose from 9 to 24 with full continuation",
+      "Most configurations were pruned by step2",
+      "Historical B1 full-test candidate lists differ in all4943 prompts",
+      "One trial failed on disk capacity"
+    ],
+    "hypotheses_not_proven": [
+      "Continued high-LR training disrupts a strong B1",
+      "Aggressive pruning misses late-improving trials",
+      "Fixed-bank saturation and train-pair uncertainty limit generalization"
+    ],
+    "cannot_conclude": [
+      "Method has no benefit",
+      "Only a larger lambda is needed",
+      "Extra epochs guarantee gains",
+      "87.639% minus87.457% is an isolated method effect"
+    ]
+  },
+  "next_route": "experiment: fixed true Stage1; matched Stage2 B1 and same exact evaluation prompts; larger validation and checkpoint selection before test",
+  "existing_queued_corrections": {
+    "seed": 2026,
+    "search_stage": 2,
+    "screen_size": 1000,
+    "prune_after": 32,
+    "s1_adapter": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter",
+    "b1_adapter": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/control_20261018_C1/adapter",
+    "expected_listed": 2974
+  },
+  "deferred_validation": "lambda=0 matched-budget control; low-LR bounded refinement if still needed. No automatic new runs added by this audit.",
+  "paper_role": "reference_only: adaptive exploratory failure diagnosis, not a new positive main result",
+  "validation_status": "passed: artifact counts, prompt identity, EM recomputation, lineage and gate invariants",
+  "sources_sha256": {
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/run_contract.json": "2d2e2099f20bfba3833c2182b1ce140653f9f11cf6534d71c092dbca86c49fd6",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step8_replay/train_run/run_config.json": "0c8c020d160735c332153fb080791cfe9ea8bacbe8a66f30ecf58edde1305d3f",
+    "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/artifacts/nell23k_paper_7b/lora_adapter/grip_run_metadata.json": "43b025951f71bbe8ba8331ccb9c2535d9b6f2184776f31b0661b449cc7b45c72",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/dataset_contract.json": "71e3a692cf2de1af3afa0ad7253b18a6e24fed0900236e1ae4b546daaf28c3e5",
+    "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/checkpoint_manifest.json": "ca32b34c3926d7b220707a6eecd675ff04826f517aa9e0eaf8a6244a288ae575",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/trials.csv": "393366762701e0fd3802f30ce5f0365fb2e150ba22f2aead49b217f58d77c526",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/trials/trial_0008/train_rung_1.log": "090d91909b3b4c30dffe4bf8e132ed237b2dea5beecd7c4eb13454c0f8f7fcf7",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/baseline_validation/predictions.jsonl": "908f9bea5db5650c39263e5951a6607c095bbbbd5bc4015e48082a902c7cf081",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step8_replay/validation_screen/predictions.jsonl": "7db3b6c9195b029fa8c472cdef73897e49ab0ee147b05992871caed0d7e1c6a6",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step12_extension/validation_screen/predictions.jsonl": "b2fdbde1bd08dcf2bf29ba7b6180f3ef38bfa01eb4f246e3adf3721ef17f822c",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/winner_trial_0000/validation_screen/predictions.jsonl": "c08411ebaa213718ec9a94903fa3e3dcea5c54d81d04356e3b1dd6b3b879e3f4",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/baseline_validation/summary.json": "95eb3eadebc79d64c85896520a957bf6fc861ead0ef0f93ad387bd508bd25ced",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step8_replay/validation_screen/summary.json": "512872f2f17462900e381bb68e70a9000467b30780e65f94c795dd9ffed0568e",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step12_extension/validation_screen/summary.json": "dad927c8eb5128325b380a117aa8f1c937cf1b92c675d7ecf889dbb1eaeebabe",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/winner_trial_0000/validation_screen/summary.json": "3f5a99c471242ad4825576b4eaaecb2e99e84010d40bbfa012fc491fe3fedd7c",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step8_replay/test/predictions.jsonl": "b3548a7a896d129fddd79bed835054ffbba483eaa7a11c566480cce7de835df2",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/winner_trial_0000/test/predictions.jsonl": "30816f75a158ff708bd73d842a08eee967e84deceb3b5a790e44a93257d65e16",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/grip_inf/nell23k/nell23k_qwen7b_full_seed2026.jsonl": "dc31a19ecdf74e8948322219ff819d964c04827a63e371df40d2e426e8b313e3",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/followups/trial0_step8_replay/train_run/trainer_listed/checkpoint-8/trainer_state.json": "395568254f874400b1a89b3410cc1e7519d74cb4f879084f959c66371564819a",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/trials/trial_0000/train_run/trainer_listed/checkpoint-240/trainer_state.json": "2cf76b950d82794c2cbedc64eeebce01112c6162cf0f8037710f876f6c63e025",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/fb_nell_direct_em_20261027/nell23k/k9_from_k15/counterfactual_bank.jsonl": "d614c066d99a9290e7b33f58c753eb83ba177fdbd635c2f977b7c12054e82a70",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/relation_eligibility.json": "7506189ac4f4f5f53febefa72c33be045ddefe21be8c761262da91ede7dba7f0"
+  }
+}
