@@ -1,0 +1,75 @@
+\section{实验与结果}
+\label{sec:experiments}
+
+\subsection{实验设置与评价指标}
+
+主实验使用 NELL23K、Qwen2.5-7B-Instruct 和训练种子 2026，在 4,943 条十选一关系问题上评价 \scc{}。候选重排通过 teacher-forced continuation score 逐一评分，以 H@1、MRR 和 H@3 衡量给定候选集合中的关系排序；直接解码 EM 衡量原始输出路径下的预测。两种评估使用相同题目与选项，分别报告结果。
+
+\bone{} 为原始 GRIP 的 generation-only 基线。B1 与 \scc{} 的同候选重排比较覆盖测试文件的前 200 题；两者沿用各自现有训练配置，比较条件集中见第~\ref{sec:comparison-scope} 节。完整测试集报告 \scc{} 的排序表现，以及两个模型的直接解码表现。训练设置见附录表~\ref{tab:hyper}，WN18RR 的直接解码补充结果见附录~\ref{sec:wn-exploratory}。
+
+\subsection{NELL23K 候选排序结果}
+
+\scc{} 在完整测试集上达到 95.27\% MRR、91.52\% H@1 和 99.07\% H@3。在同候选前 200 题上，\scc{} 的 MRR 为 94.96\%，比 B1 高 1.60 个百分点；H@1 为 91.00\%，比 B1 高 2.50 个百分点。表~\ref{tab:nell-results} 给出全量结果与配对结果。
+
+\begin{table}[htbp]
+\caption{NELL23K 候选重排结果（\%，训练种子 2026）。配对区块按测试文件顺序取前 200 题，两个模型使用相同问题与候选列表；全量区块报告 \scc{} 的 4,943 题结果，全量 B1 重排尚未完成。$\Delta$ 为配对子集上的百分点差。}
+\label{tab:nell-results}
+\centering\small
+\begin{tabular}{llrrrr}
+\toprule
+范围 & 模型 & $n$ & H@1 & MRR & H@3 \\
+\midrule
+配对前 200 题 & \bone & 200 & 88.50 & 93.36 & 97.50 \\
+配对前 200 题 & \scc-9 & 200 & \textbf{91.00} & \textbf{94.96} & \textbf{99.50} \\
+配对差异 & $\Delta$(\scc-9, \bone) & -- & +2.50 & +1.60 & +2.00 \\
+\midrule
+全量测试 & \scc-9 & 4,943 & 91.52 & 95.27 & 99.07 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{配对预测的逐题变化}
+
+在同候选前 200 题上，9 题由 B1 错误转为 \scc{} 正确，4 题发生反向变化，净增加 5 题正确预测；其余为 173 题共同正确和 14 题共同错误。逐题变化与 H@1 的 2.50 个百分点差异一致，并展示两模型预测差异的分布。
+
+\subsection{直接解码与候选评分}
+
+在相同的 4,943 条测试问题上，\scc{} 与 B1 的直接解码 EM 分别为 87.03\% 和 87.46\%，相差 $-0.43$ 个百分点（表~\ref{tab:direct-decode}）。\scc{} 通过逐候选评分选择答案时，H@1 为 91.52\%。直接解码考察关系文本输出，逐候选评分考察给定选项间的排序，本文围绕后一目标组织主要分析。
+
+\begin{table}[htbp]
+\caption{NELL23K 直接解码结果（\%，4,943 题，训练种子 2026）。模型在列出相同十个选项的题目上生成关系文本，按 Exact Match 计分。}
+\label{tab:direct-decode}
+\centering\small
+\begin{tabular}{lr}
+\toprule
+模型 & 直接解码 EM \\
+\midrule
+\bone & 87.46 \\
+\scc-9 & 87.03 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{候选构造与来源追溯}
+
+NELL23K 的固定候选库覆盖 3,253 条训练问题，每题包含九个互异关系，候选构造失败数为 0。来源检查记录了训练划分、任务问题对齐与候选库标识；采样清单保存结构画像、B1 违例度及采样参数。\scc{} Stage~2 完成 10 个 epoch、240 个优化步，归档了 adapter、直接解码预测和候选重排输出。这些记录将候选构造与模型训练关联到同一运行，便于追溯每个候选的来源。
+
+\subsection{离线构造与运行成本}
+\label{sec:cost}
+
+训练运行记录的硬件为 NVIDIA GeForce RTX 3090（24 GiB）。表~\ref{tab:cost} 按阶段报告本次运行的资源用量：离线 B1 评分覆盖 644,094 个训练关系候选，Stage~2 处理 12,148,720 个输入 token，完整测试重排覆盖 4,943 条问题。固定候选库在训练期间复用离线采样结果。
+
+\begin{table}[htbp]
+\caption{NELL23K 单次运行的分阶段成本。显存数值对应离线评分阶段的记录。}
+\label{tab:cost}
+\centering\small
+\begin{tabular}{lrr}
+\toprule
+阶段 & 耗时（秒） & 峰值显存（GiB） \\
+\midrule
+冻结 B1 离线评分 & 19,027 & 15.21 \\
+Stage~2 联合训练 & 80,870 & -- \\
+全测试候选重排 & 3,567 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

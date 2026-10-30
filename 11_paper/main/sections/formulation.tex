@@ -1,0 +1,35 @@
+\section{问题定义}
+
+\subsection{训练图与候选关系}
+
+令训练知识图谱为 $\mathcal{G}_{\mathrm{tr}}=(\mathcal{V},\mathcal{E}_{\mathrm{tr}})$，其中
+$\mathcal{E}_{\mathrm{tr}}\subseteq \mathcal{V}\times\mathcal{R}_{\mathrm{tr}}\times\mathcal{V}$，
+$\mathcal{R}_{\mathrm{tr}}$ 是训练关系词表。一个关系问答样本表示为
+$q=(h,t,r^+)$，其中 $r^+$ 是目标关系，$h,t$ 是有序实体对。定义同一实体对在训练图中的已知关系集合为
+\begin{equation}
+    T_{\mathrm{tr}}(h,t)=\{r:(h,r,t)\in\mathcal{E}_{\mathrm{tr}}\}.
+\end{equation}
+候选池为
+\begin{equation}
+    P_q=\mathcal{R}_{\mathrm{tr}}\setminus\bigl(\{r^+\}\cup T_{\mathrm{tr}}(h,t)\bigr).
+    \label{eq:pool}
+\end{equation}
+式~\ref{eq:pool} 从训练关系词表中排除目标关系和该实体对的已知训练关系。其余关系作为真值未判定的训练替代项，遵循知识图谱的开放世界假设 \citep{ji2022survey,hogan2021kg}。本文的结构反事实操作固定实体对 $(h,t)$，将目标关系替换为 $r\in P_q$；“负候选”表示其在对比目标中的角色，事实真值保持未判定。
+
+\subsection{答案选择与候选学习目标}
+
+本文区分两种答案选择规则。直接解码在列出十个关系选项的题目上输出关系文本，以 Exact Match（EM）评价原始解码路径下的预测。候选重排给定同一题目的候选集合，用关系续接分数（continuation score）$z_\theta(q,r)$ 逐项排序，以 Hits@1（H@1）、H@3 和 MRR 评价候选间的关系辨别。重排 H@1 等于按最高分选项计算的 EM。两种规则分别报告，模型间的表现差异采用相同答案选择规则比较。
+
+给定冻结 bank $B(q)=\{r_1^-,\ldots,r_K^-\}$，候选损失写为
+\begin{equation}
+    \mathcal{L}_{\mathrm{cand}}(q)=-\log
+    \frac{\exp(z_\theta(q,r^+)/\tau_c)}
+    {\exp(z_\theta(q,r^+)/\tau_c)+\sum_{k=1}^K\exp(z_\theta(q,r_k^-)/\tau_c)}.
+    \label{eq:infonce}
+\end{equation}
+其中 $\tau_c$ 是候选温度。训练阶段联合优化原始生成损失 $\mathcal{L}_{\mathrm{gen}}$ 与候选损失：
+\begin{equation}
+    \mathcal{L}=\mathcal{L}_{\mathrm{gen}}+\lambda_{\mathrm{cand}}\mathcal{L}_{\mathrm{cand}}.
+    \label{eq:total}
+\end{equation}
+\scc{} 沿用 Stage~1 和生成目标，将新增训练项明确为候选级 InfoNCE。

@@ -73,10 +73,17 @@ def run(
         response = result["response"]
 
         evidence, answer = extract_all_evidence_and_answers(response, False)
+        # Keep the unparsed model output for auditability.  Some decoder-only
+        # checkpoints occasionally omit the requested XML wrapper; in that
+        # case use the raw response instead of silently turning a valid
+        # generation into an empty prediction.
+        if not answer.strip():
+            answer = response.strip()
         output_result = {
             "id": id,
             "question": Q,
             "response": answer.strip(),
+            "raw_response": response,
             "evidence": evidence.strip(),
             "target": [A]}
         # save

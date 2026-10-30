@@ -1,0 +1,109 @@
+\section{补充设置、结果与候选审计}
+
+\subsection{主实验运行设置}
+
+表~\ref{tab:hyper} 根据 NELL23K 主运行配置和候选库元数据列出实际设置。Stage~2 从 Stage~1 adapter 初始化，优化候选级 InfoNCE 与生成损失。采样温度 $\tau_s$ 控制候选分布，候选温度 $\tau_c$ 控制对比目标。
+
+\begin{table}[htbp]
+\caption{NELL23K 主实验运行设置。数值对应训练种子 2026 的已完成运行。}
+\label{tab:hyper}
+\centering\small
+\begin{tabular}{ll}
+\toprule
+字段 & 设置 \\
+\midrule
+基座模型 & Qwen2.5-7B-Instruct \\
+候选数 $K$ & 9 \\
+均匀混合系数 $\rho$ & $1/3$ \\
+结构权重 $\alpha$ / 违例权重 $\beta$ & 1.0 / 1.0 \\
+采样温度 $\tau_s$ & 0.25 \\
+候选损失温度 $\tau_c$ & 1.0 \\
+候选损失权重 $\lambda_{\mathrm{cand}}$ & 1.0 \\
+LoRA rank / alpha & 4 / 8 \\
+LoRA 目标模块 & \texttt{down\_proj}, \texttt{up\_proj}, \texttt{gate\_proj} \\
+Stage~2 轮数 / 优化步数 & 10 / 240 \\
+学习率 / 权重衰减 & $10^{-3}$ / $10^{-4}$ \\
+单设备批大小 / 梯度累积步数 & 1 / 512 \\
+计算精度 & bfloat16 \\
+候选库随机种子 / 训练种子 & 2026 / 2026 \\
+候选来源与过滤 & train-only \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{WN18RR 直接解码补充结果}
+\label{sec:wn-exploratory}
+
+WN18RR 的训练期候选库覆盖 2,709 条关系问题，每题包含九个互异候选，构造失败数为 0；来源检查记录为 train-only 且与任务问题对齐。在训练种子 2026 下，使用完整验证集选择候选损失权重 $\lambda_{\mathrm{cand}}=0.25$，获选模型在 3,134 条测试问题上的直接解码 EM 为 86.89\%，训练为 5 个 epoch、125 个优化步。
+
+同一测试文件上的本地 B1 直接解码 EM 为 32.67\%。该本地基线与原始 GRIP 报告的五次运行均值 64.30\% 存在待核验的复现差异 \citep{feng2025grip}。WN18RR 的补充结果对应单个获选模型的直接解码评估，完整候选重排、同预算随机对照和多种子重复尚未完成。
+
+\subsection{FB15K237-2 候选 InfoNCE 参考实验}
+
+该参考实验展示独立配置下的候选 InfoNCE 表现。B1 与 InfoNCE-i0 均在同一本地测试文件的 10,000 条问题上评分；i0 使用单独的配对候选文件、LoRA rank 24、Stage~2 训练 5 个 epoch 和候选损失权重 0.1。表~\ref{tab:historical-fb} 单独标记该配置，本文的 SC-CL 主结果对应表~\ref{tab:nell-results}。
+
+\begin{table}[htbp]
+\caption{FB15K237-2 候选 InfoNCE 参考结果（\%，10,000 条测试问题）。InfoNCE-i0 为独立候选及训练配置，方法身份与 SC-CL 分别记录。}
+\label{tab:historical-fb}
+\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+方法 & 直接解码 EM & 重排 H@1 & MRR & H@3 \\
+\midrule
+\bone & 73.23 & 79.91 & 88.01 & 95.80 \\
+InfoNCE-i0 & 88.69 & 91.62 & 95.41 & 99.20 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{候选来源与真值状态审计}
+\label{sec:audit-protocol}
+
+候选库的来源检查核对训练划分、问题标识、目标关系、每题九个互异候选和训练已知关系过滤结果。文件哈希、脚本版本、候选评分及模型配置共同标识运行产物。来源合规与事实真值分别记录：训练已知关系冲突表示候选命中该实体对的训练关系，持出正例重叠表示候选命中持出划分中的已知正例，其余候选保留开放世界未判定状态。
+
+实体替换与关系替换使用各自的候选空间。CoDEx 的人工核验实体替换负例用于其三元组判断设定 \citep{safavi2020codex}；固定实体对后的关系替换，按训练已知关系和持出正例分别核对真值状态。
+
+\begin{table}[htbp]
+\caption{候选来源与真值状态的审计规则。该表定义状态分类，实测来源检查结果见正文。}
+\label{tab:audit-states}
+\centering\small
+\begin{tabular}{p{0.24\linewidth}p{0.65\linewidth}}
+\toprule
+状态 & 判定规则 \\
+\midrule
+训练已知关系冲突 & 候选属于当前实体对的训练已知关系集合 $T_{\mathrm{tr}}(h,t)$。 \\
+持出正例重叠 & 候选对应的三元组出现在持出划分的已知正例中；该记录用于审计。 \\
+开放世界未判定 & 候选未被已知正例或其他核验证据确认，真值维持未判定。 \\
+候选不足 & 训练已知关系过滤后 $|P_q|<K$，记录该问题及原因。 \\
+问题对齐异常 & 候选库与训练任务的问题标识、目标关系或候选文本不一致。 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{候选库记录与构造伪代码}
+
+每条候选库记录包含问题标识、数据划分、实体对、目标关系、候选关系和采样来源。逐候选记录包括结构相似度、违例度、utility、B1 候选分数及其与目标分数的差值；来源清单包含过滤划分、采样参数、随机种子、脚本版本和文件哈希。这些字段将候选采样结果关联到原始任务及其离线评分。
+
+{\small
+\begin{verbatim}
+for q in train_questions:
+    assert q.split == "train"
+    P = train_relations - {q.gold} - known_train_relations(q.head, q.tail)
+    if len(P) < K:
+        record_insufficient_pool(q)
+        continue
+    for r in P:
+        s = profile_similarity(phi[q.gold], phi[r])
+        v = b1_score_violation(q, r)
+        u[r] = alpha * s + beta * v
+    candidates = sample_without_replacement(
+        P, mixture_softmax(u, rho, tau_s), K=9)
+    write_frozen_bank(q, candidates, manifest=provenance)
+\end{verbatim}
+}
+
+候选库按训练来源限定、已知关系过滤和候选采样的顺序构建。来源检查核对问题标识与关系文本的一致性，固定候选库供整个 Stage~2 使用。
+
+\subsection{数据、模型与产物记录}
+
+主实验使用 NELL23K，补充结果分别使用 WN18RR 和 FB15K237-2；基座模型为 Qwen2.5-7B-Instruct \citep{qwen2024qwen25}，LoRA 用于参数高效训练 \citep{hu2022lora}。实验处理既有知识图谱关系问题，未新增个人敏感数据采集。预测、候选分数、训练配置、adapter 与来源清单保存在本地实验归档中，当前未提供公开下载地址。

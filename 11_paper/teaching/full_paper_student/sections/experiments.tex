@@ -1,0 +1,33 @@
+\section{实验与结果}
+
+\subsection{设置与评估}
+
+本文评价固定实体对上的十选一关系预测。每题由模型为给定选项生成 continuation score，最高分的关系作为预测；正确率记为官方 Exact Match（EM），同时报告 MRR 和 Hits。数据集、Qwen2.5-7B-Instruct 基座与 GRIP 原论文的设置对应；原论文结果从表 2、表 3 摘录 \citep{feng2025grip}。NELL23K 的 SC-CL 运行使用 seed=2026，完整测试输出包含 4,943 条问题。FB15K237-2 行来自历史 InfoNCE-i0 运行，其候选文件和训练配置与 SC-CL 不同，作为候选对比训练的辅助观察。
+
+\subsection{训练链路与候选库}
+
+NELL23K 候选库由训练问题构造，共 3,253 行，每行九个互异关系，\texttt{rows\_failed=0}。冻结 bank 的 wiring 报告确认训练来源、任务问题对应关系和 manifest 记录。SC-CL Stage~2 完成 10 个 epoch、240 个优化步，并保存 adapter、预测与候选评分。上述记录使候选来源与本次运行可复核。过滤仅排除训练图已知关系；未观测关系的开放世界真值仍需单独审计。
+
+\subsection{主结果}
+
+表~\ref{tab:student-main} 给出两个数据集的官方 EM 与排序指标。NELL23K 上，SC-CL 的官方 EM 为 91.52\%，相对原始 GRIP 论文的 87.74\% 高 3.78 个百分点；MRR 为 95.27\%。FB15K237-2 的历史 InfoNCE-i0 官方 EM 为 91.62\%，相对原始 GRIP 的 88.75\% 高 2.87 个百分点。FB 行不作为 SC-CL 的跨图复现。
+
+\begin{table}[t]
+\caption{关系预测结果（百分比；Qwen-7B）。原始 GRIP 数据取自其论文表 2 与表 3。}
+\label{tab:student-main}
+\centering\scriptsize
+\begin{tabular}{llrrrrrr}
+\toprule
+数据集 & 本地方法 & $n$ & 官方 EM & MRR & H@3 & H@10 & 原始 GRIP EM \\
+\midrule
+NELL23K & \scc-9 & 4,943 & 91.52 & 95.27 & 99.07 & 100.00 & 87.74 \\
+FB15K237-2 & 历史 InfoNCE-i0 & 10,000 & 91.62 & 95.41 & 99.20 & 100.00 & 88.75 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+同候选的 NELL23K 前 200 条问题另提供本地 \bone{} 配对比较。\scc{} 与 \bone{} 的 EM 分别为 91.00\% 与 88.50\%，MRR 分别为 94.96\% 与 93.36\%。逐题 top-1 变化为九条由错转对、四条由对转错、173 条共同正确和 14 条共同错误。这一前缀子集仅用于分析局部差异，不能替代全量测试。
+
+\subsection{成本与进一步验证}
+
+NELL 运行在训练集上为 644,094 个关系候选生成冻结 B1 分数，用时 19,027 秒，峰值显存为 15.21 GiB。SC-CL Stage~2 处理 12,148,720 个输入 token，用时约 80,870 秒；全测试候选评分用时 3,567 秒。完整的同预算 Random-9 和频率匹配随机对照尚未执行，因此组合采样机制的独立贡献、单位收益成本与多种子稳定性仍需检验。附录~\ref{sec:future-protocol} 说明后续比较协议。

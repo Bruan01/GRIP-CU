@@ -1,0 +1,52 @@
+\begin{tikzpicture}[
+    font=\small,
+    box/.style={draw=black!35, rounded corners=3pt, align=center,
+                minimum height=10mm, text width=29mm, fill=white},
+    signal/.style={box, draw=teal!65!black, fill=teal!6},
+    train/.style={box, draw=blue!60!black, fill=blue!5},
+    flow/.style={-{Latex[length=2mm]}, line width=0.8pt, draw=black!65},
+    offline/.style={flow, dashed},
+    panel/.style={rounded corners=5pt, line width=0.8pt}
+]
+\begin{scope}[on background layer]
+    \draw[panel, draw=teal!50, fill=teal!2] (-1.9,1.0) rectangle (5.9,-5.5);
+    \draw[panel, draw=blue!40, fill=blue!2] (6.25,1.0) rectangle (13.75,-5.5);
+\end{scope}
+\node[anchor=west, text=teal!65!black, font=\bfseries] at (-1.65,0.65)
+    {A\quad 离线候选构造};
+\node[anchor=west, text=blue!65!black, font=\bfseries] at (6.5,0.65)
+    {B\quad Stage 2 联合学习};
+
+\node[signal] (graph) at (0, -0.35) {训练图与关系词表\\$\mathcal G_{\rm tr},\mathcal R_{\rm tr}$};
+\node[signal] (profile) at (0,-1.85) {五维关系结构画像\\$s_{\rm str}(q,r)$};
+\node[signal] (b1) at (4,-0.35) {冻结 B1\\训练问题离线评分};
+\node[signal] (violation) at (4,-1.85) {分数违例度\\$V_{\rm B1}(q,r)$};
+\node[signal, text width=61mm] (pool) at (2,-3.25)
+    {train-known 过滤与双信号混合采样\\
+     $u=\alpha s_{\rm str}+\beta V_{\rm B1}$，均匀下限 $\rho$};
+\node[signal, text width=61mm] (bank) at (2,-4.75)
+    {固定候选库：每题 $K=9$，无放回采样\\来源、信号、过滤记录与文件哈希};
+\draw[flow] (graph) -- (profile);
+\draw[offline] (b1) -- (violation);
+\draw[flow] (profile.south) -- (pool.north west);
+\draw[flow] (violation.south) -- (pool.north east);
+\draw[flow] (pool) -- (bank);
+
+\node[train] (s1) at (8.1,-0.35) {Stage 1 adapter\\参数初始化};
+\node[train] (qa) at (11.9,-0.35) {原始训练问题\\图上下文与目标关系};
+\node[train, text width=59mm] (model) at (10,-1.85)
+    {GRIP：冻结基座模型 + 可训练 LoRA};
+\node[train] (gen) at (8.1,-3.25) {生成损失\\$\mathcal L_{\rm gen}$};
+\node[train] (cand) at (11.9,-3.25) {候选评分与 InfoNCE\\$\mathcal L_{\rm cand}$};
+\node[train, text width=59mm] (total) at (10,-4.75)
+    {$\mathcal L=\mathcal L_{\rm gen}+\lambda_{\rm cand}\mathcal L_{\rm cand}$\\联合更新 LoRA 参数};
+\draw[flow] (s1.south) -- (model.north west);
+\draw[flow] (qa.south) -- (model.north east);
+\draw[flow] (model.south west) -- (gen.north);
+\draw[flow] (model.south east) -- (cand.north);
+\draw[flow] (gen.south) -- (total.north west);
+\draw[flow] (cand.south) -- (total.north east);
+\draw[offline] (bank.east) -- (5.65,-4.75) -- (5.65,-2.55)
+    -- node[above, font=\scriptsize, fill=white, inner sep=2pt] {训练期固定候选}
+    (11.9,-2.55) -- (cand.north);
+\end{tikzpicture}

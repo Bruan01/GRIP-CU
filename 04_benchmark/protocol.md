@@ -24,10 +24,14 @@ P(q) = R_train \ {gold(q) ∪ known_train_relations(head(q), tail(q))}
 
 正式候选数固定为 `K=9` 个负样本。Random-9 从合法训练关系池均匀采样；ErrorMemory-9 使用冻结的 B1 错误记忆、B1 score violation 和均匀概率下限采样。
 
+CoDEx-M 的 valid/test 评估列表使用同一规则、同一固定实体对过滤和 seed=2026 冻结为 10 选 1；候选文件覆盖全量官方正例 split。CoDEx 官方 `valid_negatives.txt` / `test_negatives.txt` 是三元组分类负例，主要通过替换尾实体构造，保留用于独立审计，不作为 SC-CL 固定 `(h,t)` 关系候选或真假标签。
+
+CoDEx-M 的 Original GRIP 任务生成只读取 train 边构成的图和 train 问答作为 few-shot references；valid/test 问题和答案不传入生成器。输入文件分别为 `processed/processed_train_graph.json`（不含 QA）和 `processed/processed_train_reference.json`。SC-CL 的实体文本索引 `raw/entity2text.txt` 也只包含 train 实体，用于将训练三元组还原到任务中的文本实体对。
+
 ## 3. 数据泄漏控制
 
 - ErrorMemory 只读取 `train.txt` 的 QA、关系词表和已知事实；
-- `valid.txt`、`test.txt` 不参与候选构造；
+- `valid.txt`、`test.txt` 不参与训练候选 bank 的采样；评估时仅提供 gold 与指标标签；
 - B1 adapter 在候选采样前冻结；
 - sampler bank、score dump、rollout manifest 的 question ID 必须一致；
 - 正式训练使用完整 task JSON，不使用 smoke 子集；

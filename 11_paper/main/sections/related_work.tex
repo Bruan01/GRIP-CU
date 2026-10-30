@@ -1,0 +1,10 @@
+\section{相关工作}
+
+\paragraph{关系预测与生成式图推理。}
+TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。GRIP 以图上下文和生成式问答学习参数化图推理 \citep{feng2025grip}。本文关注固定实体对上的关系标签竞争，在 GRIP 的生成式训练框架中研究候选来源与候选级对比目标的结合。
+
+\paragraph{困难候选与假阴性。}
+结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}。去偏对比学习与 ProGCL 讨论了对比学习中候选难度和假阴性风险的关系 \citep{chuang2020dcl,xia2022progcl}。\scc{} 将训练图关系画像与冻结模型的分数违例度共同用于关系候选构造，并以训练已知关系过滤、均匀采样下限和固定候选库明确候选的构造规则。本文采用的开放世界真值约定见问题定义节。
+
+\paragraph{关系候选评估。}
+传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经过人工核验的实体替换困难负例 \citep{safavi2020codex}。实体替换与关系替换对应不同的候选空间。本文在固定实体对上评价关系标签排序，并分别使用直接解码与逐候选评分衡量两种答案选择方式；实体替换负例保留其三元组判断用途，关系候选按各自的已知事实与未判定状态记录。

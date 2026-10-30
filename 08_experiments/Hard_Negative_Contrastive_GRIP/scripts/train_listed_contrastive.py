@@ -1,4 +1,4 @@
-"""Train original GRIP with Structure-Counterfactual-9 candidate InfoNCE.
+"""Train original GRIP with structure-counterfactual candidate InfoNCE.
 
 The mainline reads the frozen train-only structure-counterfactual bank. The
 ``train_graph`` arm is the matched Random-9 control, while ``error_memory`` is
@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import argparse
 import gc
+import inspect
 import json
+import math
 import os
 import sys
 import time
@@ -20,7 +22,7 @@ from pathlib import Path
 
 import torch
 from peft import PeftModel
-from transformers import TrainingArguments
+from transformers import TrainerCallback, TrainingArguments
 
 HNG = Path(__file__).resolve().parents[1]
 REPO_ROOT = HNG.parents[1]
@@ -45,6 +47,9 @@ from grip.tasks.train_tasks.task_dataset import TaskDataset  # noqa: E402
 from grip.training.train import load_trainer  # noqa: E402
 from hard_negative_grip.decode_io import (  # noqa: E402
     append_jsonl, eval_samples, load_jsonl, merge_resumed_rows, write_jsonl,
+)
+from hard_negative_grip.counterfactuals import (  # noqa: E402
+    STRUCTURE_COUNTERFACTUAL_SOURCE,
 )
 from hard_negative_grip.listed_training import (  # noqa: E402
     ListedContrastiveTrainer,
@@ -75,6 +80,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     is_relation_gold,
     load_graph_record,
     load_json_payload,
+    load_relation_eligibility,
     load_error_memory_manifest,
     load_counterfactual_manifest,
     original_question_ids_from_payload,
@@ -87,6 +93,48 @@ from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
 from utils import set_random_seed  # noqa: E402
 
 QUESTION_TEMPLATE = f"{GRIPEvalDataset.template} {GRIPEvalDataset.answer_format}"
+
+
+def validate_counterfactual_metadata(args: argparse.Namespace) -> None:
+    """Keep the recorded sampler settings aligned with the frozen bank."""
+    if args.counterfactual_metadata is None:
+        return
+    path = args.counterfactual_metadata
+    if not path.is_file():
+        raise FileNotFoundError(f"counterfactual metadata not found: {path}")
+    metadata = json.loads(path.read_text(encoding="utf-8"))
+    if metadata.get("source") != STRUCTURE_COUNTERFACTUAL_SOURCE:
+        raise ValueError(f"{path} is not structure-counterfactual metadata")
+    if int(metadata.get("requested_k", -1)) != args.listed_negative_k:
+        raise ValueError(
+            f"bank metadata K={metadata.get('requested_k')} does not match "
+            f"listed_negative_k={args.listed_negative_k}"
+        )
+    parameters = metadata.get("parameters") or {}
+    expected = {
+        "uniform_mix": args.counterfactual_uniform_mix,
+        "structure_weight": args.counterfactual_structure_weight,
+        "violation_weight": args.counterfactual_violation_weight,
+        "temperature": args.counterfactual_temperature,
+    }
+    for name, value in expected.items():
+        if name not in parameters or not math.isclose(
+            float(parameters[name]), float(value), rel_tol=1e-7, abs_tol=1e-9
+        ):
+            raise ValueError(
+                f"bank metadata {name}={parameters.get(name)!r} does not match "
+                f"the training setting {value!r}"
+            )
+
+
+def write_json_atomic(path: Path, payload: object) -> None:
+    """Write a small run record without exposing a partial JSON document."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    temporary.replace(path)
 
 
 def exact_match(prediction: str, targets: list[str]) -> bool:
@@ -117,6 +165,7 @@ def parse_args() -> argparse.Namespace:
         help="s1 = shared graph storage; b1/listed = Stage-2 forks; compare = merge EM summaries",
     )
     parser.add_argument("--s1_adapter", type=Path, default=None)
+    parser.add_argument("--relation_eligibility", type=Path, default=None)
     parser.add_argument("--model_name", default="qwen-7b")
     parser.add_argument("--model_cache_dir", default="model_cache")
     parser.add_argument(
@@ -141,6 +190,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max_grad_norm", type=float, default=1.0)
     parser.add_argument("--lambda_candidate", type=float, default=1.0)
     parser.add_argument(
+        "--stop_after_step",
+        type=int,
+        default=0,
+        help=(
+            "Optional multi-fidelity rung: stop Stage 2 after this global optimizer "
+            "step and save a resumable checkpoint. The learning-rate schedule still "
+            "uses the full --involve_qa_epochs horizon. 0 runs the full budget."
+        ),
+    )
+    parser.add_argument(
         "--memory_size",
         type=int,
         default=0,
@@ -163,7 +222,10 @@ def parse_args() -> argparse.Namespace:
         "--listed_negative_k",
         type=int,
         default=LISTED_NEGATIVE_K,
-        help="Negatives sampled per relation-like paper QA item (task-file path only).",
+        help=(
+            "Exact negatives per relation QA. structure_counterfactual supports "
+            "any positive K; error_memory retains its K=9 contract."
+        ),
     )
     parser.add_argument(
         "--listed_negative_source",
@@ -262,6 +324,14 @@ def parse_args() -> argparse.Namespace:
         "--skip_train",
         action="store_true",
         help="Skip Stage-2 training when the variant adapter already exists and only evaluate.",
+    )
+    parser.add_argument(
+        "--defer_eval",
+        action="store_true",
+        help=(
+            "Save the trained adapter without automatically evaluating --eval_file. "
+            "Use this for HPO rungs that evaluate a separately named validation panel."
+        ),
     )
     parser.add_argument(
         "--save_steps",
@@ -383,7 +453,35 @@ def training_arguments(
     )
     if gradient_checkpointing:
         kwargs["gradient_checkpointing_kwargs"] = {"use_reentrant": False}
+    # Transformers 5.x removed the legacy ``overwrite_output_dir`` field from
+    # TrainingArguments. Keep the run-protection helper's cross-version record,
+    # but only pass fields accepted by the installed trainer implementation.
+    supported = inspect.signature(TrainingArguments.__init__).parameters
+    kwargs = {key: value for key, value in kwargs.items() if key in supported}
     return TrainingArguments(**kwargs)
+
+
+class StopAfterStepCallback(TrainerCallback):
+    """Stop a trial at a resource rung while retaining its full-budget schedule."""
+
+    def __init__(self, stop_after_step: int) -> None:
+        self.stop_after_step = int(stop_after_step)
+
+    def on_train_begin(self, args, state, control, **kwargs):
+        # If a rung completed and the process stopped before adapter packaging,
+        # resume from its checkpoint without taking an extra optimizer step.
+        if self.stop_after_step > 0 and state.global_step >= self.stop_after_step:
+            control.should_training_stop = True
+        return control
+
+    def on_step_end(self, args, state, control, **kwargs):
+        if self.stop_after_step > 0 and state.global_step >= self.stop_after_step:
+            # Force a checkpoint at the rung even if the configured save interval
+            # changes. The runner resumes this checkpoint with the same 5-epoch
+            # horizon, optimizer, and scheduler state.
+            control.should_save = True
+            control.should_training_stop = True
+        return control
 
 
 def prepare_lora_checkpointing(model) -> None:
@@ -593,7 +691,7 @@ def train_stage2(
 ) -> tuple[Path, object, object]:
     """Train a Stage-2 fork and keep the model in memory for evaluation."""
     if texts is not None and lambda_candidate > 0:
-        assert_error_memory_training_budget(
+        assert_listed_training_budget(
             len(texts),
             listed_negative_source=args.listed_negative_source,
             skip_train=False,
@@ -611,7 +709,7 @@ def train_stage2(
     stage_args = copy(args)
     use_checkpointing = lambda_candidate > 0
     if use_checkpointing:
-        # Candidate scoring is one padded 10-way forward. Keep the original
+        # Candidate scoring is one padded (K+1)-way forward. Keep the original
         # effective batch; microbatch stays 1 on 24GB Qwen2.5-7B.
         effective = args.per_device_train_batch_size * args.gradient_accumulation_steps
         stage_args.per_device_train_batch_size = 1
@@ -647,6 +745,16 @@ def train_stage2(
     tracker = getattr(args, "_swanlab_tracker", None)
     if tracker is not None:
         trainer.add_callback(tracker.callback(variant))
+    stop_after_step = int(getattr(args, "stop_after_step", 0))
+    if stop_after_step < 0:
+        raise ValueError("stop_after_step must be non-negative")
+    if stop_after_step > 0:
+        trainer.add_callback(StopAfterStepCallback(stop_after_step))
+        print(
+            f"[{variant}] multi-fidelity rung stop_after_step={stop_after_step}; "
+            f"schedule horizon={args.involve_qa_epochs} epochs",
+            flush=True,
+        )
     started = time.time()
     trainer_dir = output_dir / f"trainer_{variant}"
     resume_from = resolve_resume_checkpoint(
@@ -689,12 +797,14 @@ def train_stage2(
             "last_microbatch_lambda_candidate": trainer.last_lambda_candidate,
             "trainer_max_steps": int(trainer.state.max_steps),
             "trainer_global_step": int(trainer.state.global_step),
+            "stop_after_step": stop_after_step,
+            "resumed_from": resume_from if resume_from else None,
+            "schedule_horizon_epochs": float(args.involve_qa_epochs),
             "per_device_train_batch_size": stage_args.per_device_train_batch_size,
             "gradient_accumulation_steps": training_args.gradient_accumulation_steps,
             "gradient_checkpointing": use_checkpointing,
             "seconds": round(time.time() - started, 1),
             "s1_adapter": str(s1_adapter),
-            "resumed_from": resume_from if resume_from else None,
             "created_at_utc": datetime.now(timezone.utc).isoformat(),
         },
     )
@@ -808,6 +918,7 @@ def write_comparison(
     lambda_candidate: float,
     model_name: str,
     listed_negative_source: str,
+    listed_negative_k: int,
 ) -> dict:
     b1_path = output_dir / "b1" / "summary.json"
     listed_path = output_dir / "listed" / "summary.json"
@@ -822,10 +933,11 @@ def write_comparison(
     if frozen_path.is_file():
         b1_source = json.loads(frozen_path.read_text(encoding="utf-8"))
     method_label = {
-        "structure_counterfactual": "Structure-Counterfactual-9",
         "error_memory": "legacy ErrorMemory-9 ablation",
         "train_graph": "Random-9 control",
     }.get(listed_negative_source, listed_negative_source)
+    if listed_negative_source == "structure_counterfactual":
+        method_label = f"Structure-Counterfactual-{listed_negative_k}"
     note = (
         f"{method_label} is compared against the frozen generation-only B1 arm. "
         "The mainline claim requires candidate and generation metrics to be reported "
@@ -845,6 +957,7 @@ def write_comparison(
         "model_name": model_name,
         "lambda_candidate": lambda_candidate,
         "listed_negative_source": listed_negative_source,
+        "listed_negative_k": listed_negative_k,
         "b1": b1,
         "listed": listed,
         "listed_minus_b1_em": listed["all"]["em"] - b1["all"]["em"],
@@ -891,9 +1004,25 @@ def evaluate_variant(
             raise RuntimeError(f"evaluation incomplete: {len(missing)} questions missing")
         write_jsonl(pred_path, rows)
         summary = em_summary(rows)
-        (output_dir / "summary.json").write_text(
-            json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
+        write_json_atomic(output_dir / "summary.json", summary)
+        metadata = {
+            "format_version": 1,
+            "created_at_utc": datetime.now(timezone.utc).isoformat(),
+            "stage": args.stage,
+            "variant": output_dir.name,
+            "adapter_dir": str(adapter_dir),
+            "input_file": str(args.input_file),
+            "eval_file": str(args.eval_file) if args.eval_file else None,
+            "prediction_file": str(pred_path),
+            "summary_file": str(output_dir / "summary.json"),
+            "count": len(rows),
+            "gen_max_length": args.gen_max_length,
+            "dtype": args.dtype,
+            "model_name": args.model_name,
+            "seed": args.seed,
+            "resume_enabled": not args.no_resume,
+        }
+        write_json_atomic(output_dir / "metadata.json", metadata)
         print(f"[eval] {adapter_dir} EM={summary['all']['em']:.4f} n={summary['all']['count']}", flush=True)
         return summary
     finally:
@@ -907,7 +1036,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
     dataset_name = str(getattr(args, "dataset", "") or "").strip()
     if not dataset_name:
         for part in args.input_file.parts:
-            if part in {"nell23k", "fb15k237_2", "wn18rr", "clegr_reasoning"}:
+            if part in {"nell23k", "fb15k237_2", "wn18rr", "codexm", "clegr_reasoning"}:
                 dataset_name = part
                 break
     if not dataset_name:
@@ -921,6 +1050,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             else "listed_contrastive_grip"
         ),
         "input_file": str(args.input_file),
+        "relation_eligibility": str(args.relation_eligibility) if getattr(args, "relation_eligibility", None) else None,
         "eval_file": str(args.eval_file) if args.eval_file else None,
         "output_dir": str(output_dir),
         "s1_adapter": str(args.s1_adapter) if args.s1_adapter else None,
@@ -994,8 +1124,10 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         },
         "raw_dir": str(args.raw_dir),
         "skip_train": bool(args.skip_train),
+        "defer_eval": bool(args.defer_eval),
         "save_steps": int(args.save_steps),
         "save_total_limit": int(args.save_total_limit),
+        "stop_after_step": int(getattr(args, "stop_after_step", 0)),
         "resume_from_checkpoint": (
             str(args.resume_from_checkpoint) if args.resume_from_checkpoint else None
         ),
@@ -1018,9 +1150,27 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
             "epoch budget (no S2 early stop) so the generation objective is compute-matched."
         ),
     }
-    (output_dir / "run_config.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    config_path = output_dir / "run_config.json"
+    existing = {}
+    if config_path.is_file():
+        try:
+            loaded = json.loads(config_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                existing = loaded
+        except json.JSONDecodeError:
+            # A direct training invocation should still be able to repair an
+            # incomplete config; the launcher-owned recorder remains the
+            # source of truth when its structured record is valid.
+            existing = {}
+    if existing.get("format_version") == 1:
+        merged = dict(existing)
+        merged.update(payload)
+        merged["created_at_utc"] = existing.get(
+            "created_at_utc", payload["created_at_utc"]
+        )
+        merged["training_config"] = payload
+        payload = merged
+    write_json_atomic(config_path, payload)
 
 
 def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list[str] | None, list[str] | None, list[dict] | None, dict]:
@@ -1081,14 +1231,15 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
                     "listed_negative_source=structure_counterfactual requires "
                     "--negative_sampling_mode structure_counterfactual"
                 )
-            if args.listed_negative_k != LISTED_NEGATIVE_K:
+            if args.listed_negative_k < 1:
                 raise ValueError(
-                    "structure-counterfactual sampling requires listed_negative_k=9"
+                    "structure-counterfactual sampling requires listed_negative_k>=1"
                 )
             validate_structure_counterfactual_manifest(
                 counterfactual_manifest or {},
                 k=args.listed_negative_k,
             )
+            validate_counterfactual_metadata(args)
         elif args.negative_sampling_mode != "random":
             raise ValueError(
                 "non-random negative_sampling_mode requires a matching "
@@ -1106,6 +1257,9 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             error_memory_manifest=error_memory_manifest,
             counterfactual_manifest=counterfactual_manifest,
             question_ids=question_ids,
+            eligible_question_ids=load_relation_eligibility(
+                getattr(args, "relation_eligibility", None), args.input_file, Path(args.raw_dir)
+            ),
         )
         listed_n = sum(1 for meta in qa_metas if meta["listed_relations"])
         relation_aliases = train_relation_alias_index(relation_order or [])
@@ -1158,6 +1312,7 @@ def _run_main(args: argparse.Namespace) -> None:
             lambda_candidate=args.lambda_candidate,
             model_name=args.model_name,
             listed_negative_source=args.listed_negative_source,
+            listed_negative_k=args.listed_negative_k,
         )
         return
 
@@ -1170,10 +1325,15 @@ def _run_main(args: argparse.Namespace) -> None:
 
     if qa_texts is not None:
         listed_adapter = output_dir / "listed" / "adapter"
+        resume_requested = args.resume_from_checkpoint is not None
         will_train_listed = (
             args.stage in {"listed", "all"}
             and not args.skip_train
-            and (args.no_resume or not adapter_is_complete(listed_adapter))
+            and (
+                args.no_resume
+                or resume_requested
+                or not adapter_is_complete(listed_adapter)
+            )
         )
         budget = assert_listed_training_budget(
             len(qa_texts),
@@ -1243,8 +1403,13 @@ def _run_main(args: argparse.Namespace) -> None:
         if not Path(s1_adapter).is_dir():
             raise FileNotFoundError(f"missing stage-1 adapter: {s1_adapter}")
         listed_adapter = output_dir / "listed" / "adapter"
+        resume_requested = args.resume_from_checkpoint is not None
         model = tokenizer = None
-        if args.skip_train or (adapter_is_complete(listed_adapter) and not args.no_resume):
+        if args.skip_train or (
+            adapter_is_complete(listed_adapter)
+            and not args.no_resume
+            and not resume_requested
+        ):
             if not adapter_is_complete(listed_adapter):
                 raise FileNotFoundError(f"missing listed adapter: {listed_adapter}")
             print(f"[listed] skip train; evaluate {listed_adapter}", flush=True)
@@ -1259,18 +1424,28 @@ def _run_main(args: argparse.Namespace) -> None:
                 texts=qa_texts,
                 metas=qa_metas,
             )
-        summaries["listed"] = evaluate_variant(
-            args,
-            eval_record,
-            listed_adapter,
-            output_dir / "listed",
-            model=model,
-            tokenizer=tokenizer,
-        )
-        if tracker is not None:
-            tracker.log_evaluation("listed", summaries["listed"])
-        del model, tokenizer
-        release_cuda()
+        if args.defer_eval:
+            print(
+                f"[listed] evaluation deferred for {listed_adapter}; "
+                "score the intended validation rung separately",
+                flush=True,
+            )
+            summaries["listed"] = {"deferred": True}
+            del model, tokenizer
+            release_cuda()
+        else:
+            summaries["listed"] = evaluate_variant(
+                args,
+                eval_record,
+                listed_adapter,
+                output_dir / "listed",
+                model=model,
+                tokenizer=tokenizer,
+            )
+            if tracker is not None:
+                tracker.log_evaluation("listed", summaries["listed"])
+            del model, tokenizer
+            release_cuda()
 
     b1_ready = (output_dir / "b1" / "summary.json").is_file()
     listed_ready = (output_dir / "listed" / "summary.json").is_file()
@@ -1282,6 +1457,7 @@ def _run_main(args: argparse.Namespace) -> None:
             lambda_candidate=args.lambda_candidate,
             model_name=args.model_name,
             listed_negative_source=args.listed_negative_source,
+            listed_negative_k=args.listed_negative_k,
         )
     if tracker is not None:
         tracker.complete(stage=args.stage, summaries=summaries)

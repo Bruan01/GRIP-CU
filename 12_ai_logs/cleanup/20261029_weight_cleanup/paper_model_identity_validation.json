@@ -1,0 +1,35 @@
+{
+  "validation": "passed",
+  "matches": [
+    {
+      "path": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train/listed/adapter/adapter_model.safetensors",
+      "sha256": "4061b96d342653dc911aba85c29a4cbedabc758f74729b4c7adace81efe63a6a",
+      "original_manifest": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train/artifact_manifest.json"
+    },
+    {
+      "path": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/artifacts/nell23k_paper_7b/lora_adapter/adapter_model.safetensors",
+      "sha256": "559f0d509fb429edd27bbb9d5e63e2894fcee3d413a2107be8c50666f88350c5",
+      "original_manifest": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train/artifact_manifest.json"
+    },
+    {
+      "path": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/artifacts/nell23k_paper_7b/lora_adapter/adapter_model.safetensors",
+      "sha256": "559f0d509fb429edd27bbb9d5e63e2894fcee3d413a2107be8c50666f88350c5",
+      "original_manifest": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train/artifact_manifest.json"
+    },
+    {
+      "path": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/listed/adapter/adapter_model.safetensors",
+      "sha256": "df9e8718df57cc2a80adb7729c7c1f04d1b2248b5d56a11bda5f6d9ce089157f",
+      "original_manifest": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/artifact_manifest.json"
+    },
+    {
+      "path": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter/adapter_model.safetensors",
+      "sha256": "cd3ccdf30f1d0b420001baaa31b0491318b8df0024bee68269fcbf6b2c46d94b",
+      "original_manifest": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/artifact_manifest.json"
+    },
+    {
+      "path": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage2_adapter/adapter_model.safetensors",
+      "sha256": "329fd641e9ec681e942cb80358ee887a4868ccd02b39c18d87bb01f9eaff86b5",
+      "original_manifest": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/artifact_manifest.json"
+    }
+  ]
+}

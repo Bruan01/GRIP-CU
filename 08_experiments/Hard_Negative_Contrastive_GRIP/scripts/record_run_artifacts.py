@@ -142,6 +142,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--b1_adapter", type=Path, default=None)
     parser.add_argument("--scores_dir", type=Path, default=None)
     parser.add_argument("--sampler_dir", type=Path, default=None)
+    parser.add_argument("--bank_source_dir", type=Path, default=None)
     parser.add_argument("--benchmark_dir", type=Path, default=None)
     parser.add_argument("--rollout_manifest", type=Path, default=None)
     parser.add_argument("--manifest", type=Path, default=None)
@@ -236,6 +237,14 @@ def input_paths(args: argparse.Namespace) -> dict[str, Path]:
     ):
         if path is not None:
             paths[label] = path
+    if args.bank_source_dir:
+        for name in (
+            "counterfactual_bank.jsonl",
+            "sampler_audit.jsonl",
+            "relation_profiles.json",
+            "metadata.json",
+        ):
+            paths[f"bank_source_{name}"] = args.bank_source_dir / name
     return paths
 
 
@@ -355,6 +364,7 @@ def main() -> None:
                 "model_cache_dir": str(args.model_cache_dir) if args.model_cache_dir else None,
                 "scores_dir": str(args.scores_dir) if args.scores_dir else None,
                 "sampler_dir": str(args.sampler_dir) if args.sampler_dir else None,
+                "bank_source_dir": str(args.bank_source_dir) if args.bank_source_dir else None,
                 "manifest": str(args.manifest) if args.manifest else None,
                 "s1_adapter": str(args.s1_adapter) if args.s1_adapter else None,
                 "b1_adapter": str(args.b1_adapter) if args.b1_adapter else None,
@@ -376,6 +386,17 @@ def main() -> None:
                 "structure_weight": os.environ.get("COUNTERFACTUAL_STRUCTURE_WEIGHT", "1.0"),
                 "violation_weight": os.environ.get("COUNTERFACTUAL_VIOLATION_WEIGHT", "1.0"),
                 "temperature": os.environ.get("COUNTERFACTUAL_TEMPERATURE", "0.25"),
+                "lambda_candidate": os.environ.get("LAMBDA_CANDIDATE", "1.0"),
+                "contrastive_temperature": os.environ.get("CONTRASTIVE_TEMPERATURE", "1.0"),
+                "train_learning_rate": os.environ.get("TRAIN_LEARNING_RATE", "1e-3"),
+                "train_weight_decay": os.environ.get("TRAIN_WEIGHT_DECAY", "1e-4"),
+                "train_max_grad_norm": os.environ.get("TRAIN_MAX_GRAD_NORM", "1.0"),
+                "involve_qa_epochs": os.environ.get("INVOLVE_QA_EPOCHS"),
+                "train_lora_r": os.environ.get("TRAIN_LORA_R"),
+                "train_lora_alpha": os.environ.get("TRAIN_LORA_ALPHA"),
+                "per_device_train_batch_size": os.environ.get("PER_DEVICE_TRAIN_BATCH_SIZE"),
+                "gradient_accumulation_steps": os.environ.get("GRADIENT_ACCUMULATION_STEPS"),
+                "run_variant": os.environ.get("RUN_VARIANT", ""),
             },
         }
     )

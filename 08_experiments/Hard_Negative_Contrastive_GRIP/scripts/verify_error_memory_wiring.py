@@ -22,6 +22,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     is_grip_task_file,
     is_relation_gold,
     load_json_payload,
+    load_relation_eligibility,
     load_counterfactual_manifest,
     load_error_memory_manifest,
     original_question_ids_from_payload,
@@ -42,6 +43,7 @@ def file_sha256(path: Path) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task_file", type=Path, required=True)
+    parser.add_argument("--relation_eligibility", type=Path, default=None)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--raw_dir", type=Path, required=True)
     parser.add_argument(
@@ -51,6 +53,12 @@ def parse_args() -> argparse.Namespace:
         help="Optional raw-relation to task-label mapping, required for FB15K237-2.",
     )
     parser.add_argument("--expected_listed", type=int, default=3253)
+    parser.add_argument(
+        "--listed_negative_k",
+        type=int,
+        default=9,
+        help="Required exact number of negatives per listed relation QA.",
+    )
     parser.add_argument(
         "--negative_source",
         choices=("error_memory", "structure_counterfactual"),
@@ -62,6 +70,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.listed_negative_k < 1:
+        raise ValueError("--listed_negative_k must be positive")
     payload = load_json_payload(args.task_file)
     if not is_grip_task_file(payload):
         raise ValueError(f"{args.task_file} is not a GRIP task file")
@@ -72,15 +82,18 @@ def main() -> None:
     )
     if args.negative_source == "error_memory":
         manifest = load_error_memory_manifest(args.manifest)
-        validate_error_memory_manifest(manifest)
+        validate_error_memory_manifest(manifest, k=args.listed_negative_k)
     else:
         manifest = load_counterfactual_manifest(args.manifest)
-        validate_structure_counterfactual_manifest(manifest)
+        validate_structure_counterfactual_manifest(
+            manifest, k=args.listed_negative_k
+        )
     resolved_ids = question_ids or [f"task_qa:{index}" for index in range(len(qa_texts))]
+    eligible_ids = load_relation_eligibility(args.relation_eligibility, args.task_file, args.raw_dir)
     _, metas = build_qa_assets_from_task_texts(
         qa_texts,
         seed=2026,
-        listed_negative_k=9,
+        listed_negative_k=args.listed_negative_k,
         listed_negative_source=args.negative_source,
         relation_order=relation_order,
         error_memory_manifest=manifest if args.negative_source == "error_memory" else None,
@@ -88,12 +101,14 @@ def main() -> None:
             manifest if args.negative_source == "structure_counterfactual" else None
         ),
         question_ids=resolved_ids,
+        eligible_question_ids=eligible_ids,
     )
     alias_index = train_relation_alias_index(relation_order)
     relation_n = sum(
         1
-        for text in qa_texts
+        for index, text in enumerate(qa_texts)
         if is_relation_gold(assistant_gold(text), text, relation_alias_index=alias_index)
+        and (eligible_ids is None or resolved_ids[index] in eligible_ids)
     )
     listed_counts = [len(meta["listed_relations"]) for meta in metas]
     listed_n = sum(1 for count in listed_counts if count > 0)
@@ -104,11 +119,16 @@ def main() -> None:
         )
     if listed_n != relation_n:
         raise ValueError(
-            f"error-memory bank covers {listed_n}/{relation_n} relation QA rows; "
+            f"negative bank covers {listed_n}/{relation_n} relation QA rows; "
             "unmatched train relations are not allowed in the full-task run"
         )
-    if any(count != 9 for count in listed_counts if count > 0):
-        raise ValueError("error-memory wiring found a listed row whose K is not 9")
+    if any(
+        count != args.listed_negative_k for count in listed_counts if count > 0
+    ):
+        raise ValueError(
+            "wiring found a listed row whose K does not match "
+            f"{args.listed_negative_k}"
+        )
     output = {
         "task_file": str(args.task_file),
         "manifest": str(args.manifest),
@@ -120,9 +140,12 @@ def main() -> None:
         "listed_qa": listed_n,
         "question_id_source": "original" if question_ids is not None else "positional",
         "relation_vocab_size": len(relation_order),
-        "k": 9,
+        "k": args.listed_negative_k,
         "cpu_only": True,
         "train_only": True,
+        "relation_eligibility": str(args.relation_eligibility) if args.relation_eligibility else None,
+        "relation_eligibility_sha256": file_sha256(args.relation_eligibility) if args.relation_eligibility else None,
+        "generation_qa_preserved": len(qa_texts),
         "same_questions_as_task": True,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-28",
+  "pages": 9,
+  "pdf_sha256": "2f358d14d9386dfdad82295fa132b7181b5442669da82409cc2dcb4d0852560d",
+  "changed_source_files": [
+    "README.md",
+    "main/figures/sccl_mechanism.tex",
+    "main/main.tex",
+    "main/sections/appendix.tex",
+    "main/sections/conclusion.tex",
+    "main/sections/discussion.tex",
+    "main/sections/experiments.tex",
+    "main/sections/formulation.tex",
+    "main/sections/introduction.tex",
+    "main/sections/method.tex",
+    "main/sections/related_work.tex",
+    "paper_outline.md",
+    "section_plan.md"
+  ],
+  "equations_unchanged": 9,
+  "labels_checked": 20,
+  "cross_references_checked": 18,
+  "citation_keys_checked": 16,
+  "build_error": false,
+  "unresolved_citations_or_references": false,
+  "overfull_boxes": false,
+  "missing_characters": false,
+  "visual_review_pages": [
+    1,
+    3,
+    5,
+    7,
+    8
+  ],
+  "remaining_warnings": "Existing CJK font shape fallback and underfull boxes",
+  "training_or_evaluation_rerun": false
+}

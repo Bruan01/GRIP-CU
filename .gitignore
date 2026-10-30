@@ -61,3 +61,7 @@ outputs/
 *.tmp
 *.temp
 *.bak
+
+# Local benchmark export and LaTeX build caches
+/04_benchmark.zip
+/11_paper/**/build/

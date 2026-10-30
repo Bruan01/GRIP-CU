@@ -39,6 +39,16 @@ Each split directory contains `predictions.jsonl`, `summary.json`, and
 environment, run configuration, budget, wiring validation, comparison, and
 the stdout/stderr inference log.
 
+The WSL runner additionally writes `stage_status.json`, `stage_history.jsonl`,
+`resource_usage.json`, and `artifact_manifest.json` for every stage. The
+manifest is the authoritative completion gate: it lists expected artifacts,
+missing required files, file sizes/mtimes, and SHA256 hashes at stage finish.
+For score, the required set is `candidate_scores.jsonl`, `qa_summary.jsonl`,
+`metadata.json`, and `run_stats.json`; for freeze it is the bank, audit,
+relation profiles, and metadata; for wire it is top-level `wiring.json`; and
+for train it includes the budget, adapter/config, predictions, summary,
+metadata, and `run.log`.
+
 ## Storage policy
 
 Commit to Git: scripts, configs, tests, and this runbook. Keep out of Git:

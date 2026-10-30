@@ -8,6 +8,7 @@ recursive executor or a recursive question schema.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 import re
@@ -351,12 +352,21 @@ def validate_error_memory_manifest(rows: dict[str, dict], *, k: int = LISTED_NEG
 def validate_structure_counterfactual_manifest(
     rows: dict[str, dict], *, k: int = LISTED_NEGATIVE_K
 ) -> None:
-    """Reject a bank without structural counterfactual provenance."""
-    if k != LISTED_NEGATIVE_K or not rows:
-        raise ValueError("structure-counterfactual sampling requires K=9 and a non-empty bank")
+    """Reject a bank without structural provenance or an exact requested K."""
+    if k < 1 or not rows:
+        raise ValueError("structure-counterfactual sampling requires K>=1 and a non-empty bank")
     for question_id, row in rows.items():
         negatives = row["negative_relations"]
         selected = row.get("selected_negatives")
+        if len(negatives) != k:
+            raise ValueError(
+                f"{question_id}: requested K={k}, but the bank has "
+                f"{len(negatives)} valid counterfactual candidates"
+            )
+        if row.get("requested_k") != k:
+            raise ValueError(
+                f"{question_id}: bank requested_k={row.get('requested_k')}, expected K={k}"
+            )
         if (
             row.get("negative_source") != STRUCTURE_COUNTERFACTUAL_SOURCE
             or row.get("filter_splits") != ["train"]
@@ -366,8 +376,6 @@ def validate_structure_counterfactual_manifest(
             != "candidate_absent_from_train_known_pair"
             or row.get("k") != len(negatives)
             or row.get("actual_k") != len(negatives)
-            or row.get("requested_k") != k
-            or len(negatives) != k
             or len(negatives) != len(set(negatives))
             or not isinstance(selected, list)
             or len(selected) != len(negatives)
@@ -519,6 +527,21 @@ def normalize_manifest_row(
         row["lambda_candidate"] = weight
     return negatives
 
+def load_relation_eligibility(path: Path | None, task_file: Path, raw_dir: Path) -> set[str] | None:
+    """Read an explicit train-pair eligibility gate without changing QA text."""
+    if path is None:
+        return None
+    record = json.loads(path.read_text(encoding="utf-8"))
+    if (record.get("train_only") is not True
+            or record.get("task_sha256") != hashlib.sha256(task_file.read_bytes()).hexdigest()
+            or record.get("train_sha256") != hashlib.sha256((raw_dir / "train.txt").read_bytes()).hexdigest()):
+        raise ValueError("relation eligibility does not match the task and train graph")
+    values = record.get("eligible_question_ids", [])
+    if not values or len(values) != len(set(values)):
+        raise ValueError("relation eligibility requires nonempty unique question IDs")
+    return set(map(str, values))
+
+
 def build_qa_assets_from_task_texts(
     qa_texts: list[str],
     *,
@@ -529,6 +552,7 @@ def build_qa_assets_from_task_texts(
     error_memory_manifest: dict[str, dict] | None = None,
     counterfactual_manifest: dict[str, dict] | None = None,
     question_ids: list[str] | None = None,
+    eligible_question_ids: set[str] | None = None,
 ) -> tuple[list[str], list[dict]]:
     if not qa_texts:
         raise ValueError("task file contains no QA samples")
@@ -574,7 +598,8 @@ def build_qa_assets_from_task_texts(
         listed: list[str] = []
         lambda_candidate = None
         matched = match_train_relation(gold, alias_index)
-        if is_relation_gold(gold, text, relation_alias_index=alias_index):
+        eligible = eligible_question_ids is None or question_id in eligible_question_ids
+        if eligible and is_relation_gold(gold, text, relation_alias_index=alias_index):
             if listed_negative_source in {"error_memory", "structure_counterfactual"}:
                 if matched is not None:
                     manifest = (
@@ -613,6 +638,7 @@ def build_qa_assets_from_task_texts(
                 "listed_negative_source": listed_negative_source,
                 "matched_train_relation": matched,
                 "lambda_candidate": lambda_candidate,
+                "candidate_eligible": eligible,
             }
         )
     if listed_negative_source in {"error_memory", "structure_counterfactual"}:
@@ -627,6 +653,12 @@ def build_qa_assets_from_task_texts(
             if is_relation_gold(assistant_gold(text), text, relation_alias_index=alias_index)
             and match_train_relation(assistant_gold(text), alias_index) is not None
         }
+        if eligible_question_ids is not None:
+            if not eligible_question_ids.issubset(expected_ids):
+                raise ValueError("relation eligibility contains unknown or non-relation QA IDs")
+            expected_ids &= eligible_question_ids
+            if set(manifest) != expected_ids:
+                raise ValueError("candidate bank must cover exactly the eligible train-pair QA IDs")
         missing_ids = expected_ids.difference(manifest)
         if missing_ids:
             raise ValueError(

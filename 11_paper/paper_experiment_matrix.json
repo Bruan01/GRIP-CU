@@ -1,0 +1,165 @@
+{
+  "mainline": "structure-counterfactual-contrastive-learning",
+  "status_note": "The current paper is scoped to relation-candidate ranking for a fixed entity pair. The four-dataset matrix is NELL23K, FB15K237-2, WN18RR, and CoDEx-M. CoDEx-M data and full 10-way eval questions are converted; Stage1/Stage2 task inference and model runs remain pending. Its entity-corruption verified negatives are separate from relation candidates. CLEGR graph-level QA is out of scope.",
+  "excluded_datasets": [
+    {
+      "dataset": ["CLEGR-Facts", "CLEGR-Reasoning"],
+      "reason": "Graph-level QA has typed answer spaces and requires graph-edit counterfactuals; SC-CL is defined over relation candidates for a fixed entity pair.",
+      "paper_status": "excluded-from-current-paper"
+    }
+  ],
+  "fixed_protocol": {
+    "candidate_count": 9,
+    "uniform_mix": 0.3333333333,
+    "structure_weight": 1.0,
+    "violation_weight": 1.0,
+    "sampling_temperature": 0.25,
+    "candidate_loss_weight": 1.0,
+    "bank_seed": 2026,
+    "training_seeds": [2026],
+    "current_search_scope": "2026-10-30 user instruction: NELL23K, FB15K237-2 and CoDEx-M, single seed 2026, fixed Stage-1 adapters, Stage-2 hyperparameters only; full-test improvement is required. Multi-seed work is deferred for this phase.",
+    "filter_splits": ["train"]
+  },
+  "experiments": [
+    {
+      "id": "SC_MAIN_CORE_NELL",
+      "review_questions": ["R1", "R6"],
+      "dataset": "NELL23K",
+      "comparison": ["B1", "Random-9", "Frequency-matched-Random-9", "SC-CL-9"],
+      "hypothesis": "SC-CL-9 improves closed-set ranking over Random-9 while keeping EM near B1.",
+      "metrics": ["EM", "OOV", "NLL", "MRR", "Hits@1", "Hits@3", "Hits@10"],
+      "status": "observed-single-seed",
+      "evidence_status": "observed-single-seed; direct controls incomplete",
+      "evidence_refs": ["08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train", "08_experiments/Hard_Negative_Contrastive_GRIP/results/candidate_rerank/nell23k_structure_counterfactual_06_full"],
+      "known_gaps": ["only training seed 2026", "no frequency-matched random", "no attribution ablations", "full B1 candidate rerank unavailable"],
+      "falsifier": "SC-CL-9 is not better than frequency-matched random or EM drops beyond the preregistered threshold."
+    },
+    {
+      "id": "SC_MAIN_CORE_FB",
+      "review_questions": ["R1", "R2", "R6"],
+      "dataset": "FB15K237-2",
+      "comparison": ["B1", "Random-9", "Frequency-matched-Random-9", "SC-CL-9"],
+      "hypothesis": "The candidate-boundary effect transfers to a second local task format.",
+      "metrics": ["EM", "OOV", "MRR", "Hits@1", "Hits@3", "Hits@10"],
+      "status": "partial-historical",
+      "evidence_status": "observed-historical-not-SC-CL",
+      "evidence_refs": ["/mnt/e/GRIP-CU/artifacts/info_nce_fb15k237_qwen7b_20260921/evaluation/b1_candidate_score.jsonl", "/mnt/e/GRIP-CU/artifacts/info_nce_fb15k237_qwen7b_20260921/evaluation/i0_candidate_score.jsonl"],
+      "known_gaps": ["current SC-CL bank absent", "historical i0 uses different LoRA and training contract", "no matched Random-9 or frequency control", "no five-seed result"],
+      "falsifier": "The effect disappears after adapter and task-format parity checks."
+    },
+    {
+      "id": "SC_MAIN_WN18RR",
+      "review_questions": ["R2", "R7"],
+      "dataset": "WN18RR",
+      "comparison": ["B1", "Random-9", "SC-CL-9"],
+      "hypothesis": "The relation-candidate protocol remains useful on a small relation vocabulary.",
+      "metrics": ["MRR", "Hits@1", "Hits@10", "EM", "wall_clock"],
+      "status": "task/pilot-ready; SC-CL bank and controls pending",
+      "evidence_status": "planned/preset",
+      "falsifier": "No transfer benefit after matched task, adapter, and candidate checks."
+    },
+    {
+      "id": "SC_MAIN_CODEX_M",
+      "review_questions": ["R2", "R3", "R7"],
+      "dataset": "CoDEx-M",
+      "comparison": ["B1", "Random-9", "SC-CL-9"],
+      "hypothesis": "The relation-candidate protocol is reproducible on a medium-sized public KG benchmark.",
+      "metrics": ["EM", "MRR", "Hits@1", "Hits@3", "Hits@10", "candidate_audit", "wall_clock"],
+      "status": "data-ready; Stage1/Stage2 task inference and model runs pending",
+      "evidence_status": "official splits, text maps, and full 10-way eval converted; no method results",
+      "known_gaps": ["full Original GRIP task JSON not generated", "adapter and SC-CL bank not built", "no matched model runs"],
+      "falsifier": "No transfer benefit after matched task, adapter, and candidate checks."
+    },
+    {
+      "id": "SC_CTRL_ATTRIBUTION",
+      "review_questions": ["R1", "R4"],
+      "dataset": ["NELL23K", "FB15K237-2"],
+      "comparison": ["Profile-only", "Violation-only", "SC-CL-9"],
+      "hypothesis": "The two signals make complementary contributions.",
+      "metrics": ["MRR", "margin", "candidate_entropy", "EM"],
+      "status": "planned",
+      "evidence_status": "planned/preset",
+      "falsifier": "Either single signal matches the full method on all primary metrics."
+    },
+    {
+      "id": "SC_CTRL_FREQMATCH",
+      "review_questions": ["R4"],
+      "dataset": ["NELL23K", "FB15K237-2"],
+      "comparison": ["Random-9", "Frequency-matched-Random-9", "SC-CL-9"],
+      "hypothesis": "The effect is not explained by relation-frequency strata.",
+      "metrics": ["MRR_delta", "frequency_bin_delta", "Hits@10"],
+      "status": "planned",
+      "evidence_status": "planned/preset",
+      "falsifier": "Frequency-matched random is as strong as SC-CL."
+    },
+    {
+      "id": "SC_ABL_FILTER",
+      "review_questions": ["R3", "R8"],
+      "dataset": ["NELL23K", "FB15K237-2"],
+      "comparison": ["SC-CL-9", "SC-CL-no-known-filter"],
+      "hypothesis": "Known-pair filtering is a safety contract, not an optional regularizer.",
+      "metrics": ["train_known_collision", "valid_test_overlap", "MRR"],
+      "status": "planned-risk",
+      "evidence_status": "planned/preset",
+      "falsifier": "The unfiltered variant has no collision or quality penalty."
+    },
+    {
+      "id": "SC_SENSITIVITY",
+      "review_questions": ["R5"],
+      "dataset": "NELL23K",
+      "comparison": ["K=3/9/15", "rho=0/1/3/2/3", "tau=0.10/0.25/0.50"],
+      "hypothesis": "The default is not a single brittle point.",
+      "metrics": ["MRR", "EM", "audit_pass_rate", "candidate_entropy", "cost"],
+      "status": "planned",
+      "evidence_status": "planned/preset",
+      "falsifier": "Small perturbations reverse the ranking or fail audit gates."
+    },
+    {
+      "id": "SC_AUDIT_LEAK",
+      "review_questions": ["R3", "R8"],
+      "dataset": ["NELL23K", "FB15K237-2", "WN18RR", "CoDEx-M"],
+      "comparison": ["all direct methods"],
+      "hypothesis": "Every bank row satisfies train-only provenance and wiring constraints; CoDEx triple-classification negatives are not mapped to relation labels.",
+      "metrics": ["split_pass_rate", "known_pair_pass_rate", "id_alignment_rate", "duplicate_rate", "K_mismatch"],
+      "status": "partial-observed",
+      "evidence_status": "NELL wiring/artifact manifest observed; FB/WN/CoDEx-M pending",
+      "evidence_refs": ["08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train/artifact_manifest.json", "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_02_artifacts/structure_counterfactual_bank/wiring.json"],
+      "falsifier": "Any nonzero hard-gate violation."
+    },
+    {
+      "id": "SC_SLICE_FAILURE",
+      "review_questions": ["R4", "R6"],
+      "dataset": ["NELL23K", "FB15K237-2"],
+      "comparison": ["Random-9", "SC-CL-9"],
+      "hypothesis": "Benefits, if present, are concentrated in structurally comparable and model-confused slices.",
+      "metrics": ["slice_n", "MRR", "Hits@10", "EM", "margin"],
+      "slices": ["one_to_many", "many_to_one", "low_degree", "profile_sparse", "B1_high_confusion"],
+      "status": "planned",
+      "evidence_status": "planned/preset",
+      "falsifier": "The aggregate gain is caused by one unreported slice or vanishes in all target slices."
+    },
+    {
+      "id": "SC_STAT_SEEDS",
+      "review_questions": ["R5"],
+      "dataset": ["NELL23K", "FB15K237-2", "WN18RR", "CoDEx-M"],
+      "comparison": ["B1", "Random-9", "SC-CL-9"],
+      "hypothesis": "The direction is stable over multiple training seeds; target five for NELL/FB and at least three for WN18RR/CoDEx-M.",
+      "metrics": ["mean", "std", "paired_bootstrap_95ci", "corrected_p"],
+      "status": "deferred_by_user_20261030",
+      "evidence_status": "Current acceptance is a single seed on NELL/FB/CoDEx-M. Multi-seed statistics are not required for this phase and cannot be claimed from these runs.",
+      "falsifier": "The sign of the paired effect is unstable or its interval spans a practically harmful effect."
+    },
+    {
+      "id": "SC_COST",
+      "review_questions": ["R7"],
+      "dataset": ["NELL23K", "FB15K237-2", "WN18RR", "CoDEx-M"],
+      "comparison": ["B1", "SC-CL-9"],
+      "hypothesis": "Offline bank construction has a reportable, bounded cost relative to Stage 2 training.",
+      "metrics": ["bank_rows", "bank_wall_clock", "scoring_gpu_time", "stage2_tokens", "peak_cpu_memory", "peak_gpu_memory"],
+      "status": "partial-observed",
+      "evidence_status": "NELL cost observed; FB/WN/CoDEx-M pending",
+      "evidence_refs": ["08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_06_train/budget.json", "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/nell23k_structure_counterfactual_3090_20261021_02_artifacts/structure_counterfactual_bank/run_stats.json"],
+      "falsifier": "The added cost is not recoverable under the measured ranking gain."
+    }
+  ]
+}

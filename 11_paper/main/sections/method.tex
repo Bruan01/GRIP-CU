@@ -1,0 +1,74 @@
+\section{结构反事实对比学习}
+
+\scc{} 将候选构造与 Stage~2 优化分为两个阶段（图~\ref{fig:mechanism}）。离线阶段融合训练图关系画像与冻结 B1 在训练问题上的违例度，在过滤后的关系池中采样并固定每题九个候选。学习阶段从 Stage~1 adapter 初始化 GRIP，在固定候选库上联合优化候选损失与原始生成损失。
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\linewidth}{!}{\input{figures/sccl_mechanism.tex}}
+    \caption{\scc{} 的候选构造与联合学习。A：训练图结构画像与冻结 \bone{} 违例度共同指导采样，train-known 过滤与无放回采样形成每题 $K=9$ 的固定候选库。B：Stage~2 从 Stage~1 adapter 初始化，联合优化生成损失与加权候选 InfoNCE；冻结 \bone{} 为离线候选构造提供评分。}
+    \label{fig:mechanism}
+\end{figure}
+
+\subsection{训练图关系画像}
+
+对每一个 $r\in\mathcal{R}_{\mathrm{tr}}$，我们从 $\mathcal{E}_{\mathrm{tr}}$ 计算五维关系画像
+\begin{equation}
+    \phi(r)=\bigl(\log(1+|E_r|),\log(1+|H_r|),\log(1+|T_r|),
+    \overline{d}_{H,r},\overline{d}_{T,r}\bigr),
+    \label{eq:profile}
+\end{equation}
+其中 $|E_r|$ 为关系边数，$|H_r|$ 和 $|T_r|$ 分别为关系覆盖的头实体数与尾实体数，
+$\overline{d}_{H,r}$ 是关系边上头实体的平均出度，$\overline{d}_{T,r}$ 是尾实体的平均入度。边数与实体覆盖计数使用 $\log(1+x)$ 压缩数值尺度；度统计保留图的局部连接性。
+
+对目标关系 $r^+$ 和候选 $r$，定义归一化结构相似度
+\begin{equation}
+    s_{\mathrm{str}}(q,r)=1-\frac{1}{5}\sum_{j=1}^{5}
+    \frac{|\phi_j(r^+)-\phi_j(r)|}
+    {|\phi_j(r^+)|+|\phi_j(r)|+\epsilon},
+    \label{eq:similarity}
+\end{equation}
+其中 $\epsilon$ 保证分母非零，分数裁剪到 $[0,1]$。该分数衡量五维图统计画像的接近程度；实体对的已知关系由式~\ref{eq:pool} 单独过滤。
+
+\subsection{冻结 B1 的边界违例度}
+
+\bone{} 是原始 GRIP 的 generation-only 基线。我们在训练问题上离线计算全关系词表的 continuation score。若离线记录已有 pairwise confusion，则直接使用裁剪到 $[0,1]$ 的 confusion；否则对候选和正关系的分数差使用平滑违例度
+\begin{equation}
+    V_{\bone}(q,r)=\sigma\left(\frac{z_{\bone}(q,r)-z_{\bone}(q,r^+)}{\tau_v}\right).
+    \label{eq:violation}
+\end{equation}
+候选分数越接近或超过正关系，$V_{\bone}$ 越大。B1 在训练问题上的离线分数于候选库构造时固定，提供与 Stage~2 参数更新分离的候选评分依据。
+
+\subsection{结构反事实候选分布}
+
+将结构相似度和分数违例度合成为
+\begin{equation}
+    u(q,r)=\alpha s_{\mathrm{str}}(q,r)+\beta V_{\bone}(q,r),
+    \qquad r\in P_q.
+    \label{eq:utility}
+\end{equation}
+候选分布使用均匀下限与 utility softmax 的混合：
+\begin{equation}
+    p(r\mid q)=\frac{\rho}{|P_q|}+(1-\rho)
+    \frac{\exp(u(q,r)/\tau_s)}{\sum_{r'\in P_q}\exp(u(q,r')/\tau_s)}.
+    \label{eq:sampling}
+\end{equation}
+我们从 $p(r\mid q)$ 无放回抽取 $K=9$ 个负候选。主实验参数为 $\rho=1/3$、$\alpha=1$、$\beta=1$、$\tau_s=0.25$。当 $|P_q|<K$ 时，记录该样本及候选不足原因，保持每个有效样本的候选互异性；实验报告候选构造失败数。
+
+结构反事实操作在固定实体对上替换关系标签，其候选池与开放世界真值约定见问题定义节。
+
+\subsection{固定候选库与来源追溯}
+
+\scc{} 为每个训练问题记录问题标识、目标关系、九个候选及其结构相似度、违例度、utility 和 B1 score gap，并保存采样参数、数据划分与已知关系过滤记录。候选库遵循四项来源约束：
+
+\begin{enumerate}
+    \item 问题来源和已知关系过滤均使用训练划分；
+    \item 每个样本恰有一个正关系和 $K=9$ 个互异候选，候选均属于 $\mathcal{R}_{\mathrm{tr}}$；
+    \item 候选与 $T_{\mathrm{tr}}(h,t)$ 不相交，问题标识与训练任务一一对齐；
+    \item 候选库哈希、脚本版本、随机种子和采样参数写入来源清单，构造后的候选库在训练中保持固定。
+\end{enumerate}
+
+训练时，候选 continuation score 代入式~\ref{eq:infonce}，生成损失沿用原始 GRIP 路径计算。两项损失按式~\ref{eq:total} 共同优化 Stage~2 的 LoRA 参数。
+
+\subsection{计算复杂度与离线构造}
+
+关系画像通过一次线性扫描训练边得到，复杂度为 $O(|\mathcal{E}_{\mathrm{tr}}|)$。给定离线模型分数后，每个问题在关系词表上计算 utility，复杂度为 $O(|\mathcal{R}_{\mathrm{tr}}|)$；采样后的候选库大小为 $O(K|Q_{\mathrm{tr}}|)$，其中 $Q_{\mathrm{tr}}$ 为训练问题集合。计算过程包括训练图统计、冻结 B1 离线评分和 Stage~2 联合训练；分阶段资源记录见第~\ref{sec:cost} 节。

@@ -1,0 +1,723 @@
+--- before/README.md
++++ after/README.md
+@@ -37,9 +37,18 @@
+ `0.415`；该图级问答结果与本文的关系候选方法不构成可比证据，仅在内部状态中留档，不进入
+ 本文的实验矩阵、结果表或结论。所有论文结果均应保留原始预测、manifest、环境 hash 和训练配置。
+ 
+-## 论文叙事边界
++## 论文叙事主线
+ 
+-论文范围限定为开放世界知识图谱的关系候选排序。论文只声称：提出一种 train-only、冻结式的结构反事实候选库，并将其接入原始
+-GRIP 的候选关系 InfoNCE；候选的“反事实”含义是对观测实体对替换关系标签后，
+-过滤 train-known 关系，不把开放世界中未观测事实视为绝对负例。NELL 的单种子结果
+-只支持一次运行下的候选排序观察，不支持显著性、稳定性、OOV 修复或通用负采样理论。候选重排 EM/H@1 与模型直接解码 EM 使用不同的答案选择规则，论文分别报告。
++本文面向开放世界知识图谱的关系候选排序，以训练图关系画像与冻结 B1 违例度共同构造候选，将 train-known 过滤、固定候选库和逐候选来源记录纳入 GRIP Stage 2 的候选级 InfoNCE。
++
++对外叙事按“问题—缺口—双信号设计—排序结果—方法意义”组织：NELL23K 全量 4,943 题的候选重排 H@1/MRR 为 91.52%/95.27%；同候选前 200 题的 MRR/H@1 比 B1 高 1.60/2.50 个百分点。全量绝对结果与局部配对差异分别标明范围，直接解码结果独立完整报告。
++
++开放世界真值约定集中在问题定义；单种子、前缀取样、训练预算差异、对照与审计完成状态集中在讨论，结果表保留比较条件。摘要和结论强化设计与排序结果。正式稿不纳入未运行实验计划或执行待办。
++
++## 内部证据要求
++
++`results_status.md` 与 `artifacts/evidence_ledger.md` 保留实验状态、对照缺口和证据门。历史 FB i0 与 SC-CL 分别记录；候选重排与直接解码采用不同答案选择规则。显著性、跨种子稳定性、组合信号独立收益及跨图收益仍需对应对照和原始产物支持。
++
++## 本轮写作修订
++
++2026-10-28 已按逐处审查重组正式稿，并更新可编辑矢量流程图。修订记录见 `artifacts/writing_revision_20261028.md`；修改前源文件与 PDF 保存在 `artifacts/before_writing_revision_20261028/`。课堂审稿材料 `teaching/` 保持其独立用途。
+--- before/main/figures/sccl_mechanism.tex
++++ after/main/figures/sccl_mechanism.tex
+@@ -1,36 +1,52 @@
+ \begin{tikzpicture}[
+-    node distance=5mm and 5mm,
+-    box/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+-                text width=25mm, font=\scriptsize, fill=blue!5},
+-    signal/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+-                text width=27mm, font=\scriptsize, fill=orange!10},
+-    gate/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+-                text width=29mm, font=\scriptsize, fill=green!10},
+-    arrow/.style={-{Latex[length=2mm]}, thick},
+-    forbid/.style={-{Latex[length=2mm]}, dashed, gray, thick}
++    font=\small,
++    box/.style={draw=black!35, rounded corners=3pt, align=center,
++                minimum height=10mm, text width=29mm, fill=white},
++    signal/.style={box, draw=teal!65!black, fill=teal!6},
++    train/.style={box, draw=blue!60!black, fill=blue!5},
++    flow/.style={-{Latex[length=2mm]}, line width=0.8pt, draw=black!65},
++    offline/.style={flow, dashed},
++    panel/.style={rounded corners=5pt, line width=0.8pt}
+ ]
+-\node[box] (graph) {训练图\ $\mathcal{G}_{\mathrm{tr}}$};
+-\node[box, right=of graph] (profile) {关系画像\ $\phi(r)$};
+-\node[signal, below=of graph] (b1) {冻结 B1\ train score};
+-\node[signal, right=of b1] (violate) {score violation\ $V_{\mathrm{B1}}$};
+-\node[gate, right=of profile, xshift=2mm] (filter) {候选池\ train-known 过滤};
+-\node[gate, below=of filter] (utility) {混合分布\ $s_{\rm str}+V_{\rm B1}$};
+-\node[gate, right=of utility, xshift=2mm] (bank) {冻结 bank\ $K=9$};
+-\node[box, right=of bank] (loss) {候选 InfoNCE\ + 原始生成损失};
++\begin{scope}[on background layer]
++    \draw[panel, draw=teal!50, fill=teal!2] (-1.9,1.0) rectangle (5.9,-5.5);
++    \draw[panel, draw=blue!40, fill=blue!2] (6.25,1.0) rectangle (13.75,-5.5);
++\end{scope}
++\node[anchor=west, text=teal!65!black, font=\bfseries] at (-1.65,0.65)
++    {A\quad 离线候选构造};
++\node[anchor=west, text=blue!65!black, font=\bfseries] at (6.5,0.65)
++    {B\quad Stage 2 联合学习};
+ 
+-\draw[arrow] (graph) -- (profile);
+-\draw[arrow] (graph) -- (b1);
+-\draw[arrow] (b1) -- (violate);
+-\draw[arrow] (profile) -- (filter);
+-\draw[arrow] (filter) -- (utility);
+-\draw[arrow] (violate) -- (utility);
+-\draw[arrow] (utility) -- (bank);
+-\draw[arrow] (bank) -- (loss);
++\node[signal] (graph) at (0, -0.35) {训练图与关系词表\\$\mathcal G_{\rm tr},\mathcal R_{\rm tr}$};
++\node[signal] (profile) at (0,-1.85) {五维关系结构画像\\$s_{\rm str}(q,r)$};
++\node[signal] (b1) at (4,-0.35) {冻结 B1\\训练问题离线评分};
++\node[signal] (violation) at (4,-1.85) {分数违例度\\$V_{\rm B1}(q,r)$};
++\node[signal, text width=61mm] (pool) at (2,-3.25)
++    {train-known 过滤与双信号混合采样\\
++     $u=\alpha s_{\rm str}+\beta V_{\rm B1}$，均匀下限 $\rho$};
++\node[signal, text width=61mm] (bank) at (2,-4.75)
++    {固定候选库：每题 $K=9$，无放回采样\\来源、信号、过滤记录与文件哈希};
++\draw[flow] (graph) -- (profile);
++\draw[offline] (b1) -- (violation);
++\draw[flow] (profile.south) -- (pool.north west);
++\draw[flow] (violation.south) -- (pool.north east);
++\draw[flow] (pool) -- (bank);
+ 
+-\node[font=\tiny, align=center, below=7mm of bank, text width=35mm] (audit)
+-    {manifest：split=train，\ $K=9$，\ known-pair=0，\ hash};
+-\draw[arrow] (bank) -- (audit);
+-\node[font=\tiny, gray, align=center, below=7mm of loss, text width=32mm] (eval)
+-    {valid/test 只用于最终评估，\ 禁止回流到 bank};
+-\draw[forbid] (eval) -- (bank);
++\node[train] (s1) at (8.1,-0.35) {Stage 1 adapter\\参数初始化};
++\node[train] (qa) at (11.9,-0.35) {原始训练问题\\图上下文与目标关系};
++\node[train, text width=59mm] (model) at (10,-1.85)
++    {GRIP：冻结基座模型 + 可训练 LoRA};
++\node[train] (gen) at (8.1,-3.25) {生成损失\\$\mathcal L_{\rm gen}$};
++\node[train] (cand) at (11.9,-3.25) {候选评分与 InfoNCE\\$\mathcal L_{\rm cand}$};
++\node[train, text width=59mm] (total) at (10,-4.75)
++    {$\mathcal L=\mathcal L_{\rm gen}+\lambda_{\rm cand}\mathcal L_{\rm cand}$\\联合更新 LoRA 参数};
++\draw[flow] (s1.south) -- (model.north west);
++\draw[flow] (qa.south) -- (model.north east);
++\draw[flow] (model.south west) -- (gen.north);
++\draw[flow] (model.south east) -- (cand.north);
++\draw[flow] (gen.south) -- (total.north west);
++\draw[flow] (cand.south) -- (total.north east);
++\draw[offline] (bank.east) -- (5.65,-4.75) -- (5.65,-2.55)
++    -- node[above, font=\scriptsize, fill=white, inner sep=2pt] {训练期固定候选}
++    (11.9,-2.55) -- (cand.north);
+ \end{tikzpicture}
+--- before/main/main.tex
++++ after/main/main.tex
+@@ -32,8 +32,6 @@
+ \newcolumntype{Y}{>{\centering\arraybackslash}X}
+ \newcommand{\scc}{\textsc{SC-CL}}
+ \newcommand{\bone}{\textsc{B1}}
+-\newcommand{\preset}{\textcolor{gray}{\textsuperscript{p}}}
+-\newcommand{\todoresult}{\textcolor{gray}{待运行验证}}
+ 
+ \title{开放世界知识图谱关系候选排序的可审计结构反事实对比学习}
+ \author{}
+@@ -44,7 +42,7 @@
+ \maketitle
+ 
+ \begin{abstract}
+-生成式知识图谱关系预测可用候选级对比学习强化关系辨别，但困难候选的来源与真假边界常不明确；在开放世界知识图谱中，未标注关系也不能直接视为假事实。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning, \scc）：从训练关系词表中过滤正确关系及同一实体对的训练已知关系，结合关系结构画像与冻结 GRIP 基线（\bone）的分数违例度，按带均匀下限的分布无放回抽取九个候选。固定候选库接入 GRIP Stage~2 的候选级 InfoNCE，原始生成损失保持不变。NELL23K 的一次 seed=2026 运行在 4,943 条测试问题上取得候选重排 EM/MRR 91.52\%/95.27\%；对相同的十选一题目直接解码，\scc{} 与 \bone{} 的 EM 分别为 87.03\% 和 87.46\%。同候选的前 200 条问题上，两者的重排 MRR 分别为 94.96\% 和 93.36\%。这些结果证明候选构造与训练链路可复核，并给出有限的排序观察；全量 \bone{} 重排、同预算随机对照和多种子仍是判断方法收益所需的证据。
++生成式知识图谱关系预测需要能够揭示关系混淆、且来源可追溯的训练候选。开放世界条件下，候选的排序难度与事实真值需要分别处理。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning, \scc），融合训练图的关系结构画像与冻结 GRIP 基线的分数违例度，在过滤实体对训练已知关系后构建固定候选库，并以候选级 InfoNCE 联合优化关系排序与原始生成目标。在 NELL23K 的单种子评估中，\scc{} 在 4,943 条测试问题上达到 91.52\% 的候选重排 H@1 和 95.27\% 的 MRR；在同候选列表的前 200 条配对问题上，MRR 和 H@1 分别比基线高 1.60 和 2.50 个百分点。\scc{} 将结构与模型混淆信号纳入同一候选构造流程，为开放世界关系候选学习提供可追溯的训练接口。
+ \end{abstract}
+ 
+ \input{sections/introduction}
+--- before/main/sections/appendix.tex
++++ after/main/sections/appendix.tex
+@@ -1,130 +1,109 @@
+-\section{补充结果与审计协议}
++\section{补充设置、结果与候选审计}
+ 
+-\subsection{历史 FB 候选评分的来源边界}
++\subsection{主实验运行设置}
+ 
+-\begin{table}[h]
+-\caption{FB15K237-2 历史候选评分（百分比，10,000 条测试问题）。InfoNCE-i0 使用历史候选文件和不同训练配置，不是 SC-CL 的跨数据集结果。}
+-\label{tab:historical-fb}
+-\centering\scriptsize
+-\begin{tabular}{lrrrrr}
++表~\ref{tab:hyper} 根据 NELL23K 主运行配置和候选库元数据列出实际设置。Stage~2 从 Stage~1 adapter 初始化，优化候选级 InfoNCE 与生成损失。采样温度 $\tau_s$ 控制候选分布，候选温度 $\tau_c$ 控制对比目标。
++
++\begin{table}[htbp]
++\caption{NELL23K 主实验运行设置。数值对应训练种子 2026 的已完成运行。}
++\label{tab:hyper}
++\centering\small
++\begin{tabular}{ll}
+ \toprule
+-方法 & 自由 EM & 候选 EM/H@1 & MRR & H@3 & H@10 \\
++字段 & 设置 \\
+ \midrule
+-\bone & 73.23 & 79.91 & 88.01 & 95.80 & 100.00 \\
+-历史 InfoNCE-i0 & 88.69 & 91.62 & 95.41 & 99.20 & 100.00 \\
++基座模型 & Qwen2.5-7B-Instruct \\
++候选数 $K$ & 9 \\
++均匀混合系数 $\rho$ & $1/3$ \\
++结构权重 $\alpha$ / 违例权重 $\beta$ & 1.0 / 1.0 \\
++采样温度 $\tau_s$ & 0.25 \\
++候选损失温度 $\tau_c$ & 1.0 \\
++候选损失权重 $\lambda_{\mathrm{cand}}$ & 1.0 \\
++LoRA rank / alpha & 4 / 8 \\
++LoRA 目标模块 & \texttt{down\_proj}, \texttt{up\_proj}, \texttt{gate\_proj} \\
++Stage~2 轮数 / 优化步数 & 10 / 240 \\
++学习率 / 权重衰减 & $10^{-3}$ / $10^{-4}$ \\
++单设备批大小 / 梯度累积步数 & 1 / 512 \\
++计算精度 & bfloat16 \\
++候选库随机种子 / 训练种子 & 2026 / 2026 \\
++候选来源与过滤 & train-only \\
+ \bottomrule
+ \end{tabular}
+ \end{table}
+ 
+-两组评分均来自相同的本地 processed test，哈希为
+-\texttt{c77dde51aafc7b1ce3a5011ade914343c2689f8b38b12774ea4840ec1c9068ed}。
+-历史 i0 使用 \texttt{fb15k237\_i0\_paired\_candidates.json}，LoRA rank 为 24、Stage 2
+-训练 5 个 epoch、候选损失权重为 0.1；这些条件与本文 SC-CL 的训练契约不一致。
+-
+-\subsection{WN18RR 单种子探索性生成评估}
++\subsection{WN18RR 直接解码补充结果}
+ \label{sec:wn-exploratory}
+ 
+-WN18RR 的训练期 SC-CL bank 覆盖 2,709 条关系问答，每题九个候选且无失败行；wiring 记录为 train-only，并与任务问题对齐。使用 seed=2026 时，在完整验证集上从候选损失权重中选择 $\lambda_{\mathrm{cand}}=0.25$，随后只对获选模型执行一次 3,134 条测试问题的直接解码评估，得到 EM 86.89\%。本地 B1 在同一测试文件上的 EM 为 32.67\%。原始 GRIP 论文在 WN18RR 报告 64.30\%，但这是五次运行均值；本地 B1 与该值的差距尚未解释，也没有完成 WN 的同候选重排和匹配随机对照。因此，这里仅记录可复核的探索性生成结果，不把外部数字或本地差异写成 SC-CL 的稳健跨图收益 \citep{feng2025grip}。
++WN18RR 的训练期候选库覆盖 2,709 条关系问题，每题包含九个互异候选，构造失败数为 0；来源检查记录为 train-only 且与任务问题对齐。在训练种子 2026 下，使用完整验证集选择候选损失权重 $\lambda_{\mathrm{cand}}=0.25$，获选模型在 3,134 条测试问题上的直接解码 EM 为 86.89\%，训练为 5 个 epoch、125 个优化步。
+ 
+-原始预测与配置分别位于 \texttt{results/hpo/wn18rr\_sccl\_seed2026/lambda0p25\_final\_test/} 和 \texttt{results/runs/wn18rr\_sccl\_hpo\_s2026\_lc0p25/}；这两个目录相对于实验模块 \texttt{08\_experiments/Hard\_Negative\_Contrastive\_GRIP/}。完整评估契约仍要求候选重排、生成输出、配置哈希及匹配控制共同齐备。
++同一测试文件上的本地 B1 直接解码 EM 为 32.67\%。该本地基线与原始 GRIP 报告的五次运行均值 64.30\% 存在待核验的复现差异 \citep{feng2025grip}。WN18RR 的补充结果对应单个获选模型的直接解码评估，完整候选重排、同预算随机对照和多种子重复尚未完成。
+ 
+-\subsection{后续比较与可证伪规则}
+-\label{sec:future-protocol}
++\subsection{FB15K237-2 候选 InfoNCE 参考实验}
+ 
+-完整主比较需要相同基座、Stage 1 adapter、任务文件、提示、候选数、候选损失设置和
+-Stage 2 预算。\bone{} 是原始 generation-only 锚点；Random-9 衡量加入候选损失后的
+-差异；频率匹配随机检验结构画像是否只是关系频率代理；Profile-only 与 Violation-only
+-分别检验两个信号，ErrorMemory-9 仅作辅助对照。若 SC-CL 不优于频率匹配随机，组合
+-采样优势的主张必须撤回；若自由生成 EM 或 OOV 恶化，需单独报告生成副作用。
++该参考实验展示独立配置下的候选 InfoNCE 表现。B1 与 InfoNCE-i0 均在同一本地测试文件的 10,000 条问题上评分；i0 使用单独的配对候选文件、LoRA rank 24、Stage~2 训练 5 个 epoch 和候选损失权重 0.1。表~\ref{tab:historical-fb} 单独标记该配置，本文的 SC-CL 主结果对应表~\ref{tab:nell-results}。
+ 
+-计划在 NELL23K 和 FB15K237-2 上使用训练种子 2026--2030，报告逐种子结果与问题级
+-配对区间；$K\in\{3,9,15\}$、$\rho\in\{0,1/3,2/3\}$ 和
+-$\tau_s\in\{0.10,0.25,0.50\}$ 用于敏感性检查。WN18RR 仍需补齐同候选重排、匹配控制和基线复现解释，CoDEx-M 则需完成任务文本、
+-adapter、bank 和完整评估的对齐审计后才能进入迁移比较。当前 CoDEx-M 已转换官方正例
+-split 和固定实体对的关系候选，但 Stage 1/Stage 2 推理及方法训练尚未完成；其通过替换
+-实体构造的官方硬负例不作为关系候选的真值标签。
+-
+-每个正式运行需记录 bank 的训练来源、question ID 对齐、每行九个互异候选、train-known
+-过滤结果、持出正例重叠、数据和 adapter 哈希，以及候选评分与自由生成原始输出。
+-未在训练图出现且未被其他证据确认的候选列为“开放世界未判定”，不计入已证实假阴性。
+-任何 split 泄漏或任务对齐失败均使该运行退出主比较。
+-
+-\subsection{默认超参数}
+-
+-\begin{table}[h]
+-\caption{SC-CL 的默认设置和正式运行前需要登记的字段。}
+-\label{tab:hyper}
++\begin{table}[htbp]
++\caption{FB15K237-2 候选 InfoNCE 参考结果（\%，10,000 条测试问题）。InfoNCE-i0 为独立候选及训练配置，方法身份与 SC-CL 分别记录。}
++\label{tab:historical-fb}
+ \centering\small
+-\begin{tabular}{ll}
++\begin{tabular}{lrrrr}
+ \toprule
+-字段 & 默认值 \\
++方法 & 直接解码 EM & 重排 H@1 & MRR & H@3 \\
+ \midrule
+-候选数 $K$ & 9 \\
+-均匀混合系数 $\rho$ & $1/3$ \\
+-结构权重 $\alpha$ & 1.0 \\
+-B1 违例权重 $\beta$ & 1.0 \\
+-采样温度 $\tau_s$ & 0.25 \\
+-候选损失温度 $\tau_c$ & 运行配置登记 \\
+-候选损失权重 $\lambda_{\mathrm{cand}}$ & 1.0 \\
+-bank 随机种子 & 2026 \\
+-训练种子 & 2026, 2027, 2028, 2029, 2030 \\
+-过滤来源 & train-only \\
++\bone & 73.23 & 79.91 & 88.01 & 95.80 \\
++InfoNCE-i0 & 88.69 & 91.62 & 95.41 & 99.20 \\
+ \bottomrule
+ \end{tabular}
+ \end{table}
+ 
+-\subsection{候选 bank 的最小 schema}
++\subsection{候选来源与真值状态审计}
++\label{sec:audit-protocol}
+ 
+-每一行 bank 至少包含：\texttt{question\_id}、\texttt{split}、\texttt{head}、\texttt{tail}、\texttt{gold\_relation}、
+-\texttt{negative\_relations}、\texttt{negative\_source}、\texttt{filter\_splits}、\texttt{counterfactual\_operation}、
+-\texttt{counterfactual\_validation}、\texttt{K}、\texttt{uniform\_mix}、\texttt{structure\_weight}、
+-\texttt{violation\_weight}、\texttt{temperature}、\texttt{seed} 和 sampler 版本。每个候选记录还应包含
+-\texttt{structure\_similarity}、\texttt{score\_violation}、\texttt{utility}、\texttt{candidate\_score}、
+-\texttt{gold\_score}、\texttt{score\_gap} 和 \texttt{counterfactual\_valid}。字段名以项目的实际 JSONL
+-实现为准，论文只要求这些语义信息可审计。
++候选库的来源检查核对训练划分、问题标识、目标关系、每题九个互异候选和训练已知关系过滤结果。文件哈希、脚本版本、候选评分及模型配置共同标识运行产物。来源合规与事实真值分别记录：训练已知关系冲突表示候选命中该实体对的训练关系，持出正例重叠表示候选命中持出划分中的已知正例，其余候选保留开放世界未判定状态。
+ 
+-\subsection{审计伪代码}
++实体替换与关系替换使用各自的候选空间。CoDEx 的人工核验实体替换负例用于其三元组判断设定 \citep{safavi2020codex}；固定实体对后的关系替换，按训练已知关系和持出正例分别核对真值状态。
+ 
+-\small
++\begin{table}[htbp]
++\caption{候选来源与真值状态的审计规则。该表定义状态分类，实测来源检查结果见正文。}
++\label{tab:audit-states}
++\centering\small
++\begin{tabular}{p{0.24\linewidth}p{0.65\linewidth}}
++\toprule
++状态 & 判定规则 \\
++\midrule
++训练已知关系冲突 & 候选属于当前实体对的训练已知关系集合 $T_{\mathrm{tr}}(h,t)$。 \\
++持出正例重叠 & 候选对应的三元组出现在持出划分的已知正例中；该记录用于审计。 \\
++开放世界未判定 & 候选未被已知正例或其他核验证据确认，真值维持未判定。 \\
++候选不足 & 训练已知关系过滤后 $|P_q|<K$，记录该问题及原因。 \\
++问题对齐异常 & 候选库与训练任务的问题标识、目标关系或候选文本不一致。 \\
++\bottomrule
++\end{tabular}
++\end{table}
++
++\subsection{候选库记录与构造伪代码}
++
++每条候选库记录包含问题标识、数据划分、实体对、目标关系、候选关系和采样来源。逐候选记录包括结构相似度、违例度、utility、B1 候选分数及其与目标分数的差值；来源清单包含过滤划分、采样参数、随机种子、脚本版本和文件哈希。这些字段将候选采样结果关联到原始任务及其离线评分。
++
++{\small
+ \begin{verbatim}
+ for q in train_questions:
+     assert q.split == "train"
+     P = train_relations - {q.gold} - known_train_relations(q.head, q.tail)
++    if len(P) < K:
++        record_insufficient_pool(q)
++        continue
+     for r in P:
+         s = profile_similarity(phi[q.gold], phi[r])
+         v = b1_score_violation(q, r)
+         u[r] = alpha * s + beta * v
+-    negatives = sample_without_replacement(
+-        P, mixture_softmax(u, rho, tau), K=9)
+-    write_frozen_bank(q, negatives, manifest=provenance)
++    candidates = sample_without_replacement(
++        P, mixture_softmax(u, rho, tau_s), K=9)
++    write_frozen_bank(q, candidates, manifest=provenance)
+ \end{verbatim}
++}
+ 
+-该伪代码强调三个不可省略的顺序：先限定训练 split，再过滤实体对已知关系，最后才计算采样分布。正式 wiring 检查还要确认训练 task 的 question ID、正关系文本和候选关系文本保持一致。
++候选库按训练来源限定、已知关系过滤和候选采样的顺序构建。来源检查核对问题标识与关系文本的一致性，固定候选库供整个 Stage~2 使用。
+ 
+-\subsection{失败分类}
++\subsection{数据、模型与产物记录}
+ 
+-\begin{table}[h]
+-\caption{建议的失败分析标签。}
+-\label{tab:failure}
+-\centering\scriptsize
+-\begin{tabular}{p{0.23\linewidth}p{0.65\linewidth}}
+-\toprule
+-标签 & 判定规则 \\
+-\midrule
+-结构稀疏 & 目标关系或候选关系的画像特征大部分为零，profile 相似度不稳定。 \\
+-已知关系冲突 & 候选属于当前实体对 train-known 关系，说明过滤或 bank 版本错误。 \\
+-开放世界不确定 & 候选未在训练图出现，但在外部/测试事实中可能成立，不能当作确定假阴性。 \\
+-B1 高置信混淆 & 候选 score 高于 gold，且自由生成与闭集排序结论不一致。 \\
+-候选不足 & 过滤后 $|P_q|<9$，必须进入失败清单，不能重复填充。 \\
+-生成-排序分歧 & 闭集 MRR 改善但自由生成 EM 下降或不变。 \\
+-\bottomrule
+-\end{tabular}
+-\end{table}
+-
+-\subsection{伦理与数据说明}
+-
+-本文使用本地知识图谱基准和公开模型技术报告作为背景，不新增个人敏感数据。当前正文
+-只把带有原始预测、配置、manifest 和 hash 的 NELL 单种子结果作为实测；历史 FB
+-InfoNCE-i0 另行标注，未完成协议不用于性能承诺。正式提交前应补充数据许可、模型许可
+-证、代码版本和可公开的 bank/预测文件说明。
+-
++主实验使用 NELL23K，补充结果分别使用 WN18RR 和 FB15K237-2；基座模型为 Qwen2.5-7B-Instruct \citep{qwen2024qwen25}，LoRA 用于参数高效训练 \citep{hu2022lora}。实验处理既有知识图谱关系问题，未新增个人敏感数据采集。预测、候选分数、训练配置、adapter 与来源清单保存在本地实验归档中，当前未提供公开下载地址。
+--- before/main/sections/conclusion.tex
++++ after/main/sections/conclusion.tex
+@@ -1,5 +1,3 @@
+ \section{结论}
+ 
+-本文提出 SC-CL，在训练关系词表内过滤同一实体对的已知关系，再以结构画像和冻结基线的分数违例度构造九候选库，用于 GRIP Stage~2 的候选级 InfoNCE。固定候选库及其来源记录使训练流程可复核；未观测关系仍保留开放世界中的真值不确定性。
+-
+-NELL23K 的一次运行在 4,943 条问题的候选重排上得到 91.52\% EM 和 95.27\% MRR；同候选的前 200 条问题中，SC-CL 与 B1 的 MRR 分别为 94.96\% 和 93.36\%。与此同时，十选一题目上的直接解码 EM 分别为 87.03\% 和 87.46\%。当前证据表明方法能够执行且值得检验其排序作用，但尚不能证明组合信号的独立收益、生成改善或跨数据集稳定性。同预算候选对照、多种子复现和开放世界冲突审计是上述主张成立的必要条件。
++本文提出 \scc{}，将训练图关系结构画像与冻结模型违例度结合，通过训练已知关系过滤和固定候选库，为 GRIP 的候选级对比学习提供可追溯的关系候选。在 NELL23K 的 4,943 条测试问题上，\scc{} 的候选重排达到 91.52\% H@1 和 95.27\% MRR；同候选前 200 题上的 MRR 比 B1 高 1.60 个百分点。该设计将候选的结构依据、模型混淆信号与来源追溯纳入同一训练流程，为开放世界关系候选学习提供明确的构造与评估接口。
+--- before/main/sections/discussion.tex
++++ after/main/sections/discussion.tex
+@@ -1,13 +1,14 @@
+-\section{讨论与局限}
++\section{讨论}
++\label{sec:comparison-scope}
+ 
+-\paragraph{候选排序差异的解释。}
+-同候选的前 200 条问题上，SC-CL 的 MRR 高于 B1，这与困难候选可能提供更清晰排序信号的设想相容。但这一比较同时改变了候选损失和训练预算，也没有把结构画像与 B1 违例度单独剥离。前缀子集的分布可能不同于剩余测试问题，且全量 B1 闭集分数缺失。因此，目前只能报告配对观察，不能把差异归因于组合采样机制。
++\paragraph{候选构造的双信号设计。}
++关系结构画像描述候选在训练图中的统计接近程度，冻结 B1 分数描述模型已有的关系混淆。\scc{} 将二者作为候选采样依据，并保存逐候选的构造记录，使进入训练的结构与混淆模式可供检查。配对子集中的排序差异与逐题变化提供了进一步分析候选学习的切入点。
+ 
+-\paragraph{排序与生成的取舍。}
+-SC-CL 在逐候选评分下的 MRR 为 95.27\%，但直接解码 EM 为 87.03\%，略低于 B1 的 87.46\%。两种评估的题目都列出十个选项；差别在于模型自行解码，还是评估程序逐一代入选项评分。因此，两个数值不能互为训练收益证据。如果同预算复现仍呈现排序改善而直接解码不增，方法的用途应限定为候选重排；原始 GRIP 生成任务的整体收益需要单独证实。
++\paragraph{训练目标与答案选择。}
++候选 InfoNCE 显式训练目标关系与替代关系之间的分数竞争。逐候选评分直接评价这一排序目标，直接解码同时涉及关系文本输出。本文分别报告两种答案选择方式下的表现，以区分给定候选的排序能力与原始解码路径下的预测表现。
+ 
+-\paragraph{过滤的边界。}
+-train-known 过滤仅排除训练图中该实体对已有的关系。剩余候选可能在持出 split 或真实世界中成立，因此“结构反事实”是训练标签替换的操作名，不是经过验证的假事实。持出正例重叠与开放世界未判定需要分开统计；CoDEx 的实体替换硬负例也不能为本文的关系替换候选提供真值 \citep{safavi2020codex}。若后续审计发现高于随机候选的冲突风险，应相应收窄方法主张或调整训练设计。
++\paragraph{固定候选库的适用条件。}
++固定候选库将离线构造与 Stage~2 优化分离，使同一运行中的候选来源和采样信号保持固定。其适用条件是一次冻结 B1 全关系评分的预处理成本，以及训练期间固定使用的候选分布。方法面向固定实体对上的关系标签替换，利用训练图统计和关系词表构造排序候选。
+ 
+-\paragraph{成本与适用范围。}
+-冻结 bank 使候选来源可追溯，但需要离线计算 B1 的全关系分数，也不能随训练中的模型更新。现有资源记录只覆盖 NELL23K 的一次运行，尚不能判断收益是否抵消额外成本。方法针对固定实体对上的关系预测；图级组合问答需要重新定义反事实单位和评估目标。跨图适用性仍取决于 FB15K237-2、WN18RR 和 CoDEx-M 上的同契约评估。
++\paragraph{比较设计与验证范围。}
++主实验对应 NELL23K 的训练种子 2026。B1 与 \scc{} 的同候选重排比较覆盖测试文件前 200 题，采用各自现有训练配置，训练预算存在差异；全量 4,943 题重排结果对应 \scc{}。全量 B1 重排、同预算随机及频率匹配对照、多种子重复与持出正例重叠审计尚未完成。文中的配对差异描述该子集上的模型表现，组合采样的独立作用与跨数据集适用性属于后续验证问题。候选审计按训练已知关系冲突、持出正例重叠和开放世界未判定分别记录，具体规则见附录~\ref{sec:audit-protocol}。
+--- before/main/sections/experiments.tex
++++ after/main/sections/experiments.tex
+@@ -1,45 +1,75 @@
+ \section{实验与结果}
++\label{sec:experiments}
+ 
+-\subsection{任务、评估方式与证据范围}
++\subsection{实验设置与评价指标}
+ 
+-本文评价固定实体对上的十选一关系预测。两种评估使用含相同候选选项的题目：直接解码时，模型自行输出关系文本，以 Exact Match（EM）衡量；候选重排时，评估程序逐一代入十个选项，计算 teacher-forced continuation score，再以最高分关系计算 EM、MRR 和 Hits。重排 EM 等于 H@1。选项相同并不意味着答案选择规则相同，两套 EM 不能直接相减来计算训练收益，也不能把重排 EM 当作原始 GRIP 的生成式准确率。
++主实验使用 NELL23K、Qwen2.5-7B-Instruct 和训练种子 2026，在 4,943 条十选一关系问题上评价 \scc{}。候选重排通过 teacher-forced continuation score 逐一评分，以 H@1、MRR 和 H@3 衡量给定候选集合中的关系排序；直接解码 EM 衡量原始输出路径下的预测。两种评估使用相同题目与选项，分别报告结果。
+ 
+-当前具备训练、直接解码和候选重排完整输出、可进入正文主表的 SC-CL 运行位于 NELL23K，使用 Qwen2.5-7B-Instruct 和 seed=2026；测试集包含 4,943 条关系问题。FB15K237-2 的 B1 与历史 InfoNCE-i0 各有 10,000 条候选评分，但 i0 的候选文件、LoRA rank、训练轮数和损失配置不同，不能构成 SC-CL 的跨数据集复现；该结果仅列于附录表~\ref{tab:historical-fb}。WN18RR 已有单种子探索性直接解码测试，但尚无完整候选重排和匹配对照；CoDEx-M 尚无方法训练结果。补充状态见附录~\ref{sec:wn-exploratory}，后续实验范围见附录~\ref{sec:future-protocol}。
++\bone{} 为原始 GRIP 的 generation-only 基线。B1 与 \scc{} 的同候选重排比较覆盖测试文件的前 200 题；两者沿用各自现有训练配置，比较条件集中见第~\ref{sec:comparison-scope} 节。完整测试集报告 \scc{} 的排序表现，以及两个模型的直接解码表现。训练设置见附录表~\ref{tab:hyper}，WN18RR 的直接解码补充结果见附录~\ref{sec:wn-exploratory}。
+ 
+-\subsection{先核对候选库与训练链路}
++\subsection{NELL23K 候选排序结果}
+ 
+-NELL23K 的候选库由训练问题构造，写入 3,253 行，每行九个互异关系，\texttt{rows\_failed=0}。冻结 bank 的 wiring 报告确认训练来源、任务问题对应关系和 manifest 记录；SC-CL Stage 2 完成 10 个 epoch、240 个优化步，保存了 adapter、自由生成预测和候选重排输出。这些检查支持\emph{该次运行的来源与执行完整性}，不证明剩余候选均为真实负例。尤其是与持出正例的重叠和开放世界未知事实仍需单独审计。
++\scc{} 在完整测试集上达到 95.27\% MRR、91.52\% H@1 和 99.07\% H@3。在同候选前 200 题上，\scc{} 的 MRR 为 94.96\%，比 B1 高 1.60 个百分点；H@1 为 91.00\%，比 B1 高 2.50 个百分点。表~\ref{tab:nell-results} 给出全量结果与配对结果。
+ 
+-\subsection{候选排序：有限配对观察与全量结果}
+-
+-表~\ref{tab:nell-results} 将严格配对的前 200 条问题与只有 SC-CL 的全量闭集结果分开。前 200 条使用相同问题和相同候选列表；B1 的完整测试候选分数尚未完成，故全量一行没有相应的 B1 对照。这样的排列让可比较的差异与单模型绝对水平各自承担不同的证据作用。
+-
+-\begin{table}[t]
+-\caption{NELL23K 已观察结果（百分比；单次 seed=2026）。前 200 条为相同问题和候选列表上的 B1/SC-CL 配对比较；full 为仅有 SC-CL 的 4,943 条测试问题。直接解码和候选重排使用相同的十选一题目，但答案选择规则不同。}
++\begin{table}[htbp]
++\caption{NELL23K 候选重排结果（\%，训练种子 2026）。配对区块按测试文件顺序取前 200 题，两个模型使用相同问题与候选列表；全量区块报告 \scc{} 的 4,943 题结果，全量 B1 重排尚未完成。$\Delta$ 为配对子集上的百分点差。}
+ \label{tab:nell-results}
+-\centering\scriptsize
+-\begin{tabular}{llrrrrr}
++\centering\small
++\begin{tabular}{llrrrr}
+ \toprule
+-评估 & 模型 & $n$ & EM/H@1 & MRR & H@3 & H@10 \\
++范围 & 模型 & $n$ & H@1 & MRR & H@3 \\
+ \midrule
+-闭集 prefix-200 & \bone & 200 & 88.50 & 93.36 & 97.50 & 100.00 \\
+-闭集 prefix-200 & \scc-9 & 200 & 91.00 & 94.96 & 99.50 & 100.00 \\
+-闭集 full & \scc-9 & 4,943 & 91.52 & 95.27 & 99.07 & 100.00 \\
++配对前 200 题 & \bone & 200 & 88.50 & 93.36 & 97.50 \\
++配对前 200 题 & \scc-9 & 200 & \textbf{91.00} & \textbf{94.96} & \textbf{99.50} \\
++配对差异 & $\Delta$(\scc-9, \bone) & -- & +2.50 & +1.60 & +2.00 \\
+ \midrule
+-直接解码 full & \bone & 4,943 & 87.46 & -- & -- & -- \\
+-直接解码 full & \scc-9 & 4,943 & 87.03 & -- & -- & -- \\
++全量测试 & \scc-9 & 4,943 & 91.52 & 95.27 & 99.07 \\
+ \bottomrule
+ \end{tabular}
+ \end{table}
+ 
+-在配对子集上，SC-CL 的 MRR 比 B1 高 1.60 个百分点，候选 EM 高 2.50 个百分点；逐题 top-1 变化为 9 条由错转对、4 条由对转错、173 条共同正确和 14 条共同错误。净变化为五题，同时存在收益与回退。这里使用的是\emph{前} 200 条，而非随机代表样本；单种子结果也没有不确定性估计，因此不能把差异外推到全部测试问题。全量 SC-CL 闭集 MRR 为 95.27\%，描述的是该模型的绝对排序水平；缺少全量 B1 候选评分时，无法计算对应的全量训练增益。
++\subsection{配对预测的逐题变化}
+ 
+-\subsection{直接解码结果与解释边界}
++在同候选前 200 题上，9 题由 B1 错误转为 \scc{} 正确，4 题发生反向变化，净增加 5 题正确预测；其余为 173 题共同正确和 14 题共同错误。逐题变化与 H@1 的 2.50 个百分点差异一致，并展示两模型预测差异的分布。
+ 
+-同一批十选一测试问题上，B1 与 SC-CL 的直接解码 EM 分别为 87.46\% 和 87.03\%，描述性差异为 $-0.43$ 个百分点。当前数据没有显示生成能力提升；这一下降是否稳定或是否来自候选训练，尚需同预算、多种子对照检验。SC-CL 的重排 EM 91.52\% 高于自身直接解码 EM 87.03\%，只说明逐候选评分改变了答案选择方式，不能当作训练带来的 4.49 个百分点收益。GRIP 原论文在 NELL23K 上报告 87.74\% 的生成式准确率，但其附录记录 4,952 条测试关系，本地为 4,943 条；该数值只作外部背景，不参与主表的配对差异计算 \citep{feng2025grip}。
++\subsection{直接解码与候选评分}
+ 
+-\subsection{计算成本与证据缺口}
++在相同的 4,943 条测试问题上，\scc{} 与 B1 的直接解码 EM 分别为 87.03\% 和 87.46\%，相差 $-0.43$ 个百分点（表~\ref{tab:direct-decode}）。\scc{} 通过逐候选评分选择答案时，H@1 为 91.52\%。直接解码考察关系文本输出，逐候选评分考察给定选项间的排序，本文围绕后一目标组织主要分析。
+ 
+-该次 NELL 运行在训练集上为 644,094 个关系候选生成冻结 B1 分数，用时 19,027 秒，记录的峰值显存为 15.21 GiB。SC-CL Stage 2 处理 12,148,720 个输入 token，用时约 80,870 秒；全测试候选重排用时 3,567 秒。这些是单次运行的绝对成本。由于缺少同硬件、同预算的 Random-9 和 B1 完整训练/评估对照，当前不能计算可靠的单位收益成本比。
++\begin{table}[htbp]
++\caption{NELL23K 直接解码结果（\%，4,943 题，训练种子 2026）。模型在列出相同十个选项的题目上生成关系文本，按 Exact Match 计分。}
++\label{tab:direct-decode}
++\centering\small
++\begin{tabular}{lr}
++\toprule
++模型 & 直接解码 EM \\
++\midrule
++\bone & 87.46 \\
++\scc-9 & 87.03 \\
++\bottomrule
++\end{tabular}
++\end{table}
+ 
+-全量 B1 闭集评分、同预算 Random-9 和频率匹配随机对照仍缺失，因此目前无法分别估计候选损失与候选构造的作用。持出正例重叠和开放世界未判定也尚未完成完整审计。附录~\ref{sec:future-protocol} 列出后续比较的判定规则；本节的实证范围限于一次可复核运行与前 200 条的描述性配对观察。
++\subsection{候选构造与来源追溯}
++
++NELL23K 的固定候选库覆盖 3,253 条训练问题，每题包含九个互异关系，候选构造失败数为 0。来源检查记录了训练划分、任务问题对齐与候选库标识；采样清单保存结构画像、B1 违例度及采样参数。\scc{} Stage~2 完成 10 个 epoch、240 个优化步，归档了 adapter、直接解码预测和候选重排输出。这些记录将候选构造与模型训练关联到同一运行，便于追溯每个候选的来源。
++
++\subsection{离线构造与运行成本}
++\label{sec:cost}
++
++训练运行记录的硬件为 NVIDIA GeForce RTX 3090（24 GiB）。表~\ref{tab:cost} 按阶段报告本次运行的资源用量：离线 B1 评分覆盖 644,094 个训练关系候选，Stage~2 处理 12,148,720 个输入 token，完整测试重排覆盖 4,943 条问题。固定候选库在训练期间复用离线采样结果。
++
++\begin{table}[htbp]
++\caption{NELL23K 单次运行的分阶段成本。显存数值对应离线评分阶段的记录。}
++\label{tab:cost}
++\centering\small
++\begin{tabular}{lrr}
++\toprule
++阶段 & 耗时（秒） & 峰值显存（GiB） \\
++\midrule
++冻结 B1 离线评分 & 19,027 & 15.21 \\
++Stage~2 联合训练 & 80,870 & -- \\
++全测试候选重排 & 3,567 & -- \\
++\bottomrule
++\end{tabular}
++\end{table}
+--- before/main/sections/formulation.tex
++++ after/main/sections/formulation.tex
+@@ -14,11 +14,11 @@
+     P_q=\mathcal{R}_{\mathrm{tr}}\setminus\bigl(\{r^+\}\cup T_{\mathrm{tr}}(h,t)\bigr).
+     \label{eq:pool}
+ \end{equation}
+-式~\ref{eq:pool} 只保证候选没有作为该实体对的\emph{已知训练关系}出现；它不声称候选事实在真实世界中为假。这一点是本文“反事实”术语的边界，也是开放世界知识图谱中避免过度解释的必要条件 \citep{ji2022survey,hogan2021kg}。
++式~\ref{eq:pool} 从训练关系词表中排除目标关系和该实体对的已知训练关系。其余关系作为真值未判定的训练替代项，遵循知识图谱的开放世界假设 \citep{ji2022survey,hogan2021kg}。本文的结构反事实操作固定实体对 $(h,t)$，将目标关系替换为 $r\in P_q$；“负候选”表示其在对比目标中的角色，事实真值保持未判定。
+ 
+-\subsection{两个评估目标}
++\subsection{答案选择与候选学习目标}
+ 
+-本文区分两种答案选择规则。第一，模型在列出十个关系选项的题目上直接解码关系文本，评价 Exact Match（EM）和 OOV；它衡量模型是否保持原始 GRIP 的生成路径。第二，评估程序给定同一题目的 $\{r^+,r_1^-,\ldots,r_K^-\}$，用关系 continuation score $z_\theta(q,r)$ 逐项排序，评价 MRR、Hits@1/3/10 和 wrong-in-list。后者更直接测量候选 InfoNCE 是否改变关系边界，但不是模型直接解码所得的准确率。
++本文区分两种答案选择规则。直接解码在列出十个关系选项的题目上输出关系文本，以 Exact Match（EM）评价原始解码路径下的预测。候选重排给定同一题目的候选集合，用关系续接分数（continuation score）$z_\theta(q,r)$ 逐项排序，以 Hits@1（H@1）、H@3 和 MRR 评价候选间的关系辨别。重排 H@1 等于按最高分选项计算的 EM。两种规则分别报告，模型间的表现差异采用相同答案选择规则比较。
+ 
+ 给定冻结 bank $B(q)=\{r_1^-,\ldots,r_K^-\}$，候选损失写为
+ \begin{equation}
+@@ -27,9 +27,9 @@
+     {\exp(z_\theta(q,r^+)/\tau_c)+\sum_{k=1}^K\exp(z_\theta(q,r_k^-)/\tau_c)}.
+     \label{eq:infonce}
+ \end{equation}
+-其中 $\tau_c$ 是候选温度。训练阶段保留原始生成损失 $\mathcal{L}_{\mathrm{gen}}$，只加入
++其中 $\tau_c$ 是候选温度。训练阶段联合优化原始生成损失 $\mathcal{L}_{\mathrm{gen}}$ 与候选损失：
+ \begin{equation}
+     \mathcal{L}=\mathcal{L}_{\mathrm{gen}}+\lambda_{\mathrm{cand}}\mathcal{L}_{\mathrm{cand}}.
+     \label{eq:total}
+ \end{equation}
+-Stage 1 图上下文训练和 B1 generation-only 路径不变，使得匹配预算比较具有清晰的归因边界。
++\scc{} 沿用 Stage~1 和生成目标，将新增训练项明确为候选级 InfoNCE。
+--- before/main/sections/introduction.tex
++++ after/main/sections/introduction.tex
+@@ -1,11 +1,11 @@
+ \section{引言}
+ 
+-给定实体对及其图上下文，关系预测需要从关系词表中识别相应的关系。GRIP 将图结构融入语言模型参数，通过生成式问答完成这一任务 \citep{feng2025grip}。在原有生成目标之外加入候选级对比损失，可以让目标关系与替代关系直接竞争；这一训练信号的作用取决于替代关系如何选取。
++给定实体对及其图上下文，关系预测需要识别相应的关系标签。GRIP 将图结构融入语言模型参数，通过生成式问答完成这一任务 \citep{feng2025grip}。候选级对比学习让目标关系与替代关系直接竞争，而候选的选取决定模型接收到什么关系辨别信号。因此，候选构造是连接图结构与关系排序目标的关键环节。
+ 
+-候选过于容易时，提供的排序边界信号可能有限；只按模型高分挑选时，候选又可能反映偶然的分数混淆。更关键的是，知识图谱通常不完整：$(h,r,t)$ 未被标注，并不等于该事实为假。困难候选因此同时面临\emph{信息量}和\emph{事实不确定性}两项要求。本文聚焦一个可检验的问题：能否在保持 GRIP 原始生成路径的同时，构造来源可追溯、排除训练已知关系的候选库，并用它训练关系排序边界？
++困难候选的构造需要同时处理结构相关性、模型混淆与事实不确定性。训练图的关系统计描述不同关系的结构接近程度，模型分数则揭示已有的关系混淆。知识图谱的不完整性进一步要求区分候选的学习用途与事实真值：未标注关系在开放世界中保留未判定状态。本文研究如何将结构与模型混淆信号共同用于关系候选构造，并将训练已知关系过滤和来源追溯纳入同一流程。
+ 
+-为此，我们提出结构反事实对比学习（\scc）。首先，在训练关系词表内排除正关系及同一实体对的 train-known 关系；随后，用训练图的关系画像衡量结构相似度，用冻结的 generation-only 基线 \bone{} 衡量候选分数违例度。两种信号经带均匀下限的分布组合，每题无放回采样九个候选，并在 Stage~2 前冻结。训练仅为原生成目标增加候选级 InfoNCE，不改变 Stage~1、原始提示或自由生成评估。这里的“结构反事实”指对已观测实体对替换关系标签，不表示剩余候选都是真实负例。图~\ref{fig:mechanism} 展示训练流程。
++为此，我们提出结构反事实对比学习（\scc）。\scc{} 以关系结构画像刻画候选在训练图中的统计接近程度，以冻结的 generation-only 基线 \bone{} 的分数违例度刻画模型混淆，两种信号共同决定带均匀下限的采样分布。训练已知关系过滤与固定候选库明确候选来源，使每个候选能够关联到其构造记录。\scc{} 接入 GRIP Stage~2，联合优化候选级 InfoNCE 与原始生成目标，沿用 Stage~1 和原始提示。本文将结构反事实定义为固定实体对上的关系标签替换，图~\ref{fig:mechanism} 展示其构造与学习流程。
+ 
+-评估在相同的十选一题目上分别考察模型直接解码与逐候选评分。NELL23K 的一次 seed=2026 运行完成了候选库、Stage~2 训练和全测试重排，得到候选 EM/MRR 91.52\%/95.27\%；这一绝对值缺少全量 \bone{} 重排对照。在目前相同候选列表的前 200 条问题上，\scc{} 与 \bone{} 的 MRR 分别为 94.96\% 和 93.36\%；全量直接解码 EM 分别为 87.03\% 和 87.46\%。前缀子集、训练预算差异与单种子设计都限制了因果解释。本文因此报告可复核的候选构造协议和有限配对观察，将组合信号的独立收益留给同预算随机对照与多种子实验检验。
++在 NELL23K 的 4,943 条测试问题上，\scc{} 的候选重排 H@1 为 91.52\%，MRR 为 95.27\%。在相同候选列表的前 200 条配对问题上，其 MRR 比 \bone{} 高 1.60 个百分点，H@1 高 2.50 个百分点。实验节分别展示完整测试集的排序水平和配对子集的逐题预测变化，并报告直接解码结果、候选来源检查及分阶段成本。评估设置与比较范围见第~\ref{sec:experiments} 节。
+ 
+-本文的具体贡献是：定义同时利用结构相似度和冻结模型违例度的训练期候选分布；将 train-known 过滤、固定候选库和来源记录落实为可审计约束；在同一知识图谱上分别报告候选重排与直接解码结果，明确两种答案选择规则对应的指标。全文限于固定实体对的关系预测，不从当前观察外推跨数据集收益。
++本文面向固定实体对上的关系候选排序，贡献包括三个方面：定义结构画像与冻结模型违例度联合驱动的训练候选分布；构建包含训练已知关系过滤、固定候选库和逐候选来源记录的学习流程；在 NELL23K 展示全量候选重排结果与同候选前 200 题的配对分析。
+--- before/main/sections/method.tex
++++ after/main/sections/method.tex
+@@ -1,16 +1,13 @@
+ \section{结构反事实对比学习}
+ 
+-图~\ref{fig:mechanism} 概括 SC-CL 从训练期候选构造到 Stage~2 联合优化的流程：训练图和训练问题给出可用关系与结构画像，冻结 B1 的训练集分数提供模型违例度；两种信号在已过滤的候选池中混合采样，形成固定的九候选 bank；最后，GRIP Stage~2 联合优化候选损失与原始生成损失。训练期间 bank 只被读取，不根据 valid/test 预测重新采样。自由生成和候选排序的评估目标按上一节分别定义。
++\scc{} 将候选构造与 Stage~2 优化分为两个阶段（图~\ref{fig:mechanism}）。离线阶段融合训练图关系画像与冻结 B1 在训练问题上的违例度，在过滤后的关系池中采样并固定每题九个候选。学习阶段从 Stage~1 adapter 初始化 GRIP，在固定候选库上联合优化候选损失与原始生成损失。
+ 
+ \begin{figure}[H]
+     \centering
+-    % Extracted, without resampling, from ../artifacts/结构引导与候选级对比优化流程图.svg.
+-    \includegraphics[width=\linewidth]{figures/sccl_structure_guided_svg_content.png}
+-    \caption{\scc{} 的训练流程。A：训练图关系画像与冻结 \bone{} 分数提供双信号，经过 train-known 过滤与无放回采样，形成每题 $K=9$ 的固定候选库。B：Stage~2 保留原始生成损失，并加入候选级 InfoNCE 共同优化 LoRA。图中损失求和省略了候选权重；严格定义见式~\ref{eq:total}。}
++    \resizebox{\linewidth}{!}{\input{figures/sccl_mechanism.tex}}
++    \caption{\scc{} 的候选构造与联合学习。A：训练图结构画像与冻结 \bone{} 违例度共同指导采样，train-known 过滤与无放回采样形成每题 $K=9$ 的固定候选库。B：Stage~2 从 Stage~1 adapter 初始化，联合优化生成损失与加权候选 InfoNCE；冻结 \bone{} 为离线候选构造提供评分。}
+     \label{fig:mechanism}
+ \end{figure}
+-
+-图中顶部 $C_0$ 的加载路径为概念性示意：当前实现的 Stage~2 从 Stage~1 adapter 初始化，冻结的 \bone{} 仅用于离线候选评分，不参与训练时的梯度更新。
+ 
+ \subsection{训练图关系画像}
+ 
+@@ -21,7 +18,7 @@
+     \label{eq:profile}
+ \end{equation}
+ 其中 $|E_r|$ 为关系边数，$|H_r|$ 和 $|T_r|$ 分别为关系覆盖的头实体数与尾实体数，
+-$\overline{d}_{H,r}$ 是关系边上头实体的平均出度，$\overline{d}_{T,r}$ 是尾实体的平均入度。前两类计数使用 $\log(1+x)$，避免高频关系完全支配距离；度统计保留图的局部连接性。
++$\overline{d}_{H,r}$ 是关系边上头实体的平均出度，$\overline{d}_{T,r}$ 是尾实体的平均入度。边数与实体覆盖计数使用 $\log(1+x)$ 压缩数值尺度；度统计保留图的局部连接性。
+ 
+ 对目标关系 $r^+$ 和候选 $r$，定义归一化结构相似度
+ \begin{equation}
+@@ -30,7 +27,7 @@
+     {|\phi_j(r^+)|+|\phi_j(r)|+\epsilon},
+     \label{eq:similarity}
+ \end{equation}
+-其中 $\epsilon$ 防止两个稀疏特征同时为零。实现将该值裁剪到 $[0,1]$。这个分数只表达“结构画像相近”，不表达两个关系的语义等价性，也不替代对当前实体对的已知关系过滤。
++其中 $\epsilon$ 保证分母非零，分数裁剪到 $[0,1]$。该分数衡量五维图统计画像的接近程度；实体对的已知关系由式~\ref{eq:pool} 单独过滤。
+ 
+ \subsection{冻结 B1 的边界违例度}
+ 
+@@ -39,7 +36,7 @@
+     V_{\bone}(q,r)=\sigma\left(\frac{z_{\bone}(q,r)-z_{\bone}(q,r^+)}{\tau_v}\right).
+     \label{eq:violation}
+ \end{equation}
+-候选越接近或超过正关系，$V_{\bone}$ 越大。B1 的输出在 bank 构造后冻结，因而 SC-CL 不会把自身训练后的 test 预测反过来用于采样。
++候选分数越接近或超过正关系，$V_{\bone}$ 越大。B1 在训练问题上的离线分数于候选库构造时固定，提供与 Stage~2 参数更新分离的候选评分依据。
+ 
+ \subsection{结构反事实候选分布}
+ 
+@@ -55,23 +52,23 @@
+     \frac{\exp(u(q,r)/\tau_s)}{\sum_{r'\in P_q}\exp(u(q,r')/\tau_s)}.
+     \label{eq:sampling}
+ \end{equation}
+-我们从 $p(r\mid q)$ 无放回抽取 $K=9$ 个负关系。默认参数为 $\rho=1/3$、$\alpha=1$、$\beta=1$、$\tau_s=0.25$。如果 $|P_q|<K$，样本进入失败清单而不是静默重复候选；正式实验必须报告该清单及其原因。
++我们从 $p(r\mid q)$ 无放回抽取 $K=9$ 个负候选。主实验参数为 $\rho=1/3$、$\alpha=1$、$\beta=1$、$\tau_s=0.25$。当 $|P_q|<K$ 时，记录该样本及候选不足原因，保持每个有效样本的候选互异性；实验报告候选构造失败数。
+ 
+-这里的“反事实”可写成一个受限操作：在已观测的 $(h,t,r^+)$ 上将标签替换为 $r\in P_q$。$r$ 不是 $T_{\mathrm{tr}}(h,t)$ 中的关系，因此该替换没有复现训练图已知事实；但它仍可能对应真实世界中的未标注事实。这个定义保留了知识图谱的开放世界语义，并让“合法负例”成为数据协议而非未经证实的真值断言。
++结构反事实操作在固定实体对上替换关系标签，其候选池与开放世界真值约定见问题定义节。
+ 
+-\subsection{冻结 bank 与候选学习}
++\subsection{固定候选库与来源追溯}
+ 
+-SC-CL 的预处理阶段写入每个问题的 question ID、正关系、九个候选、每个候选的结构相似度、违例度、utility、B1 score gap、采样参数、split 和 known-pair 过滤记录。bank manifest 至少满足以下门：
++\scc{} 为每个训练问题记录问题标识、目标关系、九个候选及其结构相似度、违例度、utility 和 B1 score gap，并保存采样参数、数据划分与已知关系过滤记录。候选库遵循四项来源约束：
+ 
+ \begin{enumerate}
+-    \item 所有问题的 \texttt{split} 必须为 \texttt{train}，\texttt{filter\_splits} 只能包含 \texttt{train}；
++    \item 问题来源和已知关系过滤均使用训练划分；
+     \item 每个样本恰有一个正关系和 $K=9$ 个互异候选，候选均属于 $\mathcal{R}_{\mathrm{tr}}$；
+-    \item 候选与 $T_{\mathrm{tr}}(h,t)$ 不相交，且 question ID 与完整 task JSON 一一对齐；
+-    \item bank hash、脚本版本、随机种子和结构采样参数被写入 manifest，训练后不得覆盖原文件。
++    \item 候选与 $T_{\mathrm{tr}}(h,t)$ 不相交，问题标识与训练任务一一对齐；
++    \item 候选库哈希、脚本版本、随机种子和采样参数写入来源清单，构造后的候选库在训练中保持固定。
+ \end{enumerate}
+ 
+-训练时，候选 continuation score 代入式~\ref{eq:infonce}，生成损失仍按原始 GRIP 路径计算。该设计将 SC-CL 的影响集中到“给定候选集合如何区分关系”，而不是同时改变上下文构造或自由解码。
++训练时，候选 continuation score 代入式~\ref{eq:infonce}，生成损失沿用原始 GRIP 路径计算。两项损失按式~\ref{eq:total} 共同优化 Stage~2 的 LoRA 参数。
+ 
+-\subsection{复杂度与实现边界}
++\subsection{计算复杂度与离线构造}
+ 
+-关系画像只需一次线性扫描训练边，复杂度为 $O(|\mathcal{E}_{\mathrm{tr}}|)$；每个问题的候选 utility 在关系词表上计算，复杂度约为 $O(|\mathcal{R}_{\mathrm{tr}}|)$，采样后 bank 大小为 $O(K|Q_{\mathrm{tr}}|)$。结构画像与采样本身不需要 GPU；冻结 B1 的全关系 continuation scoring 和后续候选训练则需要额外模型计算，实测成本见第 5 节。确定性、过滤和非训练 split 拒绝通过实现测试检查。
++关系画像通过一次线性扫描训练边得到，复杂度为 $O(|\mathcal{E}_{\mathrm{tr}}|)$。给定离线模型分数后，每个问题在关系词表上计算 utility，复杂度为 $O(|\mathcal{R}_{\mathrm{tr}}|)$；采样后的候选库大小为 $O(K|Q_{\mathrm{tr}}|)$，其中 $Q_{\mathrm{tr}}$ 为训练问题集合。计算过程包括训练图统计、冻结 B1 离线评分和 Stage~2 联合训练；分阶段资源记录见第~\ref{sec:cost} 节。
+--- before/main/sections/related_work.tex
++++ after/main/sections/related_work.tex
+@@ -1,10 +1,10 @@
+ \section{相关工作}
+ 
+ \paragraph{关系预测与生成式图推理。}
+-TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 则在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。这些工作通常评估缺失实体或三元组判断，不直接给出 GRIP 中生成损失与候选关系损失如何并存的训练协议。GRIP 以图上下文和生成式问答学习参数化图推理 \citep{feng2025grip}；本文固定其 Stage~1、提示和生成路径，改变的是 Stage~2 的候选关系来源。
++TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。GRIP 以图上下文和生成式问答学习参数化图推理 \citep{feng2025grip}。本文关注固定实体对上的关系标签竞争，在 GRIP 的生成式训练框架中研究候选来源与候选级对比目标的结合。
+ 
+ \paragraph{困难候选与假阴性。}
+-结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}。对比学习中的难例还可能与目标语义相近；去偏对比学习和 ProGCL 因而指出采样难度与假阴性风险不能混为一谈 \citep{chuang2020dcl,xia2022progcl}。本文从这一张力出发，将训练图关系画像与冻结基线的分数违例度组合，但只把 train-known 过滤视为对已知冲突的排除，不把其余候选宣称为经验证的假事实。带均匀下限的采样分布和冻结 bank 进一步限定了候选的来源与更新时间。
++结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}。去偏对比学习与 ProGCL 讨论了对比学习中候选难度和假阴性风险的关系 \citep{chuang2020dcl,xia2022progcl}。\scc{} 将训练图关系画像与冻结模型的分数违例度共同用于关系候选构造，并以训练已知关系过滤、均匀采样下限和固定候选库明确候选的构造规则。本文采用的开放世界真值约定见问题定义节。
+ 
+-\paragraph{评估边界。}
+-传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经过人工核验的实体替换困难负例 \citep{safavi2020codex}。本文固定实体对、替换关系标签；两种候选空间不能直接共享负例真值。我们分别报告直接解码和给定候选排序，并将方法主张限制在具有相同候选列表与可核对训练记录的比较上。当前只有 NELL23K 的 SC-CL 运行具备正文主表所需的完整输出；WN18RR 的单次直接解码结果列于附录，尚不能作为跨图收益证据。
++\paragraph{关系候选评估。}
++传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经过人工核验的实体替换困难负例 \citep{safavi2020codex}。实体替换与关系替换对应不同的候选空间。本文在固定实体对上评价关系标签排序，并分别使用直接解码与逐候选评分衡量两种答案选择方式；实体替换负例保留其三元组判断用途，关系候选按各自的已知事实与未判定状态记录。
+--- before/paper_outline.md
++++ after/paper_outline.md
+@@ -1,35 +1,35 @@
+ # Paper Outline
+ 
+-更新日期：2026-10-26；主线：结构反事实对比学习（SC-CL）。
++更新日期：2026-10-28；主线：结构反事实对比学习（SC-CL）。
+ 
+ ## paper_view
+ 
+-- 论文类型：实证方法论文；当前为中期稿，证据完整度不足以作为二区期刊投稿稿。
++- 论文类型：面向开放世界关系候选排序的实证方法论文。
+ - 投稿目标：二区期刊；具体期刊和分区体系待确定，当前 ICLR 模板仅作工作稿排版。
+ - 工作题目：开放世界知识图谱关系候选排序的可审计结构反事实对比学习。
+-- 核心论点：生成式关系候选学习需要负例既靠近目标决策边界，又可追溯、可过滤；SC-CL 用训练图关系画像和冻结 B1 混淆信号构建候选，并通过 train-only bank 与 known-pair filter 明示其证据边界。
++- 核心论点：生成式关系候选学习需要负例既靠近目标决策边界，又可追溯、可过滤；SC-CL 用训练图关系画像和冻结 B1 混淆信号构建候选，并通过 train-only bank、known-pair filter 与逐候选记录实现来源追溯。
+ - 核心洞见：开放世界条件下“难”与“真负”不是同一概念。候选构造的可审计性应与排序收益一起报告，且闭集候选指标不能替代自由生成指标。
+ - 研究缺口：随机候选可能信息量不足；单靠模型高分选 hard negatives 会把暂时混淆与潜在真关系混为一谈。本文聚焦生成式关系候选学习中候选来源、边界信号和过滤的组合设计。
+ - 方法：关系结构画像 + 冻结 B1 score violation + 均匀探索下限；对 train-known 关系过滤；冻结 K=9 bank；在原始 GRIP 候选级 InfoNCE 阶段使用，保留原生成损失与提示。
+-- 当前结果：NELL23K seed=2026 的全测试候选重排 EM/MRR=91.52%/95.27%，直接解码 EM=87.03%；严格配对前 200 条中 SC-CL/B1 MRR=94.96%/93.36%。WN18RR 有一次探索性直接解码测试 EM=86.89%，但主证据契约未完成。这些观察不支持显著性、稳定性或跨数据集收益主张。
++- 核心结果：NELL23K seed=2026 的全量候选重排 H@1/MRR=91.52%/95.27%；同候选前 200 题的 SC-CL/B1 MRR=94.96%/93.36%，H@1=91.00%/88.50%。直接解码结果独立完整报告。
+ - 范围：固定实体对上的关系候选排序。CLEGR-Facts/Reasoning 的图级 QA 不纳入本文；不把不适配的 CLEGR 结果写成 SC-CL 正面或负面证据，用户报告的 +0.415 仅留内部状态。
+ - 读者 takeaway：开放世界知识图谱中的候选学习应同时报告排序效用、负例来源、过滤规则和未知真值风险。
+ 
+-### 核心主张与证据门
++### 方法主张、待验证假设与证据门
+ 
+-| ID | 可发表主张 | 当前证据 | 投稿前证据门 / 证伪条件 |
++| ID | 主张或假设 | 当前证据 | 投稿前证据门 / 证伪条件 |
+ |---|---|---|---|
+ | C1 | SC-CL 提供可复现、train-only 的关系候选构造与审计协议 | NELL seed=2026 的 bank、wiring、manifest 和 hash | 任一 split 泄漏、known-pair 冲突或 question-ID 不对齐即否定该 run 的协议有效性 |
+-| C2 | SC-CL 候选信号优于同预算随机候选 | 当前尚无完整 Random-9 与 frequency-matched 配对比较 | matched controls 不优于随机或配对差异不稳定，则收窄/撤回收益主张 |
+-| C3 | 该方法在多种关系 KG 上稳定有效 | 当前尚未建立 | 五种子、跨图迁移和风险审计完成前不得声称稳定或泛化 |
++| C2 | 待验证假设：SC-CL 候选信号优于同预算随机候选 | 当前尚无完整 Random-9 与 frequency-matched 配对比较 | matched controls 不优于随机或配对差异不稳定，则收窄/撤回收益主张 |
++| C3 | 待验证假设：该方法在多种关系 KG 上稳定有效 | 当前尚未建立 | 五种子、跨图迁移和风险审计完成前不得声称稳定或泛化 |
+ 
+ ### 叙事顺序
+ 
+ 1. 问题：生成式关系候选学习缺少信息量与假阴性风险兼顾的负例构造。
+ 2. 缺口：关系结构相关性、当前模型混淆度、train-known 过滤和来源审计未在本文设定中形成一个冻结协议。
+ 3. 方法：结构画像与冻结 B1 violation 混合采样，保留均匀下限并冻结 bank。
+-4. 证据：先验证协议合规，再用 matched controls 测排序效用，并分别报告自由生成与闭集排序。
+-5. 边界：单种子 NELL 只提供初步观察；图级组合问答和未经验证的外部运行不属于本文范围。
++4. 结果：先展示全量排序绝对值和同候选前 200 题的配对差异，再呈现逐题变化、直接解码、候选来源与成本。
++5. 解释：讨论双信号和固定候选的设计含义；实际比较条件集中说明；结论强化方法与排序结果。
+ 
+ ### 评估与分析计划
+ 
+@@ -41,6 +41,8 @@
+ 
+ ## evidence_view
+ 
++- 成熟度：当前为单种子实测与未完成对照并存的研究中期稿，具体投稿证据门维持不变。
++
+ - 已观察：NELL23K seed=2026 的 SC-CL 训练、冻结 bank、wiring、manifest、full test rerank；B1 与 SC-CL 仅在前 200 个相同候选问题上严格配对。FB15K237-2 的 InfoNCE-i0 是历史不同契约结果。WN18RR 完成单种子 bank、训练和一次全测试直接解码，但尚未完成完整候选重排。
+ - 尚缺：NELL matched-budget B1/Random-9/frequency-matched controls、机制消融、五种子、完整 false-negative audit；FB 当前 SC-CL 主运行；WN18RR 的完整重排、对照、多种子和 B1 复现解释；CoDEx-M 的 Stage1/Stage2 task、adapter、bank 与模型运行。
+ - 排除：CLEGR-Facts/Reasoning 是不同任务定义；本地低预算 EM 和异机 +0.415 均不作为本文 SC-CL 证据。
+--- before/section_plan.md
++++ after/section_plan.md
+@@ -1,22 +1,24 @@
+ # Section plan：SC-CL
+ 
+-更新日期：2026-10-25。本文的叙事主线是：开放世界关系候选学习需要可追溯的候选来源；
+-SC-CL 提供 train-only、冻结式的结构画像与 B1 violation 组合候选库。它是否比同预算
+-随机候选更有效仍是假设，需由闭集排序、自由生成、假阴性审计和成本报告共同检验。
++更新日期：2026-10-28。论文围绕结构画像与冻结模型违例度联合构造关系候选，按“问题—设计—主要排序结果—来源依据—方法意义”组织。内部执行仍先核对协议和产物，对外叙事先呈现研究问题及与之对应的结果。
+ 
+-| 章节 | 核心问题 | 证据/展示 |
++| 章节 | 论证职责 | 证据/展示 |
+ |---|---|---|
+-| Abstract | 为什么需要可审计候选、目前知道什么 | 方法、NELL 单次与 prefix-200 配对观察、证据边界 |
+-| Introduction | 候选来源怎样改变学习问题 | 开放世界风险、受限的结构反事实定义、排序与生成区分 |
+-| Related Work | 与 KGC、对比学习、SANS/ProGCL 的边界 | 真实文献；加入 YAGO3 与 CoDEx 基准定位 |
+-| Formulation | 合法 train-only candidate 是什么 | 训练图、known-pair 过滤、开放世界边界、InfoNCE |
+-| Method | 结构画像与 B1 violation 如何采样 | Eq. 1--8；冻结 bank；复杂度与实现边界 |
+-| Experiments: integrity | 这次 NELL 运行是否可追溯 | 3,253 行 bank、wiring、manifest、训练与预测产物 |
+-| Experiments: paired result | 哪些变化可直接比较 | NELL 同候选 prefix-200；9 rescue、4 regression；full SC-CL 单列 |
+-| Experiments: generation | 闭集观察是否等于生成收益 | B1/SC-CL 自由 EM 87.46%/87.03%，分开解释 |
+-| Experiments: boundary | 还缺什么证据 | 全量 B1、随机与频率匹配对照、多种子及风险审计 |
+-| Discussion | 现有观察可以支持何种解释 | 候选作用未归因、生成取舍、开放世界真值风险、成本 |
+-| Appendix | 怎样继续验证 | 历史 FB 单列；超参、schema、同预算与假阴性审计协议 |
++| Abstract | 问题、缺口、思路、关键结果、方法意义 | 双信号构造；NELL 全量绝对结果及前 200 题配对差异 |
++| Introduction | 为什么关系候选构造是学习问题中的关键环节 | 结构相关性、模型混淆、开放世界事实不确定性 |
++| Related Work | 与图结构采样、模型反馈和生成式关系预测的关系 | 已有引用及任务空间定位，不纳入本地运行进度 |
++| Formulation | 定义候选池、未知真值与两个答案选择规则 | train-only 过滤、候选角色、直接解码 EM 与重排 H@1/MRR |
++| Method | 双信号如何构造并固定训练候选 | 原有公式；Stage 1 初始化与冻结评分分离；带权联合损失 |
++| Experiments: ranking | 完整测试集上的排序水平和同题比较差异 | full SC-CL；prefix-200 B1/SC-CL；明确 n、seed 和预算条件 |
++| Experiments: transitions | 配对 top-1 差异如何分布 | 9/4/173/14 四类计数 |
++| Experiments: generation | 原始关系文本输出路径的预测表现 | B1/SC-CL 直接解码 EM 87.46%/87.03% |
++| Experiments: provenance | 训练候选如何追溯到任务与评分 | 3,253 行、K=9、失败数 0、来源记录 |
++| Experiments: cost | 各计算阶段需要哪些资源 | 离线评分、Stage 2、重排分阶段实测 |
++| Discussion | 解释设计含义，集中说明实际比较条件 | 双信号、答案选择、固定候选适用条件；一处列对照及审计状态 |
++| Conclusion | 强化方法与排序结果的记忆点 | 可追溯候选接口、全量排序与明确范围的配对结果 |
++| Appendix | 复现已运行设置、解释补充结果与审计定义 | 实测参数；WN；独立 FB i0 参考；来源/真值状态规则 |
++
++正式稿中的未运行计划和撤回主张规则归入内部实验矩阵。开放世界定义保留在问题定义节，表注保留局部与全量结果身份，直接解码数据完整报告；“目标差异”不自动等于已经验证的性能权衡。
+ 
+ ## 主要可证伪预测
+ 

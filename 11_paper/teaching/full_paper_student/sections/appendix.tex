@@ -1,0 +1,123 @@
+\section{补充结果与审计协议}
+
+\subsection{历史 FB 候选评分的来源边界}
+
+\begin{table}[h]
+\caption{FB15K237-2 历史十选一评估（百分比，10,000 条测试问题）。InfoNCE-i0 使用历史候选文件和不同训练配置，不是 SC-CL 的跨数据集结果。}
+\label{tab:historical-fb}
+\centering\scriptsize
+\begin{tabular}{lrrrr}
+\toprule
+方法 & 官方 EM/H@1 & MRR & H@3 & H@10 \\
+\midrule
+\bone & 79.91 & 88.01 & 95.80 & 100.00 \\
+历史 InfoNCE-i0 & 91.62 & 95.41 & 99.20 & 100.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+两组评分均来自相同的本地 processed test，哈希为
+\texttt{c77dde51aafc7b1ce3a5011ade914343c2689f8b38b12774ea4840ec1c9068ed}。
+历史 i0 使用 \texttt{fb15k237\_i0\_paired\_candidates.json}，LoRA rank 为 24、Stage 2
+训练 5 个 epoch、候选损失权重为 0.1；这些条件与本文 SC-CL 的训练契约不一致。
+
+\subsection{后续比较与可证伪规则}
+\label{sec:future-protocol}
+
+完整主比较需要相同基座、Stage 1 adapter、任务文件、提示、候选数、候选损失设置和
+Stage 2 预算。\bone{} 是原始 generation-only 锚点；Random-9 衡量加入候选损失后的
+差异；频率匹配随机检验结构画像是否只是关系频率代理；Profile-only 与 Violation-only
+分别检验两个信号，ErrorMemory-9 仅作辅助对照。若 SC-CL 不优于频率匹配随机，组合
+采样优势的主张必须撤回；还需单独记录输出格式、未列出的答案与 OOV 情况。
+
+计划在 NELL23K 和 FB15K237-2 上使用训练种子 2026--2030，报告逐种子结果与问题级
+配对区间；$K\in\{3,9,15\}$、$\rho\in\{0,1/3,2/3\}$ 和
+$\tau_s\in\{0.10,0.25,0.50\}$ 用于敏感性检查。WN18RR 与 CoDEx-M 只有完成任务文本、
+adapter、bank 和完整评估的对齐审计后才能进入迁移比较。当前 CoDEx-M 已转换官方正例
+split 和固定实体对的关系候选，但 Stage 1/Stage 2 推理及方法训练尚未完成；其通过替换
+实体构造的官方硬负例不作为关系候选的真值标签。
+
+每个正式运行需记录 bank 的训练来源、question ID 对齐、每行九个互异候选、train-known
+过滤结果、持出正例重叠、数据和 adapter 哈希，以及原始输出与候选评分。
+未在训练图出现且未被其他证据确认的候选列为“开放世界未判定”，不计入已证实假阴性。
+任何 split 泄漏或任务对齐失败均使该运行退出主比较。
+
+\subsection{默认超参数}
+
+\begin{table}[h]
+\caption{SC-CL 的默认设置和正式运行前需要登记的字段。}
+\label{tab:hyper}
+\centering\small
+\begin{tabular}{ll}
+\toprule
+字段 & 默认值 \\
+\midrule
+候选数 $K$ & 9 \\
+均匀混合系数 $\rho$ & $1/3$ \\
+结构权重 $\alpha$ & 1.0 \\
+B1 违例权重 $\beta$ & 1.0 \\
+采样温度 $\tau_s$ & 0.25 \\
+候选损失温度 $\tau_c$ & 运行配置登记 \\
+候选损失权重 $\lambda_{\mathrm{cand}}$ & 1.0 \\
+bank 随机种子 & 2026 \\
+训练种子 & 2026, 2027, 2028, 2029, 2030 \\
+过滤来源 & train-only \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{候选 bank 的最小 schema}
+
+每一行 bank 至少包含：\texttt{question\_id}、\texttt{split}、\texttt{head}、\texttt{tail}、\texttt{gold\_relation}、
+\texttt{negative\_relations}、\texttt{negative\_source}、\texttt{filter\_splits}、\texttt{counterfactual\_operation}、
+\texttt{counterfactual\_validation}、\texttt{K}、\texttt{uniform\_mix}、\texttt{structure\_weight}、
+\texttt{violation\_weight}、\texttt{temperature}、\texttt{seed} 和 sampler 版本。每个候选记录还应包含
+\texttt{structure\_similarity}、\texttt{score\_violation}、\texttt{utility}、\texttt{candidate\_score}、
+\texttt{gold\_score}、\texttt{score\_gap} 和 \texttt{counterfactual\_valid}。字段名以项目的实际 JSONL
+实现为准，论文只要求这些语义信息可审计。
+
+\subsection{审计伪代码}
+
+\small
+\begin{verbatim}
+for q in train_questions:
+    assert q.split == "train"
+    P = train_relations - {q.gold} - known_train_relations(q.head, q.tail)
+    for r in P:
+        s = profile_similarity(phi[q.gold], phi[r])
+        v = b1_score_violation(q, r)
+        u[r] = alpha * s + beta * v
+    negatives = sample_without_replacement(
+        P, mixture_softmax(u, rho, tau), K=9)
+    write_frozen_bank(q, negatives, manifest=provenance)
+\end{verbatim}
+
+该伪代码强调三个不可省略的顺序：先限定训练 split，再过滤实体对已知关系，最后才计算采样分布。正式 wiring 检查还要确认训练 task 的 question ID、正关系文本和候选关系文本保持一致。
+
+\subsection{失败分类}
+
+\begin{table}[h]
+\caption{建议的失败分析标签。}
+\label{tab:failure}
+\centering\scriptsize
+\begin{tabular}{p{0.23\linewidth}p{0.65\linewidth}}
+\toprule
+标签 & 判定规则 \\
+\midrule
+结构稀疏 & 目标关系或候选关系的画像特征大部分为零，profile 相似度不稳定。 \\
+已知关系冲突 & 候选属于当前实体对 train-known 关系，说明过滤或 bank 版本错误。 \\
+开放世界不确定 & 候选未在训练图出现，但在外部/测试事实中可能成立，不能当作确定假阴性。 \\
+B1 高置信混淆 & 候选 score 高于 gold，且模型对该关系赋予较高置信度。 \\
+候选不足 & 过滤后 $|P_q|<9$，必须进入失败清单，不能重复填充。 \\
+输出格式异常 & 模型输出不属于题目给出的关系选项。 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{伦理与数据说明}
+
+本文使用本地知识图谱基准和公开模型技术报告作为背景，不新增个人敏感数据。当前正文
+只把带有原始预测、配置、manifest 和 hash 的 NELL 单种子结果作为实测；历史 FB
+InfoNCE-i0 另行标注，未完成协议不用于性能承诺。正式提交前应补充数据许可、模型许可
+证、代码版本和可公开的 bank/预测文件说明。
+

@@ -43,7 +43,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Use WN18RR's relation-label conversion: '_'.join(parts[1:]).",
     )
-    parser.add_argument("--total_k", type=int, default=DEFAULT_TOTAL_K)
+    parser.add_argument(
+        "--total_k",
+        type=int,
+        default=DEFAULT_TOTAL_K,
+        help="Maximum candidate sequence length to freeze; rows may record a shorter available K.",
+    )
     parser.add_argument("--uniform_mix", type=float, default=DEFAULT_UNIFORM_MIX)
     parser.add_argument(
         "--structure_weight", type=float, default=DEFAULT_STRUCTURE_WEIGHT

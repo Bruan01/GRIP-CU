@@ -57,6 +57,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     assistant_answer_prefix,
     known_pair_relations,
     load_json_payload,
+    load_relation_eligibility,
     original_question_ids_from_payload,
     train_relation_alias_index,
 )
@@ -66,6 +67,7 @@ from models.utils import get_hf_llm_tokenizer  # noqa: E402
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task_file", type=Path, required=True)
+    parser.add_argument("--relation_eligibility", type=Path, default=None)
     parser.add_argument("--raw_dir", type=Path, required=True)
     parser.add_argument(
         "--relation_text_file",
@@ -346,6 +348,13 @@ def main() -> None:
         for left, right in known_relations
     }
     items = load_matchable(args, alias_index, entity_pairs=entity_pair_index)
+    eligible_ids = load_relation_eligibility(args.relation_eligibility, args.task_file, args.raw_dir)
+    if eligible_ids is not None:
+        items = [item for item in items if item["qa_id"] in eligible_ids]
+        if {item["qa_id"] for item in items} != eligible_ids:
+            raise ValueError("Eligibility IDs do not match the scored task")
+        if any(item["matched_train_relation"] not in known_relations.get(item["entity_pair"], set()) for item in items):
+            raise ValueError("Eligible QA gold is not supported by its training entity pair")
     items = shard_items(items, num_shards=args.num_shards, shard_id=args.shard_id)
     if args.compare_reference is not None:
         reference_rows = load_jsonl(args.compare_reference)

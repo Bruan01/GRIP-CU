@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="139.7mm" height="68.75mm" viewBox="0 0 519 255" role="img" aria-label="SC-CL method architecture">
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5.2" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L6 3 L0 6 Z" fill="#263746"/>
+    </marker>
+    <style>
+      .stage{fill:#fff;stroke:#a9b6c0;stroke-width:.8}
+      .existing{fill:#f2f5f7;stroke:#768997;stroke-width:.8}
+      .new{fill:#e6f3f1;stroke:#00817c;stroke-width:1.1}
+      .ink{fill:#263746;font-family:Arial,Helvetica,sans-serif;font-size:8.4px}
+      .head{fill:#263746;font-family:Arial,Helvetica,sans-serif;font-size:8.4px;font-weight:700;letter-spacing:.25px}
+      .small{fill:#263746;font-family:Arial,Helvetica,sans-serif;font-size:8px}
+      .flow{fill:none;stroke:#263746;stroke-width:1;marker-end:url(#arrow)}
+      .aux{fill:none;stroke:#263746;stroke-width:.85;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="519" height="255" fill="#fff"/>
+
+  <g id="c-inputs"><rect class="stage" x="8" y="17" width="116" height="174" rx="4"/>
+    <text class="head" font-size="8.2" x="16" y="31">1  TRAIN INPUTS</text></g>
+  <g id="c-signals"><rect class="stage" x="136" y="17" width="126" height="174" rx="4"/>
+    <text class="head" font-size="8.2" x="144" y="31">2  SCORES &amp; FILTER</text></g>
+  <g id="c-bank"><rect class="stage" x="274" y="17" width="105" height="174" rx="4"/>
+    <text class="head" font-size="8.2" x="282" y="31">3  FROZEN BANK</text></g>
+  <g id="c-training"><rect class="stage" x="391" y="17" width="120" height="174" rx="4"/>
+    <text class="head" font-size="8.2" x="399" y="31">4  GRIP STAGE 2</text></g>
+
+  <g id="n-training-graph"><rect class="existing" x="17" y="54" width="98" height="39" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="66" y="70">Training graph</text>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="66" y="81">and questions</text></g>
+  <g id="n-frozen-b1"><rect class="existing" x="17" y="119" width="98" height="39" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="66" y="135">Frozen B1</text>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="66" y="146">train scores</text></g>
+
+  <g id="n-filter"><rect class="existing" x="145" y="48" width="107" height="29" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="198.5" y="65">Known-pair filter</text></g>
+  <g id="n-profile"><rect class="existing" x="145" y="98" width="107" height="29" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="198.5" y="115">Structure profile</text></g>
+  <g id="n-violation"><rect class="existing" x="145" y="148" width="107" height="29" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="198.5" y="165">B1 score violation</text></g>
+
+  <path id="e-graph-filter" class="flow" d="M115 72.5 L145 62.5"/>
+  <path id="e-graph-profile" class="aux" d="M115 79 L135 79 L135 112.5 L145 112.5"/>
+  <path id="e-b1-violation" class="flow" d="M115 138.5 L132 138.5 L132 162.5 L145 162.5"/>
+
+  <g id="n-sampler"><rect class="new" x="285" y="69" width="84" height="54" rx="4"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="327" y="88">Mixture sampler</text>
+    <text class="small" font-size="8" text-anchor="middle" x="327" y="102">uniform floor +</text>
+    <text class="small" font-size="8" text-anchor="middle" x="327" y="112">softmax</text></g>
+  <path id="e-pool" class="aux" d="M252 62.5 L268 62.5 L285 82"/>
+  <text class="small" font-size="8" x="257" y="57">Pq</text>
+  <path id="e-profile" class="aux" d="M252 112.5 L285 96"/>
+  <path id="e-violation" class="aux" d="M252 162.5 L268 162.5 L285 110"/>
+  <g id="n-bank"><rect class="new" x="285" y="143" width="84" height="36" rx="4"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="327" y="158">Frozen bank</text>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="327" y="169">K = 9</text></g>
+  <path id="e-sampling" class="flow" d="M327 123 L327 143"/>
+  <text class="small" font-size="8" text-anchor="middle" x="327" y="188">train-only · manifest</text>
+
+  <g id="n-candidate-loss"><rect class="new" x="402" y="52" width="46" height="52" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="425" y="71">Candidate</text>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="425" y="82">InfoNCE</text></g>
+  <g id="n-generation-loss"><rect class="existing" x="454" y="52" width="46" height="52" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="477" y="70">Original</text>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="477" y="81">generation</text>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="477" y="92">loss</text></g>
+  <path id="e-bank-loss" class="flow" d="M369 161 L383 161 L383 78 L402 78"/>
+  <g id="n-trained-model"><rect class="new" x="412" y="145" width="79" height="33" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="451.5" y="165">Trained model</text></g>
+  <path id="e-candidate-model" class="aux" d="M425 104 L425 128 L451 128 L451 145"/>
+  <path id="e-generation-model" class="aux" d="M477 104 L477 128 L451 128 L451 145"/>
+
+  <line x1="8" y1="203" x2="511" y2="203" stroke="#8798a4" stroke-width=".9" stroke-dasharray="4 3"/>
+  <text class="small" font-size="8" x="16" y="217">Validation/test is excluded from bank construction</text>
+  <g id="n-evaluation"><rect class="existing" x="292" y="220" width="211" height="25" rx="3"/>
+    <text class="ink" font-size="8.4" text-anchor="middle" x="397.5" y="236">Free generation EM  |  Ranking MRR / Hits</text></g>
+  <path id="e-model-evaluation" class="flow" d="M451 178 L451 211 L451 220"/>
+</svg>

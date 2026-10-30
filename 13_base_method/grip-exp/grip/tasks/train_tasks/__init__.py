@@ -147,5 +147,9 @@ class GripTaskGeneration():
                 del self.task_generator.model
             del self.task_generator
             self.task_generator = None
-            torch.cuda.empty_cache()
+            # API-backed generators never allocate a local CUDA model. Skip
+            # CUDA runtime calls so API task generation can share a host with
+            # an active GPU training job without touching its device context.
+            if not self.kwargs.get("use_openai_api", False):
+                torch.cuda.empty_cache()
             gc.collect()

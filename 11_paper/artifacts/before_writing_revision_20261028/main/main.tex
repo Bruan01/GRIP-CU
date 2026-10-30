@@ -1,0 +1,65 @@
+\documentclass{article}
+
+% Keep the official ICLR files in ../template/iclr2026/ while making this
+% manuscript directly compilable from the main/ directory.
+\makeatletter
+\def\input@path{{../template/iclr2026/}}
+\makeatother
+\usepackage{iclr2026_conference,times}
+\input{math_commands.tex}
+
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setmainfont{TeX Gyre Termes}
+\setCJKmainfont{AR PL UMing CN}
+\setCJKsansfont{Droid Sans Fallback}
+\setCJKmonofont{Droid Sans Fallback}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 1pt
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,threeparttable,multirow,array}
+\usepackage{graphicx,xcolor,enumitem,float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+\usepackage{url}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setlist{nosep,leftmargin=*}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcommand{\scc}{\textsc{SC-CL}}
+\newcommand{\bone}{\textsc{B1}}
+\newcommand{\preset}{\textcolor{gray}{\textsuperscript{p}}}
+\newcommand{\todoresult}{\textcolor{gray}{待运行验证}}
+
+\title{开放世界知识图谱关系候选排序的可审计结构反事实对比学习}
+\author{}
+
+% \iclrfinalcopy % Keep commented for the anonymous review template.
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+生成式知识图谱关系预测可用候选级对比学习强化关系辨别，但困难候选的来源与真假边界常不明确；在开放世界知识图谱中，未标注关系也不能直接视为假事实。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning, \scc）：从训练关系词表中过滤正确关系及同一实体对的训练已知关系，结合关系结构画像与冻结 GRIP 基线（\bone）的分数违例度，按带均匀下限的分布无放回抽取九个候选。固定候选库接入 GRIP Stage~2 的候选级 InfoNCE，原始生成损失保持不变。NELL23K 的一次 seed=2026 运行在 4,943 条测试问题上取得候选重排 EM/MRR 91.52\%/95.27\%；对相同的十选一题目直接解码，\scc{} 与 \bone{} 的 EM 分别为 87.03\% 和 87.46\%。同候选的前 200 条问题上，两者的重排 MRR 分别为 94.96\% 和 93.36\%。这些结果证明候选构造与训练链路可复核，并给出有限的排序观察；全量 \bone{} 重排、同预算随机对照和多种子仍是判断方法收益所需的证据。
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/formulation}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\clearpage
+\appendix
+\input{sections/appendix}
+
+\bibliographystyle{iclr2026_conference}
+\bibliography{references}
+
+\end{document}

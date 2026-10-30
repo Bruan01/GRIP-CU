@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from typing import Union, Optional
 
 import torch
@@ -128,18 +129,26 @@ class HuggingFaceLLMs(BaseInferenceModel):
                   f"automatically use {tensor_parallel_size} GPUs.")
 
         if self.quantization:
+            gpu_memory_utilization = float(
+                os.environ.get("GRIP_VLLM_GPU_MEMORY_UTILIZATION", "0.92")
+            )
             self.model = LLM(
                 llm_model,
                 tensor_parallel_size=tensor_parallel_size,
                 quantization="bitsandbytes",
                 load_format="bitsandbytes",
                 max_model_len=self.tokenize_max_length + self.gen_max_length,
+                gpu_memory_utilization=gpu_memory_utilization,
                 dtype=TORCH_DTYPE[self.dtype], )
         else:
+            gpu_memory_utilization = float(
+                os.environ.get("GRIP_VLLM_GPU_MEMORY_UTILIZATION", "0.92")
+            )
             self.model = LLM(
                 llm_model,
                 tensor_parallel_size=tensor_parallel_size,
                 max_model_len=self.tokenize_max_length + self.gen_max_length,
+                gpu_memory_utilization=gpu_memory_utilization,
                 dtype=TORCH_DTYPE[self.dtype], )
 
     def _get_hf_llm(self):

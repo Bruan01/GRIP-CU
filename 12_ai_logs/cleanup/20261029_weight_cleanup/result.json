@@ -1,0 +1,34 @@
+{
+  "completed_at": "2026-10-29T13:43:57.439288+00:00",
+  "deleted_files": 110,
+  "deleted_logical_bytes": 81403266721,
+  "disk_before": {
+    "/mnt/c": {
+      "total": 763648217088,
+      "used": 700511502336,
+      "free": 63136714752
+    },
+    "/mnt/e": {
+      "total": 236223197184,
+      "used": 195514044416,
+      "free": 40709152768
+    }
+  },
+  "disk_after": {
+    "/mnt/c": {
+      "total": 763648217088,
+      "used": 675134357504,
+      "free": 88513859584
+    },
+    "/mnt/e": {
+      "total": 236223197184,
+      "used": 141753913344,
+      "free": 94469283840
+    }
+  },
+  "retained_adapters_verified": 11,
+  "evidence_files_verified": 686,
+  "active_fb_state": "fb_matched_b1",
+  "deleted_files_ledger": "/mnt/c/users/administrator/desktop/实验/grip-cu/12_ai_logs/cleanup/20261029_weight_cleanup/deleted_files.jsonl",
+  "validation": "passed"
+}

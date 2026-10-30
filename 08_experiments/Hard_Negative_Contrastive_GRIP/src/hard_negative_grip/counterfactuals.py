@@ -20,6 +20,7 @@ import hashlib
 import json
 import math
 import random
+import shutil
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -254,6 +255,7 @@ def sample_structure_counterfactual_group(
     temperature: float = DEFAULT_TEMPERATURE,
     seed: int = 2026,
     known_relations: Iterable[str] = (),
+    allow_shortfall: bool = False,
 ) -> tuple[dict, dict]:
     """Create one immutable structure-counterfactual bank row and its audit."""
     if total_k < 1:
@@ -313,11 +315,13 @@ def sample_structure_counterfactual_group(
             }
         )
 
-    if len(candidates) < total_k:
+    if len(candidates) < total_k and not allow_shortfall:
         raise ValueError(
             f"{question_id}: only {len(candidates)} valid counterfactual candidates; "
             f"requested {total_k}"
         )
+    if not candidates:
+        raise ValueError(f"{question_id}: no valid counterfactual candidates")
 
     softmax = _stable_softmax(
         [float(item["utility"]) for item in candidates], temperature
@@ -330,7 +334,7 @@ def sample_structure_counterfactual_group(
 
     selected = _draw_without_replacement(
         candidates,
-        k=total_k,
+        k=min(total_k, len(candidates)),
         rng=random.Random(_stable_seed(seed, question_id)),
     )
     negatives = [str(item["relation"]) for item in selected]
@@ -469,6 +473,7 @@ def write_bank_artifacts(
                 violation_weight=violation_weight,
                 temperature=temperature,
                 seed=seed,
+                allow_shortfall=True,
             )
         except ValueError as error:
             failures.append({"question_id": group[0].get("qa_id"), "error": str(error)})
@@ -494,8 +499,9 @@ def write_bank_artifacts(
         + "\n",
         encoding="utf-8",
     )
+    actual_counts = [int(row["actual_k"]) for row in manifest_rows]
     metadata = {
-        "format_version": 1,
+        "format_version": 2,
         "source": STRUCTURE_COUNTERFACTUAL_SOURCE,
         "score_path": str(score_path),
         "split": "train",
@@ -503,6 +509,12 @@ def write_bank_artifacts(
         "requested_k": total_k,
         "rows_written": len(manifest_rows),
         "rows_failed": len(failures),
+        "rows_short_of_requested_k": sum(count < total_k for count in actual_counts),
+        "min_actual_k": min(actual_counts),
+        "max_actual_k": max(actual_counts),
+        "complete_for_requested_k": (
+            not failures and all(count == total_k for count in actual_counts)
+        ),
         "parameters": {
             "uniform_mix": uniform_mix,
             "structure_weight": structure_weight,
@@ -512,6 +524,160 @@ def write_bank_artifacts(
         },
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "failures": failures[:100],
+    }
+    output_paths["metadata"].write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return metadata
+
+
+def derive_structure_counterfactual_bank(
+    *,
+    source_dir: Path,
+    output_dir: Path,
+    total_k: int,
+    overwrite: bool = False,
+) -> dict:
+    """Create an exact-K bank by taking prefixes from a frozen max-K bank.
+
+    Sampling is sequential without replacement, so every smaller K is the
+    deterministic prefix of a larger-K draw for the same question and seed.
+    This lets K sweeps share one expensive B1 score pass and one sampler run.
+    """
+    if total_k < 1:
+        raise ValueError("total_k must be positive")
+    source_dir = source_dir.resolve()
+    output_dir = output_dir.resolve()
+    if source_dir == output_dir:
+        raise ValueError("source_dir and output_dir must be different")
+
+    source_manifest = source_dir / "counterfactual_bank.jsonl"
+    source_metadata = source_dir / "metadata.json"
+    source_audit = source_dir / "sampler_audit.jsonl"
+    source_profiles = source_dir / "relation_profiles.json"
+    for path in (source_manifest, source_metadata, source_audit, source_profiles):
+        if not path.is_file():
+            raise FileNotFoundError(path)
+
+    parent = json.loads(source_metadata.read_text(encoding="utf-8"))
+    if parent.get("source") != STRUCTURE_COUNTERFACTUAL_SOURCE:
+        raise ValueError(f"{source_metadata} is not a structure-counterfactual bank")
+    source_k = int(parent.get("requested_k", 0))
+    if source_k < total_k:
+        raise ValueError(
+            f"source bank was built for K={source_k}; cannot derive K={total_k}"
+        )
+    source_failures = int(parent.get("rows_failed", 0))
+    if source_failures:
+        raise ValueError(
+            f"source bank omitted {source_failures} QA rows; rebuild the max-K bank "
+            "from the cached scores before deriving a full-task K bank"
+        )
+
+    manifest_rows = load_jsonl(source_manifest)
+    audit_rows = load_jsonl(source_audit)
+    audit_by_id = {str(row.get("question_id") or ""): row for row in audit_rows}
+    if not manifest_rows:
+        raise ValueError(f"{source_manifest} contains no bank rows")
+
+    shortages: list[tuple[str, int]] = []
+    for row in manifest_rows:
+        question_id = str(row.get("question_id") or "")
+        negatives = row.get("negative_relations")
+        selected = row.get("selected_negatives")
+        if not isinstance(negatives, list) or not isinstance(selected, list):
+            raise ValueError(f"{question_id}: source bank is missing selected negatives")
+        if len(negatives) != len(selected) or row.get("actual_k") != len(negatives):
+            raise ValueError(f"{question_id}: inconsistent source bank K metadata")
+        if row.get("requested_k") != source_k:
+            raise ValueError(f"{question_id}: source row K does not match metadata")
+        if len(negatives) < total_k:
+            shortages.append((question_id, len(negatives)))
+        if [item.get("relation") for item in selected] != negatives:
+            raise ValueError(f"{question_id}: selected-negative order is inconsistent")
+        if question_id not in audit_by_id:
+            raise ValueError(f"{question_id}: source audit row is missing")
+    if shortages:
+        examples = ", ".join(f"{question_id}({count})" for question_id, count in shortages[:8])
+        raise ValueError(
+            f"cannot derive exact K={total_k}: {len(shortages)} source rows have too "
+            f"few valid candidates; examples: {examples}"
+        )
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_paths = {
+        "manifest": output_dir / "counterfactual_bank.jsonl",
+        "audit": output_dir / "sampler_audit.jsonl",
+        "profiles": output_dir / "relation_profiles.json",
+        "metadata": output_dir / "metadata.json",
+    }
+    if not overwrite:
+        existing = [str(path) for path in output_paths.values() if path.exists()]
+        if existing:
+            raise FileExistsError(
+                "refusing to overwrite derived structure-counterfactual outputs: "
+                + ", ".join(existing)
+            )
+
+    derived_rows: list[dict] = []
+    derived_audit: list[dict] = []
+    for source_row in manifest_rows:
+        row = dict(source_row)
+        negatives = list(row["negative_relations"][:total_k])
+        selected = [dict(item) for item in row["selected_negatives"][:total_k]]
+        row.update(
+            {
+                "negative_relations": negatives,
+                "hard_negative_relations": negatives,
+                "uniform_negative_relations": [],
+                "selected_negatives": selected,
+                "k": total_k,
+                "actual_k": total_k,
+                "requested_k": total_k,
+                "derived_from_requested_k": source_k,
+            }
+        )
+        derived_rows.append(row)
+
+        audit = dict(audit_by_id[str(row["question_id"])])
+        audit["selected_k"] = total_k
+        audit["derived_from_requested_k"] = source_k
+        audit["selected_mean_structure_similarity"] = sum(
+            float(item["structure_similarity"]) for item in selected
+        ) / total_k
+        audit["selected_mean_score_violation"] = sum(
+            float(item["score_violation"]) for item in selected
+        ) / total_k
+        derived_audit.append(audit)
+
+    with output_paths["manifest"].open("w", encoding="utf-8") as stream:
+        for row in derived_rows:
+            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+    with output_paths["audit"].open("w", encoding="utf-8") as stream:
+        for row in derived_audit:
+            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+    shutil.copy2(source_profiles, output_paths["profiles"])
+    metadata = {
+        **parent,
+        "format_version": 2,
+        "requested_k": total_k,
+        "rows_written": len(derived_rows),
+        "rows_failed": source_failures,
+        "rows_short_of_requested_k": 0,
+        "min_actual_k": total_k,
+        "max_actual_k": total_k,
+        "complete_for_requested_k": source_failures == 0,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "derived_from": {
+            "bank_dir": str(source_dir),
+            "manifest": str(source_manifest),
+            "requested_k": source_k,
+            "complete_for_requested_k": parent.get("complete_for_requested_k"),
+            "rows_short_of_requested_k": parent.get(
+                "rows_short_of_requested_k", 0
+            ),
+        },
     }
     output_paths["metadata"].write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",

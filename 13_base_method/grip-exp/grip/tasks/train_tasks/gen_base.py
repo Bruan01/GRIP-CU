@@ -149,6 +149,36 @@ class GenGraphTaskBase(ABC):
                         for index, response in zip(indices, batch_results)
                         if not isinstance(response, dict) or response.get("status") != "success"
                     ]
+                    # Persist successful API calls even when another item in
+                    # this concurrent batch failed. This avoids paying for
+                    # already completed requests again after a rate-limit or
+                    # transient error interrupts the batch.
+                    successful = [
+                        (index, response)
+                        for index, response in zip(indices, batch_results)
+                        if isinstance(response, dict) and response.get("status") == "success"
+                    ]
+                    for index, response in successful:
+                        results[index] = response
+                        stream.write(json.dumps({
+                            "index": index,
+                            "prompt_sha256": digests[index],
+                            "response": response,
+                        }, ensure_ascii=False) + "\n")
+                    if successful:
+                        stream.flush()
+                        os.fsync(stream.fileno())
+                        progress.update(len(successful))
+                        completed_count += len(successful)
+                        self._write_progress(
+                            stage,
+                            total=len(prompts),
+                            completed=completed_count,
+                            cached=cached_count,
+                            generated=completed_count - cached_count,
+                            started_at=started_at,
+                            status="running",
+                        )
                     if failed:
                         preview = []
                         for index, response in failed[:3]:
@@ -157,32 +187,21 @@ class GenGraphTaskBase(ABC):
                             else:
                                 preview.append(f"index={index}: invalid response type {type(response).__name__}")
                         raise RuntimeError(
-                            f"Task generation batch failed for {stage}; no failed responses were cached. "
+                            f"Task generation batch failed for {stage}; failed responses were not cached. "
                             + "; ".join(preview)
                         )
-                    for index, response in zip(indices, batch_results):
-                        results[index] = response
-                        stream.write(json.dumps({
-                            "index": index,
-                            "prompt_sha256": digests[index],
-                            "response": response,
-                        }, ensure_ascii=False) + "\n")
-                    stream.flush()
-                    # Make every completed batch durable.  A long 7B task
-                    # generation run must be restartable after power loss or
-                    # a killed process, not only after a clean Python exit.
-                    os.fsync(stream.fileno())
-                    progress.update(len(indices))
-                    completed_count += len(indices)
-                    self._write_progress(
-                        stage,
-                        total=len(prompts),
-                        completed=completed_count,
-                        cached=cached_count,
-                        generated=completed_count - cached_count,
-                        started_at=started_at,
-                        status="running" if completed_count < len(prompts) else "completed",
-                    )
+                    if not successful:
+                        continue
+                    if completed_count == len(prompts):
+                        self._write_progress(
+                            stage,
+                            total=len(prompts),
+                            completed=completed_count,
+                            cached=cached_count,
+                            generated=completed_count - cached_count,
+                            started_at=started_at,
+                            status="completed",
+                        )
             except Exception as exc:
                 self._write_progress(
                     stage,

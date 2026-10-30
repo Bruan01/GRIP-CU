@@ -47,7 +47,9 @@ p(r|q) = rho / |P_q| + (1-rho) * softmax(u(q,r) / tau)
 - `scripts/score_relation_candidates_offline.py`：冻结 B1 对训练关系词表的分数。
 - `scripts/mine_error_memory_negatives.py`：CPU 冻结 ErrorMemory-9。
 - `scripts/build_structure_counterfactual_bank.py`：CPU 冻结结构反事实 bank。
+- `scripts/derive_structure_counterfactual_bank.py`：CPU 从最大 K bank 派生更小 K 的 bank。
 - `scripts/verify_error_memory_wiring.py`：CPU 接线和泄漏检查。
+- `scripts/record_run_artifacts.py`：为每个阶段记录环境、命令、状态、资源快照和产物清单。
 - `scripts/train_listed_contrastive.py`：只负责原始 GRIP 的候选关系学习阶段及评估。
 - `configs/run_error_memory_wsl.sh`：WSL 分阶段入口，默认只做 preflight。
 - `configs/error_memory9_pair.json`、`configs/random9_pair.json`：主方法与 Random-9 控制协议。
@@ -109,6 +111,64 @@ ALLOW_TRAIN=1 STEP=train NEGATIVE_SOURCE=structure_counterfactual \
 训练入口会把完整 `run_config.json` 传给 SwanLab，并额外记录扁平化的数值超参数快照，
 包括学习率、LoRA、batch/accumulation、epoch、seed、InfoNCE 权重/温度、负样本
 来源以及结构采样的 `uniform_mix/structure_weight/violation_weight/temperature`。
+
+## K sweep 与历史产物复用
+
+`LISTED_NEGATIVE_K` 控制训练 K。冻结结构 bank 时，它同时表示要保存的最大候选数；bank 会
+为每题保存按固定 seed 抽出的候选序列。`derive_structure_counterfactual_bank.py` 取该序列前缀，
+派生更小的精确 K bank，不重新加载模型或重算 B1 分数。目标 K 要求每个被评估的问题都有足够
+有效候选；wire 会拒绝不足 K 或漏题的 bank。
+
+NELL 历史 K=9 bank 可以直接派生 K=3：
+
+```bash
+cd 08_experiments/Hard_Negative_Contrastive_GRIP
+export ARTIFACT_ROOT="$PWD/results/runs/nell23k_structure_counterfactual_3090_20261021_02_artifacts"
+
+STEP=freeze LISTED_NEGATIVE_K=3 \
+  BANK_SOURCE_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank" \
+  SAMPLER_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank_k3" \
+  bash configs/run_structure_counterfactual_wsl.sh
+STEP=wire LISTED_NEGATIVE_K=3 \
+  SAMPLER_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank_k3" \
+  bash configs/run_structure_counterfactual_wsl.sh
+ALLOW_TRAIN=1 STEP=train LISTED_NEGATIVE_K=3 \
+  SAMPLER_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank_k3" \
+  bash configs/run_structure_counterfactual_wsl.sh
+```
+
+若要比较 K=3/9/15，可从同一份已缓存 `candidate_scores.jsonl` 冻结一次 K=15 序列，再派生较小 K：
+
+```bash
+STEP=freeze LISTED_NEGATIVE_K=15 \
+  SAMPLER_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank_k15" \
+  bash configs/run_structure_counterfactual_wsl.sh
+STEP=freeze LISTED_NEGATIVE_K=9 \
+  BANK_SOURCE_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank_k15" \
+  SAMPLER_DIR="$ARTIFACT_ROOT/structure_counterfactual_bank_k9_from15" \
+  bash configs/run_structure_counterfactual_wsl.sh
+```
+
+K=15 的 bank 元数据会报告候选不足的题目数；如果有题目少于 15 个有效候选，K=15 的 wire 会明确失败。
+用不同的 `SAMPLER_DIR` 保存不同采样配置，用不同 K 或超参数训练时 wrapper 会生成不同 `RUN_ID`。
+wrapper 也支持用 `LAMBDA_CANDIDATE`、`CONTRASTIVE_TEMPERATURE`、`TRAIN_LEARNING_RATE`、
+`TRAIN_WEIGHT_DECAY`、`TRAIN_MAX_GRAD_NORM` 以及已有的 epoch、LoRA、batch、accumulation 环境变量
+设置训练超参数；`RUN_VARIANT` 可为代码模块消融单独命名。每个新 adapter 仍需重新训练和评估。
+
+## 运行记录契约
+
+`configs/run_error_memory_wsl.sh` 的每个有效阶段都会在 `RUN_DIR` 下创建或更新：
+
+- `${STEP}.log`、`command.txt`：完整 stdout/stderr 和实际启动命令；
+- `run_config.json`、`environment.json`、`environment.txt`：数据、模型、代码提交、Python/Torch/CUDA、协议参数和输入路径；
+- `stage_status.json`、`stage_history.jsonl`、`resource_usage.json`：开始/结束时间、退出码、GPU 快照；
+- `artifact_manifest.json`：阶段必需产物的存在性、大小、修改时间和 SHA256（大文件在阶段结束时计算）。
+
+因此 score 的 `candidate_scores.jsonl/qa_summary.jsonl/metadata.json/run_stats.json`、
+freeze 的 bank/audit/profile/metadata、wire 的 `wiring.json`，以及 train 的
+budget、adapter、predictions、summary、metadata、`run.log` 都能按阶段检查。
+中断时保留已完成的 JSONL QA block；正常退出或捕获到的信号会写入失败状态，
+而被强制 kill 的进程至少保留 `status=running` 和可续传的部分产物。
 
 ## 论文叙事边界
 

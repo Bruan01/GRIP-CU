@@ -1,0 +1,17 @@
+{
+  "description": "任务完成后检查总结沉淀、本地提交与远程推送提醒。",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/kieran/miniconda3/envs/guardenv/bin/python \"$(git rev-parse --show-toplevel)/.codex/hooks/task_closeout.py\" stop",
+            "timeout": 15,
+            "statusMessage": "检查任务总结、本地提交和推送提醒"
+          }
+        ]
+      }
+    ]
+  }
+}

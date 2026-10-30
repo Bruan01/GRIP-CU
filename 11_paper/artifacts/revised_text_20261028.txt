@@ -1,0 +1,645 @@
+000
+001   开放世界知识图谱关系候选排序的可审计结构反事实
+002
+003
+      对比学习
+004
+005       Anonymous authors
+006       Paper under double-blind review
+007
+008
+009
+010
+                                             ABSTRACT
+011
+012
+                 生成式知识图谱关系预测需要能够揭示关系混淆、且来源可追溯的训练
+                 候选。开放世界条件下，候选的排序难度与事实真值需要分别处理。本
+013
+                 文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning,
+014
+                      ，融合训练图的关系结构画像与冻结 GRIP 基线的分数违例度，在过
+                 SC-CL）
+015              滤实体对训练已知关系后构建固定候选库，并以候选级 InfoNCE 联合优化
+016              关系排序与原始生成目标。在 NELL23K 的单种子评估中，SC-CL 在 4,943
+017              条测试问题上达到 91.52% 的候选重排 H@1 和 95.27% 的 MRR；在同候选
+018              列表的前 200 条配对问题上，MRR 和 H@1 分别比基线高 1.60 和 2.50 个百
+019              分点。SC-CL 将结构与模型混淆信号纳入同一候选构造流程，为开放世界
+020              关系候选学习提供可追溯的训练接口。
+021
+022
+023   1     引言
+024
+025   给定实体对及其图上下文，关系预测需要识别相应的关系标签。GRIP 将图结构融入语言模
+026   型参数，通过生成式问答完成这一任务 (Feng et al., 2026)。候选级对比学习让目标关系与替
+027   代关系直接竞争，而候选的选取决定模型接收到什么关系辨别信号。因此，候选构造是连接
+028   图结构与关系排序目标的关键环节。
+029   困难候选的构造需要同时处理结构相关性、模型混淆与事实不确定性。训练图的关系统计
+030   描述不同关系的结构接近程度，模型分数则揭示已有的关系混淆。知识图谱的不完整性进
+031   一步要求区分候选的学习用途与事实真值：未标注关系在开放世界中保留未判定状态。本
+032   文研究如何将结构与模型混淆信号共同用于关系候选构造，并将训练已知关系过滤和来源
+033   追溯纳入同一流程。
+034
+      为此，我们提出结构反事实对比学习（SC-CL）。SC-CL 以关系结构画像刻画候选在训练图
+035   中的统计接近程度，以冻结的 generation-only 基线 B1 的分数违例度刻画模型混淆，两种信
+036   号共同决定带均匀下限的采样分布。训练已知关系过滤与固定候选库明确候选来源，使每
+037   个候选能够关联到其构造记录。SC-CL 接入 GRIP Stage 2，联合优化候选级 InfoNCE 与原始
+038   生成目标，沿用 Stage 1 和原始提示。本文将结构反事实定义为固定实体对上的关系标签替
+039   换，图 1 展示其构造与学习流程。
+040
+      在 NELL23K 的 4,943 条测试问题上，SC-CL 的候选重排 H@1 为 91.52%，MRR 为 95.27%。
+041   在相同候选列表的前 200 条配对问题上，其 MRR 比 B1 高 1.60 个百分点，H@1 高 2.50 个
+042   百分点。实验节分别展示完整测试集的排序水平和配对子集的逐题预测变化，并报告直接
+043   解码结果、候选来源检查及分阶段成本。评估设置与比较范围见第 5 节。
+044
+      本文面向固定实体对上的关系候选排序，贡献包括三个方面：定义结构画像与冻结模型违例
+045
+      度联合驱动的训练候选分布；构建包含训练已知关系过滤、固定候选库和逐候选来源记录
+046
+      的学习流程；在 NELL23K 展示全量候选重排结果与同候选前 200 题的配对分析。
+047
+048
+049   2     相关工作
+050
+051   关系预测与生成式图推理。 TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分
+052   函数建模实体与关系 (Bordes et al., 2013; Trouillon et al., 2016; Sun et al., 2019; Dettmers et al.,
+053   2018)。KG-BERT 将三元组判断转为文本建模 (Yao et al., 2019)，SimKGC 在预训练语言模型
+      上使用多种实体负例进行对比学习 (Wang et al., 2022)。GRIP 以图上下文和生成式问答学习
+
+
+                                                  1
+054
+      参数化图推理 (Feng et al., 2026)。本文关注固定实体对上的关系标签竞争，在 GRIP 的生成
+055   式训练框架中研究候选来源与候选级对比目标的结合。
+056
+057
+      困难候选与假阴性。 结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型
+058   反馈寻找困难负例 (Ahrabian et al., 2020; Cai & Wang, 2018)。去偏对比学习与 ProGCL 讨论
+059   了对比学习中候选难度和假阴性风险的关系 (Chuang et al., 2020; Xia et al., 2022)。SC-CL 将
+060   训练图关系画像与冻结模型的分数违例度共同用于关系候选构造，并以训练已知关系过滤、
+061   均匀采样下限和固定候选库明确候选的构造规则。本文采用的开放世界真值约定见问题定
+062   义节。
+063
+064   关系候选评估。 传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经
+065   过人工核验的实体替换困难负例 (Safavi & Koutra, 2020)。实体替换与关系替换对应不同的
+066   候选空间。本文在固定实体对上评价关系标签排序，并分别使用直接解码与逐候选评分衡
+067   量两种答案选择方式；实体替换负例保留其三元组判断用途，关系候选按各自的已知事实与
+068   未判定状态记录。
+069
+070   3     问题定义
+071
+072
+      3.1   训练图与候选关系
+073
+074   令训练知识图谱为 Gtr = (V, Etr )，其中 Etr ⊆ V × Rtr × V，Rtr 是训练关系词表。一个关系问
+075   答样本表示为 q = (h, t, r + )，其中 r+ 是目标关系，h, t 是有序实体对。定义同一实体对在训
+076   练图中的已知关系集合为
+077                            Ttr (h, t) = {r : (h, r, t) ∈ Etr }. (1)
+078
+      候选池为                                       (                  )
+079
+080
+                                       Pq = Rtr \ {r+ } ∪ Ttr (h, t) .                      (2)
+081   式 2 从训练关系词表中排除目标关系和该实体对的已知训练关系。其余关系作为真值未判
+082   定的训练替代项，遵循知识图谱的开放世界假设 (Ji et al., 2022; Hogan et al., 2021)。本文的
+083   结构反事实操作固定实体对 (h, t)，将目标关系替换为 r ∈ Pq ；“负候选”表示其在对比目标
+084   中的角色，事实真值保持未判定。
+085
+086   3.2   答案选择与候选学习目标
+087
+088   本文区分两种答案选择规则。直接解码在列出十个关系选项的题目上输出关系文本，以
+089   Exact Match（EM）评价原始解码路径下的预测。候选重排给定同一题目的候选集合，用关
+090   系续接分数（continuation score）zθ (q, r) 逐项排序，以 Hits@1（H@1）
+                                                          、H@3 和 MRR 评价
+091   候选间的关系辨别。重排 H@1 等于按最高分选项计算的 EM。两种规则分别报告，模型间
+092   的表现差异采用相同答案选择规则比较。
+093   给定冻结 bank B(q) = {r1− , . . . , rK
+                                       −
+                                         }，候选损失写为
+094
+095                                                   exp(zθ (q, r+ )/τc )
+                   Lcand (q) = − log                         ∑K                         .   (3)
+096                                    exp(zθ (q, r+ )/τc ) + k=1 exp(zθ (q, rk− )/τc )
+097
+098   其中 τc 是候选温度。训练阶段联合优化原始生成损失 Lgen 与候选损失：
+099
+                                          L = Lgen + λcand Lcand .                          (4)
+100
+101   SC-CL 沿用 Stage 1 和生成目标，将新增训练项明确为候选级 InfoNCE。
+102
+103
+104   4     结构反事实对比学习
+105
+106   SC-CL 将候选构造与 Stage 2 优化分为两个阶段（图 1）  。离线阶段融合训练图关系画像与冻
+107   结 B1 在训练问题上的违例度，在过滤后的关系池中采样并固定每题九个候选。学习阶段从
+      Stage 1 adapter 初始化 GRIP，在固定候选库上联合优化候选损失与原始生成损失。
+
+
+                                                     2
+108
+        A 离线候选构造                                               B Stage 2 联合学习
+109
+110         训练图与关系词表                冻 结 B1                        Stage 1 adapter         原始训练问题
+111            Gtr , Rtr          训练问题离线评分                         参数初始化                 图上下文与目标关系
+112
+113
+            五维关系结构画像                 分数违例度
+114           sstr (q, r)             VB1 (q, r)                    GRIP：冻结基座模型 + 可训练 LoRA
+115                                                                     训练期固定候选
+
+116
+               train-known 过滤与双信号混合采样                               生成损失                 候选评分与 InfoNCE
+117              u = αsstr + βVB1 ， 均 匀 下 限 ρ                        Lgen                   Lcand
+118
+119
+              固定候选库：每题 K = 9，无放回采样                                         L = Lgen + λcand Lcand
+120            来源、信号、过滤记录与文件哈希                                             联 合 更 新 LoRA 参 数
+121
+122
+123   Figure 1: SC-CL 的候选构造与联合学习。A：训练图结构画像与冻结 B1 违例度共同指导
+124   采样，train-known 过滤与无放回采样形成每题 K = 9 的固定候选库。B：Stage 2 从 Stage 1
+125   adapter 初始化，联合优化生成损失与加权候选 InfoNCE；冻结 B1 为离线候选构造提供评分。
+126
+127
+      4.1    训练图关系画像
+128
+129   对每一个 r ∈ Rtr ，我们从 Etr 计算五维关系画像
+130                   (                                                           )
+131
+                ϕ(r) = log(1 + |Er |), log(1 + |Hr |), log(1 + |Tr |), dH,r , dT,r ,                     (5)
+132   其中 |Er | 为关系边数，|Hr | 和 |Tr | 分别为关系覆盖的头实体数与尾实体数，dH,r 是关系边
+133
+      上头实体的平均出度，dT,r 是尾实体的平均入度。边数与实体覆盖计数使用 log(1 + x) 压缩
+134
+      数值尺度；度统计保留图的局部连接性。
+135
+136   对目标关系 r+ 和候选 r，定义归一化结构相似度
+                                                   1 ∑ |ϕj (r+ ) − ϕj (r)|
+137                                                   5
+138                            sstr (q, r) = 1 −                                   ,                     (6)
+139
+                                                   5 j=1 |ϕj (r+ )| + |ϕj (r)| + ϵ
+140
+141
+      其中 ϵ 保证分母非零，分数裁剪到 [0, 1]。该分数衡量五维图统计画像的接近程度；实体对
+142
+      的已知关系由式 2 单独过滤。
+143
+144   4.2    冻结 B1 的边界违例度
+145
+      B1 是原始 GRIP 的 generation-only 基线。我们在训练问题上离线计算全关系词表的 continu-
+146   ation score。若离线记录已有 pairwise confusion，则直接使用裁剪到 [0, 1] 的 confusion；否则
+147   对候选和正关系的分数差使用平滑违例度
+148                                       (                           )
+149                                         zB1 (q, r) − zB1 (q, r+ )
+                           VB1 (q, r) = σ                               . (7)
+150                                                    τv
+151
+      候选分数越接近或超过正关系，VB1 越大。B1 在训练问题上的离线分数于候选库构造时固
+152   定，提供与 Stage 2 参数更新分离的候选评分依据。
+153
+154
+      4.3    结构反事实候选分布
+155
+156   将结构相似度和分数违例度合成为
+157
+158
+                               u(q, r) = αsstr (q, r) + βVB1 (q, r),        r ∈ Pq .                     (8)
+159   候选分布使用均匀下限与 utility softmax 的混合：
+160
+                                          ρ                   exp(u(q, r)/τs )
+161                         p(r | q) =         + (1 − ρ) ∑                  ′
+                                                                                   .                     (9)
+                                         |Pq |             r ∈Pq exp(u(q, r )/τs )
+                                                            ′
+
+
+
+
+                                                          3
+162
+      我们从 p(r | q) 无放回抽取 K = 9 个负候选。主实验参数为 ρ = 1/3、α = 1、β = 1、
+163
+      τs = 0.25。当 |Pq | < K 时，记录该样本及候选不足原因，保持每个有效样本的候选互异性；
+164
+      实验报告候选构造失败数。
+165
+166   结构反事实操作在固定实体对上替换关系标签，其候选池与开放世界真值约定见问题定义
+167   节。
+168
+169
+      4.4   固定候选库与来源追溯
+170
+171
+      SC-CL 为每个训练问题记录问题标识、目标关系、九个候选及其结构相似度、违例度、
+172
+      utility 和 B1 score gap，并保存采样参数、数据划分与已知关系过滤记录。候选库遵循四项
+173   来源约束：
+174
+175   1. 问题来源和已知关系过滤均使用训练划分；
+176
+      2. 每个样本恰有一个正关系和 K = 9 个互异候选，候选均属于 Rtr ；
+      3. 候选与 Ttr (h, t) 不相交，问题标识与训练任务一一对齐；
+177
+      4. 候选库哈希、脚本版本、随机种子和采样参数写入来源清单，构造后的候选库在训练中
+178
+         保持固定。
+179
+180   训练时，候选 continuation score 代入式 3，生成损失沿用原始 GRIP 路径计算。两项损失按
+181   式 4 共同优化 Stage 2 的 LoRA 参数。
+182
+183
+      4.5   计算复杂度与离线构造
+184
+185
+      关系画像通过一次线性扫描训练边得到，复杂度为 O(|Etr |)。给定离线模型分数后，每个问
+186
+      题在关系词表上计算 utility，复杂度为 O(|Rtr |)；采样后的候选库大小为 O(K|Qtr |)，其中 Qtr
+187
+      为训练问题集合。计算过程包括训练图统计、冻结 B1 离线评分和 Stage 2 联合训练；分阶
+188
+      段资源记录见第 5.6 节。
+189
+190
+191
+      5     实验与结果
+192
+193
+194   5.1   实验设置与评价指标
+195
+196   主实验使用 NELL23K、Qwen2.5-7B-Instruct 和训练种子 2026，在 4,943 条十选一关系问题
+197   上评价 SC-CL。候选重排通过 teacher-forced continuation score 逐一评分，以 H@1、MRR 和
+198
+      H@3 衡量给定候选集合中的关系排序；直接解码 EM 衡量原始输出路径下的预测。两种评
+      估使用相同题目与选项，分别报告结果。
+199
+200   B1 为原始 GRIP 的 generation-only 基线。B1 与 SC-CL 的同候选重排比较覆盖测试文件的前
+201   200 题；两者沿用各自现有训练配置，比较条件集中见第 6 节。完整测试集报告 SC-CL 的排
+202   序表现，以及两个模型的直接解码表现。训练设置见附录表 4，WN18RR 的直接解码补充结
+203   果见附录 A.2。
+204
+205
+      5.2   NELL23K 候选排序结果
+206
+207
+      SC-CL 在完整测试集上达到 95.27% MRR、91.52% H@1 和 99.07% H@3。在同候选前 200
+208   题上，SC-CL 的 MRR 为 94.96%，比 B1 高 1.60 个百分点；H@1 为 91.00%，比 B1 高 2.50
+209   个百分点。表 1 给出全量结果与配对结果。
+210
+211
+212   5.3   配对预测的逐题变化
+213
+214   在同候选前 200 题上，9 题由 B1 错误转为 SC-CL 正确，4 题发生反向变化，净增加 5 题正
+215   确预测；其余为 173 题共同正确和 14 题共同错误。逐题变化与 H@1 的 2.50 个百分点差异
+      一致，并展示两模型预测差异的分布。
+
+
+                                       4
+216
+217   Table 1: NELL23K 候选重排结果（%，训练种子 2026）。配对区块按测试文件顺序取前 200
+218   题，两个模型使用相同问题与候选列表；全量区块报告 SC-CL 的 4,943 题结果，全量 B1 重
+219   排尚未完成。∆ 为配对子集上的百分点差。
+220              范围          模型                    n   H@1     MRR     H@3
+221
+                 配对前 200 题   B1                200     88.50   93.36   97.50
+222              配对前 200 题   SC-CL-9           200     91.00   94.96   99.50
+223              配对差异        ∆(SC-CL-9, B1)      –     +2.50   +1.60   +2.00
+224
+                 全量测试        SC-CL-9          4,943    91.52   95.27   99.07
+225
+226
+227   5.4   直接解码与候选评分
+228
+229   在相同的 4,943 条测试问题上，SC-CL 与 B1 的直接解码 EM 分别为 87.03% 和 87.46%，相
+230   差 −0.43 个百分点（表 2）
+                      。SC-CL 通过逐候选评分选择答案时，H@1 为 91.52%。直接解码
+231   考察关系文本输出，逐候选评分考察给定选项间的排序，本文围绕后一目标组织主要分析。
+232
+233
+      Table 2: NELL23K 直接解码结果（%，4,943 题，训练种子 2026）
+                                                 。模型在列出相同十个选项
+234   的题目上生成关系文本，按 Exact Match 计分。
+235
+                                模型        直接解码 EM
+236
+237                             B1                 87.46
+                                SC-CL-9            87.03
+238
+239
+240
+      5.5   候选构造与来源追溯
+241
+242   NELL23K 的固定候选库覆盖 3,253 条训练问题，每题包含九个互异关系，候选构造失败数
+243   为 0。来源检查记录了训练划分、任务问题对齐与候选库标识；采样清单保存结构画像、B1
+244   违例度及采样参数。SC-CL Stage 2 完成 10 个 epoch、240 个优化步，归档了 adapter、直接
+245   解码预测和候选重排输出。这些记录将候选构造与模型训练关联到同一运行，便于追溯每
+246   个候选的来源。
+247
+248   5.6   离线构造与运行成本
+249
+      训练运行记录的硬件为 NVIDIA GeForce RTX 3090（24 GiB）。表 3 按阶段报告本次运行的
+250
+      资源用量：离线 B1 评分覆盖 644,094 个训练关系候选，Stage 2 处理 12,148,720 个输入 token，
+251
+      完整测试重排覆盖 4,943 条问题。固定候选库在训练期间复用离线采样结果。
+252
+253
+254         Table 3: NELL23K 单次运行的分阶段成本。显存数值对应离线评分阶段的记录。
+255                   阶段               耗时（秒） 峰值显存（GiB）
+256
+                      冻结 B1 离线评分          19,027               15.21
+257                   Stage 2 联合训练        80,870                   –
+258                   全测试候选重排              3,567                   –
+259
+260
+261   6     讨论
+262
+263   候选构造的双信号设计。 关系结构画像描述候选在训练图中的统计接近程度，冻结 B1 分
+264   数描述模型已有的关系混淆。SC-CL 将二者作为候选采样依据，并保存逐候选的构造记录，
+265   使进入训练的结构与混淆模式可供检查。配对子集中的排序差异与逐题变化提供了进一步
+266   分析候选学习的切入点。
+267
+268   训练目标与答案选择。 候选 InfoNCE 显式训练目标关系与替代关系之间的分数竞争。逐
+269   候选评分直接评价这一排序目标，直接解码同时涉及关系文本输出。本文分别报告两种答
+      案选择方式下的表现，以区分给定候选的排序能力与原始解码路径下的预测表现。
+
+
+                                          5
+270
+      固定候选库的适用条件。 固定候选库将离线构造与 Stage 2 优化分离，使同一运行中的候
+271   选来源和采样信号保持固定。其适用条件是一次冻结 B1 全关系评分的预处理成本，以及训
+272   练期间固定使用的候选分布。方法面向固定实体对上的关系标签替换，利用训练图统计和
+273   关系词表构造排序候选。
+274
+275   比较设计与验证范围。 主实验对应 NELL23K 的训练种子 2026。B1 与 SC-CL 的同候选重
+276   排比较覆盖测试文件前 200 题，采用各自现有训练配置，训练预算存在差异；全量 4,943 题
+277   重排结果对应 SC-CL。全量 B1 重排、同预算随机及频率匹配对照、多种子重复与持出正例
+278   重叠审计尚未完成。文中的配对差异描述该子集上的模型表现，组合采样的独立作用与跨
+279   数据集适用性属于后续验证问题。候选审计按训练已知关系冲突、持出正例重叠和开放世
+280   界未判定分别记录，具体规则见附录 A.4。
+281
+282   7   结论
+283
+284   本文提出 SC-CL，将训练图关系结构画像与冻结模型违例度结合，通过训练已知关系过滤
+285   和固定候选库，为 GRIP 的候选级对比学习提供可追溯的关系候选。在 NELL23K 的 4,943
+286   条测试问题上，SC-CL 的候选重排达到 91.52% H@1 和 95.27% MRR；同候选前 200 题上的
+287   MRR 比 B1 高 1.60 个百分点。该设计将候选的结构依据、模型混淆信号与来源追溯纳入同
+288   一训练流程，为开放世界关系候选学习提供明确的构造与评估接口。
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+
+
+
+                                  6
+324
+      A     补充设置、结果与候选审计
+325
+326
+      A.1   主实验运行设置
+327
+328   表 4 根据 NELL23K 主运行配置和候选库元数据列出实际设置。Stage 2 从 Stage 1 adapter 初
+329   始化，优化候选级 InfoNCE 与生成损失。采样温度 τs 控制候选分布，候选温度 τc 控制对比
+330   目标。
+331
+332
+            Table 4: NELL23K 主实验运行设置。数值对应训练种子 2026 的已完成运行。
+333
+                   字段                          设置
+334
+335                基座模型                        Qwen2.5-7B-Instruct
+336                候选数 K                       9
+337                均匀混合系数 ρ                    1/3
+                   结构权重 α / 违例权重 β             1.0 / 1.0
+338
+                   采样温度 τs                     0.25
+339
+                   候选损失温度 τc                   1.0
+340                候选损失权重 λcand                1.0
+341                LoRA rank / alpha           4/8
+342                LoRA 目标模块                   down_proj, up_proj, gate_proj
+343                Stage 2 轮数 / 优化步数           10 / 240
+344                学习率 / 权重衰减                  10−3 / 10−4
+345                单设备批大小 / 梯度累积步数             1 / 512
+                   计算精度                        bfloat16
+346
+                   候选库随机种子 / 训练种子              2026 / 2026
+347
+                   候选来源与过滤                     train-only
+348
+349
+350   A.2   WN18RR 直接解码补充结果
+351
+352   WN18RR 的训练期候选库覆盖 2,709 条关系问题，每题包含九个互异候选，构造失败数为 0；
+353   来源检查记录为 train-only 且与任务问题对齐。在训练种子 2026 下，使用完整验证集选择候
+354   选损失权重 λcand = 0.25，获选模型在 3,134 条测试问题上的直接解码 EM 为 86.89%，训练
+355   为 5 个 epoch、125 个优化步。
+356   同一测试文件上的本地 B1 直接解码 EM 为 32.67%。该本地基线与原始 GRIP 报告的五次运
+357   行均值 64.30% 存在待核验的复现差异 (Feng et al., 2026)。WN18RR 的补充结果对应单个获
+358   选模型的直接解码评估，完整候选重排、同预算随机对照和多种子重复尚未完成。
+359
+360   A.3   FB15K237-2 候选 INFONCE 参考实验
+361
+362   该参考实验展示独立配置下的候选 InfoNCE 表现。B1 与 InfoNCE-i0 均在同一本地测试文
+363   件的 10,000 条问题上评分；i0 使用单独的配对候选文件、LoRA rank 24、Stage 2 训练 5 个
+364
+      epoch 和候选损失权重 0.1。表 5 单独标记该配置，本文的 SC-CL 主结果对应表 1。
+365
+366   Table 5: FB15K237-2 候选 InfoNCE 参考结果（%，10,000 条测试问题）。InfoNCE-i0 为独立
+367   候选及训练配置，方法身份与 SC-CL 分别记录。
+368
+                      方法           直接解码 EM         重排 H@1    MRR     H@3
+369
+370
+                      B1               73.23         79.91   88.01   95.80
+                      InfoNCE-i0       88.69         91.62   95.41   99.20
+371
+372
+373   A.4   候选来源与真值状态审计
+374
+375   候选库的来源检查核对训练划分、问题标识、目标关系、每题九个互异候选和训练已知关
+376   系过滤结果。文件哈希、脚本版本、候选评分及模型配置共同标识运行产物。来源合规与
+377   事实真值分别记录：训练已知关系冲突表示候选命中该实体对的训练关系，持出正例重叠表
+      示候选命中持出划分中的已知正例，其余候选保留开放世界未判定状态。
+
+
+                                               7
+378
+      实体替换与关系替换使用各自的候选空间。CoDEx 的人工核验实体替换负例用于其三元组
+379   判断设定 (Safavi & Koutra, 2020)；固定实体对后的关系替换，按训练已知关系和持出正例分
+380   别核对真值状态。
+381
+382
+383   Table 6: 候选来源与真值状态的审计规则。该表定义状态分类，实测来源检查结果见正文。
+384         状态                     判定规则
+385         训练已知关系冲突               候选属于当前实体对的训练已知关系集合 Ttr (h, t)。
+386         持出正例重叠                 候选对应的三元组出现在持出划分的已知正例中；该记录用于审
+387                                计。
+388         开放世界未判定                候选未被已知正例或其他核验证据确认，真值维持未判定。
+389         候选不足                   训练已知关系过滤后 |Pq | < K，记录该问题及原因。
+            问题对齐异常                 候选库与训练任务的问题标识、目标关系或候选文本不一致。
+390
+391
+392
+      A.5   候选库记录与构造伪代码
+393
+394   每条候选库记录包含问题标识、数据划分、实体对、目标关系、候选关系和采样来源。逐
+395   候选记录包括结构相似度、违例度、utility、B1 候选分数及其与目标分数的差值；来源清单
+396   包含过滤划分、采样参数、随机种子、脚本版本和文件哈希。这些字段将候选采样结果关
+397   联到原始任务及其离线评分。
+398
+      for q in train_questions:
+399
+          assert q.split == "train"
+400       P = train_relations - {q.gold} - known_train_relations(q.head, q.tail)
+401       if len(P) < K:
+402           record_insufficient_pool(q)
+403           continue
+          for r in P:
+404
+              s = profile_similarity(phi[q.gold], phi[r])
+405           v = b1_score_violation(q, r)
+406           u[r] = alpha * s + beta * v
+407       candidates = sample_without_replacement(
+408           P, mixture_softmax(u, rho, tau_s), K=9)
+          write_frozen_bank(q, candidates, manifest=provenance)
+409
+410   候选库按训练来源限定、已知关系过滤和候选采样的顺序构建。来源检查核对问题标识与
+411   关系文本的一致性，固定候选库供整个 Stage 2 使用。
+412
+413   A.6   数据、模型与产物记录
+414
+415   主实验使用 NELL23K，补充结果分别使用 WN18RR 和 FB15K237-2；基座模型为 Qwen2.5-
+416   7B-Instruct (Qwen Team, 2024)，LoRA 用于参数高效训练 (Hu et al., 2022)。实验处理既有知
+417   识图谱关系问题，未新增个人敏感数据采集。预测、候选分数、训练配置、adapter 与来源
+418
+      清单保存在本地实验归档中，当前未提供公开下载地址。
+419
+420   REFERENCES
+421
+      Kian Ahrabian, Aarash Feizi, Yasmin Salehi, William L. Hamilton, and Avishek Joey Bose. Struc-
+422
+        ture aware negative sampling in knowledge graphs. In Proceedings of the 2020 Conference on
+423     Empirical Methods in Natural Language Processing, pp. 6093–6101, 2020. doi: 10.18653/v1/
+424     2020.emnlp-main.492. URL https://aclanthology.org/2020.emnlp-main.492/.
+425
+426   Antoine Bordes, Nicolas Usunier, Alberto Garcia-Duran, Jason Weston, and Oksana Yakhnenko.
+427
+        Translating embeddings for modeling multi-relational data. In Advances in Neural Information
+        Processing Systems, volume 26, 2013. URL https://proceedings.neurips.cc/paper/
+428
+        2013/hash/1cecc7a77928ca8133fa24680a88d2f9-Abstract.html.
+429
+430   Liwei Cai and William Yang Wang. KBGAN: Adversarial learning for knowledge graph embeddings.
+431     In Proceedings of the 2018 Conference of the North American Chapter of the Association for
+        Computational Linguistics, 2018. URL https://aclanthology.org/N18-1133/.
+
+
+                                                    8
+432
+      Ching-Yao Chuang, Joshua W. Robinson, Yen-Chen Lin, Antonio Torralba, and Stefanie
+433     Jegelka.   Debiased contrastive learning. In Advances in Neural Information Process-
+434     ing Systems, volume 33, 2020.       URL https://papers.nips.cc/paper/2020/hash/
+435     63c3ddcc7b23daa1e42dc41f9a44a873-Abstract.html.
+436
+437   Tim Dettmers, Pasquale Minervini, Pontus Stenetorp, and Sebastian Riedel. Convolutional 2d knowl-
+438
+        edge graph embeddings. In Proceedings of the Thirty-Second AAAI Conference on Artificial In-
+        telligence, volume 32, 2018. doi: 10.1609/aaai.v32i1.11573. URL https://ojs.aaai.org/
+439
+        index.php/AAAI/article/view/11573.
+440
+441   Jiarui Feng, Donghong Cai, Yixin Chen, and Muhan Zhang. GRIP: In-parameter graph reasoning
+442      through fine-tuning large language models. In Proceedings of the 32nd ACM SIGKDD Conference
+443      on Knowledge Discovery and Data Mining, 2026. doi: 10.1145/3770855.3817895. URL https:
+444      //arxiv.org/abs/2511.07457.
+445
+      Aidan Hogan, Eva Blomqvist, Michael Cochez, Claudia d’Amato, Gerard de Melo, Claudio Gutier-
+446     rez, Sabrina Kirrane, Jose Emilio Labra Gayo, Roberto Navigli, Sebastian Neumaier, Axel-
+447     Cyrille Ngonga Ngomo, Axel Polleres, Sabbir M. Rashid, Anisa Rula, Lukas Schmelzeisen, Juan
+448     Sequeda, Steffen Staab, and Antoine Zimmermann. Knowledge graphs. ACM Computing Surveys,
+449     54(4):1–37, 2021. doi: 10.1145/3447772. URL https://doi.org/10.1145/3447772.
+450
+451
+      Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang,
+        and Weizhu Chen. Lora: Low-rank adaptation of large language models. In International Confer-
+452
+        ence on Learning Representations, 2022. URL https://arxiv.org/abs/2106.09685.
+453
+454   Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, and Philip S. Yu. A survey on knowledge
+455     graphs: Representation, acquisition, and applications. IEEE Transactions on Neural Networks
+456     and Learning Systems, 33(2):494–514, 2022. doi: 10.1109/TNNLS.2021.3070843. URL https:
+457     //arxiv.org/abs/2002.00388.
+458
+      Qwen Team. Qwen2.5 technical report. arXiv preprint arXiv:2412.15115, 2024. URL https:
+459    //arxiv.org/abs/2412.15115.
+460
+461   Tara Safavi and Danai Koutra. CoDEx: A comprehensive knowledge graph completion benchmark.
+462     In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing,
+463     pp. 8328–8350, Online, 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.
+464
+        emnlp-main.669. URL https://aclanthology.org/2020.emnlp-main.669/.
+465   Zhiqing Sun, Zhi-Hong Deng, Jian-Yun Nie, and Jian Tang. Rotate: Knowledge graph embedding
+466     by relational rotation in complex space. In International Conference on Learning Representations,
+467     2019. URL https://arxiv.org/abs/1902.10197.
+468
+469
+      Théo Trouillon, Johannes Welbl, Sebastian Riedel, Eric Gaussier, and Guillaume Bouchard. Com-
+        plex embeddings for simple link prediction. In Proceedings of the 33rd International Conference
+470
+        on Machine Learning, volume 48 of Proceedings of Machine Learning Research, pp. 2071–2080,
+471
+        2016. URL https://proceedings.mlr.press/v48/trouillon16.html.
+472
+473   Liang Wang, Wei Zhao, Zhuoyu Wei, and Jingming Liu. SimKGC: Simple contrastive knowledge
+474     graph completion with pre-trained language models. In Proceedings of the 60th Annual Meeting
+475     of the Association for Computational Linguistics, pp. 4281–4294, 2022. doi: 10.18653/v1/2022.
+476     acl-long.295. URL https://aclanthology.org/2022.acl-long.295/.
+477   Jun Xia, Lirong Wu, Ge Wang, Jintao Chen, and Stan Z. Li. ProGCL: Rethinking hard negative
+478     mining in graph contrastive learning. In Proceedings of the 39th International Conference on
+479     Machine Learning, volume 162 of Proceedings of Machine Learning Research, pp. 24332–24346.
+480     PMLR, 2022. URL https://proceedings.mlr.press/v162/xia22b.html.
+481
+482
+      Liang Yao, Chengsheng Mao, and Yuan Luo. Kg-bert: Bert for knowledge graph completion. In
+        arXiv preprint arXiv:1909.03193, 2019. URL https://arxiv.org/abs/1909.03193.
+483
+484
+485
+
+
+
+                                                      9
+

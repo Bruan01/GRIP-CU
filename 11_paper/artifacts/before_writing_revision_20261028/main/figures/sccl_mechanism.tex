@@ -1,0 +1,36 @@
+\begin{tikzpicture}[
+    node distance=5mm and 5mm,
+    box/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+                text width=25mm, font=\scriptsize, fill=blue!5},
+    signal/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+                text width=27mm, font=\scriptsize, fill=orange!10},
+    gate/.style={draw, rounded corners=2pt, align=center, minimum height=8mm,
+                text width=29mm, font=\scriptsize, fill=green!10},
+    arrow/.style={-{Latex[length=2mm]}, thick},
+    forbid/.style={-{Latex[length=2mm]}, dashed, gray, thick}
+]
+\node[box] (graph) {训练图\ $\mathcal{G}_{\mathrm{tr}}$};
+\node[box, right=of graph] (profile) {关系画像\ $\phi(r)$};
+\node[signal, below=of graph] (b1) {冻结 B1\ train score};
+\node[signal, right=of b1] (violate) {score violation\ $V_{\mathrm{B1}}$};
+\node[gate, right=of profile, xshift=2mm] (filter) {候选池\ train-known 过滤};
+\node[gate, below=of filter] (utility) {混合分布\ $s_{\rm str}+V_{\rm B1}$};
+\node[gate, right=of utility, xshift=2mm] (bank) {冻结 bank\ $K=9$};
+\node[box, right=of bank] (loss) {候选 InfoNCE\ + 原始生成损失};
+
+\draw[arrow] (graph) -- (profile);
+\draw[arrow] (graph) -- (b1);
+\draw[arrow] (b1) -- (violate);
+\draw[arrow] (profile) -- (filter);
+\draw[arrow] (filter) -- (utility);
+\draw[arrow] (violate) -- (utility);
+\draw[arrow] (utility) -- (bank);
+\draw[arrow] (bank) -- (loss);
+
+\node[font=\tiny, align=center, below=7mm of bank, text width=35mm] (audit)
+    {manifest：split=train，\ $K=9$，\ known-pair=0，\ hash};
+\draw[arrow] (bank) -- (audit);
+\node[font=\tiny, gray, align=center, below=7mm of loss, text width=32mm] (eval)
+    {valid/test 只用于最终评估，\ 禁止回流到 bank};
+\draw[forbid] (eval) -- (bank);
+\end{tikzpicture}

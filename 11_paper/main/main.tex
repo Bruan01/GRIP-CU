@@ -1,0 +1,63 @@
+\documentclass{article}
+
+% Keep the official ICLR files in ../template/iclr2026/ while making this
+% manuscript directly compilable from the main/ directory.
+\makeatletter
+\def\input@path{{../template/iclr2026/}}
+\makeatother
+\usepackage{iclr2026_conference,times}
+\input{math_commands.tex}
+
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setmainfont{TeX Gyre Termes}
+\setCJKmainfont{AR PL UMing CN}
+\setCJKsansfont{Droid Sans Fallback}
+\setCJKmonofont{Droid Sans Fallback}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 1pt
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,threeparttable,multirow,array}
+\usepackage{graphicx,xcolor,enumitem,float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+\usepackage{url}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setlist{nosep,leftmargin=*}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\newcommand{\scc}{\textsc{SC-CL}}
+\newcommand{\bone}{\textsc{B1}}
+
+\title{开放世界知识图谱关系候选排序的可审计结构反事实对比学习}
+\author{}
+
+% \iclrfinalcopy % Keep commented for the anonymous review template.
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+生成式知识图谱关系预测需要能够揭示关系混淆、且来源可追溯的训练候选。开放世界条件下，候选的排序难度与事实真值需要分别处理。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning, \scc），融合训练图的关系结构画像与冻结 GRIP 基线的分数违例度，在过滤实体对训练已知关系后构建固定候选库，并以候选级 InfoNCE 联合优化关系排序与原始生成目标。在 NELL23K 的单种子评估中，\scc{} 在 4,943 条测试问题上达到 91.52\% 的候选重排 H@1 和 95.27\% 的 MRR；在同候选列表的前 200 条配对问题上，MRR 和 H@1 分别比基线高 1.60 和 2.50 个百分点。\scc{} 将结构与模型混淆信号纳入同一候选构造流程，为开放世界关系候选学习提供可追溯的训练接口。
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/formulation}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\clearpage
+\appendix
+\input{sections/appendix}
+
+\bibliographystyle{iclr2026_conference}
+\bibliography{references}
+
+\end{document}

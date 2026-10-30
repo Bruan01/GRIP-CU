@@ -2,7 +2,11 @@
   "experiment_id": "HNG-STRUCTURE-CF9-MAIN-20261020",
   "role": "mainline_method",
   "datasets": ["nell23k", "fb15k237_2"],
-  "pending_extension_datasets": ["wn18rr", "clegr_facts", "clegr_reasoning"],
+  "pending_extension_datasets": ["wn18rr"],
+  "excluded_from_current_paper": {
+    "datasets": ["clegr_facts", "clegr_reasoning"],
+    "reason": "CLEGR is graph-level QA with typed answers; SC-CL is defined for relation candidates on a fixed entity pair."
+  },
   "data_root": "04_benchmark/data/<dataset>",
   "task_file": "<data_root>/tasks/grip_<dataset>_tasks.json",
   "eval_file": "<data_root>/processed/processed_test.json",
@@ -37,5 +41,5 @@
     "random9": "Random-9 + InfoNCE with the same task, budget, and train-only filter",
     "error_memory9": "optional legacy ErrorMemory-9 + InfoNCE ablation"
   },
-  "claim_boundary": "The main claim tests whether train-only graph-structure counterfactual negatives plus frozen-B1 score violation improve candidate relation learning over compute-matched Random-9, without changing prompts or the generation objective. It does not claim OOV correction, recurrence, or a generic KG negative-sampling theory."
+  "claim_boundary": "The main claim tests whether train-only graph-structure counterfactual negatives plus frozen-B1 score violation improve candidate relation learning over compute-matched Random-9, without changing prompts or the generation objective. It does not claim OOV correction, recurrence, graph-level QA transfer, or a generic KG negative-sampling theory."
 }

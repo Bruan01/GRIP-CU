@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Canonical mainline entrypoint for Structure-Counterfactual-9 + InfoNCE.
+# Canonical entrypoint for structure-counterfactual K sweeps + InfoNCE.
 # The implementation is shared with the legacy listed-negative runner so that
 # the ablation and mainline keep identical training/evaluation contracts.
 set -euo pipefail

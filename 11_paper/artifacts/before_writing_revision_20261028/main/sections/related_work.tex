@@ -1,0 +1,10 @@
+\section{相关工作}
+
+\paragraph{关系预测与生成式图推理。}
+TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 则在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。这些工作通常评估缺失实体或三元组判断，不直接给出 GRIP 中生成损失与候选关系损失如何并存的训练协议。GRIP 以图上下文和生成式问答学习参数化图推理 \citep{feng2025grip}；本文固定其 Stage~1、提示和生成路径，改变的是 Stage~2 的候选关系来源。
+
+\paragraph{困难候选与假阴性。}
+结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}。对比学习中的难例还可能与目标语义相近；去偏对比学习和 ProGCL 因而指出采样难度与假阴性风险不能混为一谈 \citep{chuang2020dcl,xia2022progcl}。本文从这一张力出发，将训练图关系画像与冻结基线的分数违例度组合，但只把 train-known 过滤视为对已知冲突的排除，不把其余候选宣称为经验证的假事实。带均匀下限的采样分布和冻结 bank 进一步限定了候选的来源与更新时间。
+
+\paragraph{评估边界。}
+传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经过人工核验的实体替换困难负例 \citep{safavi2020codex}。本文固定实体对、替换关系标签；两种候选空间不能直接共享负例真值。我们分别报告直接解码和给定候选排序，并将方法主张限制在具有相同候选列表与可核对训练记录的比较上。当前只有 NELL23K 的 SC-CL 运行具备正文主表所需的完整输出；WN18RR 的单次直接解码结果列于附录，尚不能作为跨图收益证据。

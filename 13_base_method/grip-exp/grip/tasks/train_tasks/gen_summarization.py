@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse import csr_array
 from transformers import PreTrainedTokenizer
 
 from constants import SYSTEM_PROMPT, ANSWER_TAG
@@ -91,6 +92,14 @@ class GenSummarizationTask(GenGraphTaskBase):
             node_list, edge_list, edge_index = shuffle_graph(node_list, edge_list, edge_index)
             num_nodes = len(node_list)
             node_weight, edge_weight = compute_node_edge_weight(edge_index, num_nodes)
+            # Reuse the sparse adjacency for all sampled summaries. Building
+            # the same CSR matrix inside every one of the 3 * N iterations
+            # made large graphs spend most of task generation in CPU setup.
+            edge_ids = np.arange(len(edge_list))
+            adj_mat = csr_array(
+                (edge_ids, (edge_index[:, 0], edge_index[:, 1])),
+                shape=(num_nodes, num_nodes),
+            )
 
 
             # stage 1. generate initial summaries
@@ -118,8 +127,8 @@ class GenSummarizationTask(GenGraphTaskBase):
                 #subgraph summarization
                 root_node = weighted_sampling(list(range(len(node_list))), node_weight, 1)[0]
                 subgraph_nodes, subgraph_edges = sample_fixed_hop_size_neighbor(
-                    edge_index.T,
-                    np.arange(len(edge_list)),
+                    adj_mat,
+                    edge_ids,
                     root_node,
                     num_nodes,
                     hop=3,

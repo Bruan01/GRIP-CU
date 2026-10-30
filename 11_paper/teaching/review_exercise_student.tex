@@ -1,0 +1,83 @@
+\documentclass{article}
+\makeatletter
+\def\input@path{{../template/iclr2026/}}
+\makeatother
+\usepackage{iclr2026_conference,times}
+\usepackage{fontspec,xeCJK}
+\setmainfont{TeX Gyre Termes}
+\setCJKmainfont{AR PL UMing CN}
+\setCJKsansfont{Droid Sans Fallback}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip=0pt plus 1pt
+\usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\scc}{\textsc{SC-CL}}
+\title{结构反事实候选学习用于知识图谱关系预测}
+\author{匿名作者\\课堂审稿练习稿}
+
+\begin{document}
+\maketitle
+\begin{center}
+\small\fbox{课堂审稿练习稿\quad 请勿投稿或引用}
+\end{center}
+
+\begin{abstract}
+给定实体对的知识图谱关系预测通常要求模型从候选关系中识别正确标签。随机候选可能过于容易，而仅依据模型高分选择候选又难以区分稳定的关系混淆与偶然的分数波动。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning，\scc）：在训练图中排除同一实体对的已知关系，结合关系结构画像和冻结基线的分数违例度采样九个候选，并在 GRIP Stage~2 加入候选级 InfoNCE。NELL23K 上，\scc{} 在 4,943 个测试问题取得官方 EM 91.52\% 和 MRR 95.27\%，高于原始 GRIP 报告的 EM 87.74\%。一个历史候选对比训练实例在 FB15K237-2 的 10,000 个测试问题上取得官方 EM 91.62\%，高于原始 GRIP 报告的 88.75\%。这些结果支持候选级学习对关系预测的价值。
+\end{abstract}
+
+\section{引言}
+GRIP 将图结构信息写入语言模型参数，通过问答形式预测实体对之间的关系\cite{feng2026grip}。其训练目标主要依赖正确关系的生成概率；错误关系之间的相对位置没有被直接约束。候选级对比学习为这一任务提供了额外的关系区分信号，但候选的来源会决定训练信号的难度与可信度。
+
+本文从训练图构造可追溯的候选库。方法以训练关系词表为边界，剔除目标关系和该实体对的训练已知关系，随后综合结构相似度与冻结 GRIP 模型的违例度，为每个训练问题无放回采样九个候选。固定候选库接入 Stage~2 对比损失，原有生成损失继续保留。我们在 NELL23K 上评价 \scc{}，并把 FB15K237-2 的历史候选对比训练运行作为辅助观察。
+
+\section{方法}
+设训练关系词表为 $\mathcal R_{\mathrm{tr}}$，问题 $q=(h,t,r^+)$ 的正确关系为 $r^+$。合法候选池为
+\begin{equation}
+P_q=\mathcal R_{\mathrm{tr}}\setminus\left(\{r^+\}\cup\{r:(h,r,t)\in\mathcal E_{\mathrm{tr}}\}\right).
+\end{equation}
+我们从训练图计算关系画像，得到候选与正确关系的结构相似度 $s_{\mathrm{str}}(q,r)$；冻结的 GRIP 基线提供候选相对正确关系的分数违例度 $V_{\mathrm{B1}}(q,r)$。候选效用及采样概率定义为
+\begin{align}
+u(q,r)&=\alpha s_{\mathrm{str}}(q,r)+\beta V_{\mathrm{B1}}(q,r),\\
+p(r\mid q)&=\frac{\rho}{|P_q|}+(1-\rho)\frac{\exp(u(q,r)/\tau_s)}{\sum_{r'\in P_q}\exp(u(q,r')/\tau_s)}.
+\end{align}
+每题采样九个互异关系，并在 Stage~2 训练前冻结候选库。训练损失为
+\begin{equation}
+\mathcal L=\mathcal L_{\mathrm{gen}}+\lambda\mathcal L_{\mathrm{InfoNCE}}.
+\end{equation}
+
+评估时，对题目中列出的每个关系计算答案续接分数，并选择分数最高者：
+\begin{equation}
+z(q,r)=\frac{1}{|y_r|}\sum_{i=1}^{|y_r|}\log p_{\theta}(y_{r,i}\mid q,y_{r,<i}),\qquad
+\hat r=\arg\max_{r\in C_q}z(q,r).
+\end{equation}
+其中 $y_r$ 是关系 $r$ 的答案文本，$C_q$ 是题目给定的十个关系选项。EM 统计 $\hat r$ 与目标关系相同的题目比例，MRR 统计目标关系在候选列表中的倒数排名。
+
+\section{实验结果}
+NELL23K 使用 Qwen2.5-7B-Instruct 和 seed=2026。训练图候选库覆盖 3,253 个关系问答样本，每题九个候选；Stage~2 完成十轮训练。FB15K237-2 行来自较早的 InfoNCE-i0 运行，其候选文件和训练配置与当前 \scc{} 不同，因此作为候选对比训练的辅助实例报告。原始 GRIP 数字取自其论文表 2 和表 3\cite{feng2026grip}。
+
+\begin{table}[h]
+\caption{知识图谱关系预测结果（\%；Qwen-7B）。原始 GRIP 栏取自已发表论文。}
+\label{tab:results}
+\centering
+\begin{tabular}{l l r r r r}
+\toprule
+数据集 & 本地模型 & 测试题数 & 官方 EM & MRR & 原始 GRIP EM \\
+\midrule
+NELL23K & \scc{} & 4,943 & 91.52 & 95.27 & 87.74 \\
+FB15K237-2 & 历史 InfoNCE-i0 & 10,000 & 91.62 & 95.41 & 88.75 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+NELL23K 的官方 EM 比原始 GRIP 高 3.78 个百分点；FB15K237-2 的历史候选训练实例高 2.87 个百分点。前者说明结构画像与冻结模型违例度构成的候选库可以用于关系区分训练；后者表明候选级目标在另一关系词表上也具有潜力。FB 行不用于声称 \scc{} 已完成跨数据集复现。
+
+\section{讨论与结论}
+训练期候选过滤排除了已知关系，但未观测关系在开放世界中仍可能成立。候选来源的可追溯性有助于进一步审计这一风险。当前 NELL23K 结果来自单次运行，随机种子和候选构造参数的敏感性仍需检验。FB15K237-2 的历史训练配置不同，独立的 \scc{} 跨图实验仍需完成。
+
+本文给出一种结合训练图结构与冻结基线反馈的关系候选构造方法。表~\ref{tab:results} 的结果显示，候选级训练在两个现有运行中获得了高于原始 GRIP 的官方 EM；后续工作将考察多种子稳定性、训练成本和开放世界候选冲突。
+
+\begin{thebibliography}{9}
+\bibitem[Feng et al.(2026)]{feng2026grip} Jiarui Feng, Donghong Cai, Yixin Chen, and Muhan Zhang. GRIP: In-Parameter Graph Reasoning through Fine-Tuning Large Language Models. In \emph{Proceedings of KDD}, 2026. \url{https://arxiv.org/abs/2511.07457}.
+\end{thebibliography}
+
+\end{document}
