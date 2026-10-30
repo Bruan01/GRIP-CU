@@ -2,6 +2,8 @@
 
 AI-assisted research workflow for GRIP and RecurrentGRIP.
 
+最新实验记录（2026-10-30）：[NELL23K 涨点方法、完整结果与后续方向](08_experiments/Hard_Negative_Contrastive_GRIP/RESULTS_20261030.md)。验证集选中的 Soft-Mix 测试集 EM 为88.35%，单次运行高于87.74%的目标；记录包含完整对照、评测口径与复验计划。
+
 这是一套适合计算机 / AI / 机器学习研究的科研项目模板。
 
 核心流程：
