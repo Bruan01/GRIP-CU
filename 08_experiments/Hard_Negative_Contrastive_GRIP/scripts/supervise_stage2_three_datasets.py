@@ -386,6 +386,14 @@ def main():
             for dataset in DATASETS:
                 controller.dataset = dataset
                 if dataset not in ready:
+                    completed = root / dataset / 'search'
+                    failed = root / dataset / 'failure.json'
+                    unresolved = failed.exists() and not legacy.read(failed).get('resolved')
+                    if not unresolved and any((completed / name).exists() for name in ('final_result.json', 'no_go.json')):
+                        ready[dataset] = False
+                        controller.event('reuse_finished_dataset', dataset=dataset,
+                                         note='Keep existing completed selection; no repeated training or test inference')
+                        continue
                     try:
                         controller.prepare(records[dataset])
                     except Exception as error:

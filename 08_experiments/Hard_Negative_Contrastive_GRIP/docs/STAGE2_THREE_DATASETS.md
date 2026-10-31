@@ -53,6 +53,17 @@ its inherited controller flock. It neither interrupts the trainer nor treats
 a reused PID as the original job; final baseline assets are validated normally
 before search resumes. The CoDEx trainer was preserved during the NELL repair.
 
+The optional `configs/run_stage2_watchdog.sh` starts a second tmux session,
+`grip_stage2_watchdog`, which checks the campaign once a minute. Successful
+stages continue through the main queue automatically. If the controller ends
+with an operational failure, the watchdog can relaunch the same queue up to
+three times, only after inherited locks and all existing GPU processes clear.
+It never kills an active job or increases the12-configurations-per-dataset
+budget. Completed dataset selections are reused after relaunch. A finished
+budget with no operational failure ends the watchdog even when score targets
+were not achieved. Health/recovery state is in `watchdog.json` and restart
+events in `watchdog_events.jsonl`.
+
 Current user contract (2026-10-30): all three datasets must show measured
 free-generation EM improvement, one training seed is sufficient, and
 hyperparameter search is restricted to Stage 2. This phase uses seed 2026.

@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-10-31T22:49:41.851085+08:00",
+  "watchdog": {
+    "updated_at": "2026-10-31T14:49:16.858920+00:00",
+    "watchdog_pid": 1214926,
+    "action": "monitoring",
+    "controller_pid": 1195663,
+    "controller_alive": true,
+    "campaign_action": "nell23k_search_to_2",
+    "existing_gpu_pids": [],
+    "automatic_restarts": 0,
+    "maximum_restarts": 3,
+    "last_restart_epoch": 0.0,
+    "unresolved_failures": {},
+    "training_budget_changed": false,
+    "active_jobs_killed": false
+  },
+  "training_phase": {
+    "dataset": "nell23k",
+    "trial": 0,
+    "rung": 8,
+    "phase": "stage2_training",
+    "search_stage": 2,
+    "log": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0000/train_rung_8.log"
+  },
+  "gpu_training_pid_preserved": 1211971,
+  "cpu_tests_passed": 8,
+  "test_log_sha256": "c71fe5001b5041a84fe86f956c8b1dfb3af06131ef4d274b56e05bf1ae40a09c",
+  "launcher_idempotent_verified": true,
+  "training_and_watchdog_tmux_sessions_verified": true,
+  "source_sha256": {
+    "scripts/watch_stage2_queue.py": "b648a25c8701f2d11b9556209a99e147bc2190699a920a42b4a26148eb734cdf",
+    "scripts/supervise_stage2_three_datasets.py": "975e38d599f072c4c7f27533217ae256f3e2c2d30c03299869a9eefa49264cf5",
+    "configs/run_stage2_watchdog.sh": "abfbada5fe4a8a8b2e52d0bdb5109bb114846b60fdb78c6cca1d78f1621f0843",
+    "tests/test_stage2_watchdog.py": "5cdc5a8b949bc3545c45f5d953e51ddac30310e12f7df0ffca72f445774c458b"
+  },
+  "scope": "Automatically continue existing single-seed Stage2 budget, resume operational failures only; no new unlimited trials or test-based tuning",
+  "score_targets_achieved_claimed": false
+}
