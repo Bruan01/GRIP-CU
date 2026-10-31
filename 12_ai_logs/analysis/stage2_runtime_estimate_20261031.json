@@ -1,0 +1,177 @@
+{
+  "as_of": "2026-10-31T17:15:19.682985+08:00",
+  "claim_type": "hypothesis",
+  "scope": "single RTX3090, serial scheduling, 12 configurations per dataset, single seed2026; no change to running plan",
+  "measured_inputs": {
+    "nell_offline_scoring_qa_per_second": 0.128,
+    "nell_scored_at_snapshot": 1500,
+    "nell_score_total": 2974,
+    "nell_historical_contrastive_step_seconds_approx": [
+      330,
+      400
+    ],
+    "codex_baseline_step_seconds_approx": 114,
+    "fb_baseline_step_seconds_approx": 222,
+    "nell_historical_full_test_4943_duration_minutes_approx": 91
+  },
+  "unmeasured_assumptions": {
+    "stage2_step_seconds": {
+      "nell23k": 350,
+      "codexm": 210,
+      "fb15k237_2": 480
+    },
+    "codex_and_fb_method_step_times": "proxies; candidate InfoNCE timing not yet measured on these datasets",
+    "generation_seconds_per_question": 1.1,
+    "per_evaluation_load_minutes": 3,
+    "remaining_preparation_hours": 15,
+    "additional_restarts_and_io_hours": 12,
+    "survivor_counts": "scenario assumptions, not predicted Optuna decisions"
+  },
+  "scenarios": {
+    "optimistic": {
+      "datasets": {
+        "nell23k": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            4,
+            2,
+            1
+          ],
+          "optimizer_steps": 752,
+          "training_hours": 73.1
+        },
+        "codexm": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            4,
+            2
+          ],
+          "optimizer_steps": 634,
+          "training_hours": 37.0
+        },
+        "fb15k237_2": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            4,
+            2
+          ],
+          "optimizer_steps": 624,
+          "training_hours": 83.2
+        }
+      },
+      "training_hours": 193.3,
+      "screen_evaluations_including_baselines": 130,
+      "screen_hours": 46.2,
+      "full_validation_and_test_hours_if_all_promoted": 46.2,
+      "total_remaining_hours": 312.8,
+      "total_remaining_days": 13.0
+    },
+    "planning": {
+      "datasets": {
+        "nell23k": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            6,
+            3,
+            2
+          ],
+          "optimizer_steps": 992,
+          "training_hours": 96.4
+        },
+        "codexm": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            6,
+            3
+          ],
+          "optimizer_steps": 759,
+          "training_hours": 44.3
+        },
+        "fb15k237_2": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            6,
+            3
+          ],
+          "optimizer_steps": 744,
+          "training_hours": 99.2
+        }
+      },
+      "training_hours": 239.9,
+      "screen_evaluations_including_baselines": 140,
+      "screen_hours": 49.8,
+      "full_validation_and_test_hours_if_all_promoted": 46.2,
+      "total_remaining_hours": 362.9,
+      "total_remaining_days": 15.1
+    },
+    "all_full": {
+      "datasets": {
+        "nell23k": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            12,
+            12,
+            12
+          ],
+          "optimizer_steps": 2880,
+          "training_hours": 280.0
+        },
+        "codexm": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ],
+          "optimizer_steps": 1500,
+          "training_hours": 87.5
+        },
+        "fb15k237_2": {
+          "assumed_survivors_at_each_rung": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ],
+          "optimizer_steps": 1440,
+          "training_hours": 192.0
+        }
+      },
+      "training_hours": 559.5,
+      "screen_evaluations_including_baselines": 195,
+      "screen_hours": 69.3,
+      "full_validation_and_test_hours_if_all_promoted": 46.2,
+      "total_remaining_hours": 702.1,
+      "total_remaining_days": 29.3
+    }
+  },
+  "communicated_forecast": {
+    "first_nell_validation": "tonight through tomorrow morning, approximate",
+    "three_dataset_first_round": "2-3 days",
+    "planning_range_days": [
+      12,
+      18
+    ],
+    "many_trials_full_budget_days": [
+      21,
+      35
+    ],
+    "boundary": "Runtime forecast does not predict positive model gains; no-go can skip test. A restart or failure can extend timing."
+  }
+}
