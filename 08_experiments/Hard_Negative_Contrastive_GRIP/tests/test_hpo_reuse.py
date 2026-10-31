@@ -1,9 +1,11 @@
 """Behavioral checks for reuse identities, GPU skipping, and disk retention."""
 import json
 import os
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
+import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -45,6 +47,36 @@ class ReuseTests(unittest.TestCase):
         weight.write_bytes(b'bbbb')
         os.utime(weight, ns=(before.st_atime_ns, before.st_mtime_ns))
         self.assertNotEqual(reuse.sha256(weight), old)
+
+    def test_running_bash_uses_immutable_snapshot_when_original_is_edited(self):
+        source = self.root / 'project/configs/run_error_memory_wsl.sh'
+        source.parent.mkdir(parents=True)
+        ready, release = self.root / 'ready', self.root / 'release'
+        payload = '''#!/bin/bash
+set -eu
+"$PYTHON" -c 'import pathlib,sys,time; pathlib.Path(sys.argv[1]).touch(); exec("while not pathlib.Path(sys.argv[2]).exists(): time.sleep(.01)")' "$1" "$2"
+printf 'snapshot-ok\\n%s\\n' "$GRIP_HNG_ROOT"
+'''
+        source.write_text(payload)
+        command, environment = reuse.freeze_shell_launch(['bash', str(source), str(ready), str(release)],
+            {**os.environ, 'PYTHON': sys.executable})
+        process = subprocess.Popen(command, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        try:
+            deadline = time.monotonic() + 5
+            while not ready.exists() and time.monotonic() < deadline:
+                time.sleep(.01)
+            self.assertTrue(ready.exists())
+            source.write_text('broken "quote\n')
+            release.touch()
+            stdout, stderr = process.communicate(timeout=5)
+            self.assertEqual(process.returncode, 0, stderr)
+            self.assertIn('snapshot-ok', stdout)
+            self.assertIn(str(source.parent.parent), stdout)
+            self.assertEqual(Path(command[1]).read_text(), payload)
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait()
 
     def test_predictions_remap_subset_ids_but_reject_other_prompts_or_split(self):
         identity = {'weights': 'a', 'cohort': 'valid', 'decoder': 32}

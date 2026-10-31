@@ -336,6 +336,7 @@ class Supervisor:
             time.sleep(60)
 
     def run(self, name, command, command_env=None):
+        command, command_env = reuse.freeze_shell_launch(command, command_env or env())
         self.action = name
         log_path = self.root / "logs" / f"{name}.log"
         log_path.parent.mkdir(exist_ok=True)

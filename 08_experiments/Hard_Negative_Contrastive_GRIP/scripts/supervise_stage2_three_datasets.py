@@ -31,6 +31,57 @@ DATASETS = ("nell23k", "codexm", "fb15k237_2")
 PAPER = {"nell23k": 0.8774, "fb15k237_2": 0.8875, "codexm": 0.9442}
 
 
+class RecordedStage:
+    """Observe a detached project trainer without inheriting or killing it."""
+    def __init__(self, root, record):
+        self.pid = int(record['pid'])
+        self.start_ticks = str(record['start_ticks'])
+        self.command_sha256 = record['command_sha256']
+        self.proc = Path(f'/proc/{self.pid}')
+        if not Path(record['root']).samefile(root) or record['dataset'] not in DATASETS:
+            raise ValueError('Existing-stage record belongs to another campaign')
+        if self.poll() is None:
+            command = (self.proc / 'cmdline').read_bytes().decode().strip('\0').split('\0')
+            if (len(command) < 2 or not Path(command[0]).samefile(PYTHON)
+                    or Path(command[1]).name != 'train_task_file_adapter.py'
+                    or not Path(command[1]).is_file()
+                    or not Path(command[1]).samefile(BASELINE / 'scripts/train_task_file_adapter.py')
+                    or '--stage1_epochs' not in command
+                    or command[command.index('--stage1_epochs') + 1] != '0'):
+                raise ValueError('Only the recorded Stage2 baseline trainer may be observed')
+
+    def poll(self):
+        try:
+            stat = (self.proc / 'stat').read_text().split()
+            if stat[21] != self.start_ticks or stat[2] == 'Z':
+                return 0
+            if hashlib.sha256((self.proc / 'cmdline').read_bytes()).hexdigest() != self.command_sha256:
+                raise ValueError('Recorded trainer command changed')
+            return None
+        except FileNotFoundError:
+            return 0
+
+
+def wait_for_recorded_stage(root, record):
+    child = RecordedStage(root, record)
+    # Its inherited flock remains held until the trainer exits. A read-only
+    # observer reports progress before constructing the next locked controller.
+    observer = object.__new__(Controller)
+    observer.root, observer.child = root, child
+    observer.dataset, observer.adopted_pid = record['dataset'], None
+    observer.action = record['stage']
+    observer.event('observing_existing_stage', dataset=record['dataset'], pid=child.pid,
+                   note='GPU trainer preserved; controller will acquire its inherited lock after completion')
+    with (root / 'observer.lock').open('a+') as observer_lock:
+        fcntl.flock(observer_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        (root / 'supervisor.pid').write_text(str(os.getpid()) + '\n')
+        while child.poll() is None:
+            observer.snapshot(log=record['log'], existing_stage_observed=True)
+            time.sleep(30)
+    observer.event('existing_stage_process_ended', pid=child.pid,
+                   note='Exit status unavailable to observer; prepare validates final assets/checkpoints')
+
+
 def registry(root):
     records = {}
     nell = Path("/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1")
@@ -311,12 +362,16 @@ def main():
     parser.add_argument("--adopt-pid", type=int, default=0)
     parser.add_argument("--plan-only", action="store_true")
     parser.add_argument("--worker-spec", type=Path)
+    parser.add_argument("--wait-stage", type=Path,
+                        help="Observe an existing recorded Stage2 trainer before acquiring its inherited lock")
     args = parser.parse_args()
     if args.worker_spec:
         legacy.fb_search(args.root, legacy.read(args.worker_spec))
         return
     root = args.root.resolve()
     root.mkdir(parents=True, exist_ok=True)
+    if args.wait_stage:
+        wait_for_recorded_stage(root, legacy.read(args.wait_stage))
     records = create_plan(root)
     if args.plan_only:
         print(json.dumps({ds: {k:r[k] for k in ["s1_adapter", "b1_adapter", "expected_listed", "rungs", "search_stage"]} for ds,r in records.items()}, indent=2))

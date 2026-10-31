@@ -1,0 +1,87 @@
+{
+  "created_at": "2026-10-31T21:36:29.956837+08:00",
+  "failure_observed": "outer Bash EOF/matching quote error after GPU scorer wrote complete passed stats",
+  "inferred_root_cause": "Runner source was edited while Bash was waiting for the long-running score child; Bash later read the modified trailing file offsets",
+  "recovery": {
+    "completed_at": "2026-10-31T13:31:24.555300+00:00",
+    "scores_reused": 2974,
+    "candidate_rows_reused": 588852,
+    "new_gpu_scoring_qa": 0,
+    "cpu_only": true,
+    "bank": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9",
+    "prior_failure": {
+      "error": "nell23k_score failed with exit 2; inspect /mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/logs/nell23k_score.log; restart launcher to resume",
+      "phase": "prerequisite"
+    },
+    "root_cause": "Mutable Bash runner edited during the original long-running child; GPU scoring itself completed",
+    "prevention": "Launch content-addressed immutable Bash snapshots; preserve original HNG through environment"
+  },
+  "wiring": {
+    "task_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json",
+    "manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/counterfactual_bank.jsonl",
+    "negative_source": "structure_counterfactual",
+    "manifest_sha256": "09b3899578a7f11b78c6715d8cadb636dc2bb0b1e37dbdf49028350a9d612a21",
+    "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/nell23k/raw",
+    "n_qa": 12014,
+    "relation_qa": 2974,
+    "listed_qa": 2974,
+    "question_id_source": "positional",
+    "relation_vocab_size": 198,
+    "k": 9,
+    "cpu_only": true,
+    "train_only": true,
+    "relation_eligibility": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/relation_eligibility.json",
+    "relation_eligibility_sha256": "7506189ac4f4f5f53febefa72c33be045ddefe21be8c761262da91ede7dba7f0",
+    "generation_qa_preserved": 12014,
+    "same_questions_as_task": true
+  },
+  "controller_handover": {
+    "created_at": "2026-10-31T21:30:21.032450+08:00",
+    "pid": 1180307,
+    "start_ticks": "33729806",
+    "command_sha256": "be2dec7ef818f1d097e9fccf5d0965df435f9fdbdb8a442cf331ce42e0495052",
+    "root": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030",
+    "dataset": "codexm",
+    "stage": "codexm_resume_baseline_stage2",
+    "log": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/logs/codexm_resume_baseline_stage2.log",
+    "old_supervisor_pid": 819570,
+    "reason": "Reload controller after repaired NELL prerequisites; preserve running CoDEx baseline"
+  },
+  "new_supervisor_pid": 1195663,
+  "existing_gpu_process_preserved": true,
+  "current_training_progress": {
+    "optimizer_step": 103,
+    "schedule_horizon_steps": 125
+  },
+  "nell_failure_resolved": true,
+  "cpu_tests": {
+    "snapshot_and_reuse": {
+      "count": 12,
+      "log": "/tmp/grip_runner_snapshot_checks.log",
+      "sha256": "ad936222d3cf00072b50a36ff273b84cbee53c8409b04bed8a8c58321ca2a4c8"
+    },
+    "stage2_policy": {
+      "count": 11,
+      "log": "/tmp/grip_recovery_policy_checks.log",
+      "sha256": "cf25098bc6e20b3c68d753bfb5116bde053dda9e0d2e3f43af7da433528e1b73"
+    },
+    "supervisor": {
+      "count": 8,
+      "log": "/tmp/grip_recovery_supervisor_checks.log",
+      "sha256": "373c1dee2af0f5c06fd381039532513e7c217249640e5d5497cd13c458c71fca"
+    }
+  },
+  "cpu_test_count": 31,
+  "no_new_performance_metric": true,
+  "deployed_source_sha256": {
+    "scripts/hpo_reuse.py": "52f1112b0aa14c08e8c69a3e84f1ef3ab0f136346049224296bcafe4c2dd95c8",
+    "scripts/optuna_direct_em_search.py": "0e74d947f7bbd34e4da8b7c325683132a0fa4be9fd77bfd40b1ca9c9def0348a",
+    "scripts/supervise_nell_fb_hpo.py": "79a74b99cd6e7bf840430704ea5b205dd60fe15830d21ec460386896dc7bbb12",
+    "scripts/supervise_stage2_three_datasets.py": "a6351ac17fd2d81d08f7b0fcd05dde239f5ced8050989119884099fdaff45c84",
+    "configs/run_error_memory_wsl.sh": "f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438"
+  },
+  "free_gib": {
+    "/mnt/c": 72.2,
+    "/home/kieran": 839.2
+  }
+}

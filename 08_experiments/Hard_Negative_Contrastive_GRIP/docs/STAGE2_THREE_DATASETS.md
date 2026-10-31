@@ -38,6 +38,21 @@
 The running NELL scoring process was preserved during this rollout. Subsequent
 worker/runner processes load these changes without restarting that GPU job.
 
+2026-10-31 21:31 recovery: NELL finished2974/2974 GPU-scored QA successfully,
+but its outer Bash process failed at EOF after the on-disk runner was edited
+while the child was running. The completed588852 score rows were verified and
+reused for CPU-only bank construction/wiring; GPU scoring was not repeated.
+Future runner launches use a content-addressed, read-only Bash snapshot, with
+the original HNG root supplied explicitly, so later source edits cannot change
+an already running shell's unread tail.
+
+For controller-only reloads during an existing baseline trainer, `--wait-stage`
+accepts an inspected process record containing PID, start ticks, command hash,
+dataset, stage and log. It observes that exact Stage2 trainer before acquiring
+its inherited controller flock. It neither interrupts the trainer nor treats
+a reused PID as the original job; final baseline assets are validated normally
+before search resumes. The CoDEx trainer was preserved during the NELL repair.
+
 Current user contract (2026-10-30): all three datasets must show measured
 free-generation EM improvement, one training seed is sufficient, and
 hyperparameter search is restricted to Stage 2. This phase uses seed 2026.

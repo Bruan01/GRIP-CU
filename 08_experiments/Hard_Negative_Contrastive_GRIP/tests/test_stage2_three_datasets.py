@@ -1,6 +1,7 @@
 """CPU checks for Stage-2-only routing and explicit train-pair loss gating."""
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -61,6 +62,24 @@ class EligibilityTests(unittest.TestCase):
 
 
 class CampaignPolicyTests(unittest.TestCase):
+    def test_recorded_stage_does_not_follow_a_reused_pid(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            ticks = int(Path(f'/proc/{os.getpid()}/stat').read_text().split()[21])
+            child = campaign.RecordedStage(root, {'pid': os.getpid(), 'start_ticks': str(ticks + 1),
+                'command_sha256': 'not-current', 'root': str(root), 'dataset': 'codexm'})
+            self.assertEqual(child.poll(), 0)
+
+    def test_recorded_stage_rejects_unrelated_current_process(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            proc = Path(f'/proc/{os.getpid()}')
+            with self.assertRaisesRegex(ValueError, 'Stage2 baseline'):
+                campaign.RecordedStage(root, {'pid': os.getpid(),
+                    'start_ticks': proc.joinpath('stat').read_text().split()[21],
+                    'command_sha256': hashlib.sha256(proc.joinpath('cmdline').read_bytes()).hexdigest(),
+                    'root': str(root), 'dataset': 'codexm'})
+
     def test_codex_baseline_command_explicitly_skips_stage1(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -153,6 +153,7 @@ def validate_assets(
 
 
 def run_logged(command: list[str], env: dict[str, str], log_path: Path, cwd: Path) -> None:
+    command, env = reuse.freeze_shell_launch(command, env)
     log_path.parent.mkdir(parents=True, exist_ok=True)
     with log_path.open("a", encoding="utf-8") as log:
         log.write("$ " + " ".join(command) + "\n")

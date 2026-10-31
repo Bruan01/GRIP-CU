@@ -77,6 +77,31 @@ def fingerprint(adapter):
             ('adapter_config.json', 'adapter_model.safetensors')}
 
 
+def freeze_shell_launch(command, environment):
+    """Bash reads after a child returns: never execute a mutable runner file."""
+    environment = environment.copy()
+    if (len(command) < 2 or Path(command[0]).name != 'bash'
+            or Path(command[1]).name != 'run_error_memory_wsl.sh'):
+        return command, environment
+    source = Path(command[1]).resolve()
+    payload = source.read_bytes()
+    checksum = hashlib.sha256(payload).hexdigest()
+    snapshot = cache_root() / 'runners' / checksum / source.name
+    snapshot.parent.mkdir(parents=True, exist_ok=True)
+    with locked(snapshot.with_suffix('.lock')):
+        if snapshot.exists():
+            if snapshot.read_bytes() != payload:
+                raise ValueError('Immutable runner snapshot changed')
+        else:
+            temporary = snapshot.with_name(f'{snapshot.name}.{os.getpid()}.tmp')
+            temporary.write_bytes(payload)
+            temporary.chmod(0o444)
+            temporary.replace(snapshot)
+    environment['GRIP_HNG_ROOT'] = str(source.parent.parent)
+    environment['GRIP_RUNNER_SOURCE_SHA256'] = checksum
+    return [command[0], str(snapshot), *command[2:]], environment
+
+
 def runtime_versions():
     return {name: version(name) for name in ('torch', 'transformers', 'peft', 'tokenizers')}
 
@@ -190,7 +215,8 @@ def score_sources(identity, destination):
     sources = []
     for name, files in read(path).items():
         folder = Path(name)
-        if folder.resolve() == Path(destination).resolve():
+        if (folder.resolve() == Path(destination).resolve() or
+                (folder.exists() and Path(destination).exists() and folder.samefile(destination))):
             continue
         if all((folder / key).exists() and signature(folder / key) == value for key, value in files.items()):
             if read(folder / 'score_identity.json') == identity:

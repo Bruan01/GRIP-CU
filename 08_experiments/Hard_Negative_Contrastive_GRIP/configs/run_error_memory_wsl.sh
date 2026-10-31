@@ -21,7 +21,7 @@
 #     bash configs/run_structure_counterfactual_wsl.sh
 set -euo pipefail
 
-HNG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+HNG="${GRIP_HNG_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 REPO_ROOT="$(cd "$HNG/../.." && pwd)"
 BASELINE_DIR="${GRIP_BASELINE_DIR:-$REPO_ROOT/13_base_method/grip-exp}"
 CODE_DIR="${CODE_DIR:-$BASELINE_DIR}"
