@@ -26,7 +26,8 @@ sys.path.insert(0, str(GRIP_EXP))
 sys.path.insert(0, str(HNG / "src"))
 sys.path.insert(0, str(SCRIPTS))
 
-from constants import TORCH_DTYPE_NAME  # noqa: E402
+from constants import TORCH_DTYPE_NAME, HF_DECODER_ONLY_LLMS  # noqa: E402
+import hpo_reuse as reuse  # noqa: E402
 from hard_negative_grip.decode_io import (  # noqa: E402
     eval_samples,
     load_jsonl,
@@ -67,8 +68,27 @@ def main() -> None:
     samples = eval_samples(record)
     pred_path = args.output_dir / "predictions.jsonl"
     existing = load_jsonl(pred_path) if args.resume else []
+    identity = reuse.inference_identity(args.adapter, args, record, HF_DECODER_ONLY_LLMS[args.model_name])
+    identity_file = args.output_dir / 'reuse_identity.json'
+    if identity_file.exists() and reuse.read(identity_file) != identity:
+        raise ValueError('Evaluation weights, decoder, or source cohort changed')
+    if existing and not identity_file.exists():
+        raise ValueError('Existing predictions lack a full decoder/source identity; '
+                         'an explicit audited migration is required')
+    reuse.write(identity_file, identity)
+    expected = {sample['question_id']: sample for sample in samples}
+    for row in existing:
+        sample = expected.get(row.get('question_id'))
+        if sample is None or sample['question'] != row.get('question') or reuse.target_list(sample['answer']) != row.get('target'):
+            raise ValueError('Resumed question ID refers to a different prompt or target')
+    shared = reuse.reusable_predictions(identity, samples)
+    # Local complete work takes priority over a shared subset.
+    existing = list({row['question_id']: row for row in [*shared, *existing]}.values())
     kept, missing = merge_resumed_rows(samples, existing)
     write_jsonl(pred_path, kept)
+    reuse.write(args.output_dir / 'reuse_stats.json', {
+        'shared_rows_available': len(shared), 'completed_rows_before_inference': len(kept),
+        'new_rows_required': len(missing), 'total_rows': len(samples)})
 
     model = tokenizer = None
     try:
@@ -87,6 +107,7 @@ def main() -> None:
         if missing:
             raise RuntimeError(f"evaluation incomplete: {len(missing)} questions missing")
         write_jsonl(pred_path, rows)
+        reuse.remember_predictions(identity, rows)
         summary = em_summary(rows)
         summary["label"] = args.label
         summary["adapter"] = str(args.adapter)

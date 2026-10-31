@@ -562,6 +562,9 @@ case "$STEP" in
       require_file "$SCORES_DIR/metadata.json"
     fi
     mkdir -p "$SAMPLER_DIR"
+    if [[ -z "$BANK_SOURCE_DIR" && -f "$SCORES_DIR/score_identity.json" && -f "$SCORES_DIR/run_stats.json" ]]; then
+      "$PYTHON" "$HNG/scripts/hpo_reuse.py" register-scores --directory "$SCORES_DIR"
+    fi
     FREEZE_FLAGS=()
     if [[ "${OVERWRITE_BANK:-0}" == "1" ]]; then
       FREEZE_FLAGS+=(--overwrite)

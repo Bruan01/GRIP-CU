@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import optuna_direct_em_search as hpo
+import hpo_reuse as reuse
 
 PYTHON = hpo.PYTHON_DEFAULT
 HNG, REPO, BASELINE = hpo.HNG, hpo.REPO, hpo.BASELINE
@@ -434,7 +435,8 @@ def fb_search(root, spec=None):
             raise ValueError("Resource cap is below the first Stage-2 rung")
     out.mkdir(parents=True, exist_ok=True)
     paths["b1_adapter"] = b1
-    paths["save_steps"] = 4
+    # Rung stops force a checkpoint even at step8 or a nonmultiple final step.
+    paths["save_steps"] = 16
     hpo.validate_assets(dataset, paths, s1, bank, PYTHON, hpo.MODEL_CACHE_DEFAULT)
     stage1_identity = fingerprint(s1)
     frozen_identity = out / "fixed_stage1_identity.json"
@@ -477,10 +479,13 @@ def fb_search(root, spec=None):
             metrics_path = frozen.parent / "metrics.json"
             if not metrics_path.exists():
                 if not frozen.exists():
+                    reuse.prune_search_storage(out, study.get_trials())
+                    reuse.require_training_space(out)
                     hpo.write_json(out / "live_progress.json", {"dataset": dataset, "trial": trial.number,
                         "rung": rung, "phase": "stage2_training", "search_stage": 2,
                         "log": str(folder / f"train_rung_{rung}.log")})
-                    checkpoints = list((folder / "train_run/trainer_listed").glob("checkpoint-*"))
+                    checkpoints = [p for p in (folder / "train_run/trainer_listed").glob("checkpoint-*")
+                                   if reuse.complete_checkpoint(p)]
                     resume = max(checkpoints, key=lambda p: int(p.name.rsplit("-", 1)[1]), default=None)
                     if resume is not None and int(resume.name.rsplit("-", 1)[1]) > rung:
                         raise RuntimeError(f"Cannot reconstruct missing step {rung} from later checkpoint {resume}")
@@ -490,7 +495,8 @@ def fb_search(root, spec=None):
                     live = folder / "train_run/listed/adapter"
                     if not adapter_ready(live):
                         raise RuntimeError(f"Missing trained adapter {live}")
-                    latest = max((folder / "train_run/trainer_listed").glob("checkpoint-*"),
+                    latest = max((p for p in (folder / "train_run/trainer_listed").glob("checkpoint-*")
+                                  if reuse.complete_checkpoint(p)),
                                  key=lambda p: int(p.name.rsplit("-", 1)[1]))
                     if int(read(latest / "trainer_state.json")["global_step"]) != rung:
                         raise RuntimeError(f"Trainer did not stop at requested step {rung}: {latest}")
@@ -516,6 +522,7 @@ def fb_search(root, spec=None):
             if new_report:
                 trial.report(em, rung)
             hpo.write_study_exports(study, out)
+            reuse.prune_search_storage(out, study.get_trials())
             print(f"[{dataset}-hpo] trial={trial.number} step={rung} screen_em={em:.6f} b1={baseline_screen:.6f}", flush=True)
             if new_report and rung < rungs[-1] and trial.should_prune():
                 raise optuna.TrialPruned(f"validation pruning at step {rung}")
@@ -529,10 +536,12 @@ def fb_search(root, spec=None):
             value = execute_trial(trial)
         except optuna.TrialPruned:
             study.tell(trial, state=optuna.trial.TrialState.PRUNED)
+            reuse.prune_search_storage(out, study.get_trials())
         else:
             if value is None:
                 continue
             study.tell(trial, value)
+            reuse.prune_search_storage(out, study.get_trials())
     for _ in range(max(0, trial_budget - sum(t.state != optuna.trial.TrialState.WAITING for t in study.trials))):
         # ask/tell leaves an interrupted trial RUNNING for checkpoint recovery.
         trial = study.ask()
@@ -540,10 +549,12 @@ def fb_search(root, spec=None):
             value = execute_trial(trial)
         except optuna.TrialPruned:
             study.tell(trial, state=optuna.trial.TrialState.PRUNED)
+            reuse.prune_search_storage(out, study.get_trials())
         else:
             if value is None:
                 continue
             study.tell(trial, value)
+            reuse.prune_search_storage(out, study.get_trials())
         hpo.write_study_exports(study, out)
 
     if fingerprint(s1) != stage1_identity:

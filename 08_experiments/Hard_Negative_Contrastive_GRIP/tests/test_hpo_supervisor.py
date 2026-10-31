@@ -91,6 +91,9 @@ class SearchDecisionTests(unittest.TestCase):
             folder, step = kwargs["trial_dir"], kwargs["rung_step"]
             make_adapter(folder / "train_run/listed/adapter", f"step-{step}".encode())
             checkpoint = folder / f"train_run/trainer_listed/checkpoint-{step}"
+            make_adapter(checkpoint)
+            for name in ('optimizer.pt', 'scheduler.pt', 'rng_state.pth'):
+                (checkpoint / name).write_bytes(b'fixture state')
             guard.hpo.write_json(checkpoint / "trainer_state.json", {"global_step": step})
 
         def fake_evaluate(adapter, source, output, label):

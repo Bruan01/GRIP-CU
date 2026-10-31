@@ -1,5 +1,43 @@
 # Stage-2 search: NELL23K, FB15K237-2 and CoDEx-M
 
+2026-10-31 efficiency and storage update:
+
+- Training scores are registered once, with teacher weight/config hashes,
+  task/train/mapping hashes, relation order, scoring protocol and dtype. Only
+  compatible complete QA blocks may be reused for a smaller eligibility set;
+  test scores cannot enter the training-score cache. Fully cached work does
+  not load a GPU model. Historical files without verified identities remain
+  available but are not silently imported into a new experiment.
+- Greedy predictions are cached by immutable adapter, local base/tokenizer,
+  decoder/prompt implementation and verified source cohort. A validation
+  screen shares predictions with its exact full validation source, with IDs
+  remapped by question and target. Candidate-list changes, another split,
+  changed weights or decoder invalidate reuse. This does not alter EM or
+  replace free generation with candidate reranking.
+- Checksums reuse inode/size/mtime/ctime validation, avoiding repeated reads
+  of unchanged multi-GB files across workers. The cache lives on the Linux
+  filesystem at `/home/kieran/grip-cu-runs/shared_cache`.
+- Periodic recovery checkpoints are saved every16 steps with only one latest
+  checkpoint retained. Every rung forces its own save, including step8 and
+  nonmultiple final steps. Resume still restores optimizer/scheduler/RNG state.
+- Between GPU subprocesses, protect the global top two validation snapshots
+  and the final selected adapter. Each unfinished trial keeps its latest
+  complete recovery checkpoint; an incomplete newer folder cannot displace it.
+  A redundant packaged live adapter can be removed only after its evaluated
+  rung has a complete optimizer, scheduler, RNG and weight checkpoint.
+  Remove lower-ranked evaluated snapshot weights
+  and terminal trials' redundant optimizer/live-adapter binaries. Keep metrics,
+  predictions, trainer-state JSON, configs, logs and cleanup manifests.
+  Immutable Stage1/B1 and historical paper weights are outside this cleanup.
+- `search/storage_status.json` reports retained binary bytes and free space;
+  `storage_cleanup.jsonl` records actual removals. Before a new training
+  subprocess, require30GiB free on its actual output filesystem. If necessary
+  space cannot be reclaimed safely, report the failure rather than deleting
+  active/selected assets or risking a full disk.
+
+The running NELL scoring process was preserved during this rollout. Subsequent
+worker/runner processes load these changes without restarting that GPU job.
+
 Current user contract (2026-10-30): all three datasets must show measured
 free-generation EM improvement, one training seed is sufficient, and
 hyperparameter search is restricted to Stage 2. This phase uses seed 2026.

@@ -21,6 +21,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+import hpo_reuse as reuse
+
 
 HNG = Path(__file__).resolve().parents[1]
 REPO = HNG.parents[1]
@@ -35,11 +37,7 @@ RUNG_STEPS = (1, 2, 4, 8)
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
+    return reuse.sha256(path)
 
 
 def write_json(path: Path, payload: Any) -> None:
@@ -203,6 +201,7 @@ def train_rung(
         "SKIP_TMUX": "1",
         "NO_RESUME": "1" if fresh else "0",
         "DEFER_EVAL": "1",
+        "SKIP_TRAIN": "0",
         "DATASET": dataset,
         "NEGATIVE_SOURCE": "structure_counterfactual",
         "SEED": str(SEED),
@@ -218,7 +217,7 @@ def train_rung(
         "PER_DEVICE_TRAIN_BATCH_SIZE": "1",
         "GRADIENT_ACCUMULATION_STEPS": "512",
         "SAVE_STEPS": str(paths.get("save_steps", 1)),
-        "SAVE_TOTAL_LIMIT": "2",
+        "SAVE_TOTAL_LIMIT": "1",
         "STOP_AFTER_STEP": str(rung_step),
         "TORCH_DTYPE": "bfloat16",
         "MODEL_CACHE_DIR": str(model_cache),

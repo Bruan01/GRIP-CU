@@ -1,0 +1,171 @@
+{
+  "created_at": "2026-10-31T18:15:14.948515+08:00",
+  "active_score_pid": 1095431,
+  "proc_start_ticks": "31576989",
+  "active_gpu_job_interrupted": false,
+  "identity": {
+    "schema": "train-full-vocab-v1",
+    "teacher": {
+      "adapter_config.json": "d5a5170ae90c88f3d18cb36ad604f347b312da326a20bbd2ad40742762d6b3ec",
+      "adapter_model.safetensors": "a52fd9fd416a22153206850df38f30d08b9ca01c2f68d808406b76cf29e7e8ce"
+    },
+    "task_sha256": "75f804181261c2bd00e67315fe1cb35d409a1e8a6b0862708627f3f987d3066d",
+    "train_sha256": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21",
+    "mappings": {
+      "relations": null,
+      "entities": null
+    },
+    "relation_order": "9a6ba49064a75cac632fca9a8fdc30410a8bb2826dc1beaa3218e195c31b37fd",
+    "dtype": "bfloat16",
+    "temperature": 1.0,
+    "candidate_batch_size": 4,
+    "filter_splits": [
+      "train"
+    ],
+    "split": "train",
+    "model_name": "qwen-7b",
+    "model_cache": "/mnt/e/GRIP-CU/model_cache",
+    "base_files": {
+      ".gitattributes": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361",
+      ".msc": "245333aca9ca5ad753d1605394ebebc4e0d4f282503883a6d87e1ac12819f21e",
+      ".mv": "62f3785a1113f87512366c23f8d4cfff97f2f31253503c709ab6b1c89e64af84",
+      "LICENSE": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+      "README.md": "f366f33bbf6bcadbb7d87f0a21a7b65584a56b8d58b0743c77c88bee625b93a6",
+      "config.json": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+      "configuration.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "generation_config.json": "3a8f9087e486054c8a4a08dae2e5a3ba62e23da212b5b8c08bc42cb983c3459f",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+      "model-00001-of-00004.safetensors": [
+        69,
+        1970324836974659,
+        3945441440,
+        1788858077028293500,
+        1788858077032420400
+      ],
+      "model-00002-of-00004.safetensors": [
+        69,
+        2814749767106625,
+        3864726352,
+        1788857932937038900,
+        1788857932942059000
+      ],
+      "model-00003-of-00004.safetensors": [
+        69,
+        1407374883553348,
+        3864726424,
+        1788857757435220000,
+        1788857757441385800
+      ],
+      "model-00004-of-00004.safetensors": [
+        69,
+        3659174697238597,
+        3556377672,
+        1788857751170084800,
+        1788857751175670200
+      ],
+      "model.safetensors.index.json": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    },
+    "protocol": {
+      "scoring.py": "25a60e2c0d483b5f91d06099e8efb3c63b2322c475ba497b8691e44d6241f080",
+      "offline_scoring.py": "4cdbff89940c3021e85796e257e5204f142b676542187e3d73ed1188839c4e0a",
+      "task_file.py": "dd3e6bb465b184953411c38a9dceb45bcc019ac245905be7a30368c55ecd399e"
+    },
+    "runtime": {
+      "torch": "2.13.0",
+      "transformers": "5.20.1",
+      "peft": "0.21.1",
+      "tokenizers": "0.23.3"
+    },
+    "scoring_rule": "6332dde647b85d62bfe43e8b41fdc56c472701b7e3aa8356c366e607c155ab45"
+  },
+  "source_metadata": {
+    "scoring_version": "offline_confusion_v1",
+    "git_commit": "6e2f42e588ecbfab1e151dbd84e41fed3de46e6c",
+    "checkpoint": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/control_20261018_C1/adapter",
+    "tokenizer": "Qwen2Tokenizer",
+    "dataset": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json",
+    "split": "train",
+    "relation_vocab_size": 198,
+    "number_of_qa": 2974,
+    "shard_id": 0,
+    "num_shards": 1,
+    "candidate_batch_size": 4,
+    "dtype": "bfloat16",
+    "temperature": 1.0,
+    "filter_splits": [
+      "train"
+    ],
+    "created_at": "2026-10-31T05:57:18.276155+00:00"
+  },
+  "note": "Pinned identity while observing this unchanged in-flight scorer using the archived immutable B1; final registration waits for run_stats checks_passed at freeze.",
+  "completed_at": "2026-10-31T18:31:34.913458+08:00",
+  "cpu_validation": {
+    "passed": 38,
+    "suites": {
+      "reuse_and_supervisor": {
+        "passed": 19,
+        "log": "/tmp/grip_reuse_and_supervisor_checks.log",
+        "sha256": "a260525d788ab2dd51bf67ed1ffcaf6ba03b656100e1f4f1c58f463c1fe46207"
+      },
+      "stage2_policy": {
+        "passed": 9,
+        "log": "/tmp/grip_stage2_policy_checks.log",
+        "sha256": "ebb9499ba4114634913dda659f7cdfaf45be88c39a9f0e020a08c646ec46bbf0"
+      },
+      "resume_and_sharding": {
+        "passed": 10,
+        "log": "/tmp/grip_reuse_resume_checks.log",
+        "sha256": "0ba05a9791a7f8591d5db8c497223bca944759ca923d6bd91cdc42f45f413d59"
+      }
+    },
+    "synthetic_model_metrics_only": true,
+    "no_gpu_model_loaded_by_tests": true,
+    "final_reuse_regression": {
+      "passed": 11,
+      "duplicates_of_combined_suite": true,
+      "log": "/tmp/grip_reuse_final_checks.log",
+      "sha256": "553fd0d5585781f15494ff652633d3e8b8d485cc53b7d704a6539b28da4f9814"
+    },
+    "live_score_identity_recomputed": true,
+    "actual_complete_checkpoints_verified": [
+      "FB baseline checkpoint120",
+      "NELL prior followup checkpoint8"
+    ]
+  },
+  "deployed_files": {
+    "scripts/hpo_reuse.py": "0449bc946bbd607a39f17b2aa9fde17bb20b530b39c8090212b8bf18918a2b44",
+    "scripts/evaluate_adapter.py": "595442ebcd0468ebe719174ae8d654371f08b4d2846c7dcb392d1d9473088d62",
+    "scripts/optuna_direct_em_search.py": "9287ed77fb518e2c0339c140b69a30dd9a9e8d71a7bf9b46b2b681b60385a7c6",
+    "scripts/supervise_nell_fb_hpo.py": "3cb61158049071e6d4cea23f0bbee4706d58f2c1101c9645ff5d2e1f7c74591f",
+    "scripts/score_relation_candidates_offline.py": "92e2d9601382ad03ba8824aa2ebe1e81ba7ceb55e858de72457f593f8c322d61",
+    "configs/run_error_memory_wsl.sh": "8cfd87b8b4f4cafcc6e0285eaeef95b72c91b2423ff16c4454879c2d2cdc2900",
+    "docs/STAGE2_THREE_DATASETS.md": "84e059d671aa8e0b02812e46e8c5403e7fe8e2dba1971d73ff4443641adf0f29",
+    "tests/test_hpo_reuse.py": "dbaf74a4413cacb7e2cb052401375734b99014f5e1480de8cdd5c19ba8d1de28",
+    "tests/test_hpo_supervisor.py": "bdb85d7ea9d9a5f459c3e0e1e5912de069fc8522355810d5a4d5ec179be7c1a3"
+  },
+  "storage_policy": {
+    "global_validation_snapshots_kept": 2,
+    "latest_complete_resume_states_per_unfinished_trial": 1,
+    "periodic_save_steps": 16,
+    "rung_saves_forced": true,
+    "training_space_floor_gib": 30,
+    "preserve_evidence": true,
+    "historical_paper_weights_modified": false
+  },
+  "cache_policy": {
+    "compatible_full_vocab_train_score_blocks": true,
+    "exact_cohort_validation_predictions": true,
+    "label_and_path_independent_weight_identity": true,
+    "decoder_and_prompt_identity_checked": true
+  },
+  "activation": "Current GPU scorer unchanged. Fresh search workers and freeze runner pick up updated files without reloading the controller.",
+  "free_gib": {
+    "/mnt/c": 74.37,
+    "/mnt/e": 87.98,
+    "/home/kieran": 839.16
+  },
+  "new_research_test_score_produced": false
+}

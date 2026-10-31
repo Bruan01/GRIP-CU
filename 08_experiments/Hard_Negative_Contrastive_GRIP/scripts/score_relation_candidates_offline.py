@@ -19,6 +19,8 @@ import sys
 import time
 from pathlib import Path
 
+import hpo_reuse as reuse
+
 import torch
 from peft import PeftModel
 
@@ -374,17 +376,19 @@ def main() -> None:
 
     checkpoint = str(args.b1_adapter)
     dtype_name = args.dtype
-    model, tokenizer = load_b1(args)
-    tokenizer_name = type(tokenizer).__name__
-
     if args.benchmark:
+        model, tokenizer = load_b1(args)
         result = run_benchmark(args, model, tokenizer, items, relation_order)
-        write_metadata(
-            output_dir / "benchmark.json",
-            result,
-        )
+        write_metadata(output_dir / 'benchmark.json', result)
         print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
         return
+    identity = reuse.scoring_identity(args, relation_order, HF_DECODER_ONLY_LLMS[args.model_name])
+    identity_file = output_dir / 'score_identity.json'
+    if identity_file.exists() and reuse.read(identity_file) != identity:
+        raise ValueError('Scoring cache teacher, task, or protocol changed')
+    if args.resume and scores_path.exists() and not identity_file.exists():
+        raise ValueError('Existing scores require a verified score_identity.json before reuse')
+    reuse.write(identity_file, identity)
 
     completed: set[str] = set()
     if args.resume:
@@ -393,6 +397,42 @@ def main() -> None:
         for path in (scores_path, summary_path):
             if path.exists():
                 path.unlink()
+
+    allowed_ids = {item['qa_id'] for item in items}
+    if completed - allowed_ids:
+        atomic_write_jsonl(scores_path,
+            (row for qid, block in reuse.score_blocks(scores_path) if qid in allowed_ids for row in block))
+        atomic_write_jsonl(summary_path,
+            [row for row in load_jsonl(summary_path) if row['qa_id'] in allowed_ids])
+        completed &= allowed_ids
+
+    cached_qa = 0
+    reuse_sources = []
+    wanted = {item['qa_id'] for item in items} - completed
+    for source in reuse.score_sources(identity, output_dir):
+        before_reuse = cached_qa
+        summaries = {row['qa_id']: row for row in load_jsonl(source / 'qa_summary.jsonl')}
+        for qid, block in reuse.score_blocks(source / 'candidate_scores.jsonl'):
+            if qid not in wanted or qid not in summaries:
+                continue
+            if len(block) != len(relation_order) or {row['candidate_relation'] for row in block} != set(relation_order):
+                raise ValueError('Cached score block has incomplete or duplicate vocabulary')
+            atomic_append_qa_block(scores_path, summary_path, block, summaries[qid])
+            completed.add(qid)
+            wanted.remove(qid)
+            cached_qa += 1
+            if not wanted:
+                break
+        if cached_qa > before_reuse:
+            reuse_sources.append({'directory': str(source), 'qa_reused': cached_qa - before_reuse})
+        if not wanted:
+            break
+    pending = [item for item in items if item['qa_id'] not in completed]
+    # Completed/cached work needs neither a second model load nor GPU inference.
+    model = tokenizer = None
+    if pending:
+        model, tokenizer = load_b1(args)
+    tokenizer_name = type(tokenizer).__name__ if tokenizer is not None else 'Qwen2Tokenizer'
 
     metadata = build_metadata(
         checkpoint=checkpoint,
@@ -411,14 +451,13 @@ def main() -> None:
     )
     write_metadata(meta_path, metadata)
 
-    if torch.cuda.is_available():
+    if pending and torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
 
     started = time.time()
     processed = 0
     all_summaries: list[dict] = []
     all_rows: list[dict] = []
-    pending = [item for item in items if item["qa_id"] not in completed]
     metadata["number_of_qa"] = len(completed) + len(pending)
     write_metadata(meta_path, metadata)
     for item in pending:
@@ -460,9 +499,9 @@ def main() -> None:
         raise ValueError("offline scoring validation failed:\n" + "\n".join(failures[:20]))
 
     stats = summarize_run(
-        all_summaries,
+        load_jsonl(summary_path),
         elapsed_sec=elapsed,
-        peak_gpu_bytes=peak_gpu_bytes(),
+        peak_gpu_bytes=peak_gpu_bytes() if model is not None else None,
         vocab_size=len(relation_order),
         skipped=0,
     )
@@ -477,6 +516,11 @@ def main() -> None:
             "shard_id": args.shard_id,
             "num_shards": args.num_shards,
             "resumed_complete_qa": len(completed),
+            "reused_cached_qa": cached_qa,
+            "score_cache_sources": reuse_sources,
+            "scored_qa_this_invocation": processed,
+            "qa_per_sec": processed / max(elapsed, 1e-6),
+            "candidate_per_sec": processed * len(relation_order) / max(elapsed, 1e-6),
             "candidate_scores": str(scores_path),
             "qa_summary": str(summary_path),
             "scoring_version": SCORING_VERSION,
@@ -504,6 +548,8 @@ def main() -> None:
     stats_path.write_text(json.dumps(stats, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     metadata["number_of_qa"] = len(completed) + processed
     write_metadata(meta_path, metadata)
+    if args.split == 'train' and list(args.filter_splits) == ['train']:
+        reuse.register_scores(identity, output_dir)
     print(json.dumps(stats, ensure_ascii=False, indent=2), flush=True)
 
 
