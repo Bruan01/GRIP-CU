@@ -1,0 +1,79 @@
+{
+  "created_at": "2026-11-02T00:25:09.616123+08:00",
+  "policy": {
+    "declared_at": "2026-11-02T00:25:09.616123+08:00",
+    "minimum_full_validation_gain_pp": 0.5,
+    "selection_split": "full_validation",
+    "screen_configurations_required": 2,
+    "top_screen_checkpoints": 2,
+    "minimum_screen_resource": 32,
+    "pass": "Freeze model identity; stop this dataset search before any test; run baseline and selected full tests once",
+    "reject": "No test opened; continue original Stage2 search",
+    "after_any_test": "Never reopen this dataset in this campaign based on its test outcome",
+    "source": "User requested next step focused on good results; configuration uses validation evidence only",
+    "active_FB_scoring_interrupted": false
+  },
+  "observed_matched_validation": {
+    "nell23k": {
+      "baseline_correct": 849,
+      "candidate_correct": 864,
+      "count": 1000,
+      "best_trial": 1,
+      "best_step": 32
+    },
+    "codexm": {
+      "baseline_correct": 948,
+      "candidate_correct": 962,
+      "count": 1000,
+      "best_trial": 1,
+      "best_step": 32
+    }
+  },
+  "existing_score_handover": {
+    "created_at": "2026-11-02T00:21:46.869979+08:00",
+    "pid": 1412170,
+    "start_ticks": "40725370",
+    "command_sha256": "ee1193047375b5af514418bed2dee78b3dd22f71af187016d92c1c6b76e3318a",
+    "root": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030",
+    "dataset": "fb15k237_2",
+    "stage": "fb15k237_2_score",
+    "log": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/logs/fb15k237_2_score.log",
+    "old_supervisor_pid": 1195663,
+    "kind": "immutable_scoring_runner",
+    "runner_snapshot": "/home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh",
+    "runner_sha256": "f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438",
+    "reason": "Prioritize full-validation confirmation of promising checkpoints after preserving current FB scoring"
+  },
+  "new_controller_pid": 1487077,
+  "new_full_test_performed": false,
+  "source_sha256": {
+    "scripts/confirm_stage2_candidates.py": "b8f611e8b39bdc46152d16fc7a200f23e51a28f5087b66615760b2981cd95486",
+    "scripts/supervise_stage2_three_datasets.py": "dac2ecd35d23b76ed402a6b0023656f123b033bcbf5e128695e87ff7bfc83b1e",
+    "scripts/supervise_nell_fb_hpo.py": "3684844a014ae83af95deb6d757f67ca10f309405d94055018826897ca93936d"
+  },
+  "completed_at": "2026-11-02T00:36:23.424507+08:00",
+  "cpu_checks": {
+    "early_confirmation": {
+      "passed": 6,
+      "log": "/tmp/grip_early_confirmation_checks.log",
+      "sha256": "8cb676463a74b1aa59e9ef52e700ddcc20875178ba440246d5105cdb0d616760"
+    },
+    "controller": {
+      "passed": 12,
+      "log": "/tmp/grip_early_controller_checks.log",
+      "sha256": "3102e2e19c3f44a8d18b9477e315f4d7437259d2aaa970d9b88367f3d204f382"
+    },
+    "supervisor": {
+      "passed": 8,
+      "log": "/tmp/grip_early_supervisor_checks.log",
+      "sha256": "4144f707b828c38c14a79e817d0ffad471b8426a01a6d26b193bc6a0b617246b"
+    }
+  },
+  "cpu_test_count": 26,
+  "actual_gpu_job_interrupted": false,
+  "current_full_test_performed": false,
+  "free_gib": {
+    "/mnt/c": 52.4,
+    "/home/kieran": 822.2
+  }
+}

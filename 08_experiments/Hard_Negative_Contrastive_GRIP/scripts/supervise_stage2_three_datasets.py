@@ -32,7 +32,7 @@ PAPER = {"nell23k": 0.8774, "fb15k237_2": 0.8875, "codexm": 0.9442}
 
 
 class RecordedStage:
-    """Observe a detached project trainer without inheriting or killing it."""
+    """Observe an identified detached trainer or immutable scoring runner."""
     def __init__(self, root, record):
         self.pid = int(record['pid'])
         self.start_ticks = str(record['start_ticks'])
@@ -42,6 +42,17 @@ class RecordedStage:
             raise ValueError('Existing-stage record belongs to another campaign')
         if self.poll() is None:
             command = (self.proc / 'cmdline').read_bytes().decode().strip('\0').split('\0')
+            if record.get('kind') == 'immutable_scoring_runner':
+                source = Path(record['runner_snapshot'])
+                expected = legacy.reuse.cache_root() / 'runners' / record['runner_sha256'] / 'run_error_memory_wsl.sh'
+                environment = dict(item.split(b'=', 1) for item in (self.proc / 'environ').read_bytes().split(b'\0') if b'=' in item)
+                if (len(command) != 2 or Path(command[0]).name != 'bash'
+                        or not expected.is_file() or not Path(command[1]).samefile(source) or not source.samefile(expected)
+                        or hashlib.sha256(source.read_bytes()).hexdigest() != record['runner_sha256']
+                        or environment.get(b'STEP') != b'score'
+                        or environment.get(b'DATASET', b'').decode() != record['dataset']):
+                    raise ValueError('Existing score runner does not match its immutable stage record')
+                return
             if (len(command) < 2 or not Path(command[0]).samefile(PYTHON)
                     or Path(command[1]).name != 'train_task_file_adapter.py'
                     or not Path(command[1]).is_file()
@@ -71,7 +82,7 @@ def wait_for_recorded_stage(root, record):
     observer.dataset, observer.adopted_pid = record['dataset'], None
     observer.action = record['stage']
     observer.event('observing_existing_stage', dataset=record['dataset'], pid=child.pid,
-                   note='GPU trainer preserved; controller will acquire its inherited lock after completion')
+                   note='GPU stage preserved; controller will acquire its inherited lock after completion')
     with (root / 'observer.lock').open('a+') as observer_lock:
         fcntl.flock(observer_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         (root / 'supervisor.pid').write_text(str(os.getpid()) + '\n')
@@ -199,6 +210,15 @@ class Controller(legacy.Supervisor):
             if "--stage1_epochs" not in command or float(command[command.index("--stage1_epochs") + 1]) != 0:
                 raise ValueError("New Stage-1 training is disabled in this campaign")
         return super().run(name, command, command_env)
+
+    def confirm_promising(self, record):
+        import confirm_stage2_candidates as confirmation
+        if not confirmation.eligible(record):
+            return False
+        self.run(f"{record['dataset']}_search_early_confirmation", [str(PYTHON), '-u',
+            str(HNG / 'scripts/confirm_stage2_candidates.py'), '--record',
+            str(self.root / record['dataset'] / 'dataset_contract.json')])
+        return (Path(record['search_dir']) / 'final_result.json').exists()
 
     def snapshot(self, **values):
         state = super().snapshot(**values)
@@ -347,7 +367,13 @@ def create_plan(root):
     result = {"created_at": legacy.now(), "seed": 2026, "search_stage": 2,
         "stage1_search_enabled": False, "new_stage1_training_enabled": False,
         "datasets": records, "order": list(DATASETS), "trials_per_dataset": 12, "trials_per_turn": 2,
-        "scheduling": "Finish adopted FB prerequisite job; then round-robin two additional Stage-2 trials per dataset. Freeze full-validation selection after all declared trials, then one selected test.",
+        "scheduling": "Prefer full validation of promising first-round checkpoints. Otherwise continue round-robin Stage2 HPO within the original budget.",
+        "early_confirmation": {"minimum_full_validation_gain_pp": 0.5,
+            "after_first_round_configurations": 2, "minimum_screen_step_budget": 32,
+            "selection": "Top2 screen checkpoints; select by complete validation only",
+            "on_validation_pass": "Freeze selected checkpoint and stop this dataset search before opening test",
+            "on_validation_reject": "Continue original12-configuration search; do not open test",
+            "on_any_test_outcome": "Do not reopen or tune this dataset in this campaign"},
         "success": "all three datasets: full-test free-generation EM exceeds matched B1 and paper reference",
         "scope": "single seed; fixed local protocols; FB retains the previously documented 464-QA repair; no further QA changes. Unverified relation pairs keep generation loss and receive no candidate loss.",
         "nell_validation_scope": "Existing fixed NELL task generation used validation few-shot references; validation is developmental. Prior NELL tests have been inspected; this campaign is adaptive exploration.",
@@ -406,6 +432,15 @@ def main():
                     if failure.exists():
                         hpo.write_json(failure, {**legacy.read(failure), "resolved": True, "resolved_at": legacy.now()})
                 if not ready[dataset]: continue
+                try:
+                    if controller.confirm_promising(records[dataset]):
+                        ready[dataset] = False
+                        continue
+                except Exception as error:
+                    controller.event('dataset_confirmation_failed', dataset=dataset, error=str(error))
+                    hpo.write_json(root / dataset / 'failure.json', {'error': str(error), 'phase': 'early_confirmation'})
+                    ready[dataset] = False
+                    continue
                 resource_cap = min(records[dataset]["rungs"][-1], 32 * 2 ** (budget // 2 - 1))
                 spec = {**records[dataset], "trial_budget": budget, "search_only": True, "resource_cap": resource_cap}
                 path = root / dataset / "active_worker_spec.json"
@@ -413,6 +448,8 @@ def main():
                 try:
                     controller.run(f"{dataset}_search_to_{budget}", [str(PYTHON), "-u", str(Path(__file__).resolve()),
                         "--root", str(root), "--worker-spec", str(path)])
+                    if controller.confirm_promising(records[dataset]):
+                        ready[dataset] = False
                 except Exception as error:
                     controller.event("dataset_search_failed", dataset=dataset, error=str(error))
                     hpo.write_json(root / dataset / "failure.json", {"error": str(error), "phase": "search"})

@@ -435,6 +435,12 @@ def fb_search(root, spec=None):
         if resource_cap < rungs[0]:
             raise ValueError("Resource cap is below the first Stage-2 rung")
     out.mkdir(parents=True, exist_ok=True)
+    selection_file = out / 'selection.json'
+    if selection_file.exists() and read(selection_file).get('search_stopped_before_test') is True:
+        if (out / 'final_result.json').exists():
+            print(f'[{dataset}] Fixed test already completed; Stage2 search remains closed', flush=True)
+            return
+        raise RuntimeError('Stage2 selection is locked before test; resume candidate confirmation instead of training')
     paths["b1_adapter"] = b1
     # Rung stops force a checkpoint even at step8 or a nonmultiple final step.
     paths["save_steps"] = 16

@@ -64,6 +64,24 @@ budget with no operational failure ends the watchdog even when score targets
 were not achieved. Health/recovery state is in `watchdog.json` and restart
 events in `watchdog_events.jsonl`.
 
+2026-11-02 result-priority update: after a promising first round (at least two
+configurations and32 optimizer steps), fully validate the two retained best
+screen checkpoints and the matched B1. Reuse their existing1000-question
+predictions. If the best complete-validation EM exceeds B1 by at least0.5
+percentage points, atomically freeze its identity and stop this dataset's HPO
+before opening either full test. Close pending optimizer trials with an
+explicit validation-stop reason and reclaim their redundant checkpoint state.
+Evaluate the baseline and one fixed selected model on the complete local test.
+Any test outcome, including a loss, leaves this dataset search closed in this
+campaign. A rejected validation gate opens no test and resumes the original
+12-configuration search. Its validation results remain reusable.
+
+`confirm_stage2_candidates.py` implements this gate. `early_validation_decision.json`
+records the full-validation evidence; promoted `selection.json` locks the
+decision before test; `final_result.json` reports the actual outcome without
+forcing a positive claim. The active FB score runner can be observed by exact
+PID/start ticks/command and immutable runner hash during a controller reload.
+
 Current user contract (2026-10-30): all three datasets must show measured
 free-generation EM improvement, one training seed is sufficient, and
 hyperparameter search is restricted to Stage 2. This phase uses seed 2026.

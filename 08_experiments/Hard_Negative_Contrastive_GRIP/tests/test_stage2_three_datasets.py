@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -62,6 +63,31 @@ class EligibilityTests(unittest.TestCase):
 
 
 class CampaignPolicyTests(unittest.TestCase):
+    def test_recorded_immutable_score_runner_requires_exact_snapshot_and_dataset(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / 'project/configs/run_error_memory_wsl.sh'
+            source.parent.mkdir(parents=True)
+            source.write_text('#!/bin/bash\nsleep 2\n')
+            with patch.dict(os.environ, {'GRIP_REUSE_CACHE': str(root / 'cache')}):
+                command, environment = campaign.legacy.reuse.freeze_shell_launch(
+                    ['bash', str(source)], {**os.environ, 'STEP': 'score', 'DATASET': 'fb15k237_2'})
+                child = subprocess.Popen(command, env=environment)
+                try:
+                    proc = Path(f'/proc/{child.pid}')
+                    record = {'pid': child.pid, 'start_ticks': proc.joinpath('stat').read_text().split()[21],
+                        'command_sha256': hashlib.sha256(proc.joinpath('cmdline').read_bytes()).hexdigest(),
+                        'root': str(root), 'dataset': 'fb15k237_2', 'kind': 'immutable_scoring_runner',
+                        'runner_snapshot': command[1], 'runner_sha256': environment['GRIP_RUNNER_SOURCE_SHA256']}
+                    self.assertIsNone(campaign.RecordedStage(root, record).poll())
+                    with self.assertRaisesRegex(ValueError, 'immutable stage'):
+                        campaign.RecordedStage(root, {**record, 'dataset': 'nell23k'})
+                    with self.assertRaisesRegex(ValueError, 'immutable stage'):
+                        campaign.RecordedStage(root, {**record, 'runner_sha256': 'bad'})
+                finally:
+                    child.terminate()
+                    child.wait()
+
     def test_recorded_stage_does_not_follow_a_reused_pid(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
