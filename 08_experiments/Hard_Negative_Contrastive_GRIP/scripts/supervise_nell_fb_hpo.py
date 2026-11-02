@@ -69,6 +69,23 @@ def fingerprint(adapter):
             for name in ("adapter_config.json", "adapter_model.safetensors")}
 
 
+def same_asset_path(left, right):
+    """Accept actual filesystem aliases, never merely case-folded path text."""
+    if left == right:
+        return True
+    try:
+        return Path(left).samefile(right)
+    except (OSError, TypeError):
+        return False
+
+
+def evaluation_identity_matches(previous, current):
+    paths = ('adapter', 'eval_file')
+    return ({k: v for k, v in previous.items() if k not in paths}
+            == {k: v for k, v in current.items() if k not in paths}
+            and all(same_asset_path(previous.get(k), current.get(k)) for k in paths))
+
+
 def evaluate(adapter, source, destination, label):
     """A complete cache must match immutable weights, data, and row count."""
     identity = {"adapter": str(adapter), "adapter_sha256": fingerprint(adapter),
@@ -77,9 +94,11 @@ def evaluate(adapter, source, destination, label):
     destination.mkdir(parents=True, exist_ok=True)
     identity_file = destination / "cache_identity.json"
     expected = len(read(source)["questions"])
-    if identity_file.exists() and read(identity_file) != identity:
-        raise ValueError(f"Evaluation cache identity changed: {destination}")
-    hpo.write_json(identity_file, identity)
+    if identity_file.exists():
+        if not evaluation_identity_matches(read(identity_file), identity):
+            raise ValueError(f"Evaluation cache identity changed: {destination}")
+    else:
+        hpo.write_json(identity_file, identity)
     summary_path, predictions = destination / "summary.json", destination / "predictions.jsonl"
     if summary_path.exists():
         summary = read(summary_path)
@@ -88,8 +107,8 @@ def evaluate(adapter, source, destination, label):
             with predictions.open(encoding="utf-8") as stream:
                 count = sum(1 for _ in stream)
         if (summary.get("all", {}).get("count") != expected or count != expected
-                or summary.get("adapter") != str(adapter)
-                or summary.get("eval_file") != str(source)):
+                or not same_asset_path(summary.get("adapter"), str(adapter))
+                or not same_asset_path(summary.get("eval_file"), str(source))):
             raise ValueError(f"Incomplete or mismatched evaluation: {destination}")
         return float(summary["all"]["em"])
     hpo.run_logged([str(PYTHON), str(hpo.EVALUATOR), "--adapter", str(adapter),

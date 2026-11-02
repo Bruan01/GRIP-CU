@@ -1,0 +1,73 @@
+{
+  "verified_at": "2026-11-03T00:41:18.971738+08:00",
+  "claim_type": "parsed",
+  "dataset": "codexm",
+  "seed": 2026,
+  "test_count": 10311,
+  "selected_correct": 9958,
+  "baseline_correct": 9727,
+  "selected_test_em": 0.9657647172922122,
+  "matched_b1_test_em": 0.9433614586364077,
+  "delta_vs_matched_baseline_pp": 2.240325865580448,
+  "paper_reference_em": 0.9442,
+  "delta_vs_paper_pp": 2.156471729221221,
+  "paper_reference_source": {
+    "url": "https://arxiv.org/html/2511.07457v2",
+    "table": 3,
+    "row": "GRIP-qwen-7b",
+    "reference_percent": 94.42,
+    "provenance": "Previously checked source recorded in campaign; no fresh source fetch in this audit"
+  },
+  "matched_prompts_targets_ids_verified": true,
+  "exact_match_flags_recomputed": true,
+  "paired_counts": {
+    "both_correct": 9657,
+    "rescue": 301,
+    "both_wrong": 283,
+    "regression": 70
+  },
+  "selected_at_before_test": "2026-11-02T07:59:20.961635+00:00",
+  "search_stopped_before_test": true,
+  "retained_adapter": "/home/kieran/grip-cu-runs/paper_retained/codexm_seed2026_trial1_step32_20261103/adapter",
+  "retained_weight_sha256": {
+    "adapter_config.json": "bb29cb1efedee0ac572d266a72e2c4deb466062ebe1840128134e6867f6762c8",
+    "adapter_model.safetensors": "c74b9b3312026e1ff60f787ff18bb3d0a4e4e5f6c8963f7ebf1cd56a734611ba"
+  },
+  "retention_method": "Read-only hard link outside HPO cleanup; metadata and evidence copied",
+  "additional_weight_blocks_allocated": 0,
+  "source_adapter": "/home/kieran/grip-cu-runs/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/step_032/adapter",
+  "stage2_hyperparameters": {
+    "lambda_candidate": 0.11229873660012951,
+    "temperature": 0.8863961214238169,
+    "learning_rate": 0.000947622749310518,
+    "weight_decay": 8.889902164812924e-05
+  },
+  "selected_optimizer_step": 32,
+  "schedule_epochs": 5.0,
+  "method_adam_epsilon": 1e-08,
+  "control_adam_epsilon": 1e-08,
+  "control_schedule_epochs": 5.0,
+  "control_microbatch": 2,
+  "method_microbatch": 1,
+  "scope": "Single-seed measured local result; numerical exceedance of paper reference; paper protocol audit open",
+  "limitations": [
+    "No multi-seed or statistical claim",
+    "Current Stage2 schedule horizon5 epochs differs from paper CoDEx10 epochs; selected checkpoint is32 steps",
+    "Prompt/task generation and candidate protocol comparability to paper remains to be audited",
+    "Stage2 tuning changes multiple hyperparameters; not an isolated contrastive-loss effect",
+    "Matched Random9 and other ablation controls remain incomplete"
+  ],
+  "evidence_sha256": {
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/final_result.json": "87b05e9c3c0cfb435d3d653fe7f291589d02e381903e5cd2c8441fa49dd462ce",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/selection.json": "fda999a686aaa9fa3281c18ab9532e5627f1d7e845372ddde509cb1eaa71c0e5",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/dataset_contract.json": "cbbcd4735771f9aebff1afb13f45647f92724020650b23e593917b8319767c58",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/selected_test/predictions.jsonl": "cb83019ec225c190a6dd81c98946fab07929cdf0e30c3d199a28a701c5844bec",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/selected_test/summary.json": "030fa323e68f038d627c23d156165ed90fc8a5495a76a6592ba721d48f0785ca",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/b1_test/predictions.jsonl": "1fca9f83c45be52d34fae4a6f3ab2453dd57578b5501327306eb15be8316d761",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/b1_test/summary.json": "12e9cf531698856d12d9c8060677bb418e74b652c7cc0a5ba7ebe13a25ca5609",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run/run_config.json": "6860069f4476e6965d5df93a139a51cbd00f132eb0a125e30329d09e547b1a55",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/metadata.json": "0eeaf48f6512d829def96d4aaafb3eceb53877fbd1c48bc5a5149d31464537b1",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/wiring.json": "f16ca6e75758e1bbdcc4064bd662930f95ccc9d932566f5673d34b151f721048",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/codexm_taskfile_3090/metadata.json": "be5ee8217629610d07e70e80c6f283f6f7b18978df5eed35b28b002852b31a63"
+  }
+}
