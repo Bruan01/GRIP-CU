@@ -2,6 +2,7 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-02 NELL当前Stage2单种子完整测试 | `11_paper/artifacts/nell23k_single_seed_test_20261102.json`；对应HPO `selected_test/predictions.jsonl`、固定选模记录及Linux只读模型归档 | observed, seed2026, local protocol; paper protocol audit open | “4,340/4,943，EM=87.800931%；数值高于论文表3参考87.74%约0.060931个百分点；同提示当前B1为84.584261%。不声称多种子或纯损失隔离收益。” |
 | SC-CL sampler 契约 | `08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/counterfactuals.py` | observed implementation | “实现了……” |
 | 候选关系只来自 train vocabulary、known-pair 过滤 | sampler、task wiring、NELL bank manifest | observed implementation + NELL run audit | “NELL 运行使用 train-only 过滤……” |
 | NELL bank 完成冻结 | `.../results/runs/nell23k_structure_counterfactual_3090_20261021_02_artifacts/structure_counterfactual_bank/metadata.json` | observed | “写入 3,253 行、K=9、rows_failed=0……” |

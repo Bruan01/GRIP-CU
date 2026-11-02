@@ -1,0 +1,66 @@
+{
+  "verified_at": "2026-11-02T13:43:45.552549+08:00",
+  "claim_type": "parsed",
+  "dataset": "nell23k",
+  "seed": 2026,
+  "test_count": 4943,
+  "selected_correct": 4340,
+  "baseline_correct": 4181,
+  "selected_test_em": 0.8780093060894194,
+  "matched_b1_test_em": 0.8458426057050374,
+  "delta_vs_matched_baseline_pp": 3.2166700384381954,
+  "paper_reference_em": 0.8774,
+  "delta_vs_paper_pp": 0.0609306089419448,
+  "paper_reference_source": {
+    "url": "https://arxiv.org/html/2511.07457v2",
+    "table": 3,
+    "row": "GRIP-qwen-7b",
+    "verified_published_nell_em_percent": 87.74
+  },
+  "matched_prompts_targets_ids_verified": true,
+  "exact_match_flags_recomputed": true,
+  "paired_counts": {
+    "rescue": 321,
+    "both_correct": 4019,
+    "both_wrong": 441,
+    "regression": 162
+  },
+  "selected_at_before_test": "2026-11-01T22:32:29.988346+00:00",
+  "search_stopped_before_test": true,
+  "retained_adapter": "/home/kieran/grip-cu-runs/paper_retained/nell23k_seed2026_trial1_step32_20261102/adapter",
+  "retained_weight_sha256": {
+    "adapter_config.json": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+    "adapter_model.safetensors": "f42d175d134e732e238f0ec9c3d9a35631f3d74a2444011773c20fd4ebafca97"
+  },
+  "retention_method": "Read-only hard link to frozen tensor file; independent archive directory outside HPO cleanup; metadata/evidence copied",
+  "additional_weight_blocks_allocated": 0,
+  "source_adapter": "/home/kieran/grip-cu-runs/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/step_032/adapter",
+  "stage2_hyperparameters": {
+    "lambda_candidate": 0.11229873660012951,
+    "temperature": 0.8863961214238169,
+    "learning_rate": 0.000947622749310518,
+    "weight_decay": 8.889902164812924e-05
+  },
+  "selected_optimizer_step": 32,
+  "control_adam_epsilon": 0.0001,
+  "method_adam_epsilon": 1e-08,
+  "scope": "Single-seed measured local result; numerical exceedance of cited paper value, not a statistical or fully audited replication claim",
+  "limitations": [
+    "Prior NELL tests were inspected during earlier exploration",
+    "Task generation used validation few-shot references; validation is developmental",
+    "Stage2 includes tuned settings and a different Adam epsilon; pure contrastive-loss effect is not isolated",
+    "Published prompt/task-generation comparability remains to be fully audited"
+  ],
+  "evidence_sha256": {
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/final_result.json": "1fad25eef58061db58461538491d6cf4bc7ff4ba4a9be9cb352b0892f540bde5",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/selection.json": "114e759d8d39584522846abb0f3a246e968168eb234b04b0f56cb6cbf552b558",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/dataset_contract.json": "5cf425606f1b5e46d7343bef37b06c7de367cc23d23d91e7c331077b1906e1aa",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/selected_test/predictions.jsonl": "f07b44a087e2d63a34e62dc006dc63502dd7ec642bf717f45e5da3e1f4c06688",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/selected_test/summary.json": "7b0583147c0e81408b8da7a2c2cdff62c0683f7480287b7663e86ee8230c377e",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/b1_test/predictions.jsonl": "8cccf6e40b18a6e29bf2d67002619ab053c5978377345a901e9ca90ed74629b5",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/b1_test/summary.json": "c98650e65eafd4dec01b87bc5c39443b193ae09462a0ffc79a36832a292b659d",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run/run_config.json": "2d2d2e21d2422d7108462c9db58e45dd32cdac79d2409c8c8bd50ba791694b24",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/metadata.json": "16aaaeec2315a4245f77235468f495a8f12b89e81f5a5f39b0dfa21294e3b08a",
+    "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/wiring.json": "74f774e531e5951e3995c0340dd0f8f31b0d68faa840a68a46adeb3e9ef79075"
+  }
+}
