@@ -24,6 +24,14 @@ Qwen2.5-7B-Instruct，MLP-LoRA r24/alpha48，down/up/gate projection；S1最多1
 
 评分按完整实体文字解析问答，将同名实体对应的训练关系取并集，避免空格、内含and或重名导致假负例漏过滤；歧义实体对不猜测。生成任务完成后仍须核查实际可匹配QA数量，零匹配会阻止对比实验继续。
 
+## 2026-11-02 已有样本与重复文件清理
+
+用户提供的 `wn18rr/tasks/grip_wn18rr_tasks.json` 是已生成的训练样本，包含163662条context和12334条QA，并非已训练模型。该文件记录验证集参考、未启用节点属性QA以及指令格式context，与本轮协议不同；保留原样供后续复用审核，不自动纳入当前训练。
+
+经SHA-256逐一确认，`wn18rr/raw/` 的 `entity2text.txt`、`train.txt`、`valid.txt`、`test.txt` 与当前入口使用的 `data/raw_datasets/wn18rr/` 完全一致。按用户清理重复文件的要求，删除前者四份副本，保留后者及其下载报告、准备清单。共释放7445411字节（约7.10 MiB）。旧 `wn18rr/manifest.json` 保留为历史来源记录，其原始文件现在应从 `data/raw_datasets/wn18rr/` 获取。
+
+旧 `wn18rr/processed/` 的验证/测试文件与新产物哈希不同，不能认定为重复，继续保留；旧任务、生成计划、`wn18rr.json`、模型及训练断点均未删除。此次清理不解决长训磁盘空间缺口。
+
 ## 准备、启动与恢复
 
 从本实验目录执行（默认Python为项目grip-exp虚拟环境）：
