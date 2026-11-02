@@ -1,0 +1,19 @@
+{
+  "source": "WFRaain/TAG_datasets/WN18RR",
+  "triples": {
+    "train.txt": 86835,
+    "valid.txt": 3034,
+    "test.txt": 3134
+  },
+  "relations_in_splits": 11,
+  "entities": 40943,
+  "train_unknown_entities": 0,
+  "heldout_entity_coverage_verified": true,
+  "heldout_relation_coverage_verified": true,
+  "source_sha256": {
+    "entity2text.txt": "8f5c6f11753dafa879917b9bdf73d398ceb3bd4bed8d5553177e1e0f2c37521f",
+    "train.txt": "038612e783c215ee5f3ca9fbfca27b8d0739be1028fe4ee7c174aecf0b83d5df",
+    "valid.txt": "453ce7202afa58094a04d2b1560ee2b02660f1c260b32ce6651c8ccedd1028ab",
+    "test.txt": "0383bceaaa1096cf3c03ec021ed0048068e2355dbfc0239b292cefdac821cec5"
+  }
+}

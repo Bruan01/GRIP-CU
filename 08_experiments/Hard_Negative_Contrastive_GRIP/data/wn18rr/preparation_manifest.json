@@ -1,0 +1,107 @@
+{
+  "format_version": 1,
+  "dataset": "WN18RR",
+  "source": "WFRaain/TAG_datasets/WN18RR",
+  "source_sha256": {
+    "entity2text.txt": "8f5c6f11753dafa879917b9bdf73d398ceb3bd4bed8d5553177e1e0f2c37521f",
+    "train.txt": "038612e783c215ee5f3ca9fbfca27b8d0739be1028fe4ee7c174aecf0b83d5df",
+    "valid.txt": "453ce7202afa58094a04d2b1560ee2b02660f1c260b32ce6651c8ccedd1028ab",
+    "test.txt": "0383bceaaa1096cf3c03ec021ed0048068e2355dbfc0239b292cefdac821cec5"
+  },
+  "seed": 2026,
+  "rng": "numpy.random.RandomState (MT19937)",
+  "numpy_version": "2.2.6",
+  "num_candidates": 11,
+  "relation_order": [
+    "also see",
+    "derivationally related form",
+    "has part",
+    "hypernym",
+    "instance hypernym",
+    "member meronym",
+    "member of domain region",
+    "member of domain usage",
+    "similar to",
+    "synset domain topic of",
+    "verb group"
+  ],
+  "official_processor": "data/raw_datasets/wn18rr/process.py",
+  "deterministic_deviation": "Official list(set(train relation texts)) becomes sorted unique training relation texts; exact permutations may differ from an arbitrary original process run.",
+  "other_deviations": [
+    "Retain the final source line even without a trailing newline; reject blank or malformed lines.",
+    "Add independently sampled training references and deterministic smoke prefixes.",
+    "Reject unmapped held-out entities instead of emitting indices beyond the frozen graph."
+  ],
+  "eval_rng_schedule": [
+    "valid: permutation(all 11 texts) for every source triple",
+    "test: permutation(all 11 texts) for every source triple; continue valid RNG"
+  ],
+  "eval_subsampling": false,
+  "official_counts_validated": true,
+  "train_rng": "independent RandomState(seed) instances for selection and candidates",
+  "train_selection": "RandomState(seed).permutation(train count)[:train_questions]",
+  "smoke_selection": "first N per split from full; no candidate resampling",
+  "question_id_definition": "wn18rr:{train|validation|test}:{zero-based source triple index}",
+  "entity_text_policy": "official tab-separated text; unknown train entities append as Unknown; reject unmapped held-out entities",
+  "relation_text_policy": "' '.join(relation_id.split('_')[1:])",
+  "structural_distance_status": "not computed; true_hop is null",
+  "counts": {
+    "source_triples": {
+      "train": 86835,
+      "validation": 3034,
+      "test": 3134
+    },
+    "graph_nodes": 40943,
+    "graph_edges": 86835,
+    "train_relation_ids": 11,
+    "train_relation_texts": 11,
+    "train_unknown_entities": 0,
+    "full_questions": {
+      "train": 2000,
+      "validation": 3034,
+      "test": 3134
+    },
+    "smoke_questions": {
+      "train": 96,
+      "validation": 96,
+      "test": 96
+    }
+  },
+  "verification": {
+    "train_only_graph_and_references": true,
+    "source_triple_ids_and_entity_text": true,
+    "eleven_unique_train_text_candidates_including_gold": true,
+    "all_validation_and_test_source_lines_retained": true,
+    "official_and_recurrent_questions_match": true,
+    "smoke_identical_subset_of_full": true,
+    "source_hashes_unchanged_during_preparation": true
+  },
+  "raw_outputs": {
+    "rel2text.json": {
+      "sha256": "ee248dfabf95fbf625d10883a664a7ba73d57caa67ef222ca535fb4aa2ddacfc",
+      "bytes": 462
+    }
+  },
+  "outputs": {
+    "processed_train.json": {
+      "sha256": "0aab4d18782270eee04ce16205a024c5502d6d69f973505533953f510676b004",
+      "bytes": 25801770
+    },
+    "processed_val.json": {
+      "sha256": "6fd1a01e7e8de796e13f42811541afb17ed29fcdb9ad45da75b1816f1f2cc03c",
+      "bytes": 26360925
+    },
+    "processed_test.json": {
+      "sha256": "d55131d43451b966ae9ea6d906e40effb3ec8e72703699638fb71941e5f8e900",
+      "bytes": 26403350
+    },
+    "recurrent_relation_prediction_full.json": {
+      "sha256": "8afcb11652ab6fa6b1dc35b7eec7d2bd079e423ac5e7dcd3a3b71d2558c09657",
+      "bytes": 36197033
+    },
+    "recurrent_relation_prediction_smoke.json": {
+      "sha256": "0efa28c65853b34a09acbd5df74b5029e61dfbe0204a5b71368e127f44f87f09",
+      "bytes": 25153086
+    }
+  }
+}

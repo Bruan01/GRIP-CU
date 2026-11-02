@@ -320,7 +320,14 @@ def main() -> None:
         known_relations = known_pair_relations(args.raw_dir, splits=tuple(args.filter_splits))
     else:
         relation_text = json.loads(args.relation_text_file.read_text(encoding="utf-8"))
-        entity_text = load_fb_entity_text(args.raw_dir)
+        is_wn = (args.raw_dir / 'entity2text.txt').is_file() and not (args.raw_dir / 'entity2wikidata.json').is_file()
+        if is_wn:
+            from hard_negative_grip.wn_pairs import load_wn_entity_text, wn_question_entity_pairs
+            entity_text = load_wn_entity_text(args.raw_dir)
+            extract_pairs = wn_question_entity_pairs
+        else:
+            entity_text = load_fb_entity_text(args.raw_dir)
+            extract_pairs = fb_question_entity_pairs
         entity_texts = set(entity_text.values())
         known_relations = fb_known_pair_relations(
             args.raw_dir,
@@ -330,8 +337,10 @@ def main() -> None:
         )
 
         def pair_fn(text: str):
-            # Observed FB task file: every parsable question has exactly one split.
-            pairs = fb_question_entity_pairs(text, entity_texts)
+            # Reject ambiguous full-text identities rather than guessing a pair.
+            pairs = extract_pairs(text, entity_texts)
+            if is_wn and len(pairs) != 1:
+                raise ValueError('WN relation QA has missing or ambiguous entity identities; refusing unfiltered negatives')
             return pairs[0] if len(pairs) == 1 else None
 
     items = load_matchable(args, alias_index, pair_fn)
