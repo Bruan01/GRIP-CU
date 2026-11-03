@@ -32,6 +32,33 @@ class RefinementTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'identities changed'):
                     r.freeze_contract(out, out)
 
+    def test_contract_accepts_real_aliases_without_rewriting_frozen_plan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            real, alias = root / 'real', root / 'alias'
+            real.mkdir()
+            alias.symlink_to(real, target_is_directory=True)
+            asset = real / 'data.json'
+            asset.write_text('same input')
+            old = {'parent_campaign': str(real), 'parent_selection': str(asset),
+                   'parent_adapter': str(real), 'record': {'input': str(asset), 'seed': 2026},
+                   'asset_sha256': {str(asset): 'fixed-hash'}, 'params': {'learning_rate': .0002}}
+            new = {**old, 'parent_campaign': str(alias), 'parent_selection': str(alias / 'data.json'),
+                   'parent_adapter': str(alias), 'record': {'input': str(alias / 'data.json'), 'seed': 2026},
+                   'asset_sha256': {str(alias / 'data.json'): 'fixed-hash'}}
+            r.write(root / 'contract.json', old)
+            before = (root / 'contract.json').read_bytes()
+            with patch.object(r, 'contract', return_value=new):
+                self.assertEqual(r.freeze_contract(root, root), old)
+            self.assertEqual((root / 'contract.json').read_bytes(), before)
+            for changed in ({**new, 'asset_sha256': {str(alias / 'data.json'): 'changed'}},
+                            {**new, 'params': {'learning_rate': .0003}},
+                            {**new, 'record': {**new['record'], 'seed': 2027}}):
+                self.assertFalse(r.contracts_match(old, changed))
+            other = root / 'different.json'
+            other.write_bytes(asset.read_bytes())
+            self.assertFalse(r.contracts_match(old, {**new, 'asset_sha256': {str(other): 'fixed-hash'}}))
+
     def fixture(self, out, screen=0.87):
         record = {key: str(out / key) for key in
                   ('input', 'valid', 'test', 'raw', 'relation_eligibility', 'b1_adapter', 'sampler')}

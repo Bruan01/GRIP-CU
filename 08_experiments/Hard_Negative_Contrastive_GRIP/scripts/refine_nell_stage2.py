@@ -78,13 +78,45 @@ def contract(campaign):
         'stop': 'At most32 added steps; one full-validation finalist; one test only if full-validation gate passes; never reopen'}
 
 
+def contracts_match(previous, current):
+    """Keep frozen semantics/hashes strict while accepting real path aliases."""
+    top_paths = ('parent_campaign', 'parent_selection', 'parent_adapter')
+    record_paths = ('input', 'valid', 'test', 'raw', 's1_adapter', 'b1_adapter',
+                    'baseline_root', 'sampler', 'search_dir', 'relation_eligibility', 'entity_text_file')
+    special = (*top_paths, 'record', 'asset_sha256')
+    if ({k: v for k, v in previous.items() if k not in special}
+            != {k: v for k, v in current.items() if k not in special}):
+        return False
+    if not all(guard.same_asset_path(previous.get(k), current.get(k)) for k in top_paths):
+        return False
+    old_record, new_record = previous.get('record', {}), current.get('record', {})
+    if ({k: v for k, v in old_record.items() if k not in record_paths}
+            != {k: v for k, v in new_record.items() if k not in record_paths}):
+        return False
+    if not all(guard.same_asset_path(old_record.get(k), new_record.get(k)) for k in record_paths):
+        return False
+    old_assets, new_assets = previous.get('asset_sha256', {}), current.get('asset_sha256', {})
+    if len(old_assets) != len(new_assets):
+        return False
+    unmatched = dict(new_assets)
+    for path, digest in old_assets.items():
+        aliases = [other for other, value in unmatched.items()
+                   if value == digest and guard.same_asset_path(path, other)]
+        if len(aliases) != 1:
+            return False
+        del unmatched[aliases[0]]
+    return not unmatched
+
+
 def freeze_contract(campaign, out):
     expected = contract(campaign)
     path = out / 'contract.json'
-    if path.exists() and guard.read(path) != expected:
-        raise ValueError('Refinement contract or input identities changed')
-    if not path.exists():
-        write(path, expected)
+    if path.exists():
+        previous = guard.read(path)
+        if not contracts_match(previous, expected):
+            raise ValueError('Refinement contract or input identities changed')
+        return previous
+    write(path, expected)
     return expected
 
 
