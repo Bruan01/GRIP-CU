@@ -1,0 +1,99 @@
+{
+  "backend": "Python / matplotlib",
+  "matplotlib_version": "3.10.9",
+  "source_mode": "portable_csv",
+  "seed": 2026,
+  "seed_replicates_per_dataset": 1,
+  "error_bars": null,
+  "data_sha256": {
+    "direct_metrics.csv": "f270970a6a7b917b79385ade7156a839ea47a5df7b183d6e87c140dd28c4f447",
+    "direct_pairs.csv": "98376752eddf8ae86f3617676dabed0c63e1dcb912444d3133958e4cec96a254",
+    "paired_outcomes.csv": "144cb5c53564fb236b86c40978c16270fb3c4fcf89f21d89cf702fdf66fa23d2",
+    "ranking_metrics.csv": "ef08a69f12cf00c9fbb362a8edbc62857228cb88e18e95810e9d7edf2cddea6f",
+    "ranking_records.csv": "070de3ae9a0689e92f029802ac9478553d4391b5f40a64c5b7f50f3070644f5f"
+  },
+  "figures": [
+    {
+      "figure": "fig01_direct_decoding",
+      "width_mm": 183.0,
+      "height_mm": 96.0,
+      "text_outside_canvas": [],
+      "editable_svg_text_elements": 34,
+      "pdf_text_extractable": true,
+      "pdf_font_types": [
+        "/Type0",
+        "/Type0",
+        "/Type0"
+      ],
+      "tiff_dpi": 600,
+      "tiff_pixels": [
+        4322,
+        2267
+      ],
+      "exports": {
+        "svg": "e9214d69c7584a02d5c96f9305a6ae3adf26e796dbf65d21563f1476d7c46859",
+        "pdf": "3f041a0e6de8ac50b3cc1d5f2e7d7765a33b1058094f9297d7ead031fe9dcc3f",
+        "png": "654091f0955edc3937e871581b4224d2330ed2b7b00637aa88faef55016b5008",
+        "tiff": "2d2a10623482b727135f1dd1e3d62fa23045d2a8c32ffafcd7c317c642ef8707"
+      }
+    },
+    {
+      "figure": "fig02_paired_outcomes",
+      "width_mm": 183.0,
+      "height_mm": 104.0,
+      "text_outside_canvas": [],
+      "editable_svg_text_elements": 43,
+      "pdf_text_extractable": true,
+      "pdf_font_types": [
+        "/Type0",
+        "/Type0",
+        "/Type0"
+      ],
+      "tiff_dpi": 600,
+      "tiff_pixels": [
+        4322,
+        2456
+      ],
+      "exports": {
+        "svg": "5aedf8f6444f4a323a91c1364684df5776901b3c8081e99376209a07bbc57595",
+        "pdf": "1fdb8a283ca194ab24ed1337b7382c66f32df8c24feb3611f2844f4639a62b95",
+        "png": "986ec78d03cb0409331fd4d9595d6fa9185b3479251ffbfde39f4e8cb45b49b6",
+        "tiff": "e1ed67f927696f0eb0ec97074514a0d2ded5d9393a2f0fbd7352122d56a45766"
+      }
+    },
+    {
+      "figure": "fig03_historical_ranking",
+      "width_mm": 183.0,
+      "height_mm": 96.0,
+      "text_outside_canvas": [],
+      "editable_svg_text_elements": 36,
+      "pdf_text_extractable": true,
+      "pdf_font_types": [
+        "/Type0",
+        "/Type0",
+        "/Type0"
+      ],
+      "tiff_dpi": 600,
+      "tiff_pixels": [
+        4322,
+        2267
+      ],
+      "exports": {
+        "svg": "1ad503d07da6c30b67e1107154cb39955163ef3808ff8b055f17686390621097",
+        "pdf": "fd1353a752e9f8db27149ba5c1d648f627010bfbe4281591b4a965b43957e741",
+        "png": "e434278bf7b1eb46ce1634f37e21631c67f521cf40e99b68192267a73009f455",
+        "tiff": "46e3ce247887383e2c7ee95c4237dd870923237e1ed847a26b3c419a6a846e90"
+      }
+    }
+  ],
+  "overview_pdf_pages": 3,
+  "visual_review": "See README for human visual inspection; automated bounds checks do not detect all overlaps.",
+  "latex_snippet_check": {
+    "engine": "XeLaTeX",
+    "passes": 2,
+    "pages": 2,
+    "overfull_boxes": 0,
+    "manuscript_modified": false
+  },
+  "portable_rebuild_data_sha256_unchanged": true
+}

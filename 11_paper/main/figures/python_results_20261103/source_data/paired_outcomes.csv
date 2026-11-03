@@ -1,0 +1,9 @@
+dataset,outcome,baseline_correct,selected_correct,count,n,percent
+nell23k,both_wrong,0,0,441,4943,8.921707465102164
+nell23k,rescue,0,1,321,4943,6.494031964394092
+nell23k,regression,1,0,162,4943,3.2773619259558973
+nell23k,both_correct,1,1,4019,4943,81.30689864454784
+codexm,both_wrong,0,0,283,10311,2.744641644845311
+codexm,rescue,0,1,301,10311,2.919212491513917
+codexm,regression,1,0,70,10311,0.6788866259334692
+codexm,both_correct,1,1,9657,10311,93.65725923770731

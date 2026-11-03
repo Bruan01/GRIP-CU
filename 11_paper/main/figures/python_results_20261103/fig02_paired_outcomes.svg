@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="518.740157pt" height="294.80315pt" viewBox="0 0 518.740157 294.80315" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-03T22:47:46.725473</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.9, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 294.80315 
+L 518.740157 294.80315 
+L 518.740157 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 68.655118 224.050394 
+L 242.588976 224.050394 
+L 242.588976 50.116535 
+L 68.655118 50.116535 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 68.655118 50.116535 
+L 155.622047 50.116535 
+L 155.622047 137.083465 
+L 68.655118 137.083465 
+z
+" clip-path="url(#p8c3c18c869)" style="fill: #f1f2f4; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 155.622047 50.116535 
+L 242.588976 50.116535 
+L 242.588976 137.083465 
+L 155.622047 137.083465 
+z
+" clip-path="url(#p8c3c18c869)" style="fill: #e2f0ec; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 68.655118 137.083465 
+L 155.622047 137.083465 
+L 155.622047 224.050394 
+L 68.655118 224.050394 
+z
+" clip-path="url(#p8c3c18c869)" style="fill: #f8e9e1; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 155.622047 137.083465 
+L 242.588976 137.083465 
+L 242.588976 224.050394 
+L 155.622047 224.050394 
+z
+" clip-path="url(#p8c3c18c869)" style="fill: #e3ebf3; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1"/>
+     <g id="text_1">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="112.138583" y="232.8693" transform="rotate(-0 112.138583 232.8693)">Wrong</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2"/>
+     <g id="text_2">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="199.105512" y="232.8693" transform="rotate(-0 199.105512 232.8693)">Correct</text>
+     </g>
+    </g>
+    <g id="text_3">
+     <text style="font-size: 7.2px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="155.622047" y="243.795956" transform="rotate(-0 155.622047 243.795956)">Stage-2 SC-CL prediction</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_3"/>
+     <g id="text_4">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: end" x="65.155118" y="96.259453" transform="rotate(-0 65.155118 96.259453)">Wrong</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_4"/>
+     <g id="text_5">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: end" x="65.155118" y="183.226382" transform="rotate(-0 65.155118 183.226382)">Correct</text>
+     </g>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 7.2px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="33.111024" y="137.083465" transform="rotate(-90 33.111024 137.083465)">Matched B1 prediction</text>
+    </g>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: start" x="47.783055" y="40.550173" transform="rotate(-0 47.783055 40.550173)">a</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="112.138583" y="75.529169" transform="rotate(-0 112.138583 75.529169)">Both wrong</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="112.138583" y="98.215754" transform="rotate(-0 112.138583 98.215754)">441</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="112.138583" y="117.273295" transform="rotate(-0 112.138583 117.273295)">8.92%</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #307f71" x="199.105512" y="75.529169" transform="rotate(-0 199.105512 75.529169)">Rescue (+)</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #307f71" x="199.105512" y="98.215754" transform="rotate(-0 199.105512 98.215754)">321</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="199.105512" y="117.273295" transform="rotate(-0 199.105512 117.273295)">6.49%</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #b36449" x="112.138583" y="162.496098" transform="rotate(-0 112.138583 162.496098)">Regression (−)</text>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #b36449" x="112.138583" y="185.182683" transform="rotate(-0 112.138583 185.182683)">162</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="112.138583" y="204.240224" transform="rotate(-0 112.138583 204.240224)">3.28%</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="199.105512" y="162.496098" transform="rotate(-0 199.105512 162.496098)">Both correct</text>
+   </g>
+   <g id="text_18">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="199.105512" y="185.182683" transform="rotate(-0 199.105512 185.182683)">4,019</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="199.105512" y="204.240224" transform="rotate(-0 199.105512 204.240224)">81.31%</text>
+   </g>
+   <g id="text_20">
+    <!-- NELL23K | $n$ = 4,943 -->
+    <g transform="translate(68.655118 38.116535)">
+     <text>
+      <tspan x="0" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">N</tspan>
+      <tspan x="6.695312" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">E</tspan>
+      <tspan x="12.160156" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">L</tspan>
+      <tspan x="17.257812" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">L</tspan>
+      <tspan x="22.355469" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">2</tspan>
+      <tspan x="27.921875" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">3</tspan>
+      <tspan x="33.488281" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">K</tspan>
+      <tspan x="39.6875" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="42.472656" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">|</tspan>
+      <tspan x="45.394531" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="53.25" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="56.035156" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">=</tspan>
+      <tspan x="62.738281" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="65.523438" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">4</tspan>
+      <tspan x="71.089844" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">,</tspan>
+      <tspan x="74.128906" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">9</tspan>
+      <tspan x="79.695312" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">4</tspan>
+      <tspan x="85.261719" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">3</tspan>
+      <tspan x="48.179688" y="-0.890625" style="font-style: oblique; font-size: 8px; font-family: 'DejaVu Sans'">n</tspan>
+     </text>
+    </g>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_7">
+    <path d="M 333.212598 224.050394 
+L 507.146457 224.050394 
+L 507.146457 50.116535 
+L 333.212598 50.116535 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 333.212598 50.116535 
+L 420.179528 50.116535 
+L 420.179528 137.083465 
+L 333.212598 137.083465 
+z
+" clip-path="url(#pa105711a74)" style="fill: #f1f2f4; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 420.179528 50.116535 
+L 507.146457 50.116535 
+L 507.146457 137.083465 
+L 420.179528 137.083465 
+z
+" clip-path="url(#pa105711a74)" style="fill: #e2f0ec; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 333.212598 137.083465 
+L 420.179528 137.083465 
+L 420.179528 224.050394 
+L 333.212598 224.050394 
+z
+" clip-path="url(#pa105711a74)" style="fill: #f8e9e1; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 420.179528 137.083465 
+L 507.146457 137.083465 
+L 507.146457 224.050394 
+L 420.179528 224.050394 
+z
+" clip-path="url(#pa105711a74)" style="fill: #e3ebf3; stroke: #ffffff; stroke-width: 3; stroke-linejoin: miter"/>
+   </g>
+   <g id="matplotlib.axis_3">
+    <g id="xtick_3">
+     <g id="line2d_5"/>
+     <g id="text_21">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="376.696063" y="232.8693" transform="rotate(-0 376.696063 232.8693)">Wrong</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_6"/>
+     <g id="text_22">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="463.662992" y="232.8693" transform="rotate(-0 463.662992 232.8693)">Correct</text>
+     </g>
+    </g>
+    <g id="text_23">
+     <text style="font-size: 7.2px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="420.179528" y="243.795956" transform="rotate(-0 420.179528 243.795956)">Stage-2 SC-CL prediction</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_4">
+    <g id="ytick_3">
+     <g id="line2d_7"/>
+     <g id="text_24">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: end" x="329.712598" y="96.259453" transform="rotate(-0 329.712598 96.259453)">Wrong</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_8"/>
+     <g id="text_25">
+      <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: end" x="329.712598" y="183.226382" transform="rotate(-0 329.712598 183.226382)">Correct</text>
+     </g>
+    </g>
+    <g id="text_26">
+     <text style="font-size: 7.2px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="297.668505" y="137.083465" transform="rotate(-90 297.668505 137.083465)">Matched B1 prediction</text>
+    </g>
+   </g>
+   <g id="text_27">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: start" x="312.340535" y="40.550173" transform="rotate(-0 312.340535 40.550173)">b</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="376.696063" y="75.529169" transform="rotate(-0 376.696063 75.529169)">Both wrong</text>
+   </g>
+   <g id="text_29">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="376.696063" y="98.215754" transform="rotate(-0 376.696063 98.215754)">283</text>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="376.696063" y="117.273295" transform="rotate(-0 376.696063 117.273295)">2.74%</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #307f71" x="463.662992" y="75.529169" transform="rotate(-0 463.662992 75.529169)">Rescue (+)</text>
+   </g>
+   <g id="text_32">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #307f71" x="463.662992" y="98.215754" transform="rotate(-0 463.662992 98.215754)">301</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="463.662992" y="117.273295" transform="rotate(-0 463.662992 117.273295)">2.92%</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #b36449" x="376.696063" y="162.496098" transform="rotate(-0 376.696063 162.496098)">Regression (−)</text>
+   </g>
+   <g id="text_35">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #b36449" x="376.696063" y="185.182683" transform="rotate(-0 376.696063 185.182683)">70</text>
+   </g>
+   <g id="text_36">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="376.696063" y="204.240224" transform="rotate(-0 376.696063 204.240224)">0.68%</text>
+   </g>
+   <g id="text_37">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="463.662992" y="162.496098" transform="rotate(-0 463.662992 162.496098)">Both correct</text>
+   </g>
+   <g id="text_38">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #333333" x="463.662992" y="185.182683" transform="rotate(-0 463.662992 185.182683)">9,657</text>
+   </g>
+   <g id="text_39">
+    <text style="font-size: 7px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="463.662992" y="204.240224" transform="rotate(-0 463.662992 204.240224)">93.66%</text>
+   </g>
+   <g id="text_40">
+    <!-- CoDEx-M | $n$ = 10,311 -->
+    <g transform="translate(333.212598 38.116535)">
+     <text>
+      <tspan x="0" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">C</tspan>
+      <tspan x="5.871094" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">o</tspan>
+      <tspan x="11.367188" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">D</tspan>
+      <tspan x="18.007812" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">E</tspan>
+      <tspan x="23.472656" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">x</tspan>
+      <tspan x="28.632812" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">-</tspan>
+      <tspan x="31.953125" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">M</tspan>
+      <tspan x="39.914062" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="42.699219" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">|</tspan>
+      <tspan x="45.621094" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="53.476562" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="56.261719" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">=</tspan>
+      <tspan x="62.964844" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'"> </tspan>
+      <tspan x="65.75" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">1</tspan>
+      <tspan x="71.316406" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">0</tspan>
+      <tspan x="76.882812" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">,</tspan>
+      <tspan x="79.921875" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">3</tspan>
+      <tspan x="85.488281" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">1</tspan>
+      <tspan x="91.054688" y="-0.890625" style="font-weight: 700; font-size: 8px; font-family: 'DejaVu Sans'">1</tspan>
+      <tspan x="48.40625" y="-0.890625" style="font-style: oblique; font-size: 8px; font-family: 'DejaVu Sans'">n</tspan>
+     </text>
+    </g>
+   </g>
+  </g>
+  <g id="text_41">
+   <text style="font-size: 6.8px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="259.370079" y="260.900787" transform="rotate(-0 259.370079 260.900787)">Each cell: number of test questions and percentage of that dataset’s full test cohort.</text>
+  </g>
+  <g id="text_42">
+   <text style="font-size: 6.8px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle" x="259.370079" y="277.114961" transform="rotate(-0 259.370079 277.114961)">Rescue − regression = net gain: 321 − 162 = 159 (NELL23K); 301 − 70 = 231 (CoDEx-M).</text>
+  </g>
+  <g id="text_43">
+   <text style="font-size: 6.5px; font-family: 'Arial', 'DejaVu Sans', 'Liberation Sans', sans-serif; text-anchor: middle; fill: #555555" x="259.370079" y="289.496693" transform="rotate(-0 259.370079 289.496693)">Single seed (2026); same prompts, candidate order, targets and question IDs within each dataset.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p8c3c18c869">
+   <rect x="68.655118" y="50.116535" width="173.933858" height="173.933858"/>
+  </clipPath>
+  <clipPath id="pa105711a74">
+   <rect x="333.212598" y="50.116535" width="173.933858" height="173.933858"/>
+  </clipPath>
+ </defs>
+</svg>
