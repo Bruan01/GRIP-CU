@@ -65,7 +65,7 @@ def write_csv(name, rows):
     require(bool(rows), f"Empty data: {name}")
     DATA.mkdir(exist_ok=True)
     with (DATA / name).open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
 
@@ -343,6 +343,9 @@ def export(fig, name, pdf):
     for fmt, dpi in [('svg', 300), ('pdf', 300), ('png', 300), ('tiff', 600)]:
         kw = {'pil_kwargs': {'compression': 'tiff_lzw'}} if fmt == 'tiff' else {}
         fig.savefig(HERE / f'{name}.{fmt}', dpi=dpi, **kw)
+        if fmt == 'svg':
+            path = HERE / f'{name}.svg'
+            path.write_text('\n'.join(line.rstrip() for line in path.read_text().splitlines())+'\n')
     pdf.savefig(fig)
     svg = ET.parse(HERE / f'{name}.svg').getroot()
     text_count = sum(el.tag.endswith('}text') for el in svg.iter())
@@ -360,6 +363,7 @@ def export(fig, name, pdf):
     plt.close(fig)
     return {'figure': name, 'width_mm': round(size[0], 2), 'height_mm': round(size[1], 2),
             'text_outside_canvas': outside, 'editable_svg_text_elements': text_count,
+            'svg_whitespace_normalized': True,
             'pdf_text_extractable': True, 'pdf_font_types': font_types,
             'tiff_dpi': 600, 'tiff_pixels': tiff_size,
             'exports': {ext: sha(HERE/f'{name}.{ext}') for ext in ['svg', 'pdf', 'png', 'tiff']}}

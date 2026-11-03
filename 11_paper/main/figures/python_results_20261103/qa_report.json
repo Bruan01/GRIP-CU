@@ -6,11 +6,11 @@
   "seed_replicates_per_dataset": 1,
   "error_bars": null,
   "data_sha256": {
-    "direct_metrics.csv": "f270970a6a7b917b79385ade7156a839ea47a5df7b183d6e87c140dd28c4f447",
-    "direct_pairs.csv": "98376752eddf8ae86f3617676dabed0c63e1dcb912444d3133958e4cec96a254",
-    "paired_outcomes.csv": "144cb5c53564fb236b86c40978c16270fb3c4fcf89f21d89cf702fdf66fa23d2",
-    "ranking_metrics.csv": "ef08a69f12cf00c9fbb362a8edbc62857228cb88e18e95810e9d7edf2cddea6f",
-    "ranking_records.csv": "070de3ae9a0689e92f029802ac9478553d4391b5f40a64c5b7f50f3070644f5f"
+    "direct_metrics.csv": "d31288363dfbf718dba2303e925ffb800af59665683b514f9a4b4c6ea43d8fe5",
+    "direct_pairs.csv": "0b8231b492dede2c0c8418332f7926fdafb2e2e74f9521f70031c97f13a8a9f4",
+    "paired_outcomes.csv": "45555f436b71f1c08190efe06d47756618dde045988e97c0e1ac00265b8685e6",
+    "ranking_metrics.csv": "0daee1ec2d5ec7834b31bfab06b800c0190272d623078eef7195331252ec2668",
+    "ranking_records.csv": "8a72d06a60c9611a96962047d42996d5d47d60cbcfb43f3dbb6d8777326ae8ce"
   },
   "figures": [
     {
@@ -19,6 +19,7 @@
       "height_mm": 96.0,
       "text_outside_canvas": [],
       "editable_svg_text_elements": 34,
+      "svg_whitespace_normalized": true,
       "pdf_text_extractable": true,
       "pdf_font_types": [
         "/Type0",
@@ -31,8 +32,8 @@
         2267
       ],
       "exports": {
-        "svg": "e9214d69c7584a02d5c96f9305a6ae3adf26e796dbf65d21563f1476d7c46859",
-        "pdf": "3f041a0e6de8ac50b3cc1d5f2e7d7765a33b1058094f9297d7ead031fe9dcc3f",
+        "svg": "15df59d5f1c6b2380573333fbe38352333ec36511afcc7b75465c9e8bba9d90e",
+        "pdf": "caa77711d7198e17c27f74968faba988505f969c9ebe8fe33ab988ce09d4fba4",
         "png": "654091f0955edc3937e871581b4224d2330ed2b7b00637aa88faef55016b5008",
         "tiff": "2d2a10623482b727135f1dd1e3d62fa23045d2a8c32ffafcd7c317c642ef8707"
       }
@@ -43,6 +44,7 @@
       "height_mm": 104.0,
       "text_outside_canvas": [],
       "editable_svg_text_elements": 43,
+      "svg_whitespace_normalized": true,
       "pdf_text_extractable": true,
       "pdf_font_types": [
         "/Type0",
@@ -55,8 +57,8 @@
         2456
       ],
       "exports": {
-        "svg": "5aedf8f6444f4a323a91c1364684df5776901b3c8081e99376209a07bbc57595",
-        "pdf": "1fdb8a283ca194ab24ed1337b7382c66f32df8c24feb3611f2844f4639a62b95",
+        "svg": "d3c888d9a499509afa999c63bbc9f3ad4f472c63ff6006e88eddc306b321196a",
+        "pdf": "84b5d450a697bbb6f6ad31142b6fee5b5c9fffe04bba65e488412be2ed03b37c",
         "png": "986ec78d03cb0409331fd4d9595d6fa9185b3479251ffbfde39f4e8cb45b49b6",
         "tiff": "e1ed67f927696f0eb0ec97074514a0d2ded5d9393a2f0fbd7352122d56a45766"
       }
@@ -67,6 +69,7 @@
       "height_mm": 96.0,
       "text_outside_canvas": [],
       "editable_svg_text_elements": 36,
+      "svg_whitespace_normalized": true,
       "pdf_text_extractable": true,
       "pdf_font_types": [
         "/Type0",
@@ -79,8 +82,8 @@
         2267
       ],
       "exports": {
-        "svg": "1ad503d07da6c30b67e1107154cb39955163ef3808ff8b055f17686390621097",
-        "pdf": "fd1353a752e9f8db27149ba5c1d648f627010bfbe4281591b4a965b43957e741",
+        "svg": "480a8dc7b1d87b9a32457438513f0159380c7ab5d965a9c592634c9fae024127",
+        "pdf": "e1bba72033d18680423e9a4acdc02b88d6d0baad8ee99842944d86ae9adfb0a1",
         "png": "e434278bf7b1eb46ce1634f37e21631c67f521cf40e99b68192267a73009f455",
         "tiff": "46e3ce247887383e2c7ee95c4237dd870923237e1ed847a26b3c419a6a846e90"
       }
@@ -88,6 +91,7 @@
   ],
   "overview_pdf_pages": 3,
   "visual_review": "See README for human visual inspection; automated bounds checks do not detect all overlaps.",
+  "portable_rebuild_data_sha256_unchanged": true,
   "latex_snippet_check": {
     "engine": "XeLaTeX",
     "passes": 2,
@@ -95,5 +99,5 @@
     "overfull_boxes": 0,
     "manuscript_modified": false
   },
-  "portable_rebuild_data_sha256_unchanged": true
+  "csv_line_ending": "LF; verified identical parsed data after normalization"
 }

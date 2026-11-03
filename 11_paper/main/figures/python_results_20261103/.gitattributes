@@ -1,0 +1,2 @@
+# Preserve artifact bytes so evidence/export digests survive checkout.
+* -text
