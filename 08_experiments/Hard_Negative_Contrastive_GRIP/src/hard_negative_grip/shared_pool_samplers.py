@@ -1022,6 +1022,15 @@ def verify_listed_manifest_wiring(
     for variant in resolved_variants:
         path = manifest_paths[variant]
         manifest = load_score_hard_manifest(path)
+        generation_only = {qid for qid, row in manifest.items() if row.get('contrastive_excluded') is True}
+        if generation_only:
+            task_sha = file_sha256(task_path)
+            for qid in generation_only:
+                row = manifest[qid]
+                if (row['negative_relations'] or row['hard_negative_relations'] or row['uniform_negative_relations'] or
+                        row.get('lambda_candidate') != 0 or row.get('exclusion_task_sha256') != task_sha or
+                        row.get('exclusion_reason') != 'missing_or_ambiguous_full_entity_identity'):
+                    raise ValueError(f'Invalid generation-only exclusion for {qid}')
         if identity == "original":
             missing = [question_id for question_id in question_ids if question_id not in manifest]
             if missing:
@@ -1051,7 +1060,7 @@ def verify_listed_manifest_wiring(
         missing_attached = [
             question_id
             for question_id, count in zip(question_ids, listed_counts)
-            if question_id in manifest and count < 1
+            if question_id in manifest and question_id not in generation_only and count < 1
         ]
         if missing_attached:
             raise ValueError(f"{path} attached no negatives for {missing_attached[0]}")
@@ -1072,13 +1081,14 @@ def verify_listed_manifest_wiring(
         lambda_values = [
             float(meta["lambda_candidate"])
             for meta in metas
-            if meta.get("lambda_candidate") is not None
+            if meta.get("lambda_candidate") is not None and meta['question_id'] not in generation_only
         ]
         variants_out[variant] = {
             "manifest": str(path),
             "manifest_sha256": file_sha256(path),
             "n_qa": len(metas),
             "n_listed": n_listed,
+            "n_generation_only_excluded": len(generation_only),
             "k_min": min(listed_only),
             "k_max": max(listed_only),
             "k_mean": float(sum(listed_only) / len(listed_only)),

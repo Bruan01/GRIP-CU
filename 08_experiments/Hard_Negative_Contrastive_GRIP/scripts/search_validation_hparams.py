@@ -129,6 +129,47 @@ def freeze_manifest(source, output, params):
         rows.append(json.dumps(row, ensure_ascii=False) + "\n")
     if not rows:
         raise ValueError("Empty calibrated manifest")
+    # A strict full-task trainer requires an explicit row for every relation QA.
+    # Preserve identity exclusions as audited zero-weight rows, rather than
+    # dropping QA from generation training or silently allowing missing rows.
+    policy_path = source.parent / 'policy.json'
+    if policy_path.is_file():
+        policy = read_json(policy_path)
+        metadata_path = policy.get('source_metadata')
+        if metadata_path:
+            meta_path = Path(metadata_path)
+            metadata = read_json(meta_path)
+            if metadata.get('entity_pair_required'):
+                from hard_negative_grip.task_file import assistant_gold, normalize_relation
+                audit = read_json(meta_path.parent / 'qa_eligibility.json')
+                task_path = Path(metadata['dataset'])
+                task_sha = sha256(task_path)
+                task = read_json(task_path)
+                exclusions = audit['excluded']
+                if (not audit['require_entity_pair'] or audit['task_file_sha256'] != task_sha or
+                        audit['excluded_count'] != len(exclusions) or
+                        metadata['excluded_identity_count'] != len(exclusions) or
+                        audit['eligible_before_sharding'] != len(seen) or
+                        policy.get('filter_splits') != ['train']):
+                    raise ValueError('Identity exclusion audit does not match this frozen source/task')
+                for excluded in exclusions:
+                    qid = excluded['qa_id']
+                    prefix, _, index = qid.partition(':')
+                    if prefix != 'task_qa' or not index.isdigit() or int(index) >= len(task['qa_samples']):
+                        raise ValueError('Invalid identity exclusion QA ID')
+                    gold = assistant_gold(task['qa_samples'][int(index)])
+                    if (qid in seen or excluded['reason'] != 'missing_or_ambiguous_full_entity_identity' or
+                            normalize_relation(gold) != normalize_relation(excluded['gold_relation'])):
+                        raise ValueError('Invalid/overlapping identity exclusion')
+                    seen.add(qid)
+                    row = {'question_id': qid, 'positive_relation': gold,
+                        'negative_relations': [], 'hard_negative_relations': [], 'uniform_negative_relations': [],
+                        'lambda_candidate': 0.0, 'hpo_source_lambda': 0.0,
+                        'contrastive_excluded': True, 'exclusion_reason': excluded['reason'],
+                        'exclusion_task_sha256': task_sha,
+                        'negative_source': 'identity_excluded_generation_only',
+                        'shared_pool': 'train_only_valid_negatives', 'variant': 'hpo_' + params['method']}
+                    rows.append(json.dumps(row, ensure_ascii=False) + '\n')
     freeze_text(output, "".join(rows))
 
 
