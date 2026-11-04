@@ -104,6 +104,19 @@ printf 'snapshot-ok\\n%s\\n' "$GRIP_HNG_ROOT"
         with self.assertRaisesRegex(ValueError, 'exact subset'):
             reuse.validation_parent(screen, {**subset, 'answers': ['wrong']})
 
+    def test_structured_question_reuses_exact_decoder_text_with_context_still_bound(self):
+        identity = {'weights': 'a', 'cohort': 'valid', 'record_context': 'graph-a', 'decoder': 32}
+        reuse.remember_predictions(identity, [{'question_id': 'old:0', 'split': 'test',
+            'question': 'q; candidates:a;b', 'target': ['a'], 'response': 'a', 'correct': True}])
+        sample = {'question_id': 'new:17', 'split': 'valid',
+                  'question': ['q; candidates:a;b', [12, 37]], 'answer': 'a'}
+        found = reuse.reusable_predictions(identity, [sample])
+        self.assertEqual(found[0]['question_id'], 'new:17')
+        self.assertEqual(found[0]['question'], 'q; candidates:a;b')
+        self.assertEqual(reuse.reusable_predictions({**identity, 'record_context': 'graph-b'}, [sample]), [])
+        self.assertEqual(reuse.reusable_predictions(identity,
+            [{**sample, 'question': ['q; candidates:b;a', [12, 37]]}]), [])
+
     def test_complete_prediction_reuse_never_loads_gpu_model(self):
         import evaluate_adapter as evaluator
         source, adapter = self.root / 'valid.json', self.root / 'adapter'
@@ -114,7 +127,7 @@ printf 'snapshot-ok\\n%s\\n' "$GRIP_HNG_ROOT"
         base.mkdir(parents=True)
         (base / 'config.json').write_text('{}')
         record = {'id': '0', 'title': 'fixture', 'graph': {},
-                  'questions': ['q1', 'q2'], 'answers': ['a', 'b']}
+                  'questions': [['q1', [0, 1]], ['q2', [1, 2]]], 'answers': ['a', 'b']}
         reuse.write(source, record)
         args = SimpleNamespace(adapter=adapter, eval_file=source,
             output_dir=self.root / 'evaluation', model_cache_dir=self.root / 'models',
@@ -122,12 +135,15 @@ printf 'snapshot-ok\\n%s\\n' "$GRIP_HNG_ROOT"
             resume=True, label='fixture', progress_every=100)
         identity = reuse.inference_identity(adapter, args, record, 'Qwen/Qwen2.5-7B-Instruct')
         reuse.remember_predictions(identity, [
-            {'question_id': 'old:' + str(i), 'split': 'test', 'question': q,
+            {'question_id': 'old:' + str(i), 'split': 'test', 'question': reuse.decoder_question_text(q),
              'target': [a], 'response': a, 'raw_response': a, 'correct': True,
              'in_list': True, 'candidate_valid': True}
             for i, (q, a) in enumerate(zip(record['questions'], record['answers']))])
         with patch.object(evaluator, 'parse_args', return_value=args), \
              patch.object(evaluator, 'load_adapter', side_effect=AssertionError('GPU must not load')):
+            evaluator.main()
+            # A second invocation must accept saved string questions against
+            # the structured graph record, still without loading any model.
             evaluator.main()
         self.assertEqual(reuse.read(args.output_dir / 'reuse_stats.json')['new_rows_required'], 0)
         self.assertEqual(reuse.read(args.output_dir / 'summary.json')['all']['em'], 1)

@@ -122,6 +122,21 @@ class SearchDecisionTests(unittest.TestCase):
             self.assertFalse(any(source.name == "test.json" for _, source in calls))
             self.assertTrue((root / "fb15k237_2/search/no_go.json").exists())
 
+    def test_custom_initial_trials_replace_defaults_and_are_not_requeued(self):
+        import optuna
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            proposals = [dict(lambda_candidate=.05, temperature=.8863961214238169,
+                              learning_rate=.000947622749310518, weight_decay=8.889902164812924e-05),
+                         dict(lambda_candidate=.11229873660012951, temperature=.8863961214238169,
+                              learning_rate=.0006, weight_decay=8.889902164812924e-05)]
+            spec = {'search_only': True, 'resource_cap': 32, 'initial_trials': proposals}
+            self.run_search(root, .9, spec_patch=spec)
+            self.run_search(root, .9, spec_patch=spec)
+            study = optuna.load_study(study_name='codexm_sccl_validation_checkpoint_v1',
+                storage=f'sqlite:///{root / "fb15k237_2/search/study.sqlite3"}')
+            self.assertEqual([trial.params for trial in study.trials], proposals)
+
     def test_selection_is_frozen_before_test_and_selected_weights_are_unchanged(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

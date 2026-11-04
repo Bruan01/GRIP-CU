@@ -79,7 +79,8 @@ def main() -> None:
     expected = {sample['question_id']: sample for sample in samples}
     for row in existing:
         sample = expected.get(row.get('question_id'))
-        if sample is None or sample['question'] != row.get('question') or reuse.target_list(sample['answer']) != row.get('target'):
+        if (sample is None or reuse.decoder_question_text(sample['question']) != row.get('question')
+                or reuse.target_list(sample['answer']) != row.get('target')):
             raise ValueError('Resumed question ID refers to a different prompt or target')
     shared = reuse.reusable_predictions(identity, samples)
     # Local complete work takes priority over a shared subset.

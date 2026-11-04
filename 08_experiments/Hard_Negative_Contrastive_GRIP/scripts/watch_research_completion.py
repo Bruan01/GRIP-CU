@@ -49,12 +49,11 @@ def recovery_decision(state, alive, occupied, gpu_pids, restarts, maximum=3):
     return 'resume_nell'
 
 
-def launch_nell(campaign, out):
-    session = 'grip_nell_stage2_refine'
+def launch_nell(campaign, out, script=None, session='grip_nell_stage2_refine'):
     if subprocess.run(['tmux', 'has-session', '-t', '=' + session], capture_output=True).returncode == 0:
         return False
     command = 'exec ' + shlex.join([str(guard.PYTHON), '-u',
-        str(guard.HNG / 'scripts/refine_nell_stage2.py'), '--campaign', str(campaign), '--out', str(out)])
+        str(script or guard.HNG / 'scripts/refine_nell_stage2.py'), '--campaign', str(campaign), '--out', str(out)])
     command += ' >> ' + shlex.quote(str(out / 'supervisor.log')) + ' 2>&1'
     subprocess.run(['tmux', 'new-session', '-d', '-s', session, '-c', str(guard.REPO), command], check=True)
     return True
@@ -73,7 +72,7 @@ def existing_report(dataset, result):
     return {**report, 'target_achieved': report['selected_test_em'] > max(PAPER[dataset], report['matched_b1_test_em'])}
 
 
-def inspect(campaign, out, restarts):
+def inspect(campaign, out, restarts, nell_script=None, nell_archive=None, nell_session='grip_nell_stage2_refine'):
     main = read(campaign / 'status.json')
     watchdog = read(campaign / 'watchdog.json')
     nell = read(out / 'status.json')
@@ -103,13 +102,16 @@ def inspect(campaign, out, restarts):
     if (out / 'final_result.json').exists():
         c = guard.read(out / 'contract.json')
         audit = evidence.audit_selected(out, c['record'], Path(c['record']['search_dir']) / 'b1_test',
-            RETAINED / 'nell_refinement', c['matched_b1_sha256'], c['asset_sha256'][c['record']['test']])
+            nell_archive or RETAINED / 'nell_refinement', c['matched_b1_sha256'], c['asset_sha256'][c['record']['test']])
         report['nell_refinement'] = {'status': 'audited', 'selected_test_em': audit['selected_test_em'],
                                     'retained_adapter': audit['retained_adapter']}
+        followup = guard.read(out / 'final_result.json')
+        if 'improves_previous_frozen_test' in followup:
+            report['nell_refinement']['improves_previous_frozen_test'] = followup['improves_previous_frozen_test']
     elif (out / 'no_go.json').exists():
         report['nell_refinement'] = {'status': 'no_validation_improvement', 'decision': read(out / 'no_go.json')}
     else:
-        script = guard.HNG / 'scripts/refine_nell_stage2.py'
+        script = nell_script or guard.HNG / 'scripts/refine_nell_stage2.py'
         alive = worker_alive(nell, script, out)
         occupied = main_watch.lock_busy(out / 'run.lock')
         pids = [] if alive else main_watch.gpu_processes()
@@ -118,7 +120,7 @@ def inspect(campaign, out, restarts):
         if decision == 'retry_limit_reached':
             report.update(phase='needs_attention', error='NELL operational recovery budget exhausted')
         if decision == 'resume_nell':
-            if launch_nell(campaign, out):
+            if launch_nell(campaign, out, script, nell_session):
                 report['nell_automatic_restarts'] = restarts + 1
                 report['nell_recovery_action'] = 'restarted_nell_worker'
             else:
@@ -139,15 +141,21 @@ def main():
     parser.add_argument('--campaign', type=Path, default=guard.HNG / 'results/hpo/stage2_three_dataset_20261030')
     parser.add_argument('--out', type=Path, default=Path('/home/kieran/grip-cu-runs') / refinement.RUN_NAME)
     parser.add_argument('--once', action='store_true')
+    parser.add_argument('--nell-script', type=Path)
+    parser.add_argument('--nell-archive', type=Path)
+    parser.add_argument('--nell-session', default='grip_nell_stage2_refine')
+    parser.add_argument('--state-dir', type=Path)
     args = parser.parse_args()
     campaign, out = args.campaign.resolve(), args.out.resolve()
-    lock = (campaign / 'completion_watchdog.lock').open('a+')
+    state_dir = args.state_dir.resolve() if args.state_dir else campaign
+    state_dir.mkdir(parents=True, exist_ok=True)
+    lock = (state_dir / 'completion_watchdog.lock').open('a+')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    status_path = campaign / 'completion_watchdog.json'
+    status_path = state_dir / 'completion_watchdog.json'
     restarts = int(read(status_path).get('nell_automatic_restarts', 0))
     while True:
         try:
-            report = inspect(campaign, out, restarts)
+            report = inspect(campaign, out, restarts, args.nell_script, args.nell_archive, args.nell_session)
             restarts = report['nell_automatic_restarts']
         except Exception as error:
             report = {'updated_at': guard.now(), 'monitor_pid': os.getpid(), 'phase': 'needs_attention',

@@ -1,0 +1,58 @@
+{
+  "launched_at": "2026-11-04T07:14:22.662740+00:00",
+  "state": "launched_pending_measurements",
+  "out": "/home/kieran/grip-cu-runs/nell23k_stage2_round2_20261104",
+  "sessions": [
+    "grip_nell_stage2_round2",
+    "grip_nell_round2_watch"
+  ],
+  "configurations": [
+    {
+      "lambda_candidate": 0.05,
+      "temperature": 0.8863961214238169,
+      "learning_rate": 0.000947622749310518,
+      "weight_decay": 8.889902164812924e-05
+    },
+    {
+      "lambda_candidate": 0.11229873660012951,
+      "temperature": 0.8863961214238169,
+      "learning_rate": 0.0006,
+      "weight_decay": 8.889902164812924e-05
+    }
+  ],
+  "rungs": [
+    16,
+    32,
+    48
+  ],
+  "maximum_optimizer_steps": 96,
+  "epochs_horizon": 10,
+  "full_validation_incumbent_em": 0.8814141414141414,
+  "full_validation_target_em": 0.8834141414141414,
+  "training_warm_start": "original fixed Stage1; no Stage1 training",
+  "stage1_sha256": {
+    "adapter_config.json": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+    "adapter_model.safetensors": "8bbda3aa6ae112e5f9f618490614137bdc7c241a7a152b7c95ca1aeafa62bd88"
+  },
+  "reuse": "Existing candidate scoring/bank and signature-bound baseline/validation predictions; no new scoring job",
+  "original_completion_status_sha256": "f3d80c9075998adca32b09056ea88ef8111455576ed79098509e4583b905c8dd",
+  "original_completion_status_preserved": true,
+  "test_exposure": "Adaptive exploration; select on validation and test at mostonce after locking",
+  "validation": "36 CPU tests passed; actual1000/1000 baseline predictions reused with zero new baseline inference; fixed Stage1 and parameters verified",
+  "cache_lookup_fix": "Match the exact question_text used by the existing decoder; retain full identity, targets, candidate order, cohort/context gates",
+  "preflight_recovery": "Fixed structured-question lookup and local resume validation; preserved39 matching partial rows; zero Stage2 steps lost; one operational automatic restart recorded",
+  "baseline_prediction_reuse_verified": {
+    "shared_rows_available": 1000,
+    "completed_rows_before_inference": 1000,
+    "new_rows_required": 0,
+    "total_rows": 1000
+  },
+  "current_stage": {
+    "dataset": "nell23k",
+    "trial": 0,
+    "rung": 16,
+    "phase": "stage2_training",
+    "search_stage": 2,
+    "log": "/home/kieran/grip-cu-runs/nell23k_stage2_round2_20261104/trials/trial_0000/train_rung_16.log"
+  }
+}

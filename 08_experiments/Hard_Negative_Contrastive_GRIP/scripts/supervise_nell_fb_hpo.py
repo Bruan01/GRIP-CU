@@ -477,10 +477,16 @@ def fb_search(root, spec=None):
         sampler=optuna.samplers.TPESampler(seed=2026, n_startup_trials=3),
         pruner=optuna.pruners.SuccessiveHalvingPruner(min_resource=prune_after, reduction_factor=2))
     if not study.trials:
-        study.enqueue_trial({"lambda_candidate": 1.0, "temperature": 1.0,
-                             "learning_rate": 1e-3, "weight_decay": 1e-4})
-        study.enqueue_trial({"lambda_candidate": 0.11229873660012951, "temperature": 0.8863961214238169,
-                             "learning_rate": 0.000947622749310518, "weight_decay": 8.889902164812924e-05})
+        proposals = spec.get('initial_trials') if spec else None
+        if proposals is None:
+            proposals = [{"lambda_candidate": 1.0, "temperature": 1.0,
+                          "learning_rate": 1e-3, "weight_decay": 1e-4},
+                         {"lambda_candidate": 0.11229873660012951, "temperature": 0.8863961214238169,
+                          "learning_rate": 0.000947622749310518, "weight_decay": 8.889902164812924e-05}]
+        if not proposals or (spec and 'initial_trials' in spec and len(proposals) > trial_budget):
+            raise ValueError('Initial proposals must fit the declared trial budget')
+        for proposal in proposals:
+            study.enqueue_trial(proposal)
     # A fresh process must not replay the same startup random proposals while
     # earlier trials are still RUNNING at a temporary resource cap. Model
     # training always uses seed 2026; this separate search RNG seed is recorded.

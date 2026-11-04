@@ -139,6 +139,10 @@ def target_list(answer):
     return [answer] if isinstance(answer, str) else [str(value) for value in answer]
 
 
+def decoder_question_text(question):
+    return question[0] if isinstance(question, (list, tuple)) else str(question)
+
+
 def inference_identity(adapter, args, record, model_id):
     hng = Path(__file__).resolve().parents[1]
     baseline = hng.parents[1] / '13_base_method/grip-exp'
@@ -171,7 +175,11 @@ def reusable_predictions(identity, samples):
         raise ValueError('Prediction cache identity mismatch')
     rows = []
     for sample in samples:
-        row = data['rows'].get(prediction_key(sample['question'], target_list(sample['answer'])))
+        # Match train_listed_contrastive.evaluate_adapter: graph records store
+        # [question_text, root_indices], but the actual prompt and saved row
+        # contain question_text. Context/cohort/weights remain identity-bound.
+        question_text = decoder_question_text(sample['question'])
+        row = data['rows'].get(prediction_key(question_text, target_list(sample['answer'])))
         if row:
             rows.append({**row, 'question_id': sample['question_id'], 'split': sample['split']})
     return rows
