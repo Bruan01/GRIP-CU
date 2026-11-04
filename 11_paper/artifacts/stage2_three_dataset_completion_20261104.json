@@ -1,0 +1,54 @@
+{
+  "verified_at": "2026-11-04T05:50:54.106431+00:00",
+  "phase": "completed_single_seed_targets",
+  "all_three_initial_search_targets_achieved": true,
+  "claim_scope": "Single seed2026 and fixed local protocols; numerical comparison to paper reference, not an audited exact replication or statistical claim",
+  "datasets": [
+    {
+      "dataset": "nell23k",
+      "seed": 2026,
+      "selected_test_em": 0.8780093060894194,
+      "b1_test_em": 0.8458426057050374,
+      "paper_reference_em": 0.8774,
+      "delta_vs_paper_pp": 0.0609306089419448,
+      "test_count": 4943,
+      "target_achieved": true
+    },
+    {
+      "dataset": "codexm",
+      "seed": 2026,
+      "selected_test_em": 0.9657647172922122,
+      "b1_test_em": 0.9433614586364077,
+      "paper_reference_em": 0.9442,
+      "delta_vs_paper_pp": 2.156471729221221,
+      "test_count": 10311,
+      "target_achieved": true
+    },
+    {
+      "dataset": "fb15k237_2",
+      "seed": 2026,
+      "selected_test_em": 0.899,
+      "b1_test_em": 0.8187,
+      "paper_reference_em": 0.8875,
+      "delta_vs_paper_pp": 1.1500000000000066,
+      "test_count": 10000,
+      "target_achieved": true
+    }
+  ],
+  "evidence_files": [
+    "nell23k_single_seed_test_20261102.json",
+    "codexm_single_seed_test_20261103.json",
+    "fb15k237_2_single_seed_test_20261104.json"
+  ],
+  "nell_additional_refinement": {
+    "evidence_file": "nell23k_refinement_test_20261104.json",
+    "selected_test_em": 0.8774023872142424,
+    "parent_test_em": 0.8780093060894194,
+    "delta_correct_vs_parent": -3,
+    "improves_parent_test": false,
+    "negative_result_retained": true
+  },
+  "original_selections_preserved": true,
+  "all_gpu_runs_finished": true,
+  "budget_expanded_in_response_to_test": false
+}

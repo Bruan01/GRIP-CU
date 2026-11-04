@@ -1,0 +1,78 @@
+{
+  "verified_at": "2026-11-04T10:19:40.802883+08:00",
+  "dataset": "nell23k",
+  "seed": 2026,
+  "test_count": 4943,
+  "selected_correct": 4337,
+  "baseline_correct": 4181,
+  "selected_test_em": 0.8774023872142424,
+  "matched_b1_test_em": 0.8458426057050374,
+  "paper_reference_em": 0.8774,
+  "delta_vs_paper_pp": 0.00023872142423941867,
+  "target_achieved": true,
+  "paired_counts": {
+    "rescue": 312,
+    "both_correct": 4025,
+    "both_wrong": 450,
+    "regression": 156
+  },
+  "matched_prompts_targets_ids_verified": true,
+  "exact_match_flags_recomputed": true,
+  "retained_adapter": "/home/kieran/grip-cu-runs/paper_retained/completion_20261104/nell_refinement/adapter",
+  "additional_weight_blocks_allocated": 0,
+  "scope": "Adaptive exploration after prior test exposure; not an untouched confirmatory test",
+  "audit_identity": {
+    "inputs": {
+      "/home/kieran/grip-cu-runs/nell23k_stage2_refinement_20261102/final_result.json": "ea4cabd700f2d88c159001daa1d80c3d62f7ce9a7ce6a3d78879b8fdf27d974c",
+      "/home/kieran/grip-cu-runs/nell23k_stage2_refinement_20261102/selection.json": "9c694287f0ae01c7875f0455b9ef60965780c6b0f628360ff4d5b80a46e7b901",
+      "/home/kieran/grip-cu-runs/nell23k_stage2_refinement_20261102/selected_test/predictions.jsonl": "8b1ab1d30aecee6b7479b6c331fec0612bb8b08d35fb9eca58f72794472603e0",
+      "/home/kieran/grip-cu-runs/nell23k_stage2_refinement_20261102/selected_test/summary.json": "8f49b004f8c5fdbe69dbe20566b81505c8d321fc44ad30c3af063208dd68dc14",
+      "/home/kieran/grip-cu-runs/nell23k_stage2_refinement_20261102/selected_test/cache_identity.json": "4b527ca792ecae3b5597127ff8f60f77adc783755a0e8d537fd8cec24a3657dc",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/b1_test/predictions.jsonl": "8cccf6e40b18a6e29bf2d67002619ab053c5978377345a901e9ca90ed74629b5",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/b1_test/summary.json": "c98650e65eafd4dec01b87bc5c39443b193ae09462a0ffc79a36832a292b659d",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/b1_test/cache_identity.json": "3582d249162e09270db01993c718c5a89c5258fd06703641c18badd042e4385b",
+      "/home/kieran/grip-cu-runs/nell23k_stage2_refinement_20261102/trials/trial_0000/train_run/run_config.json": "76b81844a58e6a312ad3174dd5c051e7e87362fecb8053722a9331bf519d82c1",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/metadata.json": "16aaaeec2315a4245f77235468f495a8f12b89e81f5a5f39b0dfa21294e3b08a",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/wiring.json": "74f774e531e5951e3995c0340dd0f8f31b0d68faa840a68a46adeb3e9ef79075",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/relation_eligibility.json": "7506189ac4f4f5f53febefa72c33be045ddefe21be8c761262da91ede7dba7f0"
+    },
+    "selected_weights": {
+      "adapter_config.json": "15206e8bdd6cd4845e967e7f35cf8ca67386fccbdcfcea8ebbc5bc4506aed097",
+      "adapter_model.safetensors": "15d95e82cbd1adfbc4f35d95cc4540bd6bc21dee895b45616a59b78724aca07f"
+    },
+    "baseline_weights": {
+      "adapter_config.json": "d5a5170ae90c88f3d18cb36ad604f347b312da326a20bbd2ad40742762d6b3ec",
+      "adapter_model.safetensors": "a52fd9fd416a22153206850df38f30d08b9ca01c2f68d808406b76cf29e7e8ce"
+    },
+    "test_sha256": "7c423e5a806540a1355b56e0787e2948e8a899c789daa6d5a5464dfff5124425",
+    "dataset": "nell23k",
+    "paper_reference": 0.8774,
+    "auditor_sha256": "223f6deffaec37a7f4c88ef5e306ca0e3355d79ffab7b4e5f100355c36725c6f"
+  },
+  "retained_evidence_sha256": {
+    "evidence/00_final_result.json": "ea4cabd700f2d88c159001daa1d80c3d62f7ce9a7ce6a3d78879b8fdf27d974c",
+    "evidence/01_selection.json": "9c694287f0ae01c7875f0455b9ef60965780c6b0f628360ff4d5b80a46e7b901",
+    "evidence/02_predictions.jsonl": "8b1ab1d30aecee6b7479b6c331fec0612bb8b08d35fb9eca58f72794472603e0",
+    "evidence/03_summary.json": "8f49b004f8c5fdbe69dbe20566b81505c8d321fc44ad30c3af063208dd68dc14",
+    "evidence/04_cache_identity.json": "4b527ca792ecae3b5597127ff8f60f77adc783755a0e8d537fd8cec24a3657dc",
+    "evidence/05_predictions.jsonl": "8cccf6e40b18a6e29bf2d67002619ab053c5978377345a901e9ca90ed74629b5",
+    "evidence/06_summary.json": "c98650e65eafd4dec01b87bc5c39443b193ae09462a0ffc79a36832a292b659d",
+    "evidence/07_cache_identity.json": "3582d249162e09270db01993c718c5a89c5258fd06703641c18badd042e4385b",
+    "evidence/08_run_config.json": "76b81844a58e6a312ad3174dd5c051e7e87362fecb8053722a9331bf519d82c1",
+    "evidence/09_metadata.json": "16aaaeec2315a4245f77235468f495a8f12b89e81f5a5f39b0dfa21294e3b08a",
+    "evidence/10_wiring.json": "74f774e531e5951e3995c0340dd0f8f31b0d68faa840a68a46adeb3e9ef79075",
+    "evidence/11_relation_eligibility.json": "7506189ac4f4f5f53febefa72c33be045ddefe21be8c761262da91ede7dba7f0",
+    "evidence/dataset_contract.json": "5cf425606f1b5e46d7343bef37b06c7de367cc23d23d91e7c331077b1906e1aa",
+    "evidence/refinement_contract.json": "06656db0c885a3b9a35b25ad7ec7da2026c193fe750a369803e9815660160614"
+  },
+  "source_archive": "/home/kieran/grip-cu-runs/paper_retained/completion_20261104/nell_refinement/ARCHIVE.json",
+  "parent_test_em": 0.8780093060894194,
+  "parent_correct": 4340,
+  "delta_correct_vs_parent": -3,
+  "delta_vs_parent_pp": -0.0606918875177018,
+  "validation_correct": 4363,
+  "parent_validation_correct": 4339,
+  "validation_count": 4950,
+  "improves_parent_test": false,
+  "interpretation": "Validation improved24/4950, but test decreased3/4943; retain as negative adaptive follow-up, preserve original frozen result"
+}

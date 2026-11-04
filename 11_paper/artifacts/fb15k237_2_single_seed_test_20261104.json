@@ -1,0 +1,74 @@
+{
+  "verified_at": "2026-11-04T03:06:30.003633+08:00",
+  "dataset": "fb15k237_2",
+  "seed": 2026,
+  "test_count": 10000,
+  "selected_correct": 8990,
+  "baseline_correct": 8187,
+  "selected_test_em": 0.899,
+  "matched_b1_test_em": 0.8187,
+  "paper_reference_em": 0.8875,
+  "delta_vs_paper_pp": 1.1500000000000066,
+  "target_achieved": true,
+  "paired_counts": {
+    "both_correct": 7821,
+    "regression": 366,
+    "rescue": 1169,
+    "both_wrong": 644
+  },
+  "matched_prompts_targets_ids_verified": true,
+  "exact_match_flags_recomputed": true,
+  "retained_adapter": "/home/kieran/grip-cu-runs/paper_retained/completion_20261104/fb15k237_2/adapter",
+  "additional_weight_blocks_allocated": 0,
+  "scope": "Single seed and fixed local protocol; paper comparability requires protocol audit; test outcome does not reopen this dataset search",
+  "audit_identity": {
+    "inputs": {
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/final_result.json": "c5e5295042424343524ca34fe577e37b168619c254f28d3af60edc298ebbb183",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/selection.json": "facb4d50387531936b13a577b50ef357674aefdb3d75eab41914d1112827911f",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/selected_test/predictions.jsonl": "099a68e746a395d502b403d3ee3636abb19d9901236154f05a53f829308c99b3",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/selected_test/summary.json": "eca0f8397aa6c6c73211efc20efbfaf420652d4ba05bc572c2ee33f8e6fab972",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/selected_test/cache_identity.json": "dcf49a3f282cd1d1c819012b7cdb706b926494fb9b5fb0f74f55a59ff67677be",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/b1_test/predictions.jsonl": "e6d18b029c6d9a989ce581081448c2f45090068dd6ccf8b41b0a09e751f574a7",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/b1_test/summary.json": "b6fdbd98ae03a33665348d2e168174125e3a34440948d04e0fb1a66a8e56513f",
+      "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/b1_test/cache_identity.json": "ccd91db89a6ee39f8dfa3db321828d56b133d57c4cf621ce09da178cc9c86ec5",
+      "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run/run_config.json": "52bdca6ab015fae63cbba6c96095a9097403a18d9557ea76bf7aedb3085f65e9",
+      "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/metadata.json": "0f9b20664cce9a04fb28b82ae594af8635ac94651b4fcc7aac765dad34acb78c",
+      "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/wiring.json": "3fa5cd5ea1a3b520191f0cef874c1cf2578df6a48aacc8a5168e6b3345b19212",
+      "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/relation_eligibility.json": "22f2606273f30361dc4e56a6818858de5cff38358ffcd26e400c7414e3609c75"
+    },
+    "selected_weights": {
+      "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+      "adapter_model.safetensors": "5ec4a905fb591aba2df2a8a32a1ccbec99be891f746402cb69206f4233818981"
+    },
+    "baseline_weights": {
+      "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+      "adapter_model.safetensors": "5311e4ce43437dcdd499cb660c16a0b12f13f7e81e6844702835091eb21280cf"
+    },
+    "test_sha256": "c77dde51aafc7b1ce3a5011ade914343c2689f8b38b12774ea4840ec1c9068ed",
+    "dataset": "fb15k237_2",
+    "paper_reference": 0.8875,
+    "auditor_sha256": "223f6deffaec37a7f4c88ef5e306ca0e3355d79ffab7b4e5f100355c36725c6f"
+  },
+  "retained_evidence_sha256": {
+    "evidence/00_final_result.json": "c5e5295042424343524ca34fe577e37b168619c254f28d3af60edc298ebbb183",
+    "evidence/01_selection.json": "facb4d50387531936b13a577b50ef357674aefdb3d75eab41914d1112827911f",
+    "evidence/02_predictions.jsonl": "099a68e746a395d502b403d3ee3636abb19d9901236154f05a53f829308c99b3",
+    "evidence/03_summary.json": "eca0f8397aa6c6c73211efc20efbfaf420652d4ba05bc572c2ee33f8e6fab972",
+    "evidence/04_cache_identity.json": "dcf49a3f282cd1d1c819012b7cdb706b926494fb9b5fb0f74f55a59ff67677be",
+    "evidence/05_predictions.jsonl": "e6d18b029c6d9a989ce581081448c2f45090068dd6ccf8b41b0a09e751f574a7",
+    "evidence/06_summary.json": "b6fdbd98ae03a33665348d2e168174125e3a34440948d04e0fb1a66a8e56513f",
+    "evidence/07_cache_identity.json": "ccd91db89a6ee39f8dfa3db321828d56b133d57c4cf621ce09da178cc9c86ec5",
+    "evidence/08_run_config.json": "52bdca6ab015fae63cbba6c96095a9097403a18d9557ea76bf7aedb3085f65e9",
+    "evidence/09_metadata.json": "0f9b20664cce9a04fb28b82ae594af8635ac94651b4fcc7aac765dad34acb78c",
+    "evidence/10_wiring.json": "3fa5cd5ea1a3b520191f0cef874c1cf2578df6a48aacc8a5168e6b3345b19212",
+    "evidence/11_relation_eligibility.json": "22f2606273f30361dc4e56a6818858de5cff38358ffcd26e400c7414e3609c75",
+    "evidence/dataset_contract.json": "ea268b264ecebd71671b76f79920f5ddd38232bf2256c4690a80edb6884c1691"
+  },
+  "source_archive": "/home/kieran/grip-cu-runs/paper_retained/completion_20261104/fb15k237_2/ARCHIVE.json",
+  "limitations": [
+    "Single-seed local protocol; paper prompt/task/candidate comparability remains open",
+    "Shared train task includes the documented464 relation-QA train-pair repairs; same repaired task used by control and method",
+    "Local FB test has10000 questions; do not merge with unrelated historical InfoNCE-i0 results",
+    "Stage2 settings were tuned; pure contrastive-loss effect is not isolated; Random9/other ablations and multi-seed statistics incomplete"
+  ]
+}
