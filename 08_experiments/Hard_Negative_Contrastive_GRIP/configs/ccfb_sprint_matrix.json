@@ -1,0 +1,9 @@
+{
+  "protocol": "fixed-task fixed-S1 fixed-teacher paired S2; 3 epochs; validation selection before test",
+  "datasets": {
+    "nell23k": {"seeds": [2026, 2027, 2028], "lora_r": 4, "lora_alpha": 8, "validation_count": 4951, "test_count": 4944, "primary_root": "paper_v2_nell23k", "fixed_main": "soft_mix_1"},
+    "fb15k237": {"seeds": [2026, 2027, 2028], "lora_r": 24, "lora_alpha": 48, "validation_count": 10000, "test_count": 10000, "primary_root": "fb15k237_three_configs_seed2026", "fixed_main": "soft_mix_1"},
+    "wn18rr": {"seeds": [2026, 2027, 2028, 2029, 2030], "lora_r": 24, "lora_alpha": 48, "validation_count": 3034, "test_count": 3134, "primary_root": "wn18rr_three_configs_seed2026", "fixed_main": null},
+    "codexm": {"seeds": [2026, 2027, 2028], "lora_r": 4, "lora_alpha": 8, "validation_count": 10310, "test_count": 10311, "primary_root": "codexm_three_configs_seed2026", "fixed_main": null}
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "format_version": 1,
+  "dataset": "CoDEx-M",
+  "official_counts_validated": true,
+  "source_sha256": {
+    "train.txt": "d99c3437ab51690391a26d96976adf6e5494dba7ef6902e77000551bfa566556",
+    "valid.txt": "11c323096367354940846b9ed940c5dabddc1d20a70474222babe7e7fd28b28d",
+    "test.txt": "0575ce05e4ce915e395bb4f708e8df9547989dd4c8c71407cbfd78c19daffcf7",
+    "entity2text.json": "bc210ff0bdd851a63f13615b3d35ba3d126a79d8fb5eceef0ea77b6e19c701f9",
+    "codexm.json": "f42496fb55e19c9984012f0fa9ef8ca9c5caf066b1d79f753748cac73cbe2339"
+  },
+  "codex_revision": "3132e426c2a6b643b70bad679905a3a6270be440",
+  "grip_revision": "d423742ca41212c4a75f35bec11d7117b1921a1a",
+  "official_processor": "https://github.com/JiaruiFeng/GRIP/blob/d423742ca41212c4a75f35bec11d7117b1921a1a/data/raw_datasets/codexm/process.py",
+  "seed": 2026,
+  "numpy_version": "2.2.6",
+  "num_candidates": 10,
+  "relation_order": [
+    "airline hub",
+    "author",
+    "cast member",
+    "cause of death",
+    "child",
+    "continent",
+    "country",
+    "country of citizenship",
+    "country of origin",
+    "diplomatic relation",
+    "director",
+    "educated at",
+    "employer",
+    "ethnic group",
+    "field of work",
+    "founded by",
+    "genre",
+    "headquarters location",
+    "industry",
+    "influenced by",
+    "instrument",
+    "language of work or name",
+    "languages spoken, written, or signed",
+    "located in the administrative terroritorial entity",
+    "location of formation",
+    "medical condition",
+    "member of",
+    "member of political party",
+    "member of sports team",
+    "movement",
+    "named after",
+    "narrative location",
+    "occupation",
+    "official language",
+    "parent organization",
+    "part of",
+    "place of birth",
+    "place of burial",
+    "place of death",
+    "practiced by",
+    "product or material produced",
+    "record label",
+    "religion",
+    "residence",
+    "sibling",
+    "sport",
+    "spouse",
+    "symptoms",
+    "time period",
+    "unmarried partner",
+    "uses"
+  ],
+  "counts": {
+    "source_triples": {
+      "train": 185584,
+      "validation": 10310,
+      "test": 10311
+    },
+    "graph_nodes": 17050,
+    "graph_edges": 185584,
+    "train_relation_texts": 51,
+    "full_questions": {
+      "train": 2000,
+      "validation": 10310,
+      "test": 10311
+    }
+  },
+  "candidate_rule": "permutation(train labels excluding gold)[:9], then permutation(negatives + gold); do not exclude other train-known relations from EVALUATION candidates",
+  "eval_rng_schedule": "one RandomState(seed): complete validation, then complete test; no subsampling",
+  "train_rng_schedule": "independent RandomState(seed) for train-row selection and train candidates",
+  "deviations": [
+    "Sort train relation labels instead of list(set(...)); historical exact permutations may differ",
+    "Sort entity IDs for stable node indices; official text values are unchanged",
+    "Retain final source row without newline; reject blank or malformed rows",
+    "Add independently sampled train-only references and smoke prefixes"
+  ],
+  "verification": {
+    "train_only_graph_and_references": true,
+    "full_validation_and_test": true,
+    "source_ids_and_node_indices": true,
+    "ten_unique_training_labels_including_gold": true,
+    "heldout_facts_not_used_for_training_negative_filter": true
+  },
+  "raw_outputs": {
+    "rel2text.json": {
+      "sha256": "b7a8f429d91000c715207b4da0c5bb322b1d4db091f926427a50ba8dd9efdf94",
+      "bytes": 1416
+    },
+    "entity2text.txt": {
+      "sha256": "167555d7e373298c0c8321b29f258710e4aad9a8ea584abace2736820f70dea5",
+      "bytes": 1002921
+    }
+  },
+  "outputs": {
+    "processed_train.json": {
+      "sha256": "4dc35eca9b0a464220dd4134f2e7f3c311e7f17a8cf01e752ab3d428fdc3ea2a",
+      "bytes": 30667277
+    },
+    "processed_val.json": {
+      "sha256": "131c985fb762c2befe381cc24bbbf4e3d2a84e824ef9324a511399d5cd113c4f",
+      "bytes": 34088740
+    },
+    "processed_test.json": {
+      "sha256": "1106123957cee6061908d0ce187e081ad8b5ddc004f537b1e41712f691c56172",
+      "bytes": 34085625
+    },
+    "recurrent_relation_prediction_full.json": {
+      "sha256": "7df93874c979df2f9f87e20b750b906ca995d7934a11c189ae0ca116d22ccd5f",
+      "bytes": 55989250
+    },
+    "recurrent_relation_prediction_smoke.json": {
+      "sha256": "14affa5251eb49e9703375515b1101cac59017d42902ed25919c67ba1769858c",
+      "bytes": 30178569
+    }
+  }
+}

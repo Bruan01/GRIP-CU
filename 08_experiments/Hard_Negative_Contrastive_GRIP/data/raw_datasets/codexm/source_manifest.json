@@ -1,0 +1,25 @@
+{
+  "dataset": "CoDEx-M",
+  "codex_revision": "3132e426c2a6b643b70bad679905a3a6270be440",
+  "grip_revision": "d423742ca41212c4a75f35bec11d7117b1921a1a",
+  "mapping_check": "canonical JSON SHA256; official field values must match exactly",
+  "source_urls": {
+    "train.txt": "https://raw.githubusercontent.com/tsafavi/codex/3132e426c2a6b643b70bad679905a3a6270be440/data/triples/codex-m/train.txt",
+    "valid.txt": "https://raw.githubusercontent.com/tsafavi/codex/3132e426c2a6b643b70bad679905a3a6270be440/data/triples/codex-m/valid.txt",
+    "test.txt": "https://raw.githubusercontent.com/tsafavi/codex/3132e426c2a6b643b70bad679905a3a6270be440/data/triples/codex-m/test.txt",
+    "entity2text.json": "https://raw.githubusercontent.com/JiaruiFeng/GRIP/d423742ca41212c4a75f35bec11d7117b1921a1a/data/raw_datasets/codexm/entity2text.json",
+    "codexm.json": "https://raw.githubusercontent.com/JiaruiFeng/GRIP/d423742ca41212c4a75f35bec11d7117b1921a1a/data/raw_datasets/codexm/codexm.json"
+  },
+  "source_sha256": {
+    "train.txt": "d99c3437ab51690391a26d96976adf6e5494dba7ef6902e77000551bfa566556",
+    "valid.txt": "11c323096367354940846b9ed940c5dabddc1d20a70474222babe7e7fd28b28d",
+    "test.txt": "0575ce05e4ce915e395bb4f708e8df9547989dd4c8c71407cbfd78c19daffcf7",
+    "entity2text.json": "bc210ff0bdd851a63f13615b3d35ba3d126a79d8fb5eceef0ea77b6e19c701f9",
+    "codexm.json": "f42496fb55e19c9984012f0fa9ef8ca9c5caf066b1d79f753748cac73cbe2339"
+  },
+  "mapping_canonical_sha256": {
+    "entity2text.json": "e2a6d4da999aa693c07a334b4402c989991766bf2e6f12b94bf76ae76c1c5bb8",
+    "codexm.json": "0457e2c403a8d9a4807db642cb8833a928942b00b9b935a2e3886944eca073ea"
+  },
+  "verified_negative_files": "not used by this relation-prediction task"
+}

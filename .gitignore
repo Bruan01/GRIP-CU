@@ -65,3 +65,9 @@ outputs/
 **/.cache/
 *.tar.gz
 *.sha256
+
+# Reproducible CoDEx-M sprint data; keep only lightweight provenance in Git.
+/08_experiments/Hard_Negative_Contrastive_GRIP/data/codexm/*
+!/08_experiments/Hard_Negative_Contrastive_GRIP/data/codexm/preparation_manifest.json
+/08_experiments/Hard_Negative_Contrastive_GRIP/data/raw_datasets/codexm/*
+!/08_experiments/Hard_Negative_Contrastive_GRIP/data/raw_datasets/codexm/source_manifest.json
