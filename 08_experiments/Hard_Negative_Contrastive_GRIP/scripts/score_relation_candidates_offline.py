@@ -12,6 +12,7 @@ sample hard negatives and does not train.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import random
 import sys
@@ -164,7 +165,8 @@ def peak_gpu_bytes() -> int | None:
 
 
 def load_matchable(
-    args: argparse.Namespace, alias_index: dict[str, str], pair_fn=None
+    args: argparse.Namespace, alias_index: dict[str, str], pair_fn=None,
+    *, require_entity_pair: bool = False, excluded_items: list | None = None,
 ) -> list[dict]:
     payload = load_json_payload(args.task_file)
     if not isinstance(payload, dict) or "qa_samples" not in payload:
@@ -173,6 +175,14 @@ def load_matchable(
     for index, text in enumerate(payload["qa_samples"]):
         item = parse_matchable_relation_qa(index, str(text), alias_index, pair_fn=pair_fn)
         if item is not None:
+            if require_entity_pair and item["entity_pair"] is None:
+                # Generated QA may paraphrase the entity names. Keep these QA
+                # in generation training, but never mine unfiltered negatives.
+                if excluded_items is not None:
+                    excluded_items.append({"qa_id": item["qa_id"],
+                        "gold_relation": item["matched_train_relation"],
+                        "reason": "missing_or_ambiguous_full_entity_identity"})
+                continue
             items.append(item)
     return items
 
@@ -316,6 +326,7 @@ def main() -> None:
     )
     alias_index = train_relation_alias_index(relation_order)
     pair_fn = None
+    is_wn = False
     if args.relation_text_file is None:
         known_relations = known_pair_relations(args.raw_dir, splits=tuple(args.filter_splits))
     else:
@@ -337,13 +348,16 @@ def main() -> None:
         )
 
         def pair_fn(text: str):
-            # Reject ambiguous full-text identities rather than guessing a pair.
+            # Only a unique full-text identity can receive train-graph filtering.
             pairs = extract_pairs(text, entity_texts)
-            if is_wn and len(pairs) != 1:
-                raise ValueError('WN relation QA has missing or ambiguous entity identities; refusing unfiltered negatives')
             return pairs[0] if len(pairs) == 1 else None
 
-    items = load_matchable(args, alias_index, pair_fn)
+    excluded_items: list[dict] = []
+    items = load_matchable(args, alias_index, pair_fn,
+        require_entity_pair=is_wn, excluded_items=excluded_items)
+    eligible_count = len(items)
+    if not items:
+        raise ValueError('No safely matchable relation QA; no model loaded')
     items = shard_items(items, num_shards=args.num_shards, shard_id=args.shard_id)
     if args.compare_reference is not None:
         reference_rows = load_jsonl(args.compare_reference)
@@ -360,6 +374,16 @@ def main() -> None:
     stats_path = output_dir / "run_stats.json"
     meta_path = output_dir / "metadata.json"
     output_dir.mkdir(parents=True, exist_ok=True)
+    eligibility = {
+        "task_file_sha256": hashlib.sha256(args.task_file.read_bytes()).hexdigest(),
+        "require_entity_pair": is_wn,
+        "eligible_before_sharding": eligible_count,
+        "excluded_count": len(excluded_items),
+        "excluded": excluded_items,
+        "training_policy": "All QA remain in generation training; only eligible QA receive listed contrastive loss",
+    }
+    write_metadata(output_dir / "qa_eligibility.json", eligibility)
+    print(f"[offline_score] eligible={eligible_count} excluded_identity={len(excluded_items)}", flush=True)
 
     checkpoint = str(args.b1_adapter)
     dtype_name = str(TORCH_DTYPE["bfloat16"]).replace("torch.", "")
@@ -398,7 +422,8 @@ def main() -> None:
         filter_splits=list(args.filter_splits),
         git_commit=git_commit_hash(HNG.parents[1]),
     )
-    write_metadata(meta_path, metadata)
+    metadata["entity_pair_required"] = is_wn
+    metadata["excluded_identity_count"] = len(excluded_items)
 
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats()
