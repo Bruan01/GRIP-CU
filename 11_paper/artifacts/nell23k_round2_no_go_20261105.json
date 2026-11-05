@@ -1,0 +1,69 @@
+{
+  "verified_at": "2026-11-05T10:37:11.517108+08:00",
+  "dataset": "nell23k",
+  "seed": 2026,
+  "status": "completed_no_validation_promotion",
+  "validation_candidates": [
+    {
+      "trial": 1,
+      "step": 32,
+      "params": {
+        "lambda_candidate": 0.11229873660012951,
+        "temperature": 0.8863961214238169,
+        "learning_rate": 0.0006,
+        "weight_decay": 8.889902164812924e-05
+      },
+      "validation_correct": 4353,
+      "validation_count": 4950,
+      "full_validation_em": 0.8793939393939394,
+      "adapter": "/home/kieran/grip-cu-runs/nell23k_stage2_round2_20261104/trials/trial_0001/step_032/adapter",
+      "adapter_sha256": {
+        "adapter_config.json": "d5a5170ae90c88f3d18cb36ad604f347b312da326a20bbd2ad40742762d6b3ec",
+        "adapter_model.safetensors": "b93ec124b3130474677c52f91dc06d21975fb8853e058209e758e1871b77fc8a"
+      },
+      "predictions_sha256": "888e25e0623dbe51fef61b3e5973f75437db01e9237c058f1cc2ee8d7a00e5b1"
+    },
+    {
+      "trial": 0,
+      "step": 32,
+      "params": {
+        "lambda_candidate": 0.05,
+        "temperature": 0.8863961214238169,
+        "learning_rate": 0.000947622749310518,
+        "weight_decay": 8.889902164812924e-05
+      },
+      "validation_correct": 4335,
+      "validation_count": 4950,
+      "full_validation_em": 0.8757575757575757,
+      "adapter": "/home/kieran/grip-cu-runs/nell23k_stage2_round2_20261104/trials/trial_0000/step_032/adapter",
+      "adapter_sha256": {
+        "adapter_config.json": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+        "adapter_model.safetensors": "f6c2d50d07b5f52f91fbc4eedc4797bdfffcfc3861269046357406f437e6b254"
+      },
+      "predictions_sha256": "452fe0bb12edab6db1ffa6ecf301fcc59c70fee32a89f1815eda09902111b825"
+    }
+  ],
+  "full_validation_incumbent_em": 0.8814141414141414,
+  "full_validation_incumbent_correct": 4363,
+  "full_validation_target_em": 0.8834141414141414,
+  "target_correct": 4373,
+  "best_new_validation_correct": 4353,
+  "validation_delta_vs_incumbent_questions": -10,
+  "validation_shortfall_to_gate_questions": 20,
+  "test_evaluated": false,
+  "new_test_score": null,
+  "previous_frozen_test_em": 0.8780093060894194,
+  "previous_frozen_test_unchanged": true,
+  "validation_correctness_recomputed": true,
+  "validation_prompts_targets_checked": true,
+  "trials_completed": 2,
+  "maximum_steps_per_trial": 48,
+  "maximum_optimizer_steps": 96,
+  "research_scope": "Adaptive development after prior NELL test exposure; no new test result claimed",
+  "decision_file": "/home/kieran/grip-cu-runs/nell23k_stage2_round2_20261104/no_go.json",
+  "decision_sha256": "97d888cb0dcb45db2b157f1ee31f1c001f6f565f04a6fd2a0dbb2d495ff218f2",
+  "contract_file": "/home/kieran/grip-cu-runs/nell23k_stage2_round2_20261104/contract.json",
+  "contract_sha256": "00b7f5109100fb9b8a33837d5087ef135cdeb92e93f601268400d4a2554c6559",
+  "budget_extended": false,
+  "next_route": "Record negative result; no automatic expansion of this search"
+}

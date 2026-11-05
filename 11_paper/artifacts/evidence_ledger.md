@@ -2,7 +2,7 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
-| 2026-11-04 NELL新授权局部参数搜索 | `12_ai_logs/analysis/nell_stage2_round2_launch_20261104.json`；新轮冻结contract与PLAN | launched, measurements pending; adaptive development | “两组Stage2参数、各最多48步；尚无新分数。完整验证以88.141414%的既有开发验证最佳为锚点，按冻结规则决定是否测试。” |
+| 2026-11-05 NELL局部参数搜索无晋级 | `11_paper/artifacts/nell23k_round2_no_go_20261105.json`；运行目录完整验证预测及no_go | observed negative validation result; no new test; adaptive development | “两组配置完整验证87.575758%和87.939394%，均未超过已有最高88.141414%及既定晋级门槛；没有测试新模型。原完整测试87.800931%保留。” |
 | 2026-11-04 三数据集原冻结搜索完整测试 | `11_paper/artifacts/stage2_three_dataset_completion_20261104.json`；各数据集原始预测、选模记录及独立归档 | observed, seed2026, all three numerical targets achieved | “NELL87.800931%、CoDEx96.576472%、FB89.900000%；各自原先验证选定模型的一次完整测试。单seed本地口径，论文协议对齐仍未全部完成。” |
 | 2026-11-04 FB当前Stage2单种子完整测试 | `11_paper/artifacts/fb15k237_2_single_seed_test_20261104.json`；Linux只读硬链接权重与完整预测归档 | observed, seed2026, local protocol; paper audit open | “8990/10000，EM89.90%，数值高于论文参考88.75%约1.15个百分点；匹配B1为81.87%，净增加803题。共同使用已记录的464条train-pair关系QA修复。” |
 | 2026-11-04 NELL追加低学习率续训 | `11_paper/artifacts/nell23k_refinement_test_20261104.json`；独立冻结方案与Linux权重归档 | observed negative follow-up; adaptive after prior test exposure | “验证净增24/4950，测试4337/4943（87.740239%），比原冻结模型少3题；本轮未进一步涨点。保留原实验与本次负结果，不将两轮结果隐去后合并。” |
