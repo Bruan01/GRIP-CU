@@ -78,6 +78,7 @@ def assert_listed_training_budget(
 ) -> dict | None:
     """Require a full task budget for the selected listed-negative method."""
     if skip_train or allow_underfit or listed_negative_source not in {
+        "frozen_random",
         "error_memory",
         "structure_counterfactual",
     }:

@@ -88,6 +88,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     train_relation_alias_index,
     validate_structure_counterfactual_manifest,
     validate_error_memory_manifest,
+    validate_frozen_random_manifest,
 )
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
 from utils import set_random_seed  # noqa: E402
@@ -243,6 +244,8 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Immutable ErrorMemory-9 JSONL manifest; required for error_memory.",
     )
+    parser.add_argument("--random_manifest", type=Path, default=None,
+                        help="Immutable train-only uniform bank; required for frozen_random.")
     parser.add_argument(
         "--counterfactual_manifest",
         type=Path,
@@ -1105,6 +1108,7 @@ def write_run_config(output_dir: Path, args: argparse.Namespace) -> None:
         "counterfactual_manifest": (
             str(args.counterfactual_manifest) if args.counterfactual_manifest else None
         ),
+        "random_manifest": str(getattr(args, "random_manifest", None)) if getattr(args, "random_manifest", None) else None,
         "counterfactual_metadata": (
             str(args.counterfactual_metadata) if args.counterfactual_metadata else None
         ),
@@ -1188,7 +1192,9 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         relation_order = None
         error_memory_manifest = None
         counterfactual_manifest = None
+        random_manifest = None
         if args.listed_negative_source in {
+            "frozen_random",
             "train_graph",
             "error_memory",
             "structure_counterfactual",
@@ -1213,6 +1219,14 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             counterfactual_manifest = load_counterfactual_manifest(
                 args.counterfactual_manifest
             )
+        if args.listed_negative_source == "frozen_random":
+            if args.random_manifest is None:
+                raise ValueError("frozen_random requires --random_manifest")
+            random_manifest = load_error_memory_manifest(args.random_manifest)
+            validate_frozen_random_manifest(random_manifest, k=args.listed_negative_k)
+            expected_seed = args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
+            if any(row["seed"] != expected_seed for row in random_manifest.values()):
+                raise ValueError("frozen_random bank seed differs from training sampler seed")
         if args.listed_negative_source == "error_memory":
             if args.negative_sampling_mode != "error_memory":
                 raise ValueError(
@@ -1256,6 +1270,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             relation_order=relation_order,
             error_memory_manifest=error_memory_manifest,
             counterfactual_manifest=counterfactual_manifest,
+            random_manifest=random_manifest,
             question_ids=question_ids,
             eligible_question_ids=load_relation_eligibility(
                 getattr(args, "relation_eligibility", None), args.input_file, Path(args.raw_dir)

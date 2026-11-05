@@ -1,0 +1,17 @@
+{
+  "experiment_id": "SC_CTRL_RANDOM_FB_SEED2026_FIXED32",
+  "dataset": "fb15k237_2",
+  "seed": 2026,
+  "k": 9,
+  "optimizer_steps": 32,
+  "scheduler_max_steps": 120,
+  "qa_count": 12136,
+  "listed_qa_count": 3109,
+  "test_count": 10000,
+  "reference_evidence": "11_paper/artifacts/fb15k237_2_single_seed_test_20261104.json",
+  "reference_run_config": "08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run/run_config.json",
+  "reference_selection": "08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/selection.json",
+  "reference_root": "08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2",
+  "default_run_dir": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026",
+  "scope": "One fixed configuration and one Stage2 seed; no search, no repeated seeds, no test-based extension."
+}
