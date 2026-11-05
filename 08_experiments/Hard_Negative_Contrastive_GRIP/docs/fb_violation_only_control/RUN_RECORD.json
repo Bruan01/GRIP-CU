@@ -1,0 +1,61 @@
+{
+  "experiment_id": "SC_CTRL_VIOLATION_FB_SEED2026_FIXED32",
+  "run_dir": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026",
+  "tmux_session": "fb_violation_seed2026_20261106",
+  "argv": [
+    "/home/kieran/miniconda3/envs/guardenv/bin/python",
+    "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_violation_only_control.py",
+    "run",
+    "--config",
+    "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/inputs/design.json",
+    "--run-dir",
+    "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026"
+  ],
+  "launched_at": "2026-11-05T16:24:31.535681+00:00",
+  "training_complete": false,
+  "test_complete": false,
+  "seed": 2026,
+  "optimizer_steps": 32,
+  "scheduler_max_steps": 120,
+  "full_validation": "not_run_by_predeclared_budget_plan",
+  "test_count": 10000,
+  "preparation_audit": {
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "k": 9,
+    "seed": 2026,
+    "parent_full_bank_replayed": true,
+    "train_only_pool_match": true,
+    "qa_text_and_non_candidate_metadata_unchanged": true,
+    "changed_candidate_set_questions": 3104,
+    "changed_candidate_set_fraction": 0.9983917658411064,
+    "mean_shared_negatives_of_9": 3.334512705049855,
+    "performance_results_available": false,
+    "new_training_started": false
+  },
+  "status_file": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/status.json",
+  "controller_log": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/controller.log",
+  "startup_verified_at": "2026-11-05T16:28:45.540043+00:00",
+  "startup_observation": {
+    "at": "2026-11-05T16:28:38.797736+00:00",
+    "stage": "train",
+    "status": "running",
+    "pid": 2705698,
+    "elapsed_seconds": 221.6,
+    "log": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/logs/train_01.log"
+  },
+  "actual_sampler": {
+    "uniform_mix": 0.3333333333333333,
+    "structure_weight": 0.0,
+    "violation_weight": 1.0,
+    "temperature": 0.25
+  },
+  "trainer_loop_observed": true,
+  "related_tests": "33 passed",
+  "paper_role": "claim-carrying",
+  "claim_links": [
+    "C2",
+    "C4"
+  ],
+  "item_id": "SC_CTRL_VIOLATION"
+}

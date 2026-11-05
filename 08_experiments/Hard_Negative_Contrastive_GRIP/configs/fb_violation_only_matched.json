@@ -1,0 +1,24 @@
+{
+  "experiment_id": "SC_CTRL_VIOLATION_FB_SEED2026_FIXED32",
+  "variant": "violation_only",
+  "dataset": "fb15k237_2",
+  "seed": 2026,
+  "k": 9,
+  "optimizer_steps": 32,
+  "scheduler_max_steps": 120,
+  "qa_count": 12136,
+  "listed_qa_count": 3109,
+  "test_count": 10000,
+  "source_control_run": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026",
+  "source_contract_sha256": "ce3b6485f664b7d43ee19ef6d2a4bb57cf5de6221fb9c87e39966d5b68a219da",
+  "source_archive_sha256": "19badeaebe9b873b20d9670ec514dd6f8109a33bfd26664f76f0592236e9cdf5",
+  "sampler": {
+    "uniform_mix": 0.3333333333333333,
+    "structure_weight": 0.0,
+    "violation_weight": 1.0,
+    "temperature": 0.25
+  },
+  "evaluation_policy": "fixed_step32_then_one_full_test; full_validation_not_run; no_search_or_repeated_seeds",
+  "default_run_dir": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026",
+  "scope": "Conditional contribution of the structure term on top of B1-violation sampling at the already selected SC-CL configuration."
+}

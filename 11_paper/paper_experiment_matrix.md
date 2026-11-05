@@ -25,7 +25,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 只有历史 B1/InfoNCE-i0 候�
 | SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | FB15K237-2已完成；NELL暂缓 | Random-9 + 同一InfoNCE / SC-CL-9 | observed-single-seed, fixed configuration, 2026-11-05；SC-CL89.90%/Random86.48%，+3.42pp | 10,000题完整直接解码EM、配对553/211/净342、配置及过程审计；见artifacts/fb_random9_control_seed2026 |
 | SC_CTRL_FREQMATCH | R4 | 排除关系频率捷径 | NELL/FB | frequency-matched Random-9 | planned | frequency-bin delta |
 | SC_CTRL_PROFILE | R1/R4 | 结构信号归因 | NELL | profile-only | planned | MRR, margin |
-| SC_CTRL_VIOLATION | R1 | 模型信号归因 | NELL | violation-only | planned | MRR, margin |
+| SC_CTRL_VIOLATION | R1/C2/C4 | 在B1违例度基础上检验结构项增量 | 本轮FB15K237-2；NELL暂缓 | Full SC-CL-9 / Violation-only-9；复用Random-9 | 2026-11-06 implemented、CPU全量Full重放及CLI通过、单seed后台流程启动；尚无新性能 | 固定32步、同10,000题直接解码EM、Full−Violation配对差、三方法表及过程审计 |
 | SC_CTRL_SANS | R1/R4 | 结构负采样参考 | NELL/FB | SANS-style structural control | optional | MRR, H@10 |
 | SC_AUX_ERROR | R1 | 错误记忆辅助对照 | NELL/FB | ErrorMemory-9 | implemented-not-run | MRR, EM |
 | SC_ABL_UNIFORM | R5 | 均匀下限消融 | NELL | rho=0 | planned | MRR, valid rate |
