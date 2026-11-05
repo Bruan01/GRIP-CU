@@ -6,6 +6,8 @@
 /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP
 ```
 
+后续状态（2026-11-05）：WN 首轮已完成，CoDEx-M 首轮已于 15:53 启动。本文以下保留 11 月 4 日的准备与恢复快照；最新启动记录见 [CoDEx-M 第四数据集实验](CODEXM_第四数据集实验.md)，WN 完整成绩见 [WN18RR 第三数据集实验](WN18RR_第三数据集实验.md)。
+
 本次恢复现有 WN 队列，准备 CoDEx-M 正式数据和后续运行入口。新 GPU 实验仍按冲刺计划顺序执行；本次只启动了中断 WN 的恢复。
 
 ## 当前 WN 队列
