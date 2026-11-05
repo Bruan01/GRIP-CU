@@ -22,7 +22,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 只有历史 B1/InfoNCE-i0 候�
 | SC_FUTURE_YAGO | R2/R7 | 大规模迁移与成本 | YAGO3-10 | B1 / Random-9 / SC-CL-9 | deferred | MRR, Hits, wall-clock |
 | SC_FUTURE_CODEX_S | R2/R3 | 可选小规模补充 | CoDEx-S | 单独转换与关系候选协议 | deferred | MRR, candidate audit |
 | SC_FUTURE_CODEX_L | R2/R7 | 可选大规模压力测 | CoDEx-L | B1 / Random-9 / SC-CL-9 | optional, deferred | cost, MRR, coverage |
-| SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | 本轮FB15K237-2；NELL暂缓 | Random-9 + 同一InfoNCE / SC-CL-9 | 2026-11-05 implemented、CPU核验通过、后台单次流程启动；无新完整测试分数 | 完整测试直接解码EM、SC-CL减Random配对差、配置及过程审计 |
+| SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | FB15K237-2已完成；NELL暂缓 | Random-9 + 同一InfoNCE / SC-CL-9 | observed-single-seed, fixed configuration, 2026-11-05；SC-CL89.90%/Random86.48%，+3.42pp | 10,000题完整直接解码EM、配对553/211/净342、配置及过程审计；见artifacts/fb_random9_control_seed2026 |
 | SC_CTRL_FREQMATCH | R4 | 排除关系频率捷径 | NELL/FB | frequency-matched Random-9 | planned | frequency-bin delta |
 | SC_CTRL_PROFILE | R1/R4 | 结构信号归因 | NELL | profile-only | planned | MRR, margin |
 | SC_CTRL_VIOLATION | R1 | 模型信号归因 | NELL | violation-only | planned | MRR, margin |

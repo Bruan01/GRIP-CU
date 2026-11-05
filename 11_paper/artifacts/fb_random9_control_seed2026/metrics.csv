@@ -1,0 +1,3 @@
+model,seed,n,correct,em_percent
+SC-CL-9 (reference),2026,10000,8990,89.9
+Random-9 + InfoNCE,2026,10000,8648,86.48

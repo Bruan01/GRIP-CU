@@ -2,6 +2,7 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-05 FB固定配置Random-9对照 | `11_paper/artifacts/fb_random9_control_seed2026/{result.json,metrics.csv,paired_predictions.csv,config_match.csv,evidence_index.json}`；Linux冻结代码、原始预测、四检查点及optimizer归档 | observed, seed2026, fixed-configuration matched comparison; not equal-HPO or multi-seed | “在已有SC-CL获选配置下，SC-CL/Random-9完整测试EM为89.90%/86.48%，同10,000题净增342题（+3.42个百分点），纠错553、退化211。支持组合采样相对均匀随机的条件性增量，不单独证明结构分量或跨种子稳定性。” |
 | 2026-11-05 NELL局部参数搜索无晋级 | `11_paper/artifacts/nell23k_round2_no_go_20261105.json`；运行目录完整验证预测及no_go | observed negative validation result; no new test; adaptive development | “两组配置完整验证87.575758%和87.939394%，均未超过已有最高88.141414%及既定晋级门槛；没有测试新模型。原完整测试87.800931%保留。” |
 | 2026-11-04 三数据集原冻结搜索完整测试 | `11_paper/artifacts/stage2_three_dataset_completion_20261104.json`；各数据集原始预测、选模记录及独立归档 | observed, seed2026, all three numerical targets achieved | “NELL87.800931%、CoDEx96.576472%、FB89.900000%；各自原先验证选定模型的一次完整测试。单seed本地口径，论文协议对齐仍未全部完成。” |
 | 2026-11-04 FB当前Stage2单种子完整测试 | `11_paper/artifacts/fb15k237_2_single_seed_test_20261104.json`；Linux只读硬链接权重与完整预测归档 | observed, seed2026, local protocol; paper audit open | “8990/10000，EM89.90%，数值高于论文参考88.75%约1.15个百分点；匹配B1为81.87%，净增加803题。共同使用已记录的464条train-pair关系QA修复。” |
@@ -21,7 +22,7 @@
 | FB InfoNCE-i0 full candidate score | `/mnt/e/GRIP-CU/artifacts/info_nce_fb15k237_qwen7b_20260921/evaluation/i0_candidate_score.jsonl` | observed, historical artifact | “i0 candidate MRR=95.412%；不得称为 SC-CL……” |
 | FB i0 与当前 SC-CL 契约相同 | historical `grip_run_metadata.json` vs current configs | false / not comparable | 禁止合并成 SC-CL 主结果 |
 | 五种子均值/标准差 | 无 2027--2030 formal runs | planned | 只能写为后续协议 |
-| Random/Frequency/Profile/Violation/ErrorMemory | 无对应正式结果 | planned | 不能写为对照结论 |
+| NELL Random及跨图Frequency/Profile/Violation/ErrorMemory | 无对应正式结果；FB固定配置Random对照另列于本表 | planned | 不把FB单次Random结果推广为这些消融已完成 |
 | FB 当前 SC-CL bank | `results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/{metadata,wiring}.json`；manifest SHA `bbb24960d747f12a6120f541afbc409a3fef4c922e9ae044e316d8fe2952c71c` | observed bank, wiring and selected test | “train-only bank已冻结，wiring保持12,136条生成QA；当前方法单seed完整测试已完成，见本表FB结果行。” |
 | WN18RR 单种子探索性直接解码 | `results/hpo/wn18rr_sccl_seed2026/lambda0p25_final_test/summary.json`、`predictions.jsonl`、`search_outcome.json`；本地 B1 `results/runs/wn18rr_sccl_3090_20261023/eval/b1/summary.json` | observed partial | “WN18RR 选定候选损失权重 0.25 后一次全测试 EM=86.89%；本地 B1=32.67%；完整重排和公平对照缺失，原论文五次均值不可作配对收益” |
 | CoDEx-M数据协议 | 官方数据、关系文本、全量10-way eval；当前方法结果见本表新增审计行 | observed data; method observed single-seed | CoDEx硬负例不作为关系候选真值；本地单种子生成EM不等同于完整原论文协议复现 |

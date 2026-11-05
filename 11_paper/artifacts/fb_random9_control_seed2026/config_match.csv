@@ -1,0 +1,24 @@
+parameter,reference,random_control,equal
+dataset,fb15k237_2,fb15k237_2,True
+model_name,qwen-7b,qwen-7b,True
+dtype,bfloat16,bfloat16,True
+lora_r,24,24,True
+lora_alpha,48,48,True
+target_modules,"['down_proj', 'up_proj', 'gate_proj']","['down_proj', 'up_proj', 'gate_proj']",True
+num_train_epochs,0.0,0.0,True
+involve_qa_epochs,5.0,5.0,True
+s1_stop_loss_threshold,0.15,0.15,True
+per_device_train_batch_size,1,1,True
+gradient_accumulation_steps,512,512,True
+learning_rate,0.000947622749310518,0.000947622749310518,True
+weight_decay,8.889902164812924e-05,8.889902164812924e-05,True
+adam_epsilon,1e-08,1e-08,True
+max_grad_norm,1.0,1.0,True
+lambda_candidate,0.11229873660012951,0.11229873660012951,True
+memory_size,0,0,True
+temperature,0.8863961214238169,0.8863961214238169,True
+gen_max_length,32,32,True
+seed,2026,2026,True
+listed_negative_k,9,9,True
+stop_after_step,32,32,True
+s1_gradient_checkpointing,True,True,True

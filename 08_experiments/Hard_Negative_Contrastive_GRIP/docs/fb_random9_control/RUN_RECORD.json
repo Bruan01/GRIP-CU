@@ -11,8 +11,8 @@
     "--run-dir",
     "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026"
   ],
-  "training_complete": false,
-  "test_complete": false,
+  "training_complete": true,
+  "test_complete": true,
   "planned_optimizer_steps": 32,
   "scheduler_max_steps": 120,
   "seed": 2026,
@@ -32,5 +32,23 @@
   "training_log": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026/logs/train_01.log",
   "status_file": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026/status.json",
   "controller_log": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026/controller.log",
-  "startup_verified": true
+  "startup_verified": true,
+  "completed_at": "2026-11-05T13:27:13.271476+00:00",
+  "completed_at_beijing": "2026-11-05T21:27:13.271476+08:00",
+  "completion_verified_at": "2026-11-05T15:54:20.393055+00:00",
+  "result_summary": {
+    "n": 10000,
+    "sccl_correct": 8990,
+    "random9_correct": 8648,
+    "delta_sccl_minus_random9_pp": 3.42,
+    "net_correct": 342,
+    "paired_counts": {
+      "both_correct": 8437,
+      "rescue": 553,
+      "regression": 211,
+      "both_wrong": 799
+    }
+  },
+  "paper_exports": "11_paper/artifacts/fb_random9_control_seed2026",
+  "archive_files_verified": 214
 }

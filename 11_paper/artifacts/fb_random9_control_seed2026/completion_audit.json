@@ -1,0 +1,23 @@
+{
+  "verified_at": "2026-11-05T15:54:26.336714+00:00",
+  "status": "pass",
+  "run_status": "completed",
+  "validation_count": 17535,
+  "validation_correct": 15196,
+  "test_count": 10000,
+  "test_correct_sccl": 8990,
+  "test_correct_random9": 8648,
+  "correctness_flags_recomputed": 37535,
+  "prompt_target_split_id_alignment": true,
+  "immutable_inputs_and_code_hashes_verified": 136,
+  "archive_file_hashes_verified": 214,
+  "selected_weights_and_both_evaluation_cache_identities_match": true,
+  "paper_exports_match_run_paper_bytes": true,
+  "evidence_index_hashes_verified": true,
+  "latex_table_compiles": true,
+  "latex_engine": "XeLaTeX",
+  "overfull_boxes": 0,
+  "seed_repeats_performed": false,
+  "result_scope": "conditional single-seed comparison at previously selected SC-CL configuration",
+  "claim_update": "local support for combined sampling vs uniform at this configuration; stability and separate structure contribution untested"
+}

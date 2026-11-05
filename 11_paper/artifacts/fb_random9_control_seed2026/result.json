@@ -1,0 +1,40 @@
+{
+  "n": 10000,
+  "sccl_correct": 8990,
+  "random9_correct": 8648,
+  "sccl_em": 0.899,
+  "random9_em": 0.8648,
+  "delta_sccl_minus_random9_pp": 3.42,
+  "net_correct": 342,
+  "paired_counts": {
+    "both_correct": 8437,
+    "rescue": 553,
+    "regression": 211,
+    "both_wrong": 799
+  },
+  "experiment_id": "SC_CTRL_RANDOM_FB_SEED2026_FIXED32",
+  "at": "2026-11-05T13:26:48.298814+00:00",
+  "dataset": "fb15k237_2",
+  "seed": 2026,
+  "random_validation_em": 0.8666096378671229,
+  "status": "completed",
+  "claim_status": "inconclusive_for_stability",
+  "observed_direction_sccl_minus_random9": "positive",
+  "comparability": "same fixed training configuration; sampling replaced",
+  "limitations": [
+    "Single Stage2 seed; no seed-level uncertainty or significance claim",
+    "Configuration and step were previously selected using SC-CL validation; this is a conditional ablation, not equal-HPO best-method comparison",
+    "Shared training QA contains the documented 464 train-pair repairs",
+    "Historical test exposure remains; this experiment cannot erase it",
+    "Random comparison does not isolate structure from score violation or relation frequency"
+  ],
+  "paper_role": "claim-carrying",
+  "section_id": "experiments",
+  "item_id": "SC_CTRL_RANDOM",
+  "claim_links": [
+    "C2"
+  ],
+  "target_display": "candidate-source ablation table",
+  "main_or_appendix": "main",
+  "next_action": "write the fixed-configuration single-seed comparison; do not reopen training or tune on test"
+}
