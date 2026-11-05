@@ -1,0 +1,46 @@
+{
+  "queue_id": "FB_COMPONENT_CHAIN_20261106",
+  "created_at": "2026-11-05T17:14:12.724307+00:00",
+  "repository_root": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU",
+  "prerequisite_run": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026",
+  "prerequisite_session": "fb_violation_seed2026_20261106",
+  "prerequisite_id": "SC_CTRL_VIOLATION_FB_SEED2026_FIXED32",
+  "prerequisite_contract_sha256": "d7d226b71bfe8b16eb5074efabc40ac02bff1270826fd8ad9e48c8c0a51a6ff3",
+  "next_run": "/home/kieran/grip-cu-runs/fb_profile_only_control_20261106_seed2026",
+  "next_session": "fb_profile_seed2026_20261106",
+  "next_id": "SC_CTRL_PROFILE_FB_SEED2026_FIXED32",
+  "next_contract_sha256": "b23746ab1f74224824ebe03bec0cb46f3eb0bf22b0eb3ef6d061e5fa7206f836",
+  "max_additional_gpu_runs": 1,
+  "poll_seconds": 30,
+  "continue_regardless_of_score_direction": true,
+  "stop_after_profile_only": true,
+  "watcher_session": "fb_component_watch_20261106",
+  "watcher_argv": [
+    "/home/kieran/miniconda3/envs/guardenv/bin/python",
+    "/home/kieran/grip-cu-runs/fb_component_chain_20261106/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_fb_component_chain.py",
+    "--plan",
+    "/home/kieran/grip-cu-runs/fb_component_chain_20261106/plan.json"
+  ],
+  "queue_dir": "/home/kieran/grip-cu-runs/fb_component_chain_20261106",
+  "queue_plan_sha256": "784b3180fea0dbb0a3feee91417272e69eea54c89f436a801e82e0aec0e29d9f",
+  "frozen_watcher_code_files": 111,
+  "tests": "47 passed",
+  "prerequisite_frozen_code_unchanged": true,
+  "profile_training_started": false,
+  "startup_verified_at": "2026-11-05T17:17:44.908747+00:00",
+  "startup_queue_observation": {
+    "at": "2026-11-05T17:17:34.101082+00:00",
+    "stage": "waiting_violation_only",
+    "prerequisite": {
+      "stage": "train",
+      "status": "running",
+      "at": "2026-11-05T17:17:26.610202+00:00",
+      "elapsed_seconds": 2912.7,
+      "error": null,
+      "optimizer_steps_observed": 7,
+      "log_mtime": "2026-11-05T17:11:32.707702+00:00"
+    }
+  },
+  "profile_cpu_cli_verified": true,
+  "profile_queued_without_gpu_launch": true
+}

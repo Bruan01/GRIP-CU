@@ -24,7 +24,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 只有历史 B1/InfoNCE-i0 候�
 | SC_FUTURE_CODEX_L | R2/R7 | 可选大规模压力测 | CoDEx-L | B1 / Random-9 / SC-CL-9 | optional, deferred | cost, MRR, coverage |
 | SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | FB15K237-2已完成；NELL暂缓 | Random-9 + 同一InfoNCE / SC-CL-9 | observed-single-seed, fixed configuration, 2026-11-05；SC-CL89.90%/Random86.48%，+3.42pp | 10,000题完整直接解码EM、配对553/211/净342、配置及过程审计；见artifacts/fb_random9_control_seed2026 |
 | SC_CTRL_FREQMATCH | R4 | 排除关系频率捷径 | NELL/FB | frequency-matched Random-9 | planned | frequency-bin delta |
-| SC_CTRL_PROFILE | R1/R4 | 结构信号归因 | NELL | profile-only | planned | MRR, margin |
+| SC_CTRL_PROFILE | R1/C2/C5 | 在结构画像基础上检验B1违例项增量 | 本轮FB15K237-2；NELL暂缓 | Full / Profile-only；与Violation-only、Random组成四行表 | 2026-11-06代码及CPU候选库已准备；等待Violation-only完整结束与审计后串行启动；无新性能 | 单seed固定32步、完整测试EM、配对差、四方法逐题CSV和来源审计 |
 | SC_CTRL_VIOLATION | R1/C2/C4 | 在B1违例度基础上检验结构项增量 | 本轮FB15K237-2；NELL暂缓 | Full SC-CL-9 / Violation-only-9；复用Random-9 | 2026-11-06 implemented、CPU全量Full重放及CLI通过、单seed后台流程启动；尚无新性能 | 固定32步、同10,000题直接解码EM、Full−Violation配对差、三方法表及过程审计 |
 | SC_CTRL_SANS | R1/R4 | 结构负采样参考 | NELL/FB | SANS-style structural control | optional | MRR, H@10 |
 | SC_AUX_ERROR | R1 | 错误记忆辅助对照 | NELL/FB | ErrorMemory-9 | implemented-not-run | MRR, EM |

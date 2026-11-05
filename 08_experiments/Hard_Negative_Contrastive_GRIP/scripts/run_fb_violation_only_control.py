@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Matched removal of the structure term; preparation never starts a GPU run."""
+"""Matched single-component ablations; preparation never starts a GPU run.
+
+The historical entry name is retained. Explicit designs select violation_only
+or profile_only; an already running frozen controller is never changed.
+"""
 from __future__ import annotations
 
 import argparse
@@ -29,27 +33,43 @@ from hard_negative_grip.task_file import (
 
 EXPECTED_SAMPLER = {"uniform_mix": 1/3, "structure_weight": 0.0,
                     "violation_weight": 1.0, "temperature": .25}
+VARIANTS = {
+    "violation_only": {"sampler": EXPECTED_SAMPLER, "short": "violation", "label": "Violation-only-9", "item": "SC_CTRL_VIOLATION", "claim_links": ["C2", "C4"]},
+    "profile_only": {"sampler": dict(EXPECTED_SAMPLER, structure_weight=1.0, violation_weight=0.0),
+                     "short": "profile", "label": "Profile-only-9", "item": "SC_CTRL_PROFILE", "claim_links": ["C2", "C5"]},
+}
 
 
 def require(condition, message):
     base.require(condition, message)
 
 
-def make_training_argv(reference, run, model_cache):
+def settings(variant):
+    require(variant in VARIANTS, "unregistered component ablation")
+    return VARIANTS[variant]
+
+
+def run_variant(run):
+    contract = read_json(run/"contract.json")
+    return contract.get("design", {}).get("variant", "violation_only")
+
+
+def make_training_argv(reference, run, model_cache, variant="violation_only"):
+    sampler = settings(variant)["sampler"]
     cmd = training_command(str(base.PYTHON), run/"code_snapshot"/base.REL_HNG/"scripts/train_listed_contrastive.py",
-            reference, inputs=run/"inputs", bank=run/"bank/violation_only.jsonl",
+            reference, inputs=run/"inputs", bank=run/"bank"/(variant+".jsonl"),
             output=run/"training", model_cache=Path(model_cache))
     for option in ("--listed_negative_source", "--negative_sampling_mode"):
         cmd[cmd.index(option)+1] = "structure_counterfactual"
     cmd[cmd.index("--random_manifest")] = "--counterfactual_manifest"
     cmd += ["--counterfactual_metadata", str(run/"bank/metadata.json")]
-    for name, value in EXPECTED_SAMPLER.items():
+    for name, value in sampler.items():
         cmd += ["--counterfactual_"+name, str(value)]
     return cmd
 
 
-def ablate_group(group, profiles, vocabulary, parent_row, pool_row, parent_parameters):
-    """Prove replay of the original bank before changing just its structure weight."""
+def ablate_group(group, profiles, vocabulary, parent_row, pool_row, parent_parameters, variant="violation_only"):
+    """Replay the original bank before removing exactly one registered signal."""
     qid = parent_row["question_id"]
     require(group and all(r.get("qa_id") == qid and r.get("split") == "train" for r in group),
             "score group identity/split mismatch")
@@ -70,8 +90,8 @@ def ablate_group(group, profiles, vocabulary, parent_row, pool_row, parent_param
     common = dict(total_k=9, seed=2026, known_relations=known)
     replay, full_audit = sample_structure_counterfactual_group(group, profiles, **common, **parent_parameters)
     require(replay["negative_relations"] == parent_row["negative_relations"], "original Full bank did not replay")
-    control, audit = sample_structure_counterfactual_group(group, profiles, **common, **EXPECTED_SAMPLER)
-    control["ablation_variant"] = "violation_only"
+    control, audit = sample_structure_counterfactual_group(group, profiles, **common, **settings(variant)["sampler"])
+    control["ablation_variant"] = variant
     control["parent_full_negative_relations"] = parent_row["negative_relations"]
     require(control["positive_relation"] == parent_row["positive_relation"], "ablation gold mismatch")
     require(set(control["negative_relations"]).issubset(legal), "ablation left the legal pool")
@@ -79,24 +99,25 @@ def ablate_group(group, profiles, vocabulary, parent_row, pool_row, parent_param
     diagnostic = {"question_id": qid, "pool_size": len(legal), "overlap_k": overlap,
         "same_set": overlap == 9, "same_order": control["negative_relations"] == parent_row["negative_relations"],
         "full_structure_mean": full_audit["selected_mean_structure_similarity"],
-        "violation_only_structure_mean": audit["selected_mean_structure_similarity"],
+        variant+"_structure_mean": audit["selected_mean_structure_similarity"],
         "full_violation_mean": full_audit["selected_mean_score_violation"],
-        "violation_only_violation_mean": audit["selected_mean_score_violation"],
+        variant+"_violation_mean": audit["selected_mean_score_violation"],
         "original_full_replayed": True, "train_only_pool_verified": True}
     return control, audit, diagnostic
 
 
 def require_intervention(diagnostics):
     require(diagnostics and any(not row["same_set"] for row in diagnostics),
-            "removing structure changed no candidate sets; do not spend GPU on an identical realization")
+            "removing a signal changed no candidate sets; do not spend GPU on an identical realization")
 
 
 def validate_mode(run):
+    variant = run_variant(run)
     actual = read_json(run/"training/run_config.json")
     require(actual["listed_negative_source"] == "structure_counterfactual"
             and actual["negative_sampling_mode"] == "structure_counterfactual", "wrong bank loader")
-    require(actual["counterfactual_sampling"] == EXPECTED_SAMPLER, "sampler is not violation-only")
-    require(Path(actual["counterfactual_manifest"]).resolve() == (run/"bank/violation_only.jsonl").resolve(),
+    require(actual["counterfactual_sampling"] == settings(variant)["sampler"], "sampler does not match the registered variant")
+    require(Path(actual["counterfactual_manifest"]).resolve() == (run/"bank"/(variant+".jsonl")).resolve(),
             "training points at a different candidate bank")
     parameter_diff(read_json(run/"reference/run_config.json"), actual)
 
@@ -108,9 +129,10 @@ def prepare(run, config):
         return contract
     require(not (run/"inputs").exists(), "partial preparation retained; use a fresh run directory")
     design = read_json(config)
-    require(design["sampler"] == EXPECTED_SAMPLER and design["seed"] == 2026
-            and design["optimizer_steps"] == 32 and design["variant"] == "violation_only",
-            "only the registered single-seed structure-removal experiment is supported")
+    variant = design["variant"]
+    sampler = settings(variant)["sampler"]
+    require(design["sampler"] == sampler and design["seed"] == 2026 and design["optimizer_steps"] == 32,
+            "only registered single-seed component experiments are supported")
     source = Path(design["source_control_run"])
     require(sha256(source/"contract.json") == design["source_contract_sha256"], "parent contract changed")
     require(sha256(source/"artifact_manifest.json") == design["source_archive_sha256"], "parent archive changed")
@@ -160,12 +182,12 @@ def prepare(run, config):
     profiles = load_train_relation_profiles(run/"inputs/raw", relation_text_file=run/"inputs/raw/rel2text.json")
     bank, diagnostics = {}, []
     (run/"bank").mkdir()
-    with (run/"bank/violation_only.jsonl").open("w", encoding="utf-8") as out, \
+    with (run/"bank"/(variant+".jsonl")).open("w", encoding="utf-8") as out, \
          (run/"bank/sampler_audit.jsonl").open("w", encoding="utf-8") as audit_out:
         for group in score_groups(scores):
             qid = group[0]["qa_id"]
             require(qid in parent_bank and qid not in bank, "duplicate or unexpected score group")
-            row, audit, diagnostic = ablate_group(group, profiles, vocabulary, parent_bank[qid], pools[qid], params)
+            row, audit, diagnostic = ablate_group(group, profiles, vocabulary, parent_bank[qid], pools[qid], params, variant)
             bank[qid] = row
             diagnostics.append(diagnostic)
             out.write(json.dumps(row, ensure_ascii=False)+"\n")
@@ -186,8 +208,8 @@ def prepare(run, config):
         require({k:v for k,v in left.items() if k != "listed_relations"} ==
                 {k:v for k,v in right.items() if k != "listed_relations"}, "non-candidate QA metadata changed")
     require(len(texts) == design["qa_count"], "full generation QA count changed")
-    metadata = {"source": STRUCTURE_COUNTERFACTUAL_SOURCE, "variant": "violation_only", "requested_k": 9,
-                "parameters": dict(EXPECTED_SAMPLER, seed=2026), "rows_written": len(bank), "rows_failed": 0,
+    metadata = {"source": STRUCTURE_COUNTERFACTUAL_SOURCE, "variant": variant, "requested_k": 9,
+                "parameters": dict(sampler, seed=2026), "rows_written": len(bank), "rows_failed": 0,
                 "source_scores_sha256": wiring["source_scores_sha256"], "parent_full_replayed_rows": len(bank)}
     write_json(run/"bank/metadata.json", metadata)
     write_csv(run/"bank/diagnostics.csv", diagnostics)
@@ -202,13 +224,13 @@ def prepare(run, config):
     for path in (run/"bank").iterdir():
         artifacts[str(path.relative_to(run))] = {"sha256": sha256(path), "bytes": path.stat().st_size}
     reference = read_json(run/"reference/run_config.json")
-    cmd = make_training_argv(reference, run, source_contract["model_cache"])
-    contract = {"schema": "fb-violation-only-v1", "experiment_id": design["experiment_id"],
+    cmd = make_training_argv(reference, run, source_contract["model_cache"], variant)
+    contract = {"schema": "fb-component-control-v1", "experiment_id": design["experiment_id"],
                 "created_at": base.now(), "repository_root": str(ROOT), "design": design,
                 "design_sha256": sha256(config), "immutable_artifacts": artifacts, "training_argv": cmd,
                 "model_cache": source_contract["model_cache"], "expected_optimizer_steps": 32,
                 "expected_scheduler_max_steps": 120, "selection": "fixed_step32_before_one_full_test",
-                "validation_policy": "not_run_by_registered_budget_plan", "sampler": EXPECTED_SAMPLER,
+                "validation_policy": "not_run_by_registered_budget_plan", "sampler": sampler,
                 "borrowed_source_run": str(source), "borrowed_inputs_must_be_retained": True}
     write_json(run/"contract.json", contract)
     write_json(run/"execution_plan.json", {"training_argv": cmd, "stages": ["cli_check", "train32", "one_full_test", "report"],
@@ -228,8 +250,9 @@ def validate_training(run, contract):
             and state["max_steps"] == meta["trainer_max_steps"] == contract["expected_scheduler_max_steps"] == 120,
             "training exceeded or changed the fixed optimization budget")
     rows = parameter_diff(read_json(run/"reference/run_config.json"), read_json(run/"training/run_config.json"))
+    variant = contract.get("design", {}).get("variant", "violation_only")
     rows = [{"parameter": r["parameter"], "full_reference": r["reference"],
-             "violation_only": r["random_control"], "equal": r["equal"]} for r in rows]
+             variant: r["random_control"], "equal": r["equal"]} for r in rows]
     write_csv(run/"paper/config_match.csv", rows)
     return state
 
@@ -263,31 +286,36 @@ def evaluate(run, contract):
     base.execute(run, "eval_test", [str(base.PYTHON), str(run/"code_snapshot"/base.REL_HNG/"scripts/evaluate_adapter.py"),
         "--adapter", str(adapter), "--eval_file", str(run/"inputs/test.json"), "--output_dir", str(run/"evaluation/test"),
         "--model_name", "qwen-7b", "--model_cache_dir", contract["model_cache"], "--dtype", "bfloat16",
-        "--gen_max_length", "32", "--progress_every", "100", "--resume", "--label", "fb_violation_only_seed2026_fixed32_test"])
+        "--gen_max_length", "32", "--progress_every", "100", "--resume", "--label",
+        "fb_"+contract.get("design", {}).get("variant", "violation_only")+"_seed2026_fixed32_test"])
 
 
-def three_way_summary(full, random, violation):
-    full_v, pairs = paired_result(full, violation)
-    v_random, _ = paired_result(violation, random)
+def three_way_summary(full, random, component, variant="violation_only"):
+    short = settings(variant)["short"]
+    full_v, pairs = paired_result(full, component)
+    v_random, _ = paired_result(component, random)
     result = {"n": full_v["n"], "full_correct": full_v["sccl_correct"],
-        "violation_only_correct": full_v["random9_correct"], "random9_correct": v_random["random9_correct"],
-        "full_em": full_v["sccl_em"], "violation_only_em": full_v["random9_em"], "random9_em": v_random["random9_em"],
-        "delta_full_minus_violation_pp": full_v["delta_sccl_minus_random9_pp"],
-        "delta_violation_minus_random_pp": v_random["delta_sccl_minus_random9_pp"],
-        "net_correct_full_minus_violation": full_v["net_correct"],
-        "paired_full_vs_violation": full_v["paired_counts"], "paired_violation_vs_random": v_random["paired_counts"]}
+        variant+"_correct": full_v["random9_correct"], "random9_correct": v_random["random9_correct"],
+        "full_em": full_v["sccl_em"], variant+"_em": full_v["random9_em"], "random9_em": v_random["random9_em"],
+        "delta_full_minus_"+short+"_pp": full_v["delta_sccl_minus_random9_pp"],
+        "delta_"+short+"_minus_random_pp": v_random["delta_sccl_minus_random9_pp"],
+        "net_correct_full_minus_"+short: full_v["net_correct"],
+        "paired_full_vs_"+short: full_v["paired_counts"], "paired_"+short+"_vs_random": v_random["paired_counts"]}
     converted = [{"question_id": row["question_id"], "full_correct": row["sccl_correct"],
-                  "violation_only_correct": row["random9_correct"],
-                  "outcome_full_vs_violation": row["outcome_sccl_vs_random9"], "question_sha256": row["question_sha256"]}
+                  variant+"_correct": row["random9_correct"],
+                  "outcome_full_vs_"+short: row["outcome_sccl_vs_random9"], "question_sha256": row["question_sha256"]}
                  for row in pairs]
-    _, second = paired_result(violation, random)
-    second = [{"question_id": row["question_id"], "violation_only_correct": row["sccl_correct"],
-               "random9_correct": row["random9_correct"], "outcome_violation_vs_random9": row["outcome_sccl_vs_random9"],
+    _, second = paired_result(component, random)
+    second = [{"question_id": row["question_id"], variant+"_correct": row["sccl_correct"],
+               "random9_correct": row["random9_correct"], "outcome_"+short+"_vs_random9": row["outcome_sccl_vs_random9"],
                "question_sha256": row["question_sha256"]} for row in second]
     return result, converted, second
 
 
 def report(run, contract):
+    variant = contract.get("design", {}).get("variant", "violation_only")
+    spec = settings(variant)
+    short = spec["short"]
     state = validate_training(run, contract)
     samples = base.eval_samples(load_graph_record(run/"inputs/test.json"))
     normalize = base.normalization(run/"code_snapshot")
@@ -296,23 +324,23 @@ def report(run, contract):
     weights = {name: sha256(run/"training/listed/adapter"/name) for name in ("adapter_config.json", "adapter_model.safetensors")}
     require(read_json(run/"selection.json")["adapter_sha256"] == weights
             and read_json(run/"evaluation/test/reuse_identity.json")["adapter"] == weights, "prediction/model identity mismatch")
-    result, pairs, second = three_way_summary(*indexed)
+    result, pairs, second = three_way_summary(*indexed, variant=variant)
     require(result["n"] == 10000 and result["full_correct"] == 8990 and result["random9_correct"] == 8648,
             "completed reference counts changed")
     summary = read_json(run/"evaluation/test/summary.json")["all"]
-    require(summary["count"] == result["n"] and abs(summary["em"]-result["violation_only_em"]) < 1e-12,
+    require(summary["count"] == result["n"] and abs(summary["em"]-result[variant+"_em"]) < 1e-12,
             "test summary differs from recomputed predictions")
     result.update({"experiment_id": contract["experiment_id"], "at": base.now(), "status": "completed", "seed": 2026,
-        "paper_role": "claim-carrying", "section_id": "experiments", "item_id": "SC_CTRL_VIOLATION", "claim_links": ["C2"],
+        "variant": variant, "paper_role": "claim-carrying", "section_id": "experiments", "item_id": spec["item"], "claim_links": spec["claim_links"],
         "scope": contract["design"]["scope"], "validation_status": contract["validation_policy"],
         "limitations": ["single seed, previously SC-CL-selected hyperparameters", "no equal-HPO or statistical stability claim",
-                        "no Profile-only arm, so no factorial interaction/synergy claim", "historical test exposure and 464 QA repairs retained"],
+                        "this three-row report alone establishes no interaction/synergy claim", "historical test exposure and 464 QA repairs retained"],
         "next_action": "write the observed positive, null or negative component effect without reopening this experiment"})
     write_json(run/"paper/result.json", result)
-    write_csv(run/"paper/paired_full_vs_violation.csv", pairs)
-    write_csv(run/"paper/paired_violation_vs_random.csv", second)
+    write_csv(run/("paper/paired_full_vs_"+short+".csv"), pairs)
+    write_csv(run/("paper/paired_"+short+"_vs_random.csv"), second)
     metrics = [{"model": label, "seed": 2026, "n": result["n"], "correct": result[key], "em_percent": 100*result[key]/result["n"]}
-               for label, key in (("Random-9", "random9_correct"), ("Violation-only-9", "violation_only_correct"), ("Full SC-CL-9", "full_correct"))]
+               for label, key in (("Random-9", "random9_correct"), (spec["label"], variant+"_correct"), ("Full SC-CL-9", "full_correct"))]
     write_csv(run/"paper/metrics.csv", metrics)
     fields = sorted({key for row in state["log_history"] for key in row})
     write_csv(run/"paper/training_history.csv", [{key:row.get(key, "") for key in fields} for row in state["log_history"]])
@@ -322,13 +350,13 @@ def report(run, contract):
     rows += ["\\bottomrule", "\\end{tabular}"]
     (run/"paper/table.tex").write_text("\n".join(rows)+"\n")
     (run/"paper/RESULTS.md").write_text(
-        "# Fixed-configuration structure-removal ablation\n\n"
-        + f"Full − Violation-only = {result['delta_full_minus_violation_pp']:+.4f} pp; "
-        + f"Violation-only − Random = {result['delta_violation_minus_random_pp']:+.4f} pp.\n\n"
+        "# Fixed-configuration component ablation: "+variant+"\n\n"
+        + f"Full − {spec['label']} = {result['delta_full_minus_'+short+'_pp']:+.4f} pp; "
+        + f"{spec['label']} − Random = {result['delta_'+short+'_minus_random_pp']:+.4f} pp.\n\n"
         + "One seed at the existing SC-CL-selected configuration; no standalone structure or synergy/stability claim. "
         + "The fixed step32 model was tested once. Full validation was omitted by the predeclared budget plan.\n")
     base.inventory(run)
-    destination = Path(contract["repository_root"])/"11_paper/artifacts/fb_violation_only_control_seed2026"
+    destination = Path(contract["repository_root"])/("11_paper/artifacts/fb_"+variant+"_control_seed2026")
     destination.mkdir(parents=True, exist_ok=True)
     if (destination/"result.json").exists():
         require(read_json(destination/"result.json")["experiment_id"] == contract["experiment_id"], "another experiment owns the paper exports")

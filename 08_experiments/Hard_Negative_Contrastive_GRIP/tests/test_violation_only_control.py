@@ -99,12 +99,13 @@ def test_evaluate_calls_one_test_and_does_not_call_validation(tmp_path,monkeypat
     assert "--eval_file" in calls[0][1] and "validation.json" not in " ".join(calls[0][1])
 
 
-def test_completed_three_row_report_and_cache_identity_guard(tmp_path):
+@pytest.mark.parametrize("variant", ["violation_only", "profile_only"])
+def test_completed_three_row_report_and_cache_identity_guard(tmp_path, variant):
     run=tmp_path/"synthetic_run";save=lambda rel,value:control.write_json(run/rel,value)
     ref=reference()
     save("reference/run_config.json",ref)
     actual=dict(ref,listed_negative_source="structure_counterfactual",negative_sampling_mode="structure_counterfactual",
-                counterfactual_sampling=control.EXPECTED_SAMPLER,counterfactual_manifest=str(run/"bank/violation_only.jsonl"))
+                counterfactual_sampling=control.settings(variant)["sampler"],counterfactual_manifest=str(run/"bank"/(variant+".jsonl")))
     save("training/run_config.json",actual)
     save("training/trainer_listed/checkpoint-32/trainer_state.json",{"global_step":32,"max_steps":120,"log_history":[{"step":32,"loss":.5}]})
     save("training/listed/adapter/run_metadata.json",{"trainer_global_step":32,"trainer_max_steps":120})
@@ -124,12 +125,15 @@ def test_completed_three_row_report_and_cache_identity_guard(tmp_path):
     norm=run/"code_snapshot/13_base_method/grip-exp/evaluation/utils.py";norm.parent.mkdir(parents=True)
     norm.write_text("def normalize_answer(s): return s.lower()\n")
     c={"experiment_id":"SYNTHETIC_TEST_ONLY","expected_optimizer_steps":32,"expected_scheduler_max_steps":120,
-       "design":{"scope":"synthetic fixture"},"validation_policy":"not_run_by_registered_budget_plan",
+       "design":{"scope":"synthetic fixture", "variant":variant},"validation_policy":"not_run_by_registered_budget_plan",
        "repository_root":str(tmp_path/"fake_repo"),"borrowed_source_run":"synthetic reference"}
     save("contract.json",c)
     result=control.report(run,c)
-    assert result["delta_full_minus_violation_pp"]==1.2
-    assert result["delta_violation_minus_random_pp"]==2.22
+    short=control.settings(variant)["short"]
+    assert result['delta_full_minus_'+short+'_pp']==1.2
+    assert result['delta_'+short+'_minus_random_pp']==2.22
+    assert result['variant']==variant
+    assert (run/('paper/paired_full_vs_'+short+'.csv')).exists()
     assert (run/"paper/table.tex").read_text().count(chr(92)*2)==4
     assert not (run/"evaluation/validation").exists()
     save("evaluation/test/reuse_identity.json",{"adapter":{"wrong":"weights"}})
