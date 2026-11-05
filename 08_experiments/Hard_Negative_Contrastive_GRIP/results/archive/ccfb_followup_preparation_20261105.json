@@ -1,0 +1,1071 @@
+{
+  "observed_at_utc": "2026-11-05T09:27:22.427122+00:00",
+  "resources": {
+    "memory_bytes": {
+      "MemTotal": 33566732288,
+      "MemAvailable": 30234128384,
+      "SwapTotal": 8589930496,
+      "SwapFree": 8486383616
+    },
+    "disk_bytes": {
+      "total": 1005867986944,
+      "used": 903728594944,
+      "free": 50968621056
+    },
+    "gpu": "NVIDIA GeForce RTX 3090, 24576 MiB, 15980 MiB, 8145 MiB, 96 %"
+  },
+  "preparation_script_sha256": "e6cd11ce79c6280acf4db7521e2a8cafc4a4aae98a4622d4f9b57c5cea35f2fd",
+  "matrix_sha256": "d2f385d963f50915833e48407fa10ef0c4cd9eaeca0659f053a5b0c8d34742af",
+  "current_codexm_source_mismatches": [],
+  "jobs": [
+    {
+      "dataset": "nell23k",
+      "seed": 2026,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2026",
+      "arms": [
+        "b1"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "validation_count": 4951,
+        "test_count": 4944,
+        "primary_root": "paper_v2_nell23k",
+        "fixed_main": "soft_mix_1"
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/nell23k_seed2026.json",
+      "preview_plan_sha256": "1a5e008a485f8b15ca16741ae7c86e850f3f1a499bb370ae61c27240e7e14e7b",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "not_needed_for_b1"
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "4": 1
+        },
+        "final_adapter_bytes": 2220507136,
+        "retained_s2_checkpoint_bytes": 4562526208,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 678303335,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 18198754919,
+        "required_free_gib": 16.948911285959184
+      },
+      "launch_minimum_free_bytes": 18198754919,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "nell23k",
+      "seed": 2027,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "validation_count": 4951,
+        "test_count": 4944,
+        "primary_root": "paper_v2_nell23k",
+        "fixed_main": "soft_mix_1"
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/nell23k_seed2027.json",
+      "preview_plan_sha256": "1d340cd1abd97eb11e445451d21a628f5580904e824881d6f50754482710d472",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/sampler/FROZEN_SAMPLERS.md": "759d64928a27aa1415de4c5134a7df72c5b04303c7fa4fc0d0c98ca9a8b4c22a",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/sampler/calibrated.jsonl": "7b8de5b94679a15be9b80216a34b29a036eb02304e00be0f31ad0d1f5afe65b3",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/sampler/global_statistics.json": "015421378916502211ebb71c68d8d2cce901eed6177ffd7ab9f10dbb9f4da6f3",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/sampler/per_qa.jsonl": "0d8a7fa5dc8c6c50951aa0907c3a638b307c3ffbd678a4281e1cf571ef5dc56e",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/sampler/policy.json": "e4df3b89698b46a970ad517c4de92ed2c6982f901b07580382f624d03e00a4ee",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/soft_mix_1/negatives.jsonl": "b75e2c229c6b37544739c33dd658837c480ee5698ba97cd00ef20f2e5b56cc11",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/calibrated_1/negatives.jsonl": "9306dab1000879e44e7abcf617ed3d5535cd3d0c1c0625338ec90b1e8a73ec77",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/calibrated_05/negatives.jsonl": "946c9f71c82bd7ebb31d3e99db028b0e3227b507b8fef5e0b4e39f305464607f"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "b75e2c229c6b37544739c33dd658837c480ee5698ba97cd00ef20f2e5b56cc11",
+            "n_qa": 19808,
+            "n_listed": 3030,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3030,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "9306dab1000879e44e7abcf617ed3d5535cd3d0c1c0625338ec90b1e8a73ec77",
+            "n_qa": 19808,
+            "n_listed": 3030,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3030,
+            "lambda_min": 0.7104713467086651,
+            "lambda_max": 0.9205500234500402
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2027/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "946c9f71c82bd7ebb31d3e99db028b0e3227b507b8fef5e0b4e39f305464607f",
+            "n_qa": 19808,
+            "n_listed": 3030,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3030,
+            "lambda_min": 0.35523567335433254,
+            "lambda_max": 0.4602750117250201
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "4": 4
+        },
+        "final_adapter_bytes": 8882028544,
+        "retained_s2_checkpoint_bytes": 18250104832,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 2713213338,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 40582764954,
+        "required_free_gib": 37.79564514197409
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "nell23k",
+      "seed": 2028,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "validation_count": 4951,
+        "test_count": 4944,
+        "primary_root": "paper_v2_nell23k",
+        "fixed_main": "soft_mix_1"
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/nell23k_seed2028.json",
+      "preview_plan_sha256": "bfa8a9e77c7912b461456a36b0f2dbf823d81d9e2eb26a46513db1b3152fd893",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/sampler/FROZEN_SAMPLERS.md": "9d065c934a4af70e83a194454f9de2eba9c5886349154b6af734863df0845d7d",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/sampler/calibrated.jsonl": "aec81dec0ea6c43db5f275213f7045806fcfc9d1a86708a4a7460ddb5446f0e9",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/sampler/global_statistics.json": "ab3f7052e46ae9e29f497994124ca740581989e32ead2149b72f84a10ecffa00",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/sampler/per_qa.jsonl": "ce49f56ed46b10d8a5eb9fad443a1e1281ccdfdbe089ee7d75652b5a50e3e67f",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/sampler/policy.json": "136366b097d4d0d8d53c35dbb2077f4d614b995e1c56451764101ed6d56f1034",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/soft_mix_1/negatives.jsonl": "63f3dfde52077e96d242fc9abb9f8c7dff55bd07050b4c9aea25fa0506d4a192",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/calibrated_1/negatives.jsonl": "e3014865e4c1756e124c239a257c1ae00917952c18f944887a8d7f79c6bb29a2",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/calibrated_05/negatives.jsonl": "9451fbac63986fcbfe865bfc482ea3a961a49b6b74186f4924bbbd75d1ca4219"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "63f3dfde52077e96d242fc9abb9f8c7dff55bd07050b4c9aea25fa0506d4a192",
+            "n_qa": 19808,
+            "n_listed": 3030,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3030,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "e3014865e4c1756e124c239a257c1ae00917952c18f944887a8d7f79c6bb29a2",
+            "n_qa": 19808,
+            "n_listed": 3030,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3030,
+            "lambda_min": 0.7104713467086651,
+            "lambda_max": 0.9205500234500402
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/nell23k/seed2028/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "9451fbac63986fcbfe865bfc482ea3a961a49b6b74186f4924bbbd75d1ca4219",
+            "n_qa": 19808,
+            "n_listed": 3030,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3030,
+            "lambda_min": 0.35523567335433254,
+            "lambda_max": 0.4602750117250201
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "4": 4
+        },
+        "final_adapter_bytes": 8882028544,
+        "retained_s2_checkpoint_bytes": 18250104832,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 2713213338,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 40582764954,
+        "required_free_gib": 37.79564514197409
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "fb15k237",
+      "seed": 2027,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "validation_count": 10000,
+        "test_count": 10000,
+        "primary_root": "fb15k237_three_configs_seed2026",
+        "fixed_main": "soft_mix_1"
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/fb15k237_seed2027.json",
+      "preview_plan_sha256": "066e3ffcd90f50694d1b54d745745b5b115f01c163d7b3bfdb423f4fec2aa4c8",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/sampler/FROZEN_SAMPLERS.md": "3c4976c94a1fd78b30d7837abc31be4782f2dba24204edbaf01875f9460799ba",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/sampler/calibrated.jsonl": "522b9a5f95daa1c0a2b04c334f2a4ddf3ad3a5c4106ada75685aa7c1ed4abc8f",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/sampler/global_statistics.json": "a80abe6b311ac44c03aedca6c5b29e0014749495474070e52809ed037011ab99",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/sampler/per_qa.jsonl": "b020eb8257a0104805696df5bde22ae1ae04b1eac6d776e20af3ed9434929781",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/sampler/policy.json": "776bd64e298d3ca825da5da597a3d5f9a36a8dacbf0835f61a662f22d104ec51",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/soft_mix_1/negatives.jsonl": "ccb939c33a9529daa2f8e070a262ccd12b3b03c8bca36ff7270aaf64e464dd1d",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/calibrated_1/negatives.jsonl": "601a17775021b16c5bcb84bd2e34acb87000a5d69337ff5bd559a729d5ff5d5f",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/calibrated_05/negatives.jsonl": "7865fae433c6b7f09e634688d9618d54ec1149135d981b77f91b20fa585fe66e"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "ccb939c33a9529daa2f8e070a262ccd12b3b03c8bca36ff7270aaf64e464dd1d",
+            "n_qa": 19845,
+            "n_listed": 3021,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3021,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "601a17775021b16c5bcb84bd2e34acb87000a5d69337ff5bd559a729d5ff5d5f",
+            "n_qa": 19845,
+            "n_listed": 3021,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3021,
+            "lambda_min": 0.6690219345560802,
+            "lambda_max": 0.9159976809169014
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2027/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "7865fae433c6b7f09e634688d9618d54ec1149135d981b77f91b20fa585fe66e",
+            "n_qa": 19845,
+            "n_listed": 3021,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3021,
+            "lambda_min": 0.3345109672780401,
+            "lambda_max": 0.4579988404584507
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "24": 4
+        },
+        "final_adapter_bytes": 9487581184,
+        "retained_s2_checkpoint_bytes": 21883682816,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 3137126400,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 45245808640,
+        "required_free_gib": 42.13844299316406
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "fb15k237",
+      "seed": 2028,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "validation_count": 10000,
+        "test_count": 10000,
+        "primary_root": "fb15k237_three_configs_seed2026",
+        "fixed_main": "soft_mix_1"
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/fb15k237_seed2028.json",
+      "preview_plan_sha256": "6f39b8b77a9ab1ed5e3f63b6281e29cc9e13b37dbfd2442bf106ec5692d8ecee",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/sampler/FROZEN_SAMPLERS.md": "985ba6725546154cb9b0411d5ba135477c374ac099cb6c4cc4f3977b68adffee",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/sampler/calibrated.jsonl": "ff9b23c5ae84713fe7190c6bfa2479b298a772021f66bd63e30d300d7ddd7313",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/sampler/global_statistics.json": "34556fe712546e561ed694dfc2a6aaceca0e78a986a61d4af3952eec112ff5c1",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/sampler/per_qa.jsonl": "93eecf02d523dc62a8212fe264499082c1658bd95a0adcf0de5ff906791ea3c6",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/sampler/policy.json": "4ce2890dd940fdd58c044a2b229f26ebb2e4770caa5194b7df9f488b0520bee5",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/soft_mix_1/negatives.jsonl": "716493683c567b38358b7237f482841c456b23ba3162a5b2ad53bbaa990dcca8",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/calibrated_1/negatives.jsonl": "011fcd702a1fed3e0c584aef2c19436816a9ab6a071cbd8b431417388659ab60",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/calibrated_05/negatives.jsonl": "20fce1bccefa4fb8384415c838de9f164b0450b7e24429d0e6d66101922ce029"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "716493683c567b38358b7237f482841c456b23ba3162a5b2ad53bbaa990dcca8",
+            "n_qa": 19845,
+            "n_listed": 3021,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3021,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "011fcd702a1fed3e0c584aef2c19436816a9ab6a071cbd8b431417388659ab60",
+            "n_qa": 19845,
+            "n_listed": 3021,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3021,
+            "lambda_min": 0.6690219345560802,
+            "lambda_max": 0.9159976809169014
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/fb15k237/seed2028/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "20fce1bccefa4fb8384415c838de9f164b0450b7e24429d0e6d66101922ce029",
+            "n_qa": 19845,
+            "n_listed": 3021,
+            "n_generation_only_excluded": 0,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 3021,
+            "lambda_min": 0.3345109672780401,
+            "lambda_max": 0.4579988404584507
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "24": 4
+        },
+        "final_adapter_bytes": 9487581184,
+        "retained_s2_checkpoint_bytes": 21883682816,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 3137126400,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 45245808640,
+        "required_free_gib": 42.13844299316406
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "wn18rr",
+      "seed": 2027,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028,
+          2029,
+          2030
+        ],
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "validation_count": 3034,
+        "test_count": 3134,
+        "primary_root": "wn18rr_three_configs_seed2026",
+        "fixed_main": null
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/wn18rr_seed2027.json",
+      "preview_plan_sha256": "025646ebee76853aa5c009d649affcc94c9f76ffd064f623ca933b7f5b8785c1",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/sampler/FROZEN_SAMPLERS.md": "e471d53bcdecc4dfe945c3b510d102535abdcf1e248ba68d42daa7f95df2ce8e",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/sampler/calibrated.jsonl": "1d91e1daf1920325b14b127680ee3f14ceaacaf553259d53e9491a194ff3da7e",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/sampler/global_statistics.json": "aa8fd531cab024071b49c744511aecaf9fdf7049e0a023a9e17a6b36fc763be3",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/sampler/per_qa.jsonl": "f9a6b59109817f8fd32af6e31ddd752ec8b265707c68a9ab23a0bea804891a24",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/sampler/policy.json": "7c87a365c5968b3105cc6bf30e2900e162d2f51512f2c26b317d5a6a80e2ec4e",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/soft_mix_1/negatives.jsonl": "baed21f73bef81a932aeb923f9dad14e14e8a7fd38aead5e4489b213e06807bc",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/calibrated_1/negatives.jsonl": "74548e76cabe4ed9509f6458d7adb1ef6e09ec4cd38f74cf94ab3a66c98be5ce",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/calibrated_05/negatives.jsonl": "919df69601f0877a5e88ad8c55b89dd858b63fe11934ca7357d661145ff635ff"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "baed21f73bef81a932aeb923f9dad14e14e8a7fd38aead5e4489b213e06807bc",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "74548e76cabe4ed9509f6458d7adb1ef6e09ec4cd38f74cf94ab3a66c98be5ce",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.5,
+            "lambda_max": 0.5129628372226416
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2027/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "919df69601f0877a5e88ad8c55b89dd858b63fe11934ca7357d661145ff635ff",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.25,
+            "lambda_max": 0.2564814186113208
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "24": 4
+        },
+        "final_adapter_bytes": 9487581184,
+        "retained_s2_checkpoint_bytes": 21883682816,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 3137126400,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 45245808640,
+        "required_free_gib": 42.13844299316406
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "wn18rr",
+      "seed": 2028,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028,
+          2029,
+          2030
+        ],
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "validation_count": 3034,
+        "test_count": 3134,
+        "primary_root": "wn18rr_three_configs_seed2026",
+        "fixed_main": null
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/wn18rr_seed2028.json",
+      "preview_plan_sha256": "ad04d1f39655f316957ec1a74ec2c5110d8c5037340a7c876a05bc442db949d5",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/sampler/FROZEN_SAMPLERS.md": "c6be76cd744a5894ac26cff54b2820580684da7052286b63f6e06e6c0b7ede6d",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/sampler/calibrated.jsonl": "adf9dc2a40040fba51bd9a19f4625dee997cb199c88da90e79f9c2ee7f2f507b",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/sampler/global_statistics.json": "c943a83031b33ea87893c4c0d26af816fbd873c45d3ca3284f2ee34d92d429e9",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/sampler/per_qa.jsonl": "21e950c505616adc574253a9cffa197ed5ae8320567bdb2baf7b1eef279c2006",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/sampler/policy.json": "afe63bb6f4a81941ea8639f139ba62b5f10b5e98be04365abf30f4a239900147",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/soft_mix_1/negatives.jsonl": "87b342e1fdc44f1a746c12beb53e36f4b1c65e8f0df393589a41b18415051181",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/calibrated_1/negatives.jsonl": "a13f14b00c8fd15695ee6e8e09267fb42d71760baa434fcda15b841f84460363",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/calibrated_05/negatives.jsonl": "80f6a3aab34cbb32ee51e1c045056521de58e2e18e3d34087e8d516f8d4ed677"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "87b342e1fdc44f1a746c12beb53e36f4b1c65e8f0df393589a41b18415051181",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "a13f14b00c8fd15695ee6e8e09267fb42d71760baa434fcda15b841f84460363",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.5,
+            "lambda_max": 0.5129628372226416
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2028/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "80f6a3aab34cbb32ee51e1c045056521de58e2e18e3d34087e8d516f8d4ed677",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.25,
+            "lambda_max": 0.2564814186113208
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "24": 4
+        },
+        "final_adapter_bytes": 9487581184,
+        "retained_s2_checkpoint_bytes": 21883682816,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 3137126400,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 45245808640,
+        "required_free_gib": 42.13844299316406
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "wn18rr",
+      "seed": 2029,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028,
+          2029,
+          2030
+        ],
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "validation_count": 3034,
+        "test_count": 3134,
+        "primary_root": "wn18rr_three_configs_seed2026",
+        "fixed_main": null
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/wn18rr_seed2029.json",
+      "preview_plan_sha256": "52903b32bb421cfea712ad577a0291aa6615e8d66889ed7578546eb4a6ce828e",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/sampler/FROZEN_SAMPLERS.md": "5af20aa26dca124a3d071e0c0fa93b28460741c395d11b75ab9e40bf798a904d",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/sampler/calibrated.jsonl": "9c01b4a25215e835896c2792d3c29054e36e9d6fece56bdd067bb97e9e63eddd",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/sampler/global_statistics.json": "b1a680d9a493463b586d055491b6a6b39825d04338f2e9c97161b43bdaa5fb4c",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/sampler/per_qa.jsonl": "7d568326de95a164dd2ded6055f0103098edcddaf5c0830850f4e24935db46e5",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/sampler/policy.json": "8ce6ce04b43f15956827449682d6647043acf47a4f8914d1c1162a72bf595f0d",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/soft_mix_1/negatives.jsonl": "de59806040d79193fd400be1caa330b8c7f5afcf2ee872406d2a241c0e52001c",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/calibrated_1/negatives.jsonl": "67d1f31fb39ac63fb14bd71acb9be036ba8b75ab3d38373d7fa9e2b3824e95f6",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/calibrated_05/negatives.jsonl": "bc9c10741aeaddf4f889cb1d90b15d2a7b71496b9749b1b5f1111f6306739ada"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "de59806040d79193fd400be1caa330b8c7f5afcf2ee872406d2a241c0e52001c",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "67d1f31fb39ac63fb14bd71acb9be036ba8b75ab3d38373d7fa9e2b3824e95f6",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.5,
+            "lambda_max": 0.5129628372226416
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2029/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "bc9c10741aeaddf4f889cb1d90b15d2a7b71496b9749b1b5f1111f6306739ada",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.25,
+            "lambda_max": 0.2564814186113208
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "24": 4
+        },
+        "final_adapter_bytes": 9487581184,
+        "retained_s2_checkpoint_bytes": 21883682816,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 3137126400,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 45245808640,
+        "required_free_gib": 42.13844299316406
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "wn18rr",
+      "seed": 2030,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028,
+          2029,
+          2030
+        ],
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "validation_count": 3034,
+        "test_count": 3134,
+        "primary_root": "wn18rr_three_configs_seed2026",
+        "fixed_main": null
+      },
+      "missing_dependencies": [],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/wn18rr_seed2030.json",
+      "preview_plan_sha256": "86a38e965e3351dad3509f0de0897d5e27087b797f2471d5fed7519f69a9f777",
+      "status": "inputs_ready",
+      "negative_preparation": {
+        "status": "verified_existing",
+        "receipt": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/sampler_preparation.json",
+        "outputs": {
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/sampler/FROZEN_SAMPLERS.md": "aee78f96b4f8cc048e527d35dba5ead1f4cdba592c27edfb7b88b95d93234234",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/sampler/calibrated.jsonl": "c2a332f6cc0c84df991639334d0ab77d237f82fb9cd204d4b03fbe95c2ae7e50",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/sampler/global_statistics.json": "840b91977c1a028990bfcbd5f9f3252d53296674683b09086f1b4e42202aedd1",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/sampler/per_qa.jsonl": "29de198f4097bffdb5405871f9840c83f791e3855f7bbe82cb293d4a2d4e7f02",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/sampler/policy.json": "810003f5b4dde249784b3908e01a950394523e3a7c481c4caa4dbdcd4878f71d",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/soft_mix_1/negatives.jsonl": "416b75fc67a441d2762a898263d6e6aab83e745a4917140b916a608fef2f4726",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/calibrated_1/negatives.jsonl": "ab1f5a67b8f75f40a50c35f346ca929f06062600292ffd53d6f6fdb3085e4916",
+          "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/calibrated_05/negatives.jsonl": "6af6128f885343d9e5269b253adce6cd8433e581f1b506c8c11fcfd19274a3e4"
+        },
+        "wiring": {
+          "soft_mix_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/soft_mix_1/negatives.jsonl",
+            "manifest_sha256": "416b75fc67a441d2762a898263d6e6aab83e745a4917140b916a608fef2f4726",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 1.0,
+            "lambda_max": 1.0
+          },
+          "calibrated_1": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/calibrated_1/negatives.jsonl",
+            "manifest_sha256": "ab1f5a67b8f75f40a50c35f346ca929f06062600292ffd53d6f6fdb3085e4916",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.5,
+            "lambda_max": 0.5129628372226416
+          },
+          "calibrated_05": {
+            "manifest": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/wn18rr/seed2030/calibrated_05/negatives.jsonl",
+            "manifest_sha256": "6af6128f885343d9e5269b253adce6cd8433e581f1b506c8c11fcfd19274a3e4",
+            "n_qa": 19782,
+            "n_listed": 2697,
+            "n_generation_only_excluded": 79,
+            "k_min": 9,
+            "k_max": 9,
+            "k_mean": 9.0,
+            "n_lambda": 2697,
+            "lambda_min": 0.25,
+            "lambda_max": 0.2564814186113208
+          }
+        }
+      },
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "24": 4
+        },
+        "final_adapter_bytes": 9487581184,
+        "retained_s2_checkpoint_bytes": 21883682816,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 3137126400,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 45245808640,
+        "required_free_gib": 42.13844299316406
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "codexm",
+      "seed": 2027,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/codexm/seed2027",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "validation_count": 10310,
+        "test_count": 10311,
+        "primary_root": "codexm_three_configs_seed2026",
+        "fixed_main": null
+      },
+      "missing_dependencies": [
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/tasks/tasks.json",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/s1_adapter/adapter_config.json",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/s1_adapter/adapter_model.safetensors",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/s1_adapter/s1_optimizer.pt",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/confusion/candidate_scores.jsonl",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/confusion/metadata.json",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/confusion/run_stats.json",
+        "primary experiment must be COMPLETE: /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/selection.json"
+      ],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/codexm_seed2027.json",
+      "preview_plan_sha256": "db3ab9be96e454bc83940e901599e1efc716a45351d7867eb5634fc639c45f93",
+      "status": "waiting_for_primary",
+      "static_data_validation": "PASS",
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "4": 4
+        },
+        "final_adapter_bytes": 8882028544,
+        "retained_s2_checkpoint_bytes": 18250104832,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 2713213338,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 40582764954,
+        "required_free_gib": 37.79564514197409
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    },
+    {
+      "dataset": "codexm",
+      "seed": 2028,
+      "root": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb/codexm/seed2028",
+      "arms": [
+        "b1",
+        "soft_mix_1",
+        "calibrated_1",
+        "calibrated_05"
+      ],
+      "spec": {
+        "seeds": [
+          2026,
+          2027,
+          2028
+        ],
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "validation_count": 10310,
+        "test_count": 10311,
+        "primary_root": "codexm_three_configs_seed2026",
+        "fixed_main": null
+      },
+      "missing_dependencies": [
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/tasks/tasks.json",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/s1_adapter/adapter_config.json",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/s1_adapter/adapter_model.safetensors",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/s1_adapter/s1_optimizer.pt",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/confusion/candidate_scores.jsonl",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/confusion/metadata.json",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/confusion/run_stats.json",
+        "primary experiment must be COMPLETE: /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026",
+        "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/selection.json"
+      ],
+      "missing_sources": [],
+      "preview_plan": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_preparation_20261104/followups/plans/codexm_seed2028.json",
+      "preview_plan_sha256": "1bb35d5efc4e72f45b80c512fc9737bc22299faf517d615c09f80dbf0d8c929c",
+      "status": "waiting_for_primary",
+      "static_data_validation": "PASS",
+      "disk_budget": {
+        "s2_by_lora_rank": {
+          "4": 4
+        },
+        "final_adapter_bytes": 8882028544,
+        "retained_s2_checkpoint_bytes": 18250104832,
+        "new_shared_s1_bytes": 0,
+        "transient_checkpoint_bytes": 0,
+        "allowance_10pct_bytes": 2713213338,
+        "reserve_bytes": 10737418240,
+        "required_free_bytes": 40582764954,
+        "required_free_gib": 37.79564514197409
+      },
+      "launch_minimum_free_bytes": 48318382080,
+      "disk_ready_at_observation": true
+    }
+  ],
+  "current_codexm": {
+    "status": "RUNNING",
+    "stage": "tasks"
+  },
+  "measurement_evidence": {
+    "4": {
+      "final_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/paper_v2_nell23k/b1_seed2026/b1/adapter",
+      "final_bytes": 2220507136,
+      "checkpoint_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/paper_nell23k/trainer_s1/checkpoint-159",
+      "checkpoint_bytes": 2281263104,
+      "checkpoint_measurement": "du"
+    },
+    "24": {
+      "final_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_three_configs_seed2026/b1_seed2026/b1/adapter",
+      "final_bytes": 2371895296,
+      "checkpoint_path": "/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_three_configs_seed2026/b1_seed2026/trainer_b1/checkpoint-117",
+      "checkpoint_bytes": 2735460352,
+      "checkpoint_measurement": "du"
+    }
+  },
+  "budget_scope": "Current CoDEx-M initial run plus 11 follow-up batches; follow-ups are conservatively counted even if subsequently completed",
+  "retention_2_checkpoints": {
+    "s2_by_lora_rank": {
+      "4": 21,
+      "24": 24
+    },
+    "final_adapter_bytes": 103556136960,
+    "retained_s2_checkpoint_bytes": 227115147264,
+    "new_shared_s1_bytes": 6843736064,
+    "transient_checkpoint_bytes": 0,
+    "allowance_10pct_bytes": 33751502029,
+    "reserve_bytes": 16106127360,
+    "required_free_bytes": 387372649677,
+    "required_free_gib": 360.76889343280345
+  },
+  "archive_completed_checkpoints_externally": {
+    "s2_by_lora_rank": {
+      "4": 21,
+      "24": 24
+    },
+    "final_adapter_bytes": 103556136960,
+    "retained_s2_checkpoint_bytes": 0,
+    "new_shared_s1_bytes": 2281209856,
+    "transient_checkpoint_bytes": 8206381056,
+    "allowance_10pct_bytes": 11404372788,
+    "reserve_bytes": 16106127360,
+    "required_free_bytes": 141554228020,
+    "required_free_gib": 131.8326480872929
+  },
+  "current_codexm_estimated_remaining": {
+    "s2_by_lora_rank": {
+      "4": 4
+    },
+    "final_adapter_bytes": 8882028544,
+    "retained_s2_checkpoint_bytes": 18250104832,
+    "new_shared_s1_bytes": 6843736064,
+    "transient_checkpoint_bytes": 0,
+    "allowance_10pct_bytes": 3397586944,
+    "reserve_bytes": 10737418240,
+    "required_free_bytes": 48110874624,
+    "required_free_gib": 44.80674362182617
+  },
+  "execution_verification": {
+    "at_utc": "2026-11-05T09:28:47.181453+00:00",
+    "cpu_tests_passed": 14,
+    "test_scope": "test_ccfb_followups.py and test_ccfb_sprint.py",
+    "busy_gpu_guard_rejected_real_launch": true,
+    "guard_error": "GPU already has a compute process",
+    "compute_pid_unchanged": "64385",
+    "no_new_nell_experiment_plan": true,
+    "generated_files": 64,
+    "generated_apparent_bytes": 137939450,
+    "method_negative_manifests": 24,
+    "existing_tracked_diff_sha256": "2af2a695dde2e177c196c37fc5a2df551264d94fd2a83374a12825b0cb2f6b6b",
+    "current_codex_source_mismatches": [],
+    "current_codex_status": {
+      "status": "RUNNING",
+      "stage": "tasks"
+    }
+  },
+  "planned_minimal_mechanism_storage": {
+    "status": "estimate_only; not launched or materialized by this preparation",
+    "source_plan": "CCFB_冲刺计划.md §7",
+    "s2_by_lora_rank": {
+      "4": 2,
+      "24": 6
+    },
+    "independent_s1_lora_rank": 24,
+    "s1_reference_path": "results/runs/wn18rr_three_configs_seed2026/s1_adapter",
+    "s1_reference_measured_allocated_bytes": 2735374336,
+    "additional_persistent_bytes": 68829257728,
+    "additional_with_10pct_bytes": 75712183501,
+    "combined_main_and_mechanism_required_free_bytes": 463084833178,
+    "scope_limit": "Excludes optional WN budget search and additional repeats; FB time-matched B1 duration remains to be fixed from measured S2 cost."
+  }
+}
