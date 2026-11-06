@@ -18,6 +18,7 @@ import numpy as np
 
 from .counterfactuals import STRUCTURE_COUNTERFACTUAL_SOURCE
 from .frozen_random import validate_frozen_random_manifest
+from .frequency_matched import validate_frequency_manifest
 from .official_lists import load_relation_text_mapping, official_negatives
 
 ANSWER_RE = re.compile(r"<answer>(.*?)</answer>", re.DOTALL)
@@ -25,6 +26,7 @@ RELATION_QUESTION_RE = re.compile(r"relation between", re.I)
 YES_NO = {"yes", "no"}
 LISTED_NEGATIVE_K = 9  # official 10-way = 1 gold + 9 distractors; independent of |A|
 LISTED_NEGATIVE_SOURCES = (
+    "frequency_matched",
     "frozen_random",
     "structure_counterfactual",
     "train_graph",
@@ -571,6 +573,8 @@ def build_qa_assets_from_task_texts(
     random_manifest = random_manifest or {}
     if listed_negative_source == "frozen_random":
         validate_frozen_random_manifest(random_manifest, k=listed_negative_k)
+    if listed_negative_source == "frequency_matched":
+        validate_frequency_manifest(random_manifest, k=listed_negative_k)
     if listed_negative_source == "error_memory" and not error_memory_manifest:
         raise ValueError("error_memory negatives require a non-empty manifest")
     if (
@@ -606,12 +610,12 @@ def build_qa_assets_from_task_texts(
         matched = match_train_relation(gold, alias_index)
         eligible = eligible_question_ids is None or question_id in eligible_question_ids
         if eligible and is_relation_gold(gold, text, relation_alias_index=alias_index):
-            if listed_negative_source in {"error_memory", "structure_counterfactual", "frozen_random"}:
+            if listed_negative_source in {"error_memory", "structure_counterfactual", "frozen_random", "frequency_matched"}:
                 if matched is not None:
                     manifest = (
                         error_memory_manifest
                         if listed_negative_source == "error_memory"
-                        else random_manifest if listed_negative_source == "frozen_random"
+                        else random_manifest if listed_negative_source in {"frozen_random", "frequency_matched"}
                         else counterfactual_manifest
                     )
                     row = manifest.get(question_id)
@@ -648,11 +652,11 @@ def build_qa_assets_from_task_texts(
                 "candidate_eligible": eligible,
             }
         )
-    if listed_negative_source in {"error_memory", "structure_counterfactual", "frozen_random"}:
+    if listed_negative_source in {"error_memory", "structure_counterfactual", "frozen_random", "frequency_matched"}:
         manifest = (
             error_memory_manifest
             if listed_negative_source == "error_memory"
-            else random_manifest if listed_negative_source == "frozen_random"
+            else random_manifest if listed_negative_source in {"frozen_random", "frequency_matched"}
             else counterfactual_manifest
         )
         expected_ids = {

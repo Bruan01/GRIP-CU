@@ -1,0 +1,21 @@
+{
+  "n_qa": 12136,
+  "listed_qa": 3109,
+  "k": 9,
+  "seed": 2026,
+  "exact_full_replayed_rows": 3109,
+  "exact_slot_bin_match_rows": 3109,
+  "frequency_bin_rule": "floor_log2_train_edge_count",
+  "matching_scope": "exact bins; not exact train counts or B1 difficulty",
+  "train_only": true,
+  "same_legal_pool": true,
+  "same_non_candidate_metadata": true,
+  "fallback_count": 0,
+  "changed_candidate_set_questions": 3109,
+  "mean_shared_negatives_of_9": 0.6346091990993888,
+  "forced_slot_count": 82,
+  "total_selected_slots": 27981,
+  "source_scores_sha256": "a63eee74586215e2efc74e3c0196ffb40414615d2e0e32b1abe1e4afb1959cd7",
+  "new_training_started": false,
+  "performance_results_available": false
+}

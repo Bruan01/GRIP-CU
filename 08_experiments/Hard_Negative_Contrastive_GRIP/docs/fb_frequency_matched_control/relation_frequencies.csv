@@ -1,0 +1,234 @@
+relation,train_edge_count,frequency_bin
+Adjoining Locations,2051,11
+Administrative Divisions and Their Capitals,296,8
+Administrative Parent of an Area,579,9
+American Football Roster Positions,1229,10
+Art Direction in Films,101,6
+Artist Contributions to Music,218,7
+Artists Signed by a Record Label,2226,11
+Artists in Broadcast Content,102,6
+Artists within a Music Genre,5880,12
+Assets of a Business Operation,181,7
+Average Rent by Currency,373,8
+Award Ceremony for Category Winners,2834,11
+Award Nominations Received,6277,12
+Award Nominations for Individuals,9465,13
+Award Nominees,15989,13
+Award Winners,5673,12
+Award Winners at a Ceremony,2727,11
+Awards Won by Works,3310,11
+Awards Won by a Work,8423,13
+Awards Won by an Individual,2992,11
+Baseball Team Roster Positions,183,7
+Baseball Team Statistics by Season,233,7
+Basic Titles Held by Politicians,114,6
+Basketball Roster Positions,178,7
+Birthplace of a Person,2465,11
+Breakups Among Celebrities,153,7
+Campuses of an Educational Institution,533,9
+Capital of a Country,142,7
+Capital of an Administrative Area,137,7
+Categories Within an Award Category,148,7
+Cause of Death,737,9
+Celebrities Who Canoodled,449,8
+Celebrities Who Dated,1404,10
+Celebrity Friends,250,7
+Celebrity Impersonations,121,6
+Child Organizations,191,7
+Cinematography in Films,336,8
+Climate of a Travel Destination,535,9
+Colors of Sports Teams,689,9
+Colors of an Educational Institution,856,9
+Combatants in Military Conflicts,747,9
+Combatants in a Military Conflict,424,8
+Costume Design by for Films,192,7
+Countries Where Language is Spoken,335,8
+Countries Within Continents,125,6
+Country of Origin of a TV Program,268,8
+Country of a Bibs Location,610,9
+Country of an Administrative Division,386,8
+Country's Government Form,298,8
+County Seat of a US County,181,7
+County in HUD County Place,305,8
+Creator of a TV Program,144,7
+Current Clubs of World Cup Squad,246,7
+Current Football Roster Positions,573,9
+Current Soccer Team Roster by Position,4527,12
+Current Team of a Football Player,536,9
+Degree Holders from an Institution,2257,11
+Diet Practiced,137,7
+Disciplines or Subjects of an Award Category,204,7
+Domestic Tuition in Currency,476,8
+Draft Picks from Schools by Sports Teams,688,9
+Draft Picks in Professional Sports,437,8
+Dubbing Performances by Language,112,6
+Dubbing Performances in Films,114,6
+Editors of a Film,179,7
+Educational Institution of a Campus,526,9
+Employment History of a Person,316,8
+Endowment in Currency,456,8
+Entities Involved in an Event,276,8
+Estimated Number of Mortgages in HUD Foreclosure Area,788,9
+Ethnic Groups and Their People,2063,11
+Executive Producers of a Film,662,9
+Export Destinations,172,7
+Family of Musical Instruments,100,6
+Film Crew Members,384,8
+Film Crew Roles,5305,12
+Film Distribution Medium,285,8
+Film Distribution Regions,157,7
+Film Festivals Featuring a Film,264,8
+Film Formats,345,8
+Film Genres,7268,12
+Film Language,2570,11
+Film Locations Featured,977,9
+Film Release Medium and Date,1429,10
+Film Release Region and Date,12893,13
+Film Sets Designed by a Set Designer,113,6
+Film's Country of Production,2407,11
+Film's Estimated Budget,1210,10
+Films Directed by a Director,859,9
+Films Distributed by Company,2337,11
+Films Featuring an Actor,9494,13
+First Level Division of an Administrative Division,141,7
+Founders and Their Organizations,137,7
+Fraternities and Sororities at a University,131,7
+Friendships Among Celebrities,1511,10
+GDP Per Capita in Currency,190,7
+GNI Per Capita in PPP Dollars,149,7
+Gender of a Person,3717,11
+Geographic Distribution of an Ethnicity,122,6
+Geographical Containment,5201,12
+Government Positions Held During Legislative Sessions,215,7
+Graduates of Educational Institution,2640,11
+Group Membership Roles,750,9
+Guest Performances in Music,497,8
+Hall of Fame Inductees,154,7
+Headquarters City of an Organization,852,9
+Hints for Gardening,99,6
+Hockey Team Roster Positions,121,6
+Honored Individuals at an Award Ceremony,909,9
+Honored Works in Awards,475,8
+Industry of a Business Operation,330,8
+Influences on Individuals or Works,1908,10
+Instrumentalists of a Music Instrument,1938,10
+International Organizations and Member States,179,7
+International Tuition in Currency,117,6
+Items Appearing in Ranked Lists,335,8
+Jurisdiction of Office for Politicians,106,6
+Languages Spoken by Ethnic Groups,192,7
+Languages Spoken by a Person,783,9
+Languages of a TV Program,254,7
+Leadership Roles in an Organization,756,9
+Legislative Members by District,1070,10
+Local Tuition in Currency,360,8
+Location of Marriage Ceremonies,251,7
+Locations of Events,363,8
+Major Field of Study for Degree Holders,494,8
+Major Field of Study for Graduates,2622,11
+Major Field of Study for Students,343,8
+Marriage Type,2909,11
+Marriage Unions and Their Locations,417,8
+Medals Won by Countries in Olympics,256,8
+Members of a Governmental Body,101,6
+Members of a Legislative Session,814,9
+Members of an Organization,797,9
+Music Group Membership,218,7
+Music Track Contributions,1772,10
+Music in Films,1039,10
+NCAA Basketball Tournament Seeds,352,8
+Nationality of a Person,4197,12
+Net Worth in Currency,475,8
+Netflix Genre Titles,2671,11
+Nominal GDP by Currency,220,7
+Nominated Works for Awards,717,9
+Nominations Received by an Award Nominee,12157,13
+Notable People with a Disease,121,6
+Nutrients in Food,966,9
+Office Holders by Jurisdiction,760,9
+Official Language of a Country,225,7
+Olympic Athletes by Country,2890,11
+Olympic Athletes by Olympics,1153,10
+Olympic Athletes by Sport,381,8
+Olympic Medals Awarded,101,6
+Operating Income of a Business,198,7
+Organization Headquarters Country,182,7
+Origin of an Artist,552,9
+Parent Genre of Music,678,9
+Partial Containment of Locations,133,7
+Participating Countries in the Olympic Games,490,8
+Peers in an Influence Network,166,7
+People Holding a Job Title,734,9
+People with an Educational Degree,260,8
+Person's Profession,10945,13
+Personal Appearances in Films,217,7
+Philosophical Interests of a Philosopher,100,6
+Phone Number Category for Organizations,142,7
+Phone Service Location,345,8
+Place Founded of an Organization,104,6
+Place in HUD County,459,8
+Place of Burial,142,7
+Place of Death,695,9
+Places Lived by a Person,3738,11
+Players by Position in Historical Football Roster,102,6
+Players by Sports Position in Team Roster,3500,11
+Politicians in a Political Party,107,6
+Prequel of a Film,180,7
+Pro Athletes in Sports,128,7
+Produce Available by Season,108,6
+Producer Type for TV Programs,121,6
+Producers of a Film,1285,10
+Production Companies of a Film,1568,10
+Production Design in Films,158,7
+Real GDP by Currency,160,7
+Recurring Events,109,6
+Region's Predominant Religions,596,9
+Regional Debut Venue for a Film,246,7
+Registration of Non-Profit Organizations,125,6
+Regular Performance Roles in Music,2655,11
+Regular Performances by Music Groups,1327,10
+Regular Personal Appearances on TV,90,6
+Regular TV Appearances by a Personality,103,6
+Religion of a Person,1085,10
+Revenue in Currency,215,7
+Risk Factors for Diseases,162,7
+Runtime of Films by Region,187,7
+SNL Cast Members by Season,100,6
+School Types of Educational Institutions,728,9
+Schools from Which Draft Picks are Chosen,269,8
+Second Level Divisions of a Country,463,8
+Service Language of a Phone Number,208,7
+Sexual Relationships Among Celebrities,236,7
+Siblings of a Person,131,7
+Special Film Performance Types,93,6
+Special Performance Type in Films,180,7
+Specializations Within a Profession,102,6
+Sport of a Sports Team,423,8
+Sports Position Players,125,6
+Sports Teams in a League,161,7
+Sports in Olympic Games,664,9
+Sports in the Olympic Games,581,9
+Spouses in a Marriage,427,8
+State of a Bibs Location,300,8
+State or Province of Organization Headquarters,721,9
+Story By Credits in Films,394,8
+Students Majoring in a Field,259,8
+Subject of Films,603,9
+Symptoms and Their Conditions,154,7
+TV Program Genres,1006,9
+TV Program Regular Actors,1272,10
+TV Programs Produced by a Producer,641,9
+TV Programs Written by a Writer,271,8
+TV Programs on a Network,305,8
+Taxonomy Subject Entries,411,8
+Teams Based in a Location,331,8
+Teams of a Professional Athlete,676,9
+Time Zones of a Location,1151,10
+Top Dog Breeds in a City,192,7
+Track Performances by Artists,3795,11
+Transportation to a Travel Destination,146,7
+Type of Appearance in Films,37,5
+Types of Administrative Areas,156,7
+Vacationers at a Location,349,8
+Webpage Categories,3612,11
+Writers of a Film,787,9

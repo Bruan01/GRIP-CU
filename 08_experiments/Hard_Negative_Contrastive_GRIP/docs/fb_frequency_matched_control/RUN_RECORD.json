@@ -1,0 +1,79 @@
+{
+  "experiment_id": "SC_CTRL_FREQMATCH_FB_SEED2026_FIXED32",
+  "run_dir": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026",
+  "status": "running",
+  "training_complete": false,
+  "test_complete": false,
+  "contract_sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c",
+  "seed": 2026,
+  "optimizer_steps": 32,
+  "scheduler_max_steps": 120,
+  "test_count": 10000,
+  "full_validation": "not_run_by_predeclared_budget_plan",
+  "preparation_audit": {
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "k": 9,
+    "seed": 2026,
+    "exact_full_replayed_rows": 3109,
+    "exact_slot_bin_match_rows": 3109,
+    "frequency_bin_rule": "floor_log2_train_edge_count",
+    "matching_scope": "exact bins; not exact train counts or B1 difficulty",
+    "train_only": true,
+    "same_legal_pool": true,
+    "same_non_candidate_metadata": true,
+    "fallback_count": 0,
+    "changed_candidate_set_questions": 3109,
+    "mean_shared_negatives_of_9": 0.6346091990993888,
+    "forced_slot_count": 82,
+    "total_selected_slots": 27981,
+    "source_scores_sha256": "a63eee74586215e2efc74e3c0196ffb40414615d2e0e32b1abe1e4afb1959cd7",
+    "new_training_started": false,
+    "performance_results_available": false
+  },
+  "paper_role": "claim-carrying",
+  "item_id": "SC_CTRL_FREQMATCH",
+  "claim_links": [
+    "C2"
+  ],
+  "launch_receipt": {
+    "status": "launched",
+    "at": "2026-11-06T06:23:42.495261+00:00",
+    "session": "fb_freqmatch_seed2026_20261106",
+    "argv": [
+      "/home/kieran/miniconda3/envs/guardenv/bin/python",
+      "-u",
+      "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_frequency_matched_control.py",
+      "run",
+      "--config",
+      "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/inputs/design.json",
+      "--run-dir",
+      "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026"
+    ],
+    "contract_sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c",
+    "launched_at": "2026-11-06T06:23:42.647226+00:00"
+  },
+  "tmux_session": "fb_freqmatch_seed2026_20261106",
+  "cli_preflight": {
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "model_loaded": false
+  },
+  "tests": "74 related checks passed; frequency suite 22 passed including additional complete-report audit test",
+  "startup_verified_at": "2026-11-06T06:27:40.506156+00:00",
+  "startup_observation": {
+    "at": "2026-11-06T06:27:25.669424+00:00",
+    "stage": "train",
+    "status": "running",
+    "pid": 2874545,
+    "elapsed_seconds": 201.3,
+    "log": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/logs/train_01.log"
+  },
+  "immutable_files_verified": 146,
+  "frozen_execution_code_matches_reviewed_repository": true,
+  "model_load_observed": true,
+  "trainer_loop_observed": true,
+  "controller_log": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/controller.log",
+  "train_log": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/logs/train_01.log",
+  "status_file": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/status.json"
+}
