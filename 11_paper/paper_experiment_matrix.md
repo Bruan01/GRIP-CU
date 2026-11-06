@@ -21,6 +21,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_FUTURE_YAGO | R2/R7 | 大规模迁移与成本 | YAGO3-10 | B1 / Random-9 / SC-CL-9 | deferred | MRR, Hits, wall-clock |
 | SC_FUTURE_CODEX_S | R2/R3 | 可选小规模补充 | CoDEx-S | 单独转换与关系候选协议 | deferred | MRR, candidate audit |
 | SC_FUTURE_CODEX_L | R2/R7 | 可选大规模压力测 | CoDEx-L | B1 / Random-9 / SC-CL-9 | optional, deferred | cost, MRR, coverage |
+| SC_FB_MATCHED_RERANK | R1/C2 | 直接EM接近时完整候选排序是否也接近 | FB15K237-2 | 既有Full/Full配额匹配/Uniform三权重 | 2026-11-06 23:49启动；无新训练；10,000题原十选项，固定评分/顺序；尚无新排序结论 | H@1/MRR/H@3、十候选分数/长度、配对rank、频率分组；完成三组后停止 |
 | SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | FB15K237-2已完成；NELL暂缓 | Random-9 + 同一InfoNCE / SC-CL-9 | observed-single-seed, fixed configuration, 2026-11-05；SC-CL89.90%/Random86.48%，+3.42pp | 10,000题完整直接解码EM、配对553/211/净342、配置及过程审计；见artifacts/fb_random9_control_seed2026 |
 | SC_CTRL_FREQMATCH | R4/C2 | 检验频率桶匹配能否复现Full表现 | FB本轮；NELL暂缓 | frequency-bin-matched Random-9 / Full / Uniform Random | observed 2026-11-06，频率桶匹配随机89.83%；Full89.90%，差+0.07pp/净7；相对均匀随机+3.35pp；频率解释未排除 | 固定32/120步、一次完整测试；五方法表、逐题CSV、频率/困难度诊断和训练曲线；不隔离结构机制 |
 | SC_CTRL_PROFILE | R1/C2/C5 | 在结构画像基础上检验B1违例项增量 | 本轮FB15K237-2；NELL暂缓 | Full / Profile-only；与Violation-only、Random组成四行表 | observed 2026-11-06，Profile84.89%；Full−Profile+5.01pp，Profile−Random−1.59pp | 单seed固定32步、完整测试EM、配对差、四方法逐题CSV和来源审计 |
@@ -61,3 +62,5 @@ SC-CL 则在固定实体对上对关系词表采样并优化关系候选排序�
 2026-11-06写回：SC_CTRL_PROFILE与SC_CTRL_VIOLATION均为`section_id=experiments`、`paper_role=claim-carrying`，对应C2/C4/C5，展示为主文组件消融表；`item_id`同实验ID，四行结果见`artifacts/fb_component_ablation_seed2026/`。现有Full获选配置、单seed、464条QA修复及测试历史均保留；两个单信号无新全量验证。下一步写作，不追加训练。
 
 2026-11-06频率对照完成写回：`SC_CTRL_FREQMATCH`对应C2，主文五行候选来源表（`section_id=experiments`，`paper_role=claim-carrying`）。Full−频率匹配随机仅+0.07pp，当前缺乏其超出Full诱导频率桶分布的额外收益证据；该近零结果收窄C2，不修改原有实测值。桶配额来自Full，不能把本组当作独立通用频率采样器或统计等效证明。下一步写作，停止GPU实验。
+
+执行安排见`EXPERIMENT_ROADMAP.md`：当前自动队列仅P0三模型重排；NELL两组来源控制与FB K=3/9/15敏感性分别列为P1/P2，未自动启动训练。

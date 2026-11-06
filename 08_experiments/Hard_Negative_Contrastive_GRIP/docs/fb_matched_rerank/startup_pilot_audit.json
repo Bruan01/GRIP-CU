@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "pilot_questions_verified": 32,
+  "all_original_candidates_per_question": 10,
+  "candidate_scores_verified": 320,
+  "gold_ranks_recomputed": true,
+  "answer_token_lengths_verified": true,
+  "reviewed_code_matches_frozen_execution": true,
+  "pilot_reused_in_full_result": true,
+  "quality_not_used_for_selection": true,
+  "complete_ranking_comparison_available": false,
+  "observed_throughput": 1.289182599359054,
+  "estimated_remaining_hours_range": [
+    6,
+    8
+  ],
+  "estimated_completion_beijing": "2026-11-07 06:00–08:00; throughput-dependent"
+}

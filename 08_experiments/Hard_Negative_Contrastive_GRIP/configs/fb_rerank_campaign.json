@@ -1,0 +1,17 @@
+{
+  "experiment_id": "SC_FB_MATCHED_RERANK_SEED2026",
+  "default_run_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026",
+  "source_frequency_run": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026",
+  "source_random_run": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026",
+  "frequency_contract_sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c",
+  "frequency_archive_sha256": "7ca13a84855b517fe3003e6daa992f0a45de9f2f8a19c397105b659de3ee79fa",
+  "random_contract_sha256": "ce3b6485f664b7d43ee19ef6d2a4bb57cf5de6221fb9c87e39966d5b68a219da",
+  "random_archive_sha256": "19badeaebe9b873b20d9670ec514dd6f8109a33bfd26664f76f0592236e9cdf5",
+  "model_order": ["full", "frequency_matched", "random9"],
+  "expected_questions": 10000,
+  "score_batch_size": 2,
+  "new_training_runs": 0,
+  "pilot_questions_reused": 32,
+  "evaluation": "same original ten options; answer-token mean log probability; clip20; stable original-order ties",
+  "stop_after_three_models": true
+}

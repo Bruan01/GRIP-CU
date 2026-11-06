@@ -425,6 +425,37 @@
         "descriptive after overall inspection",
         "single seed and one selected configuration"
       ]
+    },
+    {
+      "id": "SC_FB_MATCHED_RERANK",
+      "dataset": "FB15K237-2",
+      "status": "launched-no-ranking-results-yet",
+      "comparison": [
+        "Full",
+        "Full-quota-matched Random",
+        "Uniform Random"
+      ],
+      "metrics": [
+        "same-list H@1",
+        "same-list MRR",
+        "H@3",
+        "paired rank changes"
+      ],
+      "section_id": "experiments",
+      "item_id": "SC_FB_MATCHED_RERANK",
+      "paper_role": "claim-carrying",
+      "claim_links": [
+        "C2"
+      ],
+      "evidence_refs": [
+        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_matched_rerank/RUN_RECORD.json"
+      ],
+      "known_gaps": [
+        "inference ongoing",
+        "single seed, Full-selected hyperparameters"
+      ],
+      "scope": "frozen existing weights; same original ten options; no training; retain prior direct-EM and low-frequency evidence"
     }
-  ]
+  ],
+  "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md"
 }

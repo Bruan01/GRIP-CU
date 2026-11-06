@@ -1,0 +1,14 @@
+{
+  "status": "running",
+  "completed": 32,
+  "expected": 10000,
+  "scoring_elapsed_seconds": 24.822,
+  "questions_per_second": 1.289182599359054,
+  "remaining_seconds_this_model": 7732.031137370155,
+  "peak_allocated_gib": 14.540283203125,
+  "peak_reserved_gib": 14.693359375,
+  "at": "2026-11-06T15:53:32.650004+00:00",
+  "pilot_questions": 32,
+  "pilot_reused_in_full_result": true,
+  "quality_not_used_for_run_selection": true
+}

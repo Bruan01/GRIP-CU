@@ -1,0 +1,18 @@
+{
+  "n": 10000,
+  "candidates_per_question": 10,
+  "models": [
+    "full",
+    "frequency_matched",
+    "random9"
+  ],
+  "direct_flags_reaudited": 30000,
+  "same_prompt_option_order_target": true,
+  "cohort_frozen": true,
+  "pilot_reused": true,
+  "scorer_matches_existing_training_and_historical_evaluation": true,
+  "normalized_non_gold_collision_questions": 12,
+  "all_original_options_preserved": true,
+  "new_ranking_metrics_available": false,
+  "new_training_runs": 0
+}

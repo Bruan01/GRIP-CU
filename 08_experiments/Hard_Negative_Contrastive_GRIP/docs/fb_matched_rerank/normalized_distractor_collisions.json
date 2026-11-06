@@ -1,0 +1,222 @@
+{
+  "count": 12,
+  "rows": [
+    {
+      "question_id": "fb15k237_test:test:799",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            3,
+            4
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 9,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:907",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            6,
+            9
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 2,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:1469",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            4,
+            5
+          ],
+          "original_candidates": [
+            "Sports in Olympic Games",
+            "Sports in the Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 0,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:2011",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            0,
+            1
+          ],
+          "original_candidates": [
+            "Sports in Olympic Games",
+            "Sports in the Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 3,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:3367",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            0,
+            3
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 8,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:3484",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            0,
+            5
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 8,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:3649",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            3,
+            5
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 8,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:4420",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            1,
+            3
+          ],
+          "original_candidates": [
+            "Sports in Olympic Games",
+            "Sports in the Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 6,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:5161",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            0,
+            7
+          ],
+          "original_candidates": [
+            "Sports in Olympic Games",
+            "Sports in the Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 9,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:7418",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            7,
+            8
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 1,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:8061",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            2,
+            6
+          ],
+          "original_candidates": [
+            "Sports in Olympic Games",
+            "Sports in the Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 0,
+      "original_choices_preserved": true
+    },
+    {
+      "question_id": "fb15k237_test:test:9071",
+      "collisions": [
+        {
+          "normalized": "sports in olympic games",
+          "indices": [
+            3,
+            5
+          ],
+          "original_candidates": [
+            "Sports in the Olympic Games",
+            "Sports in Olympic Games"
+          ]
+        }
+      ],
+      "gold_index": 7,
+      "original_choices_preserved": true
+    }
+  ],
+  "policy": "Preserve all original choices; non-gold normalized aliases are not merged; gold unique on every question."
+}

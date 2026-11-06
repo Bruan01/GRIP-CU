@@ -1,0 +1,92 @@
+{
+  "experiment_id": "SC_FB_MATCHED_RERANK_SEED2026",
+  "run_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026",
+  "status": "running",
+  "models": [
+    "full",
+    "frequency_matched",
+    "random9"
+  ],
+  "training_runs": 0,
+  "question_count_per_model": 10000,
+  "completed_models": [],
+  "new_rank_metrics_available": false,
+  "launch_receipt": {
+    "status": "launched",
+    "at": "2026-11-06T15:49:11.091249+00:00",
+    "session": "fb_matched_rerank_seed2026_20261106",
+    "argv": [
+      "/home/kieran/miniconda3/envs/guardenv/bin/python",
+      "-u",
+      "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_rerank_campaign.py",
+      "run",
+      "--config",
+      "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/inputs/design.json",
+      "--run-dir",
+      "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026"
+    ],
+    "contract_sha256": "e7d14aefcb4c3fd1d7fef81b4ebacbcc1aae1d2585b995894cad795120569eff",
+    "launched_at": "2026-11-06T15:49:11.185239+00:00"
+  },
+  "contract_sha256": "e7d14aefcb4c3fd1d7fef81b4ebacbcc1aae1d2585b995894cad795120569eff",
+  "immutable_files": 127,
+  "code_digest": "f4b2e39ac39451a46cd209db7f10ac593b294074be014aaa47a8b0539932fb29",
+  "preparation_audit": {
+    "n": 10000,
+    "candidates_per_question": 10,
+    "models": [
+      "full",
+      "frequency_matched",
+      "random9"
+    ],
+    "direct_flags_reaudited": 30000,
+    "same_prompt_option_order_target": true,
+    "cohort_frozen": true,
+    "pilot_reused": true,
+    "scorer_matches_existing_training_and_historical_evaluation": true,
+    "normalized_non_gold_collision_questions": 12,
+    "all_original_options_preserved": true,
+    "new_ranking_metrics_available": false,
+    "new_training_runs": 0
+  },
+  "implementation_validation": "28 related/scorer checks passed; final rerank suite 19 passed including normalized non-gold alias case",
+  "prior_cpu_prepare_attempt_retained": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026_prepare_attempt1_alias_audit",
+  "source_direct_results_retained": true,
+  "controller_log": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/controller.log",
+  "status_file": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/status.json",
+  "paper_role": "claim-carrying",
+  "section_id": "experiments",
+  "item_id": "SC_FB_MATCHED_RERANK",
+  "claim_links": [
+    "C2"
+  ],
+  "startup_observation": {
+    "at": "2026-11-06T15:54:26.776025+00:00",
+    "stage": "rerank_full",
+    "status": "running",
+    "pid": 2996038,
+    "elapsed_seconds": 261.4,
+    "log": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/logs/rerank_full_01.log"
+  },
+  "pilot_audit": {
+    "status": "pass",
+    "pilot_questions_verified": 32,
+    "all_original_candidates_per_question": 10,
+    "candidate_scores_verified": 320,
+    "gold_ranks_recomputed": true,
+    "answer_token_lengths_verified": true,
+    "reviewed_code_matches_frozen_execution": true,
+    "pilot_reused_in_full_result": true,
+    "quality_not_used_for_selection": true,
+    "complete_ranking_comparison_available": false,
+    "observed_throughput": 1.289182599359054,
+    "estimated_remaining_hours_range": [
+      6,
+      8
+    ],
+    "estimated_completion_beijing": "2026-11-07 06:00–08:00; throughput-dependent"
+  },
+  "latest_full_progress_observed": 120,
+  "models_completed": [],
+  "complete_ranking_comparison_available": false
+}
