@@ -1,0 +1,7 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/fb_frequency_slice_20261106_seed2026",
+  "plan_sha256": "9aba482cd01cde458bfc3cb616213104834b14ae98c46250b2c5157ff0c60ae9",
+  "manifest_sha256": "12c227af352842692a934a3752300828b99105374131def767254176365b1231",
+  "source_experiment": "SC_CTRL_FREQMATCH_FB_SEED2026_FIXED32",
+  "gpu_training_runs": 0
+}

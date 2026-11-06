@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+\caption{FB15K237-2候选来源对照（10,000题，直接解码EM，seed=2026）。各组使用同一Stage~1、训练QA、合法池、$K=9$、损失与优化设置，固定32步并保持120步调度。$\Delta$为Full减该行。配额匹配组继承Full逐题频率桶配额，并非独立通用频率采样器；本表不提供跨种子不确定性或统计等效结论。}
+\label{tab:fb-controls}
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+候选来源 & 正确数 & EM (\%) & $\Delta$ (pp) \\
+\midrule
+Full SC-CL-9 & 8,990 & 89.90 & +0.00 \\
+均匀随机-9 & 8,648 & 86.48 & +3.42 \\
+Profile-only-9 & 8,489 & 84.89 & +5.01 \\
+Violation-only-9 & 8,709 & 87.09 & +2.81 \\
+Full配额匹配随机-9 & 8,983 & 89.83 & +0.07 \\
+\bottomrule
+\end{tabular}
+\end{table}

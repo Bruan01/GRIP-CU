@@ -1,0 +1,78 @@
+{
+  "experiment_id": "SC_SLICE_FREQUENCY_FB_SEED2026",
+  "created_at": "2026-11-06T15:03:54.875687+00:00",
+  "repository_root": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU",
+  "source_run": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026",
+  "research_question": "Does near-zero overall Full minus quota-matched EM mask train-frequency-dependent rescue/regression?",
+  "cutoffs": [
+    215,
+    689
+  ],
+  "cutoff_rule": "train vocabulary relation-count order statistics ceil(R/3),ceil(2R/3); ties never split",
+  "groups": [
+    "low",
+    "middle",
+    "high"
+  ],
+  "methods": [
+    "random9",
+    "profile_only",
+    "violation_only",
+    "frequency_matched",
+    "full"
+  ],
+  "selection": "all test questions; no outcome-based cuts or exclusions",
+  "observed_after_overall_results": true,
+  "seed": 2026,
+  "gpu_training_runs": 0,
+  "code_sha256": "6cb73b422d7e9689d4e4e4a521921acb0bd4181da67a42bddf26a5e8f48e85dd",
+  "sources": {
+    "predictions_random9": {
+      "path": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/reference/random9_predictions.jsonl",
+      "sha256": "9468ba6b269b27e2450296dd717770707c5726718a62af434037bc9aadaaa186"
+    },
+    "predictions_profile_only": {
+      "path": "/home/kieran/grip-cu-runs/fb_profile_only_control_20261106_seed2026/evaluation/test/predictions.jsonl",
+      "sha256": "9cfca88967dc8f387b7d0cd65553c54ce744574b3aa08d0b48efee72a466a145"
+    },
+    "predictions_violation_only": {
+      "path": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/evaluation/test/predictions.jsonl",
+      "sha256": "ba415ebf2679e26ac52192cffbf7a0ab94835ee141413c9ebbc0a1bde745fcc8"
+    },
+    "predictions_full": {
+      "path": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026/reference/predictions.jsonl",
+      "sha256": "099a68e746a395d502b403d3ee3636abb19d9901236154f05a53f829308c99b3"
+    },
+    "predictions_frequency_matched": {
+      "path": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/evaluation/test/predictions.jsonl",
+      "sha256": "bf2faec04c96d83827df840c6503ed2b8322d20aafc821f980ea9b94bc37e13b"
+    },
+    "train": {
+      "path": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/inputs/raw/train.txt",
+      "sha256": "61099230e4439f90885ca9767739e31e8e32f54736fa1c35952b27997bc7c08a"
+    },
+    "relation_text": {
+      "path": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/inputs/raw/rel2text.json",
+      "sha256": "3c2b3785e7b9e4106d28634b7080755d5492a4ab28bfaa6227ba9cb1c06087d1"
+    },
+    "test": {
+      "path": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/inputs/test.json",
+      "sha256": "c77dde51aafc7b1ce3a5011ade914343c2689f8b38b12774ea4840ec1c9068ed"
+    },
+    "source_contract": {
+      "path": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/contract.json",
+      "sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c"
+    },
+    "source_archive": {
+      "path": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/artifact_manifest.json",
+      "sha256": "7ca13a84855b517fe3003e6daa992f0a45de9f2f8a19c397105b659de3ee79fa"
+    }
+  },
+  "paper_role": "supporting",
+  "section_id": "experiments",
+  "item_id": "SC_SLICE_FREQUENCY",
+  "claim_links": [
+    "C2"
+  ],
+  "next_action": "write all slices including negative/null; stop; no new GPU run"
+}

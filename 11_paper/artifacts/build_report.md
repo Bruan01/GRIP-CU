@@ -1,20 +1,9 @@
 # Build and review report
 
-日期：2026-10-28
+日期：2026-11-06
 
-- PDF：`artifacts/SC-CL_writing_revision_20261028.pdf`；`artifacts/SC-CL_ICLR_draft.pdf` 同步更新。
-- 页数：9；US Letter，竖版。
-- PDF SHA-256：`2f358d14d9386dfdad82295fa132b7181b5442669da82409cc2dcb4d0852560d`。
-- 编译：XeLaTeX、BibTeX、xdvipdfmx 通过。日志：`artifacts/build_20261028.log`。
-- 最终日志无硬错误、未解析引用、缺字或 overfull box；保留中文字体形状回退与部分 underfull 提示。
-- 目视检查第 1、3、5、7、8 页；方法图为可编辑 TikZ 矢量图，初始化与离线评分路径独立，联合损失带候选权重。
-- 9 个数学公式与修改前一致；20 个标签、18 处交叉引用和 16 个文献键通过检查。
-- 本轮修改叙事、结果组织与实际运行设置的表达；没有重新训练或产生新的实验结果。
-- 完整修订说明：`artifacts/writing_revision_20261028.md`。
-- 修改前源稿与 PDF：`artifacts/before_writing_revision_20261028/`；此前构建报告也在该备份中。
+最新PDF：`artifacts/SC-CL_results_revision_20261106.pdf`；`artifacts/SC-CL_ICLR_draft.pdf`同步更新，12页。
 
-编译命令（从 `main/` 运行）：
+XeLaTeX、BibTeX及xdvipdfmx编译通过；无overfull、缺失字符、未定义引用或重复label。保留现有CJK字形替代警告。摘要、FB控制/分层页、附录macro与历史排序页面已目视检查。
 
-```bash
-BSTINPUTS=../template/iclr2026: latexmk -xelatex -bibtex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
-```
+检查、构建输出、文本提取、页面预览及来源映射保存在`artifacts/writing_revision_20261106/`。正文新增三数据集当前完整直接解码、FB五方法、逐题变化与train频率分层；历史NELL排序模型独立放入附录。五张表从审计JSON生成。构建成功不等于论文科学证据已满足投稿要求。

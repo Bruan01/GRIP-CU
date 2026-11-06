@@ -1,0 +1,234 @@
+relation,train_edge_count,frequency_group
+Adjoining Locations,2051,high
+Administrative Divisions and Their Capitals,296,middle
+Administrative Parent of an Area,579,middle
+American Football Roster Positions,1229,high
+Art Direction in Films,101,low
+Artist Contributions to Music,218,middle
+Artists Signed by a Record Label,2226,high
+Artists in Broadcast Content,102,low
+Artists within a Music Genre,5880,high
+Assets of a Business Operation,181,low
+Average Rent by Currency,373,middle
+Award Ceremony for Category Winners,2834,high
+Award Nominations Received,6277,high
+Award Nominations for Individuals,9465,high
+Award Nominees,15989,high
+Award Winners,5673,high
+Award Winners at a Ceremony,2727,high
+Awards Won by Works,3310,high
+Awards Won by a Work,8423,high
+Awards Won by an Individual,2992,high
+Baseball Team Roster Positions,183,low
+Baseball Team Statistics by Season,233,middle
+Basic Titles Held by Politicians,114,low
+Basketball Roster Positions,178,low
+Birthplace of a Person,2465,high
+Breakups Among Celebrities,153,low
+Campuses of an Educational Institution,533,middle
+Capital of a Country,142,low
+Capital of an Administrative Area,137,low
+Categories Within an Award Category,148,low
+Cause of Death,737,high
+Celebrities Who Canoodled,449,middle
+Celebrities Who Dated,1404,high
+Celebrity Friends,250,middle
+Celebrity Impersonations,121,low
+Child Organizations,191,low
+Cinematography in Films,336,middle
+Climate of a Travel Destination,535,middle
+Colors of Sports Teams,689,middle
+Colors of an Educational Institution,856,high
+Combatants in Military Conflicts,747,high
+Combatants in a Military Conflict,424,middle
+Costume Design by for Films,192,low
+Countries Where Language is Spoken,335,middle
+Countries Within Continents,125,low
+Country of Origin of a TV Program,268,middle
+Country of a Bibs Location,610,middle
+Country of an Administrative Division,386,middle
+Country's Government Form,298,middle
+County Seat of a US County,181,low
+County in HUD County Place,305,middle
+Creator of a TV Program,144,low
+Current Clubs of World Cup Squad,246,middle
+Current Football Roster Positions,573,middle
+Current Soccer Team Roster by Position,4527,high
+Current Team of a Football Player,536,middle
+Degree Holders from an Institution,2257,high
+Diet Practiced,137,low
+Disciplines or Subjects of an Award Category,204,low
+Domestic Tuition in Currency,476,middle
+Draft Picks from Schools by Sports Teams,688,middle
+Draft Picks in Professional Sports,437,middle
+Dubbing Performances by Language,112,low
+Dubbing Performances in Films,114,low
+Editors of a Film,179,low
+Educational Institution of a Campus,526,middle
+Employment History of a Person,316,middle
+Endowment in Currency,456,middle
+Entities Involved in an Event,276,middle
+Estimated Number of Mortgages in HUD Foreclosure Area,788,high
+Ethnic Groups and Their People,2063,high
+Executive Producers of a Film,662,middle
+Export Destinations,172,low
+Family of Musical Instruments,100,low
+Film Crew Members,384,middle
+Film Crew Roles,5305,high
+Film Distribution Medium,285,middle
+Film Distribution Regions,157,low
+Film Festivals Featuring a Film,264,middle
+Film Formats,345,middle
+Film Genres,7268,high
+Film Language,2570,high
+Film Locations Featured,977,high
+Film Release Medium and Date,1429,high
+Film Release Region and Date,12893,high
+Film Sets Designed by a Set Designer,113,low
+Film's Country of Production,2407,high
+Film's Estimated Budget,1210,high
+Films Directed by a Director,859,high
+Films Distributed by Company,2337,high
+Films Featuring an Actor,9494,high
+First Level Division of an Administrative Division,141,low
+Founders and Their Organizations,137,low
+Fraternities and Sororities at a University,131,low
+Friendships Among Celebrities,1511,high
+GDP Per Capita in Currency,190,low
+GNI Per Capita in PPP Dollars,149,low
+Gender of a Person,3717,high
+Geographic Distribution of an Ethnicity,122,low
+Geographical Containment,5201,high
+Government Positions Held During Legislative Sessions,215,low
+Graduates of Educational Institution,2640,high
+Group Membership Roles,750,high
+Guest Performances in Music,497,middle
+Hall of Fame Inductees,154,low
+Headquarters City of an Organization,852,high
+Hints for Gardening,99,low
+Hockey Team Roster Positions,121,low
+Honored Individuals at an Award Ceremony,909,high
+Honored Works in Awards,475,middle
+Industry of a Business Operation,330,middle
+Influences on Individuals or Works,1908,high
+Instrumentalists of a Music Instrument,1938,high
+International Organizations and Member States,179,low
+International Tuition in Currency,117,low
+Items Appearing in Ranked Lists,335,middle
+Jurisdiction of Office for Politicians,106,low
+Languages Spoken by Ethnic Groups,192,low
+Languages Spoken by a Person,783,high
+Languages of a TV Program,254,middle
+Leadership Roles in an Organization,756,high
+Legislative Members by District,1070,high
+Local Tuition in Currency,360,middle
+Location of Marriage Ceremonies,251,middle
+Locations of Events,363,middle
+Major Field of Study for Degree Holders,494,middle
+Major Field of Study for Graduates,2622,high
+Major Field of Study for Students,343,middle
+Marriage Type,2909,high
+Marriage Unions and Their Locations,417,middle
+Medals Won by Countries in Olympics,256,middle
+Members of a Governmental Body,101,low
+Members of a Legislative Session,814,high
+Members of an Organization,797,high
+Music Group Membership,218,middle
+Music Track Contributions,1772,high
+Music in Films,1039,high
+NCAA Basketball Tournament Seeds,352,middle
+Nationality of a Person,4197,high
+Net Worth in Currency,475,middle
+Netflix Genre Titles,2671,high
+Nominal GDP by Currency,220,middle
+Nominated Works for Awards,717,high
+Nominations Received by an Award Nominee,12157,high
+Notable People with a Disease,121,low
+Nutrients in Food,966,high
+Office Holders by Jurisdiction,760,high
+Official Language of a Country,225,middle
+Olympic Athletes by Country,2890,high
+Olympic Athletes by Olympics,1153,high
+Olympic Athletes by Sport,381,middle
+Olympic Medals Awarded,101,low
+Operating Income of a Business,198,low
+Organization Headquarters Country,182,low
+Origin of an Artist,552,middle
+Parent Genre of Music,678,middle
+Partial Containment of Locations,133,low
+Participating Countries in the Olympic Games,490,middle
+Peers in an Influence Network,166,low
+People Holding a Job Title,734,high
+People with an Educational Degree,260,middle
+Person's Profession,10945,high
+Personal Appearances in Films,217,middle
+Philosophical Interests of a Philosopher,100,low
+Phone Number Category for Organizations,142,low
+Phone Service Location,345,middle
+Place Founded of an Organization,104,low
+Place in HUD County,459,middle
+Place of Burial,142,low
+Place of Death,695,high
+Places Lived by a Person,3738,high
+Players by Position in Historical Football Roster,102,low
+Players by Sports Position in Team Roster,3500,high
+Politicians in a Political Party,107,low
+Prequel of a Film,180,low
+Pro Athletes in Sports,128,low
+Produce Available by Season,108,low
+Producer Type for TV Programs,121,low
+Producers of a Film,1285,high
+Production Companies of a Film,1568,high
+Production Design in Films,158,low
+Real GDP by Currency,160,low
+Recurring Events,109,low
+Region's Predominant Religions,596,middle
+Regional Debut Venue for a Film,246,middle
+Registration of Non-Profit Organizations,125,low
+Regular Performance Roles in Music,2655,high
+Regular Performances by Music Groups,1327,high
+Regular Personal Appearances on TV,90,low
+Regular TV Appearances by a Personality,103,low
+Religion of a Person,1085,high
+Revenue in Currency,215,low
+Risk Factors for Diseases,162,low
+Runtime of Films by Region,187,low
+SNL Cast Members by Season,100,low
+School Types of Educational Institutions,728,high
+Schools from Which Draft Picks are Chosen,269,middle
+Second Level Divisions of a Country,463,middle
+Service Language of a Phone Number,208,low
+Sexual Relationships Among Celebrities,236,middle
+Siblings of a Person,131,low
+Special Film Performance Types,93,low
+Special Performance Type in Films,180,low
+Specializations Within a Profession,102,low
+Sport of a Sports Team,423,middle
+Sports Position Players,125,low
+Sports Teams in a League,161,low
+Sports in Olympic Games,664,middle
+Sports in the Olympic Games,581,middle
+Spouses in a Marriage,427,middle
+State of a Bibs Location,300,middle
+State or Province of Organization Headquarters,721,high
+Story By Credits in Films,394,middle
+Students Majoring in a Field,259,middle
+Subject of Films,603,middle
+Symptoms and Their Conditions,154,low
+TV Program Genres,1006,high
+TV Program Regular Actors,1272,high
+TV Programs Produced by a Producer,641,middle
+TV Programs Written by a Writer,271,middle
+TV Programs on a Network,305,middle
+Taxonomy Subject Entries,411,middle
+Teams Based in a Location,331,middle
+Teams of a Professional Athlete,676,middle
+Time Zones of a Location,1151,high
+Top Dog Breeds in a City,192,low
+Track Performances by Artists,3795,high
+Transportation to a Travel Destination,146,low
+Type of Appearance in Films,37,low
+Types of Administrative Areas,156,low
+Vacationers at a Location,349,middle
+Webpage Categories,3612,high
+Writers of a Film,787,high

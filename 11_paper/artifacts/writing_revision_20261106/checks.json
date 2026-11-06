@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "pdf": "11_paper/main/build/main.pdf",
+  "pdf_sha256": "4017259bc8c5c4b497aaa8f49d6ed87af725ff77ef15affc6b88703d675c3d65",
+  "pages": 12,
+  "latex_engine": "XeLaTeX + BibTeX + xdvipdfmx",
+  "overfull_boxes": 0,
+  "missing_glyphs": 0,
+  "undefined_references_or_citations": 0,
+  "remaining_warnings": "Existing CJK bold/italic/small-caps font shape substitutions; no missing glyphs.",
+  "visual_pages_inspected": [
+    1,
+    5,
+    6,
+    10
+  ],
+  "tables_generated_from_json": 5,
+  "analysis_validation": "11_paper/artifacts/fb_frequency_slices_seed2026/validation.json",
+  "analysis_gpu_runs": 0,
+  "submission_ready": false,
+  "scope": "draft revision; multi-seed/current ranking/further risk controls remain open"
+}

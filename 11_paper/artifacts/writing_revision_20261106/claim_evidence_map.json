@@ -1,0 +1,61 @@
+{
+  "current_direct_results": {
+    "section": "5.2",
+    "table": "tab:latest-direct",
+    "evidence": [
+      "nell23k_single_seed_test_20261102.json",
+      "codexm_single_seed_test_20261103.json",
+      "fb15k237_2_single_seed_test_20261104.json"
+    ],
+    "boundary": "selected local configurations, not pure candidate-loss effect"
+  },
+  "fb_candidate_sources": {
+    "section": "5.3",
+    "table": "tab:fb-controls",
+    "evidence": [
+      "fb_frequency_matched_control_seed2026/result.json",
+      "fb_component_ablation_seed2026/result.json"
+    ],
+    "claim_links": [
+      "C2",
+      "C4",
+      "C5"
+    ],
+    "boundary": "single seed at Full-selected configuration; full-derived quotas"
+  },
+  "fb_paired_transitions": {
+    "section": "5.4",
+    "table": "tab:fb-paired",
+    "claim_links": [
+      "C2"
+    ],
+    "boundary": "689 changed decisions, net7; not statistical equivalence"
+  },
+  "fb_train_frequency_slices": {
+    "section": "5.4",
+    "table": "tab:fb-frequency-slices",
+    "appendix": "tab:fb-macro",
+    "evidence": [
+      "fb_frequency_slices_seed2026/result.json"
+    ],
+    "claim_links": [
+      "C2",
+      "C6"
+    ],
+    "boundary": "descriptive after overall result, train-defined cuts, all slices retained"
+  },
+  "historical_nell": {
+    "section": "Appendix B",
+    "boundary": "independent historical ranking model; not current direct-decoding checkpoint"
+  },
+  "method_formula_alignment": {
+    "section": "4.1",
+    "source": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/counterfactuals.py",
+    "changes": [
+      "log1p on all five coordinates",
+      "average degrees over unique relation heads/tails",
+      "similarity denominator 1+abs(a)+abs(b)"
+    ],
+    "experiment_algorithm_changed": false
+  }
+}

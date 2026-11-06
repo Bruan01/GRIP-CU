@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "raw_train_counts_recomputed": true,
+  "cutoffs": [
+    215,
+    689
+  ],
+  "train_relations": 233,
+  "test_rows_verified": 10000,
+  "method_flags_verified": 50000,
+  "metric_rows_recomputed": 20,
+  "transition_rows_recomputed": 16,
+  "fixed_output_hashes_verified": 9,
+  "all_slices_included": true,
+  "gpu_training_runs": 0
+}

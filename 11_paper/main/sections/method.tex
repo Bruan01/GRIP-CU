@@ -14,20 +14,20 @@
 对每一个 $r\in\mathcal{R}_{\mathrm{tr}}$，我们从 $\mathcal{E}_{\mathrm{tr}}$ 计算五维关系画像
 \begin{equation}
     \phi(r)=\bigl(\log(1+|E_r|),\log(1+|H_r|),\log(1+|T_r|),
-    \overline{d}_{H,r},\overline{d}_{T,r}\bigr),
+    \log(1+\overline{d}_{H,r}),\log(1+\overline{d}_{T,r})\bigr),
     \label{eq:profile}
 \end{equation}
 其中 $|E_r|$ 为关系边数，$|H_r|$ 和 $|T_r|$ 分别为关系覆盖的头实体数与尾实体数，
-$\overline{d}_{H,r}$ 是关系边上头实体的平均出度，$\overline{d}_{T,r}$ 是尾实体的平均入度。边数与实体覆盖计数使用 $\log(1+x)$ 压缩数值尺度；度统计保留图的局部连接性。
+$\overline{d}_{H,r}=|H_r|^{-1}\sum_{h\in H_r}d_{\mathrm{out}}(h)$ 是不同头实体在训练图中的平均出度，$\overline{d}_{T,r}=|T_r|^{-1}\sum_{t\in T_r}d_{\mathrm{in}}(t)$ 是不同尾实体的平均入度。五个统计量均使用 $\log(1+x)$ 压缩尺度；度数对训练图全部关系计算。
 
 对目标关系 $r^+$ 和候选 $r$，定义归一化结构相似度
 \begin{equation}
     s_{\mathrm{str}}(q,r)=1-\frac{1}{5}\sum_{j=1}^{5}
     \frac{|\phi_j(r^+)-\phi_j(r)|}
-    {|\phi_j(r^+)|+|\phi_j(r)|+\epsilon},
+    {1+|\phi_j(r^+)|+|\phi_j(r)|},
     \label{eq:similarity}
 \end{equation}
-其中 $\epsilon$ 保证分母非零，分数裁剪到 $[0,1]$。该分数衡量五维图统计画像的接近程度；实体对的已知关系由式~\ref{eq:pool} 单独过滤。
+分母中的常数1保证非零，分数裁剪到 $[0,1]$。该分数衡量五维图统计画像的接近程度；实体对的已知关系由式~\ref{eq:pool} 单独过滤。
 
 \subsection{冻结 B1 的边界违例度}
 

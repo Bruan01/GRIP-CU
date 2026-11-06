@@ -1,0 +1,9 @@
+{
+  "reason": "Exclude mutable controller stdout and lock file from fixed-output manifest; stdout is retained separately after exit.",
+  "original_manifest_sha256": "5b3302ea36d379f7271c1152f040928b6703d7af94161467e80754c1bf707a04",
+  "original_manifest_retained_at": "/home/kieran/grip-cu-runs/fb_frequency_slice_20261106_seed2026/packaging_history/original_manifest.json",
+  "corrected_manifest_sha256": "12c227af352842692a934a3752300828b99105374131def767254176365b1231",
+  "scientific_results_or_group_boundaries_changed": false,
+  "analysis_reexecuted": false,
+  "original_execution_code_retained": true
+}

@@ -1,11 +1,11 @@
 \section{补充设置、结果与候选审计}
 
-\subsection{主实验运行设置}
+\subsection{历史NELL排序模型的运行设置}
 
-表~\ref{tab:hyper} 根据 NELL23K 主运行配置和候选库元数据列出实际设置。Stage~2 从 Stage~1 adapter 初始化，优化候选级 InfoNCE 与生成损失。采样温度 $\tau_s$ 控制候选分布，候选温度 $\tau_c$ 控制对比目标。
+表~\ref{tab:hyper} 根据 附录~\ref{sec:historical-nell}的历史NELL23K排序运行配置和候选库元数据列出实际设置。Stage~2 从 Stage~1 adapter 初始化，优化候选级 InfoNCE 与生成损失。采样温度 $\tau_s$ 控制候选分布，候选温度 $\tau_c$ 控制对比目标。
 
 \begin{table}[htbp]
-\caption{NELL23K 主实验运行设置。数值对应训练种子 2026 的已完成运行。}
+\caption{历史NELL23K排序运行设置；不是正文验证选定的直接解码配置。数值对应训练种子 2026 的已完成运行。}
 \label{tab:hyper}
 \centering\small
 \begin{tabular}{ll}
@@ -40,7 +40,7 @@ WN18RR 的训练期候选库覆盖 2,709 条关系问题，每题包含九个互
 
 \subsection{FB15K237-2 候选 InfoNCE 参考实验}
 
-该参考实验展示独立配置下的候选 InfoNCE 表现。B1 与 InfoNCE-i0 均在同一本地测试文件的 10,000 条问题上评分；i0 使用单独的配对候选文件、LoRA rank 24、Stage~2 训练 5 个 epoch 和候选损失权重 0.1。表~\ref{tab:historical-fb} 单独标记该配置，本文的 SC-CL 主结果对应表~\ref{tab:nell-results}。
+该参考实验展示独立配置下的候选 InfoNCE 表现。B1 与 InfoNCE-i0 均在同一本地测试文件的 10,000 条问题上评分；i0 使用单独的配对候选文件、LoRA rank 24、Stage~2 训练 5 个 epoch 和候选损失权重 0.1。表~\ref{tab:historical-fb} 单独标记该配置，当前SC-CL直接解码结果见正文表~\ref{tab:latest-direct}，该历史i0不与当前FB控制混合。
 
 \begin{table}[htbp]
 \caption{FB15K237-2 候选 InfoNCE 参考结果（\%，10,000 条测试问题）。InfoNCE-i0 为独立候选及训练配置，方法身份与 SC-CL 分别记录。}
@@ -106,4 +106,19 @@ for q in train_questions:
 
 \subsection{数据、模型与产物记录}
 
-主实验使用 NELL23K，补充结果分别使用 WN18RR 和 FB15K237-2；基座模型为 Qwen2.5-7B-Instruct \citep{qwen2024qwen25}，LoRA 用于参数高效训练 \citep{hu2022lora}。实验处理既有知识图谱关系问题，未新增个人敏感数据采集。预测、候选分数、训练配置、adapter 与来源清单保存在本地实验归档中，当前未提供公开下载地址。
+完整直接解码比较使用NELL23K、CoDEx-M和FB15K237-2，另有独立历史NELL排序运行及WN18RR补充结果；基座模型为 Qwen2.5-7B-Instruct \citep{qwen2024qwen25}，LoRA 用于参数高效训练 \citep{hu2022lora}。实验处理既有知识图谱关系问题，未新增个人敏感数据采集。预测、候选分数、训练配置、adapter 与来源清单保存在本地实验归档中，当前未提供公开下载地址。
+
+\subsection{FB候选来源对照的复现设置}
+\label{sec:fb-repro}
+
+FB五组固定Stage~1、12,136条QA、3,109条候选资格和每题九候选。LoRA rank为24，alpha为48，目标模块为\texttt{down\_proj}、\texttt{up\_proj}和\texttt{gate\_proj}；微批大小为1，梯度累积为512，精度为bfloat16。获选学习率为$9.4762275\times10^{-4}$，权重衰减为$8.8899022\times10^{-5}$，Adam epsilon为$10^{-8}$；候选损失权重为0.11229874，候选温度为0.88639612。训练实际停止于32步，同时保留五轮、120步线性调度。候选采样参数与损失温度分别记录，不将采样温度0.25当作候选损失温度。
+
+Full采用结构/违例权重1/1，Profile-only为1/0，Violation-only为0/1；三组均保留均匀下限$1/3$和采样温度0.25。均匀随机从完整合法池无放回抽样。Full由验证集选定；Random复用其配置并曾完整评估验证集，单信号和配额匹配组则预先固定32步，不执行新完整验证或重新选模。
+
+对频率配额匹配组，记Full候选的桶序列为$(b_1,\ldots,b_9)$，其中$b_i=\lfloor\log_2 f(r_i)\rfloor$。对桶$b$，合法池为$P_{q,b}=\{r\in P_q:b(r)=b\}$，配额为$m_{q,b}=\sum_i\mathbf{1}[b_i=b]$。在$P_{q,b}$中均匀无放回抽取$m_{q,b}$个关系，依次放回原桶槽位；对同桶第$j$次抽取，其条件概率为$1/(|P_{q,b}|-j+1)$。配额不足时拒绝继续，不跨桶补齐。Full候选允许被重新抽到，避免通过排除原候选引入额外干预。所有统计仅来自训练图和已冻结Full训练候选，不使用验证/测试关系频次。
+
+分层分析在完整测试结果已观察后进行。分组边界取训练词表关系频次排序的第$\lceil R/3\rceil$和第$\lceil2R/3\rceil$个值（$R$为训练关系数），分别为215和689；同频次保持同组。按测试中出现的关系等权平均其EM，得到表~\ref{tab:fb-macro}；未在测试中出现的训练关系不补零。各组的测试关系数分别为低频67、中频72、高频76，完整测试共215个关系。该统计与按测试题等权的总体EM具有不同权重。
+
+\input{tables/fb_macro}
+
+\input{sections/appendix_historical_nell}

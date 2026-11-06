@@ -1,0 +1,424 @@
+{
+  "status": "completed",
+  "completed_at": "2026-11-06T15:04:27.083567+00:00",
+  "experiment_id": "SC_SLICE_FREQUENCY_FB_SEED2026",
+  "cutoffs": [
+    215,
+    689
+  ],
+  "counts": {
+    "random9": 8648,
+    "profile_only": 8489,
+    "violation_only": 8709,
+    "frequency_matched": 8983,
+    "full": 8990
+  },
+  "metrics": [
+    {
+      "frequency_group": "low",
+      "method": "random9",
+      "label": "Uniform Random-9",
+      "n": 412,
+      "observed_relations": 67,
+      "correct": 241,
+      "em_percent": 58.49514563106796,
+      "macro_relation_em_percent": 54.60333808226696
+    },
+    {
+      "frequency_group": "low",
+      "method": "profile_only",
+      "label": "Profile-only-9",
+      "n": 412,
+      "observed_relations": 67,
+      "correct": 195,
+      "em_percent": 47.33009708737864,
+      "macro_relation_em_percent": 44.624542124542124
+    },
+    {
+      "frequency_group": "low",
+      "method": "violation_only",
+      "label": "Violation-only-9",
+      "n": 412,
+      "observed_relations": 67,
+      "correct": 207,
+      "em_percent": 50.24271844660194,
+      "macro_relation_em_percent": 49.212456892439334
+    },
+    {
+      "frequency_group": "low",
+      "method": "frequency_matched",
+      "label": "Full-quota-matched Random-9",
+      "n": 412,
+      "observed_relations": 67,
+      "correct": 268,
+      "em_percent": 65.04854368932038,
+      "macro_relation_em_percent": 60.30742913315348
+    },
+    {
+      "frequency_group": "low",
+      "method": "full",
+      "label": "Full SC-CL-9",
+      "n": 412,
+      "observed_relations": 67,
+      "correct": 251,
+      "em_percent": 60.922330097087375,
+      "macro_relation_em_percent": 57.42826215828849
+    },
+    {
+      "frequency_group": "middle",
+      "method": "random9",
+      "label": "Uniform Random-9",
+      "n": 1089,
+      "observed_relations": 72,
+      "correct": 816,
+      "em_percent": 74.93112947658402,
+      "macro_relation_em_percent": 70.2107070672733
+    },
+    {
+      "frequency_group": "middle",
+      "method": "profile_only",
+      "label": "Profile-only-9",
+      "n": 1089,
+      "observed_relations": 72,
+      "correct": 751,
+      "em_percent": 68.9623507805326,
+      "macro_relation_em_percent": 62.25925988074793
+    },
+    {
+      "frequency_group": "middle",
+      "method": "violation_only",
+      "label": "Violation-only-9",
+      "n": 1089,
+      "observed_relations": 72,
+      "correct": 768,
+      "em_percent": 70.52341597796143,
+      "macro_relation_em_percent": 63.182186750471146
+    },
+    {
+      "frequency_group": "middle",
+      "method": "frequency_matched",
+      "label": "Full-quota-matched Random-9",
+      "n": 1089,
+      "observed_relations": 72,
+      "correct": 900,
+      "em_percent": 82.64462809917356,
+      "macro_relation_em_percent": 79.89396005946668
+    },
+    {
+      "frequency_group": "middle",
+      "method": "full",
+      "label": "Full SC-CL-9",
+      "n": 1089,
+      "observed_relations": 72,
+      "correct": 901,
+      "em_percent": 82.73645546372819,
+      "macro_relation_em_percent": 78.70973506310717
+    },
+    {
+      "frequency_group": "high",
+      "method": "random9",
+      "label": "Uniform Random-9",
+      "n": 8499,
+      "observed_relations": 76,
+      "correct": 7591,
+      "em_percent": 89.31639016354865,
+      "macro_relation_em_percent": 85.03298508936173
+    },
+    {
+      "frequency_group": "high",
+      "method": "profile_only",
+      "label": "Profile-only-9",
+      "n": 8499,
+      "observed_relations": 76,
+      "correct": 7543,
+      "em_percent": 88.75161783739263,
+      "macro_relation_em_percent": 80.8341765440111
+    },
+    {
+      "frequency_group": "high",
+      "method": "violation_only",
+      "label": "Violation-only-9",
+      "n": 8499,
+      "observed_relations": 76,
+      "correct": 7734,
+      "em_percent": 90.99894105188845,
+      "macro_relation_em_percent": 83.86254344579936
+    },
+    {
+      "frequency_group": "high",
+      "method": "frequency_matched",
+      "label": "Full-quota-matched Random-9",
+      "n": 8499,
+      "observed_relations": 76,
+      "correct": 7815,
+      "em_percent": 91.95199435227674,
+      "macro_relation_em_percent": 86.56915515388943
+    },
+    {
+      "frequency_group": "high",
+      "method": "full",
+      "label": "Full SC-CL-9",
+      "n": 8499,
+      "observed_relations": 76,
+      "correct": 7838,
+      "em_percent": 92.2226144252265,
+      "macro_relation_em_percent": 87.57309182718454
+    },
+    {
+      "frequency_group": "all",
+      "method": "random9",
+      "label": "Uniform Random-9",
+      "n": 10000,
+      "observed_relations": 215,
+      "correct": 8648,
+      "em_percent": 86.48,
+      "macro_relation_em_percent": 70.58651826580025
+    },
+    {
+      "frequency_group": "all",
+      "method": "profile_only",
+      "label": "Profile-only-9",
+      "n": 10000,
+      "observed_relations": 215,
+      "correct": 8489,
+      "em_percent": 84.89,
+      "macro_relation_em_percent": 63.329806749316376
+    },
+    {
+      "frequency_group": "all",
+      "method": "violation_only",
+      "label": "Violation-only-9",
+      "n": 10000,
+      "observed_relations": 215,
+      "correct": 8709,
+      "em_percent": 87.09,
+      "macro_relation_em_percent": 66.13909469631679
+    },
+    {
+      "frequency_group": "all",
+      "method": "frequency_matched",
+      "label": "Full-quota-matched Random-9",
+      "n": 10000,
+      "observed_relations": 215,
+      "correct": 8983,
+      "em_percent": 89.83,
+      "macro_relation_em_percent": 76.14985426929522
+    },
+    {
+      "frequency_group": "all",
+      "method": "full",
+      "label": "Full SC-CL-9",
+      "n": 10000,
+      "observed_relations": 215,
+      "correct": 8990,
+      "em_percent": 89.9,
+      "macro_relation_em_percent": 75.21092775820962
+    }
+  ],
+  "paired_transitions": [
+    {
+      "frequency_group": "low",
+      "left": "full",
+      "right": "random9",
+      "n": 412,
+      "both_correct": 217,
+      "rescue": 34,
+      "regression": 24,
+      "both_wrong": 137,
+      "net_correct": 10,
+      "delta_pp": 2.4271844660194173
+    },
+    {
+      "frequency_group": "low",
+      "left": "full",
+      "right": "profile_only",
+      "n": 412,
+      "both_correct": 178,
+      "rescue": 73,
+      "regression": 17,
+      "both_wrong": 144,
+      "net_correct": 56,
+      "delta_pp": 13.592233009708737
+    },
+    {
+      "frequency_group": "low",
+      "left": "full",
+      "right": "violation_only",
+      "n": 412,
+      "both_correct": 192,
+      "rescue": 59,
+      "regression": 15,
+      "both_wrong": 146,
+      "net_correct": 44,
+      "delta_pp": 10.679611650485437
+    },
+    {
+      "frequency_group": "low",
+      "left": "full",
+      "right": "frequency_matched",
+      "n": 412,
+      "both_correct": 227,
+      "rescue": 24,
+      "regression": 41,
+      "both_wrong": 120,
+      "net_correct": -17,
+      "delta_pp": -4.12621359223301
+    },
+    {
+      "frequency_group": "middle",
+      "left": "full",
+      "right": "random9",
+      "n": 1089,
+      "both_correct": 790,
+      "rescue": 111,
+      "regression": 26,
+      "both_wrong": 162,
+      "net_correct": 85,
+      "delta_pp": 7.805325987144169
+    },
+    {
+      "frequency_group": "middle",
+      "left": "full",
+      "right": "profile_only",
+      "n": 1089,
+      "both_correct": 722,
+      "rescue": 179,
+      "regression": 29,
+      "both_wrong": 159,
+      "net_correct": 150,
+      "delta_pp": 13.774104683195592
+    },
+    {
+      "frequency_group": "middle",
+      "left": "full",
+      "right": "violation_only",
+      "n": 1089,
+      "both_correct": 744,
+      "rescue": 157,
+      "regression": 24,
+      "both_wrong": 164,
+      "net_correct": 133,
+      "delta_pp": 12.213039485766759
+    },
+    {
+      "frequency_group": "middle",
+      "left": "full",
+      "right": "frequency_matched",
+      "n": 1089,
+      "both_correct": 850,
+      "rescue": 51,
+      "regression": 50,
+      "both_wrong": 138,
+      "net_correct": 1,
+      "delta_pp": 0.09182736455463728
+    },
+    {
+      "frequency_group": "high",
+      "left": "full",
+      "right": "random9",
+      "n": 8499,
+      "both_correct": 7430,
+      "rescue": 408,
+      "regression": 161,
+      "both_wrong": 500,
+      "net_correct": 247,
+      "delta_pp": 2.9062242616778446
+    },
+    {
+      "frequency_group": "high",
+      "left": "full",
+      "right": "profile_only",
+      "n": 8499,
+      "both_correct": 7335,
+      "rescue": 503,
+      "regression": 208,
+      "both_wrong": 453,
+      "net_correct": 295,
+      "delta_pp": 3.470996587833863
+    },
+    {
+      "frequency_group": "high",
+      "left": "full",
+      "right": "violation_only",
+      "n": 8499,
+      "both_correct": 7472,
+      "rescue": 366,
+      "regression": 262,
+      "both_wrong": 399,
+      "net_correct": 104,
+      "delta_pp": 1.2236733733380398
+    },
+    {
+      "frequency_group": "high",
+      "left": "full",
+      "right": "frequency_matched",
+      "n": 8499,
+      "both_correct": 7565,
+      "rescue": 273,
+      "regression": 250,
+      "both_wrong": 411,
+      "net_correct": 23,
+      "delta_pp": 0.2706200729497588
+    },
+    {
+      "frequency_group": "all",
+      "left": "full",
+      "right": "random9",
+      "n": 10000,
+      "both_correct": 8437,
+      "rescue": 553,
+      "regression": 211,
+      "both_wrong": 799,
+      "net_correct": 342,
+      "delta_pp": 3.42
+    },
+    {
+      "frequency_group": "all",
+      "left": "full",
+      "right": "profile_only",
+      "n": 10000,
+      "both_correct": 8235,
+      "rescue": 755,
+      "regression": 254,
+      "both_wrong": 756,
+      "net_correct": 501,
+      "delta_pp": 5.01
+    },
+    {
+      "frequency_group": "all",
+      "left": "full",
+      "right": "violation_only",
+      "n": 10000,
+      "both_correct": 8408,
+      "rescue": 582,
+      "regression": 301,
+      "both_wrong": 709,
+      "net_correct": 281,
+      "delta_pp": 2.81
+    },
+    {
+      "frequency_group": "all",
+      "left": "full",
+      "right": "frequency_matched",
+      "n": 10000,
+      "both_correct": 8642,
+      "rescue": 348,
+      "regression": 341,
+      "both_wrong": 669,
+      "net_correct": 7,
+      "delta_pp": 0.07
+    }
+  ],
+  "correctness_flags_recomputed": 50000,
+  "question_count": 10000,
+  "observed_relations": 215,
+  "all_slices_reported": true,
+  "macro_definition": "unweighted mean of per-relation EM over test-observed relations; no missing-relation imputation",
+  "limitations": [
+    "one seed and one fixed Full-selected configuration",
+    "descriptive slices selected after observing the overall comparison; cuts determined by train counts only",
+    "frequency measures train graph relation edges, not QA count or entity sparsity",
+    "no statistical equivalence, causal mechanism, or cross-seed claim"
+  ],
+  "next_action": "write all slices including negative/null; stop; no new GPU run"
+}

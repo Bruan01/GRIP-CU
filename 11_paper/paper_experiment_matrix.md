@@ -36,6 +36,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_AUDIT_LEAK | R3/R8 | split/wiring 硬门 | NELL/FB | train-only, known-pair, K=9 | observed implementation/run audit（NELL及FB train-only bank和wiring）；完整持出重叠审计另列 | pass/fail, manifest |
 | SC_AUDIT_FALSE_NEG | R3 | 开放世界风险 | NELL/FB/WN/CoDEx-M | heldout positive overlap + train-known audit; CoDEx hard negatives separate | planned | train collision, heldout overlap, unresolved OWA |
 | SC_SLICE_ARITY | R4/R6 | 一对多/多对一失败切片 | NELL/FB | degree/arity bins | planned | n, MRR, H@10, EM |
+| SC_SLICE_FREQUENCY | R4/C2/C6 | 总体净差是否掩盖频率层级间抵消 | FB15K237-2 | 五方法，重点Full/Full配额匹配 | observed CPU-only，train边界215/689；净变化低−17/中+1/高+23；无低频优势 | 10,000题、215关系、micro/macro、348/341配对重算；主文及附录表 |
 | SC_SLICE_SPARSE | R4 | 结构稀疏切片 | NELL/FB | profile sparsity bins | planned | n, margin, MRR |
 | SC_STAT_SEEDS | R5 | 随机稳定性 | NELL/FB: 5 seeds; WN/CoDEx-M: >=3, preferably 5 | seeds 2026--2030 where run | planned | mean/std, paired CI |
 | SC_COST | R7 | 资源—收益 | NELL/FB/WN/CoDEx-M | bank/scoring/training profiling | partial-observed（NELL） | wall-clock, memory, tokens |

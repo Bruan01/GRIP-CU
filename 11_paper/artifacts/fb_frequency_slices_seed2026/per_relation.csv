@@ -1,0 +1,216 @@
+relation,train_edge_count,frequency_group,n,random9_correct,profile_only_correct,violation_only_correct,frequency_matched_correct,full_correct
+Adjoining Locations,2051,high,20,18,18,18,18,18
+Administrative Parent of an Area,579,middle,9,7,4,1,8,7
+Art Direction in Films,101,low,2,0,0,0,0,0
+Artist Contributions to Music,218,middle,6,6,4,5,6,6
+Artists Signed by a Record Label,2226,high,122,120,119,120,122,120
+Artists in Broadcast Content,102,low,7,5,5,6,6,6
+Artists within a Music Genre,5880,high,357,342,345,341,350,354
+Average Rent by Currency,373,middle,22,18,16,17,18,18
+Award Ceremony for Category Winners,2834,high,153,148,147,146,140,150
+Award Nominations Received,6277,high,73,32,42,39,27,51
+Award Nominations for Individuals,9465,high,418,387,397,400,399,387
+Award Nominees,15989,high,115,105,109,106,102,113
+Award Winners,5673,high,87,81,84,80,83,82
+Award Winners at a Ceremony,2727,high,142,129,129,133,130,126
+Awards Won by Works,3310,high,58,50,46,50,51,55
+Awards Won by a Work,8423,high,17,11,5,6,13,9
+Awards Won by an Individual,2992,high,10,6,6,5,7,8
+Baseball Team Roster Positions,183,low,1,1,0,1,1,1
+Baseball Team Statistics by Season,233,middle,14,13,13,14,13,13
+Basic Titles Held by Politicians,114,low,9,0,0,0,1,2
+Basketball Roster Positions,178,low,1,0,0,1,0,0
+Birthplace of a Person,2465,high,84,70,45,26,65,49
+Campuses of an Educational Institution,533,middle,6,3,4,1,4,6
+Capital of a Country,142,low,6,3,3,0,3,3
+Categories Within an Award Category,148,low,8,2,0,0,0,2
+Cause of Death,737,high,47,41,42,39,42,43
+Celebrities Who Dated,1404,high,5,4,5,5,5,5
+Celebrity Impersonations,121,low,3,3,1,1,3,3
+Child Organizations,191,low,8,8,7,8,8,7
+Cinematography in Films,336,middle,7,4,3,3,7,5
+Climate of a Travel Destination,535,middle,34,34,34,34,34,34
+Colors of Sports Teams,689,middle,39,39,39,39,39,39
+Colors of an Educational Institution,856,high,33,33,33,33,33,33
+Combatants in Military Conflicts,747,high,6,5,6,5,5,5
+Combatants in a Military Conflict,424,middle,14,10,10,11,12,12
+Costume Design by for Films,192,low,6,1,1,2,1,2
+Countries Where Language is Spoken,335,middle,8,5,4,4,5,7
+Country of Origin of a TV Program,268,middle,14,12,12,12,13,13
+Country of a Bibs Location,610,middle,8,8,7,3,8,8
+Country of an Administrative Division,386,middle,1,1,1,1,1,1
+Country's Government Form,298,middle,20,15,20,18,19,20
+County Seat of a US County,181,low,1,0,0,0,0,0
+County in HUD County Place,305,middle,4,2,0,0,2,1
+Creator of a TV Program,144,low,2,1,1,1,1,1
+Current Clubs of World Cup Squad,246,middle,11,8,8,9,10,9
+Current Soccer Team Roster by Position,4527,high,12,12,12,12,12,12
+Current Team of a Football Player,536,middle,5,5,4,4,5,5
+Degree Holders from an Institution,2257,high,143,137,141,137,140,140
+Diet Practiced,137,low,7,6,4,2,6,6
+Disciplines or Subjects of an Award Category,204,low,7,6,4,6,6,6
+Domestic Tuition in Currency,476,middle,3,2,2,2,3,3
+Draft Picks from Schools by Sports Teams,688,middle,42,34,38,32,32,35
+Draft Picks in Professional Sports,437,middle,23,23,23,23,22,23
+Dubbing Performances by Language,112,low,4,0,0,0,0,0
+Dubbing Performances in Films,114,low,3,0,0,0,0,0
+Editors of a Film,179,low,4,2,1,0,4,2
+Educational Institution of a Campus,526,middle,6,6,3,3,5,6
+Employment History of a Person,316,middle,12,1,0,1,3,0
+Endowment in Currency,456,middle,2,2,2,2,2,2
+Entities Involved in an Event,276,middle,7,4,1,2,5,4
+Estimated Number of Mortgages in HUD Foreclosure Area,788,high,43,40,42,42,38,38
+Ethnic Groups and Their People,2063,high,129,125,124,104,124,125
+Executive Producers of a Film,662,middle,36,24,16,17,29,28
+Export Destinations,172,low,6,3,2,2,3,2
+Family of Musical Instruments,100,low,2,1,1,1,1,1
+Film Crew Members,384,middle,10,3,10,9,10,10
+Film Crew Roles,5305,high,279,268,269,268,270,274
+Film Distribution Medium,285,middle,24,20,21,19,21,21
+Film Distribution Regions,157,low,6,2,5,3,4,3
+Film Festivals Featuring a Film,264,middle,8,7,7,7,7,7
+Film Formats,345,middle,18,17,18,18,18,18
+Film Genres,7268,high,340,334,324,331,335,336
+Film Language,2570,high,141,140,140,140,140,140
+Film Locations Featured,977,high,49,46,46,48,48,47
+Film Release Medium and Date,1429,high,88,88,88,87,88,88
+Film Release Region and Date,12893,high,745,726,741,737,738,730
+Film Sets Designed by a Set Designer,113,low,2,2,2,2,2,2
+Film's Country of Production,2407,high,63,63,59,62,63,63
+Film's Estimated Budget,1210,high,86,85,84,84,84,83
+Films Directed by a Director,859,high,10,9,10,10,8,10
+Films Distributed by Company,2337,high,86,86,85,84,85,84
+Films Featuring an Actor,9494,high,414,389,393,396,406,405
+Founders and Their Organizations,137,low,6,4,3,2,3,2
+Fraternities and Sororities at a University,131,low,13,9,7,10,11,7
+Friendships Among Celebrities,1511,high,20,10,9,10,11,12
+GDP Per Capita in Currency,190,low,1,1,1,1,1,1
+Gender of a Person,3717,high,215,212,210,214,214,214
+Geographic Distribution of an Ethnicity,122,low,10,5,5,7,8,6
+Geographical Containment,5201,high,152,146,147,151,149,147
+Government Positions Held During Legislative Sessions,215,low,17,10,0,1,14,7
+Graduates of Educational Institution,2640,high,163,136,140,153,152,145
+Group Membership Roles,750,high,18,2,1,2,4,1
+Guest Performances in Music,497,middle,1,0,0,0,0,0
+Hall of Fame Inductees,154,low,13,11,12,9,10,11
+Headquarters City of an Organization,852,high,22,21,20,17,22,21
+Hints for Gardening,99,low,5,0,0,0,0,0
+Hockey Team Roster Positions,121,low,3,3,3,3,3,3
+Honored Individuals at an Award Ceremony,909,high,65,18,23,26,13,26
+Honored Works in Awards,475,middle,3,1,0,0,1,2
+Industry of a Business Operation,330,middle,20,18,15,19,20,18
+Influences on Individuals or Works,1908,high,110,99,96,96,98,100
+Instrumentalists of a Music Instrument,1938,high,81,78,75,77,79,79
+International Organizations and Member States,179,low,10,9,6,6,9,9
+Items Appearing in Ranked Lists,335,middle,28,12,1,8,16,16
+Jurisdiction of Office for Politicians,106,low,4,0,0,1,0,1
+Languages Spoken by Ethnic Groups,192,low,14,12,12,14,13,14
+Languages Spoken by a Person,783,high,47,45,45,45,46,46
+Languages of a TV Program,254,middle,11,11,11,11,11,11
+Leadership Roles in an Organization,756,high,35,33,35,34,35,34
+Legislative Members by District,1070,high,59,57,57,58,57,58
+Location of Marriage Ceremonies,251,middle,21,8,3,2,8,4
+Locations of Events,363,middle,13,1,2,2,6,1
+Major Field of Study for Degree Holders,494,middle,28,23,20,25,23,26
+Major Field of Study for Graduates,2622,high,161,144,146,154,148,146
+Major Field of Study for Students,343,middle,2,2,2,2,2,2
+Marriage Type,2909,high,165,158,163,160,161,160
+Marriage Unions and Their Locations,417,middle,25,25,25,25,25,25
+Medals Won by Countries in Olympics,256,middle,14,9,4,11,13,14
+Members of a Governmental Body,101,low,5,5,1,2,5,3
+Members of a Legislative Session,814,high,4,4,2,4,4,4
+Members of an Organization,797,high,45,43,41,42,44,44
+Music Group Membership,218,middle,9,8,8,8,9,9
+Music Track Contributions,1772,high,76,54,64,55,69,58
+Music in Films,1039,high,40,32,11,25,30,31
+NCAA Basketball Tournament Seeds,352,middle,21,13,9,4,13,17
+Nationality of a Person,4197,high,225,216,218,218,210,219
+Net Worth in Currency,475,middle,36,33,33,36,34,35
+Netflix Genre Titles,2671,high,62,28,13,29,24,31
+Nominal GDP by Currency,220,middle,3,0,0,0,1,1
+Nominated Works for Awards,717,high,5,3,2,3,3,3
+Nominations Received by an Award Nominee,12157,high,512,338,442,464,447,383
+Notable People with a Disease,121,low,7,4,4,4,6,6
+Nutrients in Food,966,high,57,57,57,57,57,57
+Office Holders by Jurisdiction,760,high,39,38,37,38,38,38
+Official Language of a Country,225,middle,7,5,6,7,7,7
+Olympic Athletes by Country,2890,high,129,99,94,110,109,97
+Olympic Athletes by Olympics,1153,high,34,30,22,21,26,22
+Olympic Athletes by Sport,381,middle,4,3,2,2,3,4
+Olympic Medals Awarded,101,low,7,7,7,6,7,7
+Organization Headquarters Country,182,low,3,1,2,1,3,2
+Origin of an Artist,552,middle,15,15,15,13,15,14
+Parent Genre of Music,678,middle,45,40,37,42,45,45
+Partial Containment of Locations,133,low,8,2,1,0,2,2
+Participating Countries in the Olympic Games,490,middle,10,9,8,10,10,10
+Peers in an Influence Network,166,low,1,1,1,1,1,1
+People Holding a Job Title,734,high,42,34,28,24,38,37
+People with an Educational Degree,260,middle,13,6,2,9,9,7
+Person's Profession,10945,high,655,559,514,575,584,645
+Personal Appearances in Films,217,middle,5,1,1,1,2,1
+Philosophical Interests of a Philosopher,100,low,7,2,2,1,3,5
+Phone Number Category for Organizations,142,low,12,4,7,3,7,3
+Phone Service Location,345,middle,19,13,15,16,13,13
+Place Founded of an Organization,104,low,6,0,0,2,2,2
+Place in HUD County,459,middle,26,21,23,16,20,23
+Place of Burial,142,low,2,2,2,2,2,2
+Place of Death,695,high,47,40,39,44,41,42
+Places Lived by a Person,3738,high,158,147,142,148,145,149
+Players by Sports Position in Team Roster,3500,high,13,13,12,13,13,13
+Politicians in a Political Party,107,low,6,6,6,6,5,6
+Prequel of a Film,180,low,8,6,0,7,7,7
+Pro Athletes in Sports,128,low,4,1,0,3,3,3
+Produce Available by Season,108,low,1,0,0,0,0,0
+Producer Type for TV Programs,121,low,6,0,0,0,0,0
+Producers of a Film,1285,high,29,21,11,23,21,26
+Production Companies of a Film,1568,high,40,30,22,31,29,33
+Production Design in Films,158,low,7,5,3,5,5,6
+Recurring Events,109,low,6,1,1,1,2,2
+Region's Predominant Religions,596,middle,26,24,21,20,25,25
+Regional Debut Venue for a Film,246,middle,11,2,0,6,6,4
+Registration of Non-Profit Organizations,125,low,12,12,12,12,12,12
+Regular Performance Roles in Music,2655,high,17,16,15,16,16,16
+Regular Performances by Music Groups,1327,high,75,67,69,72,68,67
+Regular Personal Appearances on TV,90,low,4,0,0,0,0,0
+Regular TV Appearances by a Personality,103,low,10,0,0,0,4,0
+Religion of a Person,1085,high,60,53,48,54,54,56
+Revenue in Currency,215,low,1,1,1,1,1,1
+Risk Factors for Diseases,162,low,6,6,6,6,6,6
+Runtime of Films by Region,187,low,6,1,0,2,0,2
+SNL Cast Members by Season,100,low,2,1,1,0,1,0
+School Types of Educational Institutions,728,high,36,26,8,3,13,26
+Schools from Which Draft Picks are Chosen,269,middle,23,18,16,21,22,21
+Second Level Divisions of a Country,463,middle,21,15,17,3,14,17
+Service Language of a Phone Number,208,low,9,5,5,6,7,4
+Siblings of a Person,131,low,3,3,3,3,3,3
+Special Film Performance Types,93,low,4,1,1,1,1,1
+Special Performance Type in Films,180,low,7,5,3,2,5,7
+Specializations Within a Profession,102,low,8,7,5,6,6,7
+Sport of a Sports Team,423,middle,28,26,26,25,28,28
+Sports Teams in a League,161,low,9,5,2,2,5,8
+Sports in Olympic Games,664,middle,7,6,6,5,6,7
+Sports in the Olympic Games,581,middle,7,7,7,7,7,7
+Spouses in a Marriage,427,middle,1,1,0,0,1,1
+State of a Bibs Location,300,middle,2,0,0,0,1,0
+State or Province of Organization Headquarters,721,high,18,7,11,7,7,10
+Story By Credits in Films,394,middle,12,6,6,9,9,9
+Students Majoring in a Field,259,middle,19,2,2,0,4,5
+Subject of Films,603,middle,38,25,18,31,29,35
+Symptoms and Their Conditions,154,low,11,11,11,11,11,11
+TV Program Genres,1006,high,50,42,38,40,44,47
+TV Program Regular Actors,1272,high,47,37,32,42,40,40
+TV Programs Produced by a Producer,641,middle,12,1,1,0,3,2
+TV Programs Written by a Writer,271,middle,5,4,4,4,4,4
+TV Programs on a Network,305,middle,11,10,11,11,11,10
+Taxonomy Subject Entries,411,middle,20,15,11,14,18,16
+Teams Based in a Location,331,middle,27,23,20,14,22,23
+Teams of a Professional Athlete,676,middle,13,13,9,12,13,13
+Time Zones of a Location,1151,high,61,61,61,60,61,61
+Top Dog Breeds in a City,192,low,9,9,8,9,9,9
+Track Performances by Artists,3795,high,21,18,18,18,19,17
+Transportation to a Travel Destination,146,low,10,10,10,10,10,9
+Type of Appearance in Films,37,low,2,0,0,0,0,0
+Types of Administrative Areas,156,low,12,7,4,2,5,4
+Vacationers at a Location,349,middle,14,8,10,6,10,8
+Webpage Categories,3612,high,206,184,165,201,194,188
+Writers of a Film,787,high,8,5,4,6,7,6

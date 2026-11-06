@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\caption{按目标关系训练边数划分的FB描述性配对分析。边界为训练关系词表频次的三分位次序统计量，同频次不拆分；未按测试表现调边界。EM单位为\%；配额匹配指Full配额匹配随机。所有分组均报告，净变化合计为7题，不构成跨种子或因果证据。}
+\label{tab:fb-frequency-slices}
+\centering\small
+\begin{tabular}{lrrrrrr}
+\toprule
+目标关系频率 & $n$ & Full EM & 配额匹配EM & 纠错 & 退化 & 净变化 \\
+\midrule
+低频（$\leq215$） & 412 & 60.92 & 65.05 & 24 & 41 & -17 \\
+中频（216--689） & 1089 & 82.74 & 82.64 & 51 & 50 & +1 \\
+高频（$>689$） & 8499 & 92.22 & 91.95 & 273 & 250 & +23 \\
+\bottomrule
+\end{tabular}
+\end{table}

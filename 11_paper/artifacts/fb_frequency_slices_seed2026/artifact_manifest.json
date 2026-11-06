@@ -1,0 +1,50 @@
+{
+  "at": "2026-11-06T15:04:27.084313+00:00",
+  "files": [
+    {
+      "path": "code_snapshot.py",
+      "sha256": "6cb73b422d7e9689d4e4e4a521921acb0bd4181da67a42bddf26a5e8f48e85dd",
+      "bytes": 11569
+    },
+    {
+      "path": "metrics.csv",
+      "sha256": "934983806259756f29d65788ceef2940c8b25ebdefb2533a22fba94c1a2cefae",
+      "bytes": 1706
+    },
+    {
+      "path": "paired_transitions.csv",
+      "sha256": "483e010acd4f6d00620e4c3659739b062c2da9311dbacfd01ba92aa021f6eb02",
+      "bytes": 1100
+    },
+    {
+      "path": "per_relation.csv",
+      "sha256": "fa0b7b4ca36c0158e01a2f74a08e8ddf46afbc8bad28ff98c93a39a111e1558c",
+      "bytes": 11797
+    },
+    {
+      "path": "plan.json",
+      "sha256": "9aba482cd01cde458bfc3cb616213104834b14ae98c46250b2c5157ff0c60ae9",
+      "bytes": 3505
+    },
+    {
+      "path": "question_slices.csv",
+      "sha256": "581d4100b9d44589b3ca26ee060763a42395aa5640ab0ca09c82b8ffdc021cb5",
+      "bytes": 1362390
+    },
+    {
+      "path": "result.json",
+      "sha256": "6f69ba2ba814f8672b247b83fb44560b753105073e9d0fdbfe8d503ef523f014",
+      "bytes": 10886
+    },
+    {
+      "path": "table.tex",
+      "sha256": "950665430c9713978b97d92f8c0c2b8698e29832849dfb7503887656c7ead133",
+      "bytes": 294
+    },
+    {
+      "path": "train_relation_frequencies.csv",
+      "sha256": "92f91f3f928c14d2e9a57db62cd524595d90ddf4dd5959f678892d610c764bbd",
+      "bytes": 9065
+    }
+  ]
+}

@@ -1,36 +1,19 @@
 # Section plan：SC-CL
 
-更新日期：2026-10-28。论文围绕结构画像与冻结模型违例度联合构造关系候选，按“问题—设计—主要排序结果—来源依据—方法意义”组织。内部执行仍先核对协议和产物，对外叙事先呈现研究问题及与之对应的结果。
+更新日期：2026-11-06。当前稿为已有证据的中期整合，不代表投稿就绪。
 
-| 章节 | 论证职责 | 证据/展示 |
+| 章节 | 论证职责 | 当前证据与展示 |
 |---|---|---|
-| Abstract | 问题、缺口、思路、关键结果、方法意义 | 双信号构造；NELL 全量绝对结果及前 200 题配对差异 |
-| Introduction | 为什么关系候选构造是学习问题中的关键环节 | 结构相关性、模型混淆、开放世界事实不确定性 |
-| Related Work | 与图结构采样、模型反馈和生成式关系预测的关系 | 已有引用及任务空间定位，不纳入本地运行进度 |
-| Formulation | 定义候选池、未知真值与两个答案选择规则 | train-only 过滤、候选角色、直接解码 EM 与重排 H@1/MRR |
-| Method | 双信号如何构造并固定训练候选 | 原有公式；Stage 1 初始化与冻结评分分离；带权联合损失 |
-| Experiments: ranking | 完整测试集上的排序水平和同题比较差异 | full SC-CL；prefix-200 B1/SC-CL；明确 n、seed 和预算条件 |
-| Experiments: transitions | 配对 top-1 差异如何分布 | 9/4/173/14 四类计数 |
-| Experiments: generation | 原始关系文本输出路径的预测表现 | B1/SC-CL 直接解码 EM 87.46%/87.03% |
-| Experiments: provenance | 训练候选如何追溯到任务与评分 | 3,253 行、K=9、失败数 0、来源记录 |
-| Experiments: cost | 各计算阶段需要哪些资源 | 离线评分、Stage 2、重排分阶段实测 |
-| Discussion | 解释设计含义，集中说明实际比较条件 | 双信号、答案选择、固定候选适用条件；一处列对照及审计状态 |
-| Conclusion | 强化方法与排序结果的记忆点 | 可追溯候选接口、全量排序与明确范围的配对结果 |
-| Appendix | 复现已运行设置、解释补充结果与审计定义 | 实测参数；WN；独立 FB i0 参考；来源/真值状态规则 |
+| Abstract / Introduction | 提出可追溯候选学习问题，区分设计与独有机制收益 | 三数据集当前直接解码；FBFull89.90/Uniform86.48/Full配额匹配89.83；明确机制边界 |
+| Method | 如实定义训练图画像、B1违例、混合采样与固定bank | 五维均log1p；度对不同头/尾实体取均值；相似度分母1+两特征绝对值；不改变算法 |
+| Experiments: configurations | 展示当前验证选定配置相对本地B1的表现 | 表tab:latest-direct；与候选损失/采样纯效应分开 |
+| Experiments: controls | 识别固定Full配置下的候选来源差异 | 表tab:fb-controls；保留Profile负结果及频率控制近零差异 |
+| Experiments: transitions | 展示纠错、退化及净变化 | 表tab:fb-paired；Full与配额匹配348/341，689题不同 |
+| Experiments: frequency slices | 检查是否存在低频补偿性收益 | 表tab:fb-frequency-slices；train边界215/689；净−17/+1/+23，未显示低频优势 |
+| Discussion / Conclusion | 把机制解释限定在证据允许范围 | 频率替代解释未排除，配额来源Full且非独立通用频率方法；不宣称统计等效/因果/跨seed稳定 |
+| Appendix: reproducibility | 区分历史与当前参数，完整报告关系等权指标 | FB32/120、实际loss温度权重；表tab:fb-macro；所有层级和方法 |
+| Appendix: historical ranking | 保留独立模型的NELL重排、旧直接解码与成本 | tab:nell-results/tab:direct-decode/tab:cost，明确旧模型身份；WN与历史FB i0亦单列 |
 
-正式稿中的未运行计划和撤回主张规则归入内部实验矩阵。开放世界定义保留在问题定义节，表注保留局部与全量结果身份，直接解码数据完整报告；“目标差异”不自动等于已经验证的性能权衡。
+证据状态：主文四类显示（配置、来源、逐题、频率分层）中，逐题与频率分层来自同一五模型测试结果，不作独立重复计数。NELL/CoDEx的采样控制、当前模型完整重排、多种子与完整开放世界风险审计仍未完成。结果陈述不等于稿件已达到投稿证据门。
 
-## 主要可证伪预测
-
-- 在相同候选预算和训练预算下，SC-CL-9 的闭集 MRR/Hits 应高于 Random-9 和
-  frequency-matched Random-9；
-- 自由生成 EM/OOV 不应因候选损失出现超过 0.5 个百分点的实质恶化；
-- 去掉结构画像、B1 violation 或均匀下限会降低边界间隔或跨 seed 稳定性；
-- train-known 过滤应保持硬门为零冲突；CoDEx 的实体替换 verified negatives 不能直接标注固定实体对关系候选的真假，相关审计必须保持任务边界；
-- 若上述预测不成立，保留负结果并缩小贡献表述，不用预设数字反向调参。
-
-## 证据边界
-
-当前证据分层：NELL seed=2026 有训练、bank、wiring、预测和候选重排原始文件；FB
-有 B1 与历史 InfoNCE-i0 候选评分，但没有当前 SC-CL bank；其他性能、跨数据集迁移和
-统计显著性仍为 planned。主文、矩阵、证据账本和 TODO 必须继续同步这一边界。
+叙事顺序：候选可追溯构造 → 当前配置表现 → 更严格的FB候选替换控制 → 频率配额近零差与低频负结果 → 有限解释和适用范围。
