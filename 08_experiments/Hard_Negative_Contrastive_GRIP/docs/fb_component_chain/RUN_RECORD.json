@@ -26,7 +26,7 @@
   "frozen_watcher_code_files": 111,
   "tests": "47 passed",
   "prerequisite_frozen_code_unchanged": true,
-  "profile_training_started": false,
+  "profile_training_started": true,
   "startup_verified_at": "2026-11-05T17:17:44.908747+00:00",
   "startup_queue_observation": {
     "at": "2026-11-05T17:17:34.101082+00:00",
@@ -42,5 +42,64 @@
     }
   },
   "profile_cpu_cli_verified": true,
-  "profile_queued_without_gpu_launch": true
+  "profile_queued_without_gpu_launch": true,
+  "queue_completed": true,
+  "status": "completed",
+  "completed_at": "2026-11-06T03:56:39.352463+00:00",
+  "launch_receipt": {
+    "at": "2026-11-05T22:16:35.859718+00:00",
+    "status": "launched",
+    "next_contract_sha256": "b23746ab1f74224824ebe03bec0cb46f3eb0bf22b0eb3ef6d061e5fa7206f836",
+    "session": "fb_profile_seed2026_20261106",
+    "argv": [
+      "/home/kieran/miniconda3/envs/guardenv/bin/python",
+      "/home/kieran/grip-cu-runs/fb_profile_only_control_20261106_seed2026/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_violation_only_control.py",
+      "run",
+      "--config",
+      "/home/kieran/grip-cu-runs/fb_profile_only_control_20261106_seed2026/inputs/design.json",
+      "--run-dir",
+      "/home/kieran/grip-cu-runs/fb_profile_only_control_20261106_seed2026"
+    ],
+    "launched_at": "2026-11-05T22:16:35.882168+00:00"
+  },
+  "methods": [
+    {
+      "method": "Random-9",
+      "seed": 2026,
+      "structure_signal": 0,
+      "b1_signal": 0,
+      "n": 10000,
+      "correct": 8648,
+      "em_percent": 86.48
+    },
+    {
+      "method": "Profile-only-9",
+      "seed": 2026,
+      "structure_signal": 1,
+      "b1_signal": 0,
+      "n": 10000,
+      "correct": 8489,
+      "em_percent": 84.89
+    },
+    {
+      "method": "Violation-only-9",
+      "seed": 2026,
+      "structure_signal": 0,
+      "b1_signal": 1,
+      "n": 10000,
+      "correct": 8709,
+      "em_percent": 87.09
+    },
+    {
+      "method": "Full SC-CL-9",
+      "seed": 2026,
+      "structure_signal": 1,
+      "b1_signal": 1,
+      "n": 10000,
+      "correct": 8990,
+      "em_percent": 89.9
+    }
+  ],
+  "completion_audit": "11_paper/artifacts/fb_component_ablation_seed2026/completion_audit.json",
+  "next_action": "write and stop; no additional training"
 }

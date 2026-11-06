@@ -1,0 +1,5 @@
+method,seed,structure_signal,b1_signal,n,correct,em_percent
+Random-9,2026,0,0,10000,8648,86.48
+Profile-only-9,2026,1,0,10000,8489,84.89
+Violation-only-9,2026,0,1,10000,8709,87.09
+Full SC-CL-9,2026,1,1,10000,8990,89.9

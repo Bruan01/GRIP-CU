@@ -22,8 +22,8 @@
 | C1 | SC-CL 提供可复现、train-only 的关系候选构造与审计协议 | NELL seed=2026 的 bank、wiring、manifest 和 hash | 任一 split 泄漏、known-pair 冲突或 question-ID 不对齐即否定该 run 的协议有效性 |
 | C2 | 待验证一般性假设；已获得FB固定配置单seed的局部支持：组合候选信号优于同池随机 | 2026-11-05 FB完整10,000题SC-CL/Random-9 EM=89.90%/86.48%，+3.42pp；配置此前针对SC-CL选定；其余数据、频率匹配和多seed仍缺 | 仅报告该配置下的条件性差异；单次结果不单独证明结构分量；后续匹配对照若持平或反转则收窄/撤回一般性收益主张 |
 | C3 | 待验证假设：该方法在多种关系 KG 上稳定有效 | 当前尚未建立 | 五种子、跨图迁移和风险审计完成前不得声称稳定或泛化 |
-| C4 | 待验证局部假设：在冻结B1违例采样基础上，结构项有额外收益 | FB Violation-only单seed对照已准备并启动，尚无新性能；复用Full89.90%和Random86.48%作为参考 | Full未优于Violation-only时，不写结构项已被实验证明必要；即便为正，也限于该获选配置，不能在缺Profile-only时宣称双因素协同 |
-| C5 | 待验证局部假设：在图结构画像采样基础上，B1违例反馈有额外收益 | Profile-only的CPU准备已完成，安排在Violation-only完整结束与审计之后串行运行；尚无新性能 | Full相对Profile-only的正/零/负差均保留；与C4一起形成单seed组件表，不将四行观测升级为统计协同或跨seed稳定性 |
+| C4 | 已获局部支持：在冻结B1违例采样基础上加入结构项有增量 | FB固定配置seed2026，Full89.90%/Violation87.09%，+2.81pp；同10,000题净增281，纠错582、退化301 | 条件性组件差异；不是结构单独有效或普适必要性的证明；见四行表及完成审计 |
+| C5 | 已获局部支持：在结构画像基础上加入B1反馈有增量；保留结构单独使用负结果 | Full89.90%/Profile84.89%，+5.01pp；Profile低于Random86.48%共1.59pp | 四行单seed观测不升级为统计协同或跨seed稳定性，不隐去Profile负结果 |
 
 ### 叙事顺序
 
@@ -46,6 +46,6 @@
 - 成熟度：当前为单种子实测与未完成对照并存的研究中期稿，具体投稿证据门维持不变。
 
 - 已观察：NELL23K seed=2026 的 SC-CL 训练、冻结 bank、wiring、manifest、full test rerank；B1 与 SC-CL 仅在前 200 个相同候选问题上严格配对。FB15K237-2 的 InfoNCE-i0 是历史不同契约结果。WN18RR 完成单种子 bank、训练和一次全测试直接解码，但尚未完成完整候选重排。
-- 尚缺：NELL matched-budget B1/Random-9/frequency-matched controls、机制消融、五种子、完整 false-negative audit；FB 当前 SC-CL 主运行；WN18RR 的完整重排、对照、多种子和 B1 复现解释；CoDEx-M 的 Stage1/Stage2 task、adapter、bank 与模型运行。
+- 尚缺：NELL完整匹配Random/频率与组件控制、多种子、完整false-negative审计；FB频率匹配和多种子；WN18RR的完整重排、对照、多种子和B1复现解释；CoDEx-M的Random等控制及论文协议对齐。FB当前SC-CL主运行及固定配置Random/Profile/Violation四行对照已完成。
 - 排除：CLEGR-Facts/Reasoning 是不同任务定义；本地低预算 EM 和异机 +0.415 均不作为本文 SC-CL 证据。
 - 投稿门：在上述核心公平对照、统计与风险审计达到预设门槛前，稿件定位为研究中期稿，不声称达到任何期刊分区的投稿成熟度。

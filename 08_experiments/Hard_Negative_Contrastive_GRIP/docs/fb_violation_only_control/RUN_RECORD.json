@@ -12,8 +12,8 @@
     "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026"
   ],
   "launched_at": "2026-11-05T16:24:31.535681+00:00",
-  "training_complete": false,
-  "test_complete": false,
+  "training_complete": true,
+  "test_complete": true,
   "seed": 2026,
   "optimizer_steps": 32,
   "scheduler_max_steps": 120,
@@ -57,5 +57,12 @@
     "C2",
     "C4"
   ],
-  "item_id": "SC_CTRL_VIOLATION"
+  "item_id": "SC_CTRL_VIOLATION",
+  "status": "completed",
+  "completed_at": "2026-11-05T22:15:32.510662+00:00",
+  "correct": 8709,
+  "em_percent": 87.09,
+  "delta_full_minus_violation_pp": 2.81,
+  "completion_audit": "11_paper/artifacts/fb_component_ablation_seed2026/completion_audit.json",
+  "next_action": "write and stop; no additional training"
 }

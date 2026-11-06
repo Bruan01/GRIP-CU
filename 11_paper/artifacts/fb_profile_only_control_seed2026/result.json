@@ -1,0 +1,45 @@
+{
+  "n": 10000,
+  "full_correct": 8990,
+  "profile_only_correct": 8489,
+  "random9_correct": 8648,
+  "full_em": 0.899,
+  "profile_only_em": 0.8489,
+  "random9_em": 0.8648,
+  "delta_full_minus_profile_pp": 5.01,
+  "delta_profile_minus_random_pp": -1.59,
+  "net_correct_full_minus_profile": 501,
+  "paired_full_vs_profile": {
+    "both_correct": 8235,
+    "rescue": 755,
+    "regression": 254,
+    "both_wrong": 756
+  },
+  "paired_profile_vs_random": {
+    "both_correct": 8109,
+    "rescue": 380,
+    "regression": 539,
+    "both_wrong": 972
+  },
+  "experiment_id": "SC_CTRL_PROFILE_FB_SEED2026_FIXED32",
+  "at": "2026-11-06T03:55:03.454232+00:00",
+  "status": "completed",
+  "seed": 2026,
+  "variant": "profile_only",
+  "paper_role": "claim-carrying",
+  "section_id": "experiments",
+  "item_id": "SC_CTRL_PROFILE",
+  "claim_links": [
+    "C2",
+    "C5"
+  ],
+  "scope": "Conditional contribution of the B1-violation term on top of graph-profile sampling at the already selected SC-CL configuration.",
+  "validation_status": "not_run_by_registered_budget_plan",
+  "limitations": [
+    "single seed, previously SC-CL-selected hyperparameters",
+    "no equal-HPO or statistical stability claim",
+    "this three-row report alone establishes no interaction/synergy claim",
+    "historical test exposure and 464 QA repairs retained"
+  ],
+  "next_action": "write the observed positive, null or negative component effect without reopening this experiment"
+}

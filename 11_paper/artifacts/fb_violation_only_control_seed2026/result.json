@@ -1,0 +1,43 @@
+{
+  "n": 10000,
+  "full_correct": 8990,
+  "violation_only_correct": 8709,
+  "random9_correct": 8648,
+  "full_em": 0.899,
+  "violation_only_em": 0.8709,
+  "random9_em": 0.8648,
+  "delta_full_minus_violation_pp": 2.81,
+  "delta_violation_minus_random_pp": 0.61,
+  "net_correct_full_minus_violation": 281,
+  "paired_full_vs_violation": {
+    "both_correct": 8408,
+    "rescue": 582,
+    "regression": 301,
+    "both_wrong": 709
+  },
+  "paired_violation_vs_random": {
+    "both_correct": 8195,
+    "rescue": 514,
+    "regression": 453,
+    "both_wrong": 838
+  },
+  "experiment_id": "SC_CTRL_VIOLATION_FB_SEED2026_FIXED32",
+  "at": "2026-11-05T22:15:04.873463+00:00",
+  "status": "completed",
+  "seed": 2026,
+  "paper_role": "claim-carrying",
+  "section_id": "experiments",
+  "item_id": "SC_CTRL_VIOLATION",
+  "claim_links": [
+    "C2"
+  ],
+  "scope": "Conditional contribution of the structure term on top of B1-violation sampling at the already selected SC-CL configuration.",
+  "validation_status": "not_run_by_registered_budget_plan",
+  "limitations": [
+    "single seed, previously SC-CL-selected hyperparameters",
+    "no equal-HPO or statistical stability claim",
+    "no Profile-only arm, so no factorial interaction/synergy claim",
+    "historical test exposure and 464 QA repairs retained"
+  ],
+  "next_action": "write the observed positive, null or negative component effect without reopening this experiment"
+}

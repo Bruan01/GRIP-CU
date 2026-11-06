@@ -1,0 +1,8 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/fb_violation_only_control_20261106_seed2026",
+  "experiment_id": "SC_CTRL_VIOLATION_FB_SEED2026_FIXED32",
+  "contract_sha256": "d7d226b71bfe8b16eb5074efabc40ac02bff1270826fd8ad9e48c8c0a51a6ff3",
+  "archive_sha256": "d276eff46bbf23798abf6d9d0b104166fd6f875e2469c5cac496738f74022ea6",
+  "borrowed_source_run": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026",
+  "borrowed_inputs_must_be_retained": true
+}
