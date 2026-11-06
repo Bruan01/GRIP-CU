@@ -1,7 +1,7 @@
 {
   "status": "pass",
   "pdf": "11_paper/main/build/main.pdf",
-  "pdf_sha256": "4017259bc8c5c4b497aaa8f49d6ed87af725ff77ef15affc6b88703d675c3d65",
+  "pdf_sha256": "561ca2c17b601320ecd426e1815338cf9245f8b346fc00534aed8f25f55432e1",
   "pages": 12,
   "latex_engine": "XeLaTeX + BibTeX + xdvipdfmx",
   "overfull_boxes": 0,
@@ -15,6 +15,8 @@
     10
   ],
   "tables_generated_from_json": 5,
+  "literature_tables_transcribed_from_primary_pdf": 1,
+  "literature_table_source_sha256": "665713911967c3bb13d7568dbe10360c7a0c5541d2fac014c4c81fc64463f434",
   "analysis_validation": "11_paper/artifacts/fb_frequency_slices_seed2026/validation.json",
   "analysis_gpu_runs": 0,
   "submission_ready": false,

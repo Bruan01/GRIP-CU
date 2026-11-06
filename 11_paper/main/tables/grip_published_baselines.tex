@@ -1,0 +1,32 @@
+\begin{table}[htbp]
+\caption{GRIP原文知识图谱关系预测的已发表比较结果。单元依次为准确率（\%）/平均输入token数。}
+\label{tab:grip-published-baselines}
+\centering\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{threeparttable}
+\begin{tabularx}{\linewidth}{lYYY}
+\toprule
+方法（原文设置） & NELL23K & CoDEx-M & FB15K237 \\
+\midrule
+\multicolumn{4}{l}{图到嵌入基线} \\
+OFA & -- & -- & 70.84 / 1304.90 \\
+GOFA & -- & -- & 80.69 / 1304.90 \\
+\multicolumn{4}{l}{无显式图上下文的语言模型} \\
+Qwen-7B & 77.38 / 160.80 & 83.09 / 124.21 & 79.65 / 155.74 \\
+Llama-8B & 20.05 / 160.33 & 71.03 / 124.61 & 56.66 / 152.75 \\
+\multicolumn{4}{l}{提供边列表上下文的语言模型} \\
+Qwen-7B + context & 81.38 / 590.37 & 73.32 / 1055.29 & 79.19 / 1330.56 \\
+Llama-8B + context & 53.33 / 586.15 & 47.46 / 1044.44 & 44.68 / 1304.90 \\
+\multicolumn{4}{l}{GRIP参数内化模型} \\
+GRIP-Qwen-7B & 87.74 / 160.80 & 94.42 / 124.21 & 88.75 / 155.74 \\
+GRIP-Llama-8B & 77.40 / 160.33 & 91.58 / 124.61 & 77.79 / 152.75 \\
+完整图上下文 & OOC / $>0.5$M & OOC / $>5$M & OOC / $>10$M \\
+\bottomrule
+\end{tabularx}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item 数据转录自GRIP论文表2--3 \citep{feng2025grip}。准确率为十选一缺失关系预测的精确匹配；第二项为平均输入token数。GRIP论文注明OFA/GOFA数值取自其原论文；“--”表示原文未报告该数据集结果，OOC表示完整图序列超出上下文窗口。
+\item 此表是已发表文献结果，不是本地复现实验。原文使用标准FB15K237；本文本地FB15K237-2为10,000题子集，且不同来源的逐题提示与候选身份尚未逐项核验。因此本表用于说明既有方法与输入成本，不计算相对SC-CL的直接增益；同协议主比较见表~\ref{tab:latest-direct}和表~\ref{tab:fb-controls}。
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

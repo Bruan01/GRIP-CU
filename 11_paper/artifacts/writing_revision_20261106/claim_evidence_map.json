@@ -1,4 +1,16 @@
 {
+  "grip_published_baselines": {
+    "section": "5.1",
+    "table": "tab:grip-published-baselines",
+    "evidence": "13_base_method/grip-exp/grip-paper.pdf, Tables 2-3",
+    "source_sha256": "665713911967c3bb13d7568dbe10360c7a0c5541d2fac014c4c81fc64463f434",
+    "status": "published-reference transcription; not locally reproduced",
+    "metrics": [
+      "10-way exact-match accuracy",
+      "average input tokens"
+    ],
+    "boundary": "canonical FB15K237 and prompt/candidate identity are not matched against the local FB15K237-2 protocol; no cross-paper delta is calculated"
+  },
   "current_direct_results": {
     "section": "5.2",
     "table": "tab:latest-direct",

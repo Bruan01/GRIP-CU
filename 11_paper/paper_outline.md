@@ -37,8 +37,8 @@
 ### 评估与分析计划
 
 - 数据：主矩阵为 NELL23K、FB15K237-2、WN18RR、CoDEx-M；CoDEx-M 的官方 verified triple negatives 单独作风险审计，不映射成关系候选负例。canonical FB15K-237、YAGO3-10、CoDEx-S/L 暂缓。
-- 基线：B1、Random-9、frequency-matched Random-9、Profile-only、Violation-only、ErrorMemory-9、SC-CL-9；外部 link-prediction 结果单独呈现。
-- 指标：自由生成 EM/OOV/NLL；闭集 EM、MRR、Hits、margin；候选覆盖与 false-negative audit；资源成本。
+- 基线：主要同协议比较为 B1、Random-9、frequency-matched Random-9、Profile-only、Violation-only、ErrorMemory-9 和 SC-CL-9；GRIP论文报告的 OFA/GOFA、Qwen/Llama 上下文变体作为独立文献参照表，不与本地结果直接排名；外部 link-prediction 结果另表呈现。
+- 指标：本地比较报告自由生成 EM/OOV/NLL、闭集 EM/MRR/Hits/margin、候选覆盖和 false-negative audit、资源成本；GRIP文献参照保留原文准确率与平均输入token数，不为未测外部方法推算MRR/Hits。
 - 分析：候选信号消融；关系频率捷径；K/rho/tau 敏感性；arity/degree/sparsity 切片；多种子 paired CI；开放世界正例冲突；leakage/wiring；资源—收益。
 - 失败解释：若排序增益不超过频率匹配随机，撤回组合信号优势；若闭集改善伴随自由生成退化，只保留候选排序结论；若审计门失败，该 run 不进入主结果。
 
@@ -52,3 +52,5 @@
 - 投稿门：在上述核心公平对照、统计与风险审计达到预设门槛前，稿件定位为研究中期稿，不声称达到任何期刊分区的投稿成熟度。
 
 2026-11-06频率对照完成：Full89.90%、频率桶匹配随机89.83%，仅+0.07pp；C2已收窄为针对均匀随机的局部差异。配额来自Full的train频率log2桶逐题逐槽分布，不等同独立通用频率方法、精确频次或B1困难度匹配；本组不证明结构机制、统计等效或频率决定全部收益。结果写回后转入写作，不追加训练。
+
+2026-11-06 23:49启动`SC_FB_MATCHED_RERANK`，针对原排序目标补齐三模型同候选全量H@1/MRR/H@3。未产生完整结果前不增强C2，不以新答案选择规则改写旧直接EM。后续P1 NELL来源控制、P2 FB训练K敏感性仅列计划，见`EXPERIMENT_ROADMAP.md`。
