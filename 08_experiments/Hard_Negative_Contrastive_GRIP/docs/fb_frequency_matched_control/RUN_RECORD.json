@@ -1,9 +1,9 @@
 {
   "experiment_id": "SC_CTRL_FREQMATCH_FB_SEED2026_FIXED32",
   "run_dir": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026",
-  "status": "running",
-  "training_complete": false,
-  "test_complete": false,
+  "status": "completed",
+  "training_complete": true,
+  "test_complete": true,
   "contract_sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c",
   "seed": 2026,
   "optimizer_steps": 32,
@@ -75,5 +75,14 @@
   "trainer_loop_observed": true,
   "controller_log": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/controller.log",
   "train_log": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/logs/train_01.log",
-  "status_file": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/status.json"
+  "status_file": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/status.json",
+  "completed_at": "2026-11-06T12:09:53.207373+00:00",
+  "test_correct": 8983,
+  "test_em_percent": 89.83,
+  "delta_full_minus_frequency_pp": 0.07,
+  "net_full_minus_frequency": 7,
+  "delta_frequency_minus_random_pp": 3.35,
+  "completion_audit": "11_paper/artifacts/fb_frequency_matched_control_seed2026/completion_audit.json",
+  "claim_update": "C2 narrowed: frequency alternative not excluded",
+  "next_action": "write and stop; no further training"
 }

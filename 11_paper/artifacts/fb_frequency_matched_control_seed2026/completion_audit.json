@@ -1,0 +1,61 @@
+{
+  "verified_at": "2026-11-06T14:52:26.626091+00:00",
+  "status": "pass",
+  "contract_sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c",
+  "archive_sha256": "7ca13a84855b517fe3003e6daa992f0a45de9f2f8a19c397105b659de3ee79fa",
+  "immutable_files_verified": 146,
+  "archive_files_verified": 221,
+  "unique_correctness_flags_recomputed": 50000,
+  "paired_five_method_rows_verified": 10000,
+  "counts": {
+    "random9": 8648,
+    "profile_only": 8489,
+    "violation_only": 8709,
+    "full": 8990,
+    "frequency_matched": 8983
+  },
+  "adapter_sha256": {
+    "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+    "adapter_model.safetensors": "e49df0d221e3ea10955fdbfc794a950a0642e73396f35f5f105cf256852ffaf8"
+  },
+  "optimizer_steps": 32,
+  "scheduler_max_steps": 120,
+  "full_checkpoints_retained": [
+    8,
+    16,
+    24,
+    32
+  ],
+  "frequency_bank_rows_replayed_from_train_counts_without_model_scores": 3109,
+  "selected_candidate_plot_rows_verified": 55962,
+  "forced_slots": 82,
+  "paper_exports_byte_identical": [
+    "paired_full_vs_frequency_matched.csv",
+    "result.json",
+    "config_match.csv",
+    "preparation_audit.json",
+    "relation_frequencies.csv",
+    "RESULTS.md",
+    "training_history.csv",
+    "diagnostics.csv",
+    "paired_five_methods.csv",
+    "frequency_bin_distribution.csv",
+    "metrics.csv",
+    "table.tex",
+    "paired_frequency_matched_vs_random.csv"
+  ],
+  "limitations": [
+    "one seed at previously Full-selected configuration; no equal-HPO or stability claim",
+    "exact log2-frequency bins, not exact counts; score difficulty is not matched",
+    "Full versus frequency-matched random does not isolate structure from B1 feedback",
+    "464 QA repairs and historical test exposure retained"
+  ],
+  "next_action": "narrow C2; preserve near-null comparator result; stop GPU training",
+  "latex_table_validation": {
+    "engine": "xelatex",
+    "status": "pass",
+    "overfull_boxes": 0,
+    "pdf": "table_preview.pdf",
+    "log": "table_validation.txt"
+  }
+}

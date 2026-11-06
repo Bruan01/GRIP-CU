@@ -1,0 +1,9 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026",
+  "experiment_id": "SC_CTRL_FREQMATCH_FB_SEED2026_FIXED32",
+  "contract_sha256": "831d165cdba04af4fa155c71f99bad6e38e607c3a7fcb16c1b2c27f9b301169c",
+  "archive_sha256": "7ca13a84855b517fe3003e6daa992f0a45de9f2f8a19c397105b659de3ee79fa",
+  "borrowed_source_run": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026",
+  "borrowed_inputs_must_be_retained": true,
+  "raw_selected_candidates": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/bank/selected_candidates.csv"
+}

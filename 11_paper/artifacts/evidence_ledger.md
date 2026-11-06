@@ -2,7 +2,7 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
-| 2026-11-06 FB频率桶匹配随机对照准备与启动 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_matched_control/{README.md,RUN_RECORD.json,preparation_audit.json}`；Linux冻结代码、bank和日志 | implementation/preparation observed; training launched, test pending | “全部3,109题train频率桶逐槽配额匹配，0回退；启动单seed固定预算运行。尚无新模型性能，不能写成已排除频率解释。” |
+| 2026-11-06 FB频率桶匹配随机完整测试 | `11_paper/artifacts/fb_frequency_matched_control_seed2026/{result.json,metrics.csv,paired_five_methods.csv,completion_audit.json,INTERPRETATION.md}`；Linux模型及全过程 | observed near-null Full-minus-frequency comparison; C2 narrowed | “频率桶匹配随机89.83%，Full89.90%，差+0.07pp/净7题（348纠错、341退化）；匹配随机比均匀随机高3.35pp。未排除频率解释；Full相对均匀随机的优势不足以证明超出频率分布的独有收益。非统计等效、非结构无效结论。” |
 | 2026-11-06 FB四行组件消融 | `11_paper/artifacts/fb_component_ablation_seed2026/{result.json,paired_four_methods.csv,completion_audit.json,INTERPRETATION.md}`；两个单信号独立产物及Linux全过程归档 | observed, fixed configuration, seed2026; includes negative Profile-only result | “Full89.90%、Violation87.09%、Profile84.89%、Random86.48%；Full相对两个单信号分别+2.81/+5.01pp，Profile相对Random−1.59pp。支持当前配置下联合使用取得最高观测性能，不证明结构单独有效或普适协同。” |
 | 2026-11-05 FB固定配置Random-9对照 | `11_paper/artifacts/fb_random9_control_seed2026/{result.json,metrics.csv,paired_predictions.csv,config_match.csv,evidence_index.json}`；Linux冻结代码、原始预测、四检查点及optimizer归档 | observed, seed2026, fixed-configuration matched comparison; not equal-HPO or multi-seed | “在已有SC-CL获选配置下，SC-CL/Random-9完整测试EM为89.90%/86.48%，同10,000题净增342题（+3.42个百分点），纠错553、退化211。支持组合采样相对均匀随机的条件性增量，不单独证明结构分量或跨种子稳定性。” |
 | 2026-11-05 NELL局部参数搜索无晋级 | `11_paper/artifacts/nell23k_round2_no_go_20261105.json`；运行目录完整验证预测及no_go | observed negative validation result; no new test; adaptive development | “两组配置完整验证87.575758%和87.939394%，均未超过已有最高88.141414%及既定晋级门槛；没有测试新模型。原完整测试87.800931%保留。” |
@@ -24,7 +24,7 @@
 | FB InfoNCE-i0 full candidate score | `/mnt/e/GRIP-CU/artifacts/info_nce_fb15k237_qwen7b_20260921/evaluation/i0_candidate_score.jsonl` | observed, historical artifact | “i0 candidate MRR=95.412%；不得称为 SC-CL……” |
 | FB i0 与当前 SC-CL 契约相同 | historical `grip_run_metadata.json` vs current configs | false / not comparable | 禁止合并成 SC-CL 主结果 |
 | 五种子均值/标准差 | 无 2027--2030 formal runs | planned | 只能写为后续协议 |
-| NELL Random/Profile/Violation/Frequency及跨图ErrorMemory | 无对应正式结果；FB Frequency已启动未出分，Random及两个单信号已完成另列 | planned | 不把FB单次Random结果推广为这些消融已完成 |
+| NELL Random/Profile/Violation/Frequency及跨图ErrorMemory | 无对应正式结果；FB Frequency桶匹配已完成，近零结果另列，Random及两个单信号已完成另列 | planned | 不把FB单次Random结果推广为这些消融已完成 |
 | FB 当前 SC-CL bank | `results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/{metadata,wiring}.json`；manifest SHA `bbb24960d747f12a6120f541afbc409a3fef4c922e9ae044e316d8fe2952c71c` | observed bank, wiring and selected test | “train-only bank已冻结，wiring保持12,136条生成QA；当前方法单seed完整测试已完成，见本表FB结果行。” |
 | WN18RR 单种子探索性直接解码 | `results/hpo/wn18rr_sccl_seed2026/lambda0p25_final_test/summary.json`、`predictions.jsonl`、`search_outcome.json`；本地 B1 `results/runs/wn18rr_sccl_3090_20261023/eval/b1/summary.json` | observed partial | “WN18RR 选定候选损失权重 0.25 后一次全测试 EM=86.89%；本地 B1=32.67%；完整重排和公平对照缺失，原论文五次均值不可作配对收益” |
 | CoDEx-M数据协议 | 官方数据、关系文本、全量10-way eval；当前方法结果见本表新增审计行 | observed data; method observed single-seed | CoDEx硬负例不作为关系候选真值；本地单种子生成EM不等同于完整原论文协议复现 |

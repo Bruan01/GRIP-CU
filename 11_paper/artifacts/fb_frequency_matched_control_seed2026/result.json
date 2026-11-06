@@ -1,0 +1,73 @@
+{
+  "status": "completed",
+  "at": "2026-11-06T12:09:27.323300+00:00",
+  "experiment_id": "SC_CTRL_FREQMATCH_FB_SEED2026_FIXED32",
+  "dataset": "fb15k237_2",
+  "seed": 2026,
+  "n": 10000,
+  "full_correct": 8990,
+  "random9_correct": 8648,
+  "frequency_matched_correct": 8983,
+  "frequency_matched_em": 0.8983,
+  "full_minus_frequency_matched": {
+    "n": 10000,
+    "left": "full",
+    "right": "frequency_matched",
+    "delta_left_minus_right_pp": 0.07,
+    "net_correct": 7,
+    "paired_counts": {
+      "both_correct": 8642,
+      "rescue": 348,
+      "regression": 341,
+      "both_wrong": 669
+    }
+  },
+  "frequency_matched_minus_random9": {
+    "n": 10000,
+    "left": "frequency_matched",
+    "right": "random9",
+    "delta_left_minus_right_pp": 3.35,
+    "net_correct": 335,
+    "paired_counts": {
+      "both_correct": 8449,
+      "rescue": 534,
+      "regression": 199,
+      "both_wrong": 818
+    }
+  },
+  "preparation_audit": {
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "k": 9,
+    "seed": 2026,
+    "exact_full_replayed_rows": 3109,
+    "exact_slot_bin_match_rows": 3109,
+    "frequency_bin_rule": "floor_log2_train_edge_count",
+    "matching_scope": "exact bins; not exact train counts or B1 difficulty",
+    "train_only": true,
+    "same_legal_pool": true,
+    "same_non_candidate_metadata": true,
+    "fallback_count": 0,
+    "changed_candidate_set_questions": 3109,
+    "mean_shared_negatives_of_9": 0.6346091990993888,
+    "forced_slot_count": 82,
+    "total_selected_slots": 27981,
+    "source_scores_sha256": "a63eee74586215e2efc74e3c0196ffb40414615d2e0e32b1abe1e4afb1959cd7",
+    "new_training_started": false,
+    "performance_results_available": false
+  },
+  "section_id": "experiments",
+  "item_id": "SC_CTRL_FREQMATCH",
+  "claim_links": [
+    "C2"
+  ],
+  "paper_role": "claim-carrying",
+  "scope": "Test whether per-question log2 train-frequency-bin matching alone reproduces Full performance at the previously selected Full configuration; not exact-frequency matching or isolation of the structure mechanism.",
+  "limitations": [
+    "one seed at previously Full-selected configuration; no equal-HPO or stability claim",
+    "exact log2-frequency bins, not exact counts; score difficulty is not matched",
+    "Full versus frequency-matched random does not isolate structure from B1 feedback",
+    "464 QA repairs and historical test exposure retained"
+  ],
+  "next_action": "write positive/null/negative result and stop; no further training"
+}

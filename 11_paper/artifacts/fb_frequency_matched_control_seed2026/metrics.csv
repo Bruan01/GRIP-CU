@@ -1,0 +1,6 @@
+model,seed,n,correct,em_percent
+Random-9,2026,10000,8648,86.48
+Frequency-matched Random-9,2026,10000,8983,89.83
+Profile-only-9,2026,10000,8489,84.89
+Violation-only-9,2026,10000,8709,87.09
+Full SC-CL-9,2026,10000,8990,89.9

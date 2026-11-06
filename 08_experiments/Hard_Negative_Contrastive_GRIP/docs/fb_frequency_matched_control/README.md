@@ -1,5 +1,7 @@
 # FB关系频率匹配随机负例对照
 
+状态：2026-11-06 20:09（北京时间）全部完成。频率桶匹配随机89.83%，Full89.90%，仅差0.07pp；均匀随机86.48%。频率替代解释未被排除，已收窄C2；未追加训练。五方法结果与解释见`11_paper/artifacts/fb_frequency_matched_control_seed2026/`。以下保留设计和归档约定。
+
 本轮只新增一组Frequency-matched Random-9。目标是检验：在已有Full配置下，仅保持负例的训练频率桶分布，能否复现Full的性能。既有Full/Random/Profile/Violation均直接复用，不重训。
 
 ## 事前固定设计
