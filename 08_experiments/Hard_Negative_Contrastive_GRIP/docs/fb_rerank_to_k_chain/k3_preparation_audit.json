@@ -1,0 +1,13 @@
+{
+  "k": 3,
+  "n_qa": 12136,
+  "listed_qa": 3109,
+  "all_k9_rows_exactly_replayed": true,
+  "nested_seeded_prefix_rows": 3109,
+  "same_non_candidate_metadata": true,
+  "train_only": true,
+  "min_legal_pool": 227,
+  "test_options": 10,
+  "new_model_metrics_available": false,
+  "new_training_started": false
+}

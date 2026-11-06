@@ -1,0 +1,156 @@
+{
+  "queue_dir": "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107",
+  "plan": {
+    "queue_id": "FB_RERANK_TO_K_CHAIN_20261107",
+    "created_at": "2026-11-06T16:30:43.883011+00:00",
+    "repository_root": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU",
+    "parent_run": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026",
+    "parent_session": "fb_matched_rerank_seed2026_20261106",
+    "parent_contract_sha256": "e7d14aefcb4c3fd1d7fef81b4ebacbcc1aae1d2585b995894cad795120569eff",
+    "stages": [
+      {
+        "k": 3,
+        "run_dir": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026",
+        "session": "fb_k3_sensitivity_seed2026_20261107",
+        "contract_sha256": "f535ffead4176cae2369698c193207ef6b9c7dd7cd9738dba58641ea45facdc2"
+      },
+      {
+        "k": 15,
+        "run_dir": "/home/kieran/grip-cu-runs/fb_k15_sensitivity_20261107_seed2026",
+        "session": "fb_k15_sensitivity_seed2026_20261107",
+        "contract_sha256": "c1fd731cd16ef67f6dc03c82c3399689c23d33343eec14a03cbf43b9854f5b6e"
+      }
+    ],
+    "max_additional_training_runs": 2,
+    "poll_seconds": 30,
+    "continue_regardless_of_score_direction": true,
+    "ranking_only": true,
+    "evaluation_options": 10,
+    "reuse_existing_k9": true,
+    "stop_after_k15": true,
+    "no_nell_or_seed_or_hpo_expansion": true
+  },
+  "watcher_launch_receipt": {
+    "status": "launched",
+    "at": "2026-11-06T16:32:44.707198+00:00",
+    "session": "fb_rerank_to_k_watch_20261107",
+    "argv": [
+      "/home/kieran/miniconda3/envs/guardenv/bin/python",
+      "-u",
+      "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_fb_rerank_to_k.py",
+      "--plan",
+      "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107/plan.json"
+    ],
+    "plan_sha256": "29c3822c80acf57e697e053d4687d5ecbe50242a0f0c06fdf699476ae5648bf0",
+    "launched_at": "2026-11-06T16:32:44.756602+00:00"
+  },
+  "watcher_session": "fb_rerank_to_k_watch_20261107",
+  "frozen_watcher_code_files": 117,
+  "status": "watching_existing_rerank",
+  "new_training_started": false,
+  "new_k_metrics_available": false,
+  "tests": "16 passed",
+  "parent_startup_observation": {
+    "stage": "watching_rerank",
+    "status": "running",
+    "at": "2026-11-06T16:34:53.161699+00:00",
+    "parent": {
+      "stage": "rerank_full",
+      "status": "running",
+      "at": "2026-11-06T16:34:51.251804+00:00",
+      "error": null,
+      "models": {
+        "full": {
+          "status": "running",
+          "completed": 3123,
+          "expected": 10000,
+          "questions_per_second": 1.309072465808571,
+          "remaining_seconds_this_model": 5253.337901162182,
+          "at": "2026-11-06T16:34:52.508009+00:00"
+        },
+        "frequency_matched": {
+          "status": "not_started"
+        },
+        "random9": {
+          "status": "not_started"
+        }
+      }
+    }
+  },
+  "child_contracts": {
+    "3": {
+      "contract_sha256": "f535ffead4176cae2369698c193207ef6b9c7dd7cd9738dba58641ea45facdc2",
+      "cli": {
+        "n_qa": 12136,
+        "listed_qa": 3109,
+        "k": 3,
+        "model_loaded": false
+      },
+      "preparation_audit": {
+        "k": 3,
+        "n_qa": 12136,
+        "listed_qa": 3109,
+        "all_k9_rows_exactly_replayed": true,
+        "nested_seeded_prefix_rows": 3109,
+        "same_non_candidate_metadata": true,
+        "train_only": true,
+        "min_legal_pool": 227,
+        "test_options": 10,
+        "new_model_metrics_available": false,
+        "new_training_started": false
+      }
+    },
+    "15": {
+      "contract_sha256": "c1fd731cd16ef67f6dc03c82c3399689c23d33343eec14a03cbf43b9854f5b6e",
+      "cli": {
+        "n_qa": 12136,
+        "listed_qa": 3109,
+        "k": 15,
+        "model_loaded": false
+      },
+      "preparation_audit": {
+        "k": 15,
+        "n_qa": 12136,
+        "listed_qa": 3109,
+        "all_k9_rows_exactly_replayed": true,
+        "nested_seeded_prefix_rows": 3109,
+        "same_non_candidate_metadata": true,
+        "train_only": true,
+        "min_legal_pool": 227,
+        "test_options": 10,
+        "new_model_metrics_available": false,
+        "new_training_started": false
+      }
+    }
+  },
+  "startup_queue_observation": {
+    "stage": "watching_rerank",
+    "status": "running",
+    "at": "2026-11-06T16:36:30.607682+00:00",
+    "parent": {
+      "stage": "rerank_full",
+      "status": "running",
+      "at": "2026-11-06T16:36:16.994554+00:00",
+      "error": null,
+      "models": {
+        "full": {
+          "status": "running",
+          "completed": 3242,
+          "expected": 10000,
+          "questions_per_second": 1.3092613759641696,
+          "remaining_seconds_this_model": 5161.68896758545,
+          "at": "2026-11-06T16:36:30.406134+00:00"
+        },
+        "frequency_matched": {
+          "status": "not_started"
+        },
+        "random9": {
+          "status": "not_started"
+        }
+      }
+    }
+  },
+  "monitor_observations_verified": 8,
+  "frozen_execution_code_matches_reviewed_repository": true,
+  "child_gpu_training_started": false
+}

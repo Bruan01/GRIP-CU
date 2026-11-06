@@ -37,3 +37,5 @@ Full排序更好时，只支持当前模型/配置下的排序差异；保持原
 写作映射：SC_FB_MATCHED_RERANK；section_id=experiments；claim_links=C2；paper_role=claim-carrying；main text同模型直接解码与重排并列表。其后按独立实验安排推进，见`11_paper/EXPERIMENT_ROADMAP.md`。
 
 准备补记：首次CPU预检因“归一化后全部选项须互异”的过强假设停止，未加载GPU模型；其现场保留于`..._prepare_attempt1_alias_audit/`。修正为原始字符串互异且gold归一化匹配唯一，保留12题非gold归一化同名选项。成功预检重新核对全部10,000题与30,000条直接解码判定。
+
+2026-11-07接续更新：本冻结三模型控制器仍在完成三组后退出；已另部署独立守护等待其完整审计与GPU释放后执行K3、K15。其原代码和原评分协议未改动，新增训练预算及失败门见`../fb_rerank_to_k_chain/README.md`。

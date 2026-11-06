@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "tests": 16,
+  "cpu_preflights": [
+    3,
+    15
+  ],
+  "k9_replay_rows_per_group": 3109,
+  "nested_seeded_rows_per_group": 3109,
+  "n_qa": 12136,
+  "min_legal_pool": 227,
+  "rank_test_options": 10,
+  "watcher_observations_verified": 8,
+  "no_early_child_launch": true,
+  "execution_code_matches_frozen_files": true,
+  "added_training_runs_started": 0
+}

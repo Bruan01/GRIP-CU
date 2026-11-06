@@ -1,6 +1,6 @@
 {
   "mainline": "structure-counterfactual-contrastive-learning",
-  "status_note": "Single-seed direct decoding is complete for NELL23K, CoDEx-M and FB15K237-2. FB has matched Uniform/Profile/Violation/Full-quota-frequency controls and train-defined frequency slices. Full 89.90 vs quota-matched 89.83 narrows C2; low-frequency slices show no Full advantage. WN remains exploratory. Ranking and direct decoding, historical models and current configurations remain separate.",
+  "status_note": "Single-seed direct decoding is complete for NELL23K, CoDEx-M and FB15K237-2. FB has matched Uniform/Profile/Violation/Full-quota-frequency controls and train-defined frequency slices. Full 89.90 vs quota-matched 89.83 narrows C2; low-frequency slices show no Full advantage. WN remains exploratory. Ranking and direct decoding, historical models and current configurations remain separate. 2026-11-07: bounded watcher will continue current rerank into K3 then K15 training/ranking; NELL is deferred; no new K metrics yet.",
   "excluded_datasets": [
     {
       "dataset": [
@@ -455,6 +455,41 @@
         "single seed, Full-selected hyperparameters"
       ],
       "scope": "frozen existing weights; same original ten options; no training; retain prior direct-EM and low-frequency evidence"
+    },
+    {
+      "id": "SC_SENS_K",
+      "dataset": "FB15K237-2",
+      "status": "CPU-prepared-and-preflighted; queued after current rerank",
+      "comparison": [
+        "Full K3",
+        "reused Full K9",
+        "Full K15"
+      ],
+      "metrics": [
+        "same-list H@1",
+        "same-list MRR",
+        "H@3",
+        "training cost",
+        "paired ranks"
+      ],
+      "section_id": "experiments",
+      "item_id": "SC_SENS_K",
+      "paper_role": "supporting",
+      "claim_links": [
+        "C7"
+      ],
+      "evidence_refs": [
+        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/RUN_RECORD.json"
+      ],
+      "new_training_runs": 2,
+      "ranking_only": true,
+      "evaluation_options": 10,
+      "seed": 2026,
+      "known_gaps": [
+        "K3 and K15 not trained yet",
+        "single seed at Full-K9-selected configuration",
+        "no generation or cross-K superiority over frequency matching claim"
+      ]
     }
   ],
   "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md"

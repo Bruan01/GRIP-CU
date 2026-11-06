@@ -2,6 +2,7 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-07 FB K敏感性准备与接续守护 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/{RUN_RECORD.json,k3_preparation_audit.json,k15_preparation_audit.json}` | CPU preparation/CLI observed; watcher running; no new K training/results | “两组各3,109题Full K9重放和嵌套抽样通过，QA/损失元数据不变；守护等待三组重排后自动K3→K15，复用K9。不能把准备或排队写成K稳健性实测结论。” |
 | 2026-11-06 FB同候选完整重排准备/启动 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_matched_rerank/{PLAN.md,RUN_RECORD.json,preparation_audit.json}` | source/cohort verified; inference launched, no completed ranking comparison | “三个既有权重同10,000题、原十选项的重排已启动。不能把启动或前缀吞吐当作全测试排名效果；原直接EM近零与低频负结果保持。” |
 | GRIP论文报告的知识图谱外部比较基线 | `13_base_method/grip-exp/grip-paper.pdf` 表2--3；主稿 `tab:grip-published-baselines` | published-reference transcription; not locally reproduced or protocol-matched | “原文报告OFA/GOFA与Qwen/Llama上下文变体的十选一准确率和平均输入token数；本文仅作外部文献参照，不据此计算SC-CL增益。FB15K237-2为10,000题本地子集，跨来源题目与候选身份未逐项核验。” |
 | 2026-11-06 FB训练频率分层 | `11_paper/artifacts/fb_frequency_slices_seed2026/{plan.json,result.json,question_slices.csv,metrics.csv,paired_transitions.csv,validation.json}` | observed descriptive single-seed; supports C2 boundary/C6 | “train频率边界215/689；低频412题Full净少17，中频+1，高频+23；按关系等权Full75.21%、配额匹配76.15%。无当前低频补偿性优势，不推断普遍劣势或因果机制。” |

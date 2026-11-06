@@ -1,6 +1,8 @@
 # Results status：必须保留在论文工作区
 
-更新日期：2026-11-06
+更新日期：2026-11-07
+
+2026-11-07已部署独立30秒守护：当前FB三模型重排完成并核验后，自动K3训练/完整重排→K15训练/完整重排→三点汇总→停止。K9权重与重排复用；K3/K15各3,109题精确重放与嵌套抽样、12,136 QA真实CPU CLI均通过，尚未开始新K训练，无新K性能。只新增两组32/120训练及两次完整排序评测，不新做直接生成、验证、HPO或种子；NELL暂缓。见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/`。
 
 2026-11-06 23:49启动FB三模型同候选重排：复用Full、Full配额匹配随机与Uniform固定权重，串行评估同10,000题和原十选项，无新训练、HPO或选模。前32题用于吞吐/显存记录并计入Full正式输出，不按分数方向改变顺序。预检保留12题非gold归一化同名干扰选项，不合并或删题；所有gold仍唯一。当前尚无新完整排序分数。安排见`EXPERIMENT_ROADMAP.md`，运行与审计见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_matched_rerank/`。
 

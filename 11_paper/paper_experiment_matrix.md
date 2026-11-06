@@ -31,7 +31,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_ABL_UNIFORM | R5 | 均匀下限消融 | NELL | rho=0 | planned | MRR, valid rate |
 | SC_ABL_FILTER | R3/R8 | 过滤必要性 | NELL | remove train-known filter | planned-risk | collision, MRR |
 | SC_ABL_INFO_NCE | R6 | 候选损失副作用 | NELL/FB | B1 vs no/with InfoNCE | planned | EM, OOV, NLL |
-| SC_SENS_K | R5 | 候选数量敏感性 | NELL | K=3/9/15 | planned | MRR, cost |
+| SC_SENS_K | R5/C7 | Full训练负例数量的排序敏感性 | FB15K237-2 | K=3/9/15；K9复用 | K3/K15 CPU准备和CLI通过；守护等待当前重排后自动接续；尚无新K性能 | 固定32/120、同10,000题十选项；H@1/MRR/H@3、K9配对、训练曲线/成本和完整检查点 |
 | SC_SENS_RHO | R5 | mixture floor 敏感性 | NELL | rho=0/1/3/2/3 | planned | MRR, audit |
 | SC_SENS_TAU | R5 | utility 温度敏感性 | NELL | tau=0.10/0.25/0.50 | planned | MRR, entropy |
 | SC_AUDIT_LEAK | R3/R8 | split/wiring 硬门 | NELL/FB | train-only, known-pair, K=9 | observed implementation/run audit（NELL及FB train-only bank和wiring）；完整持出重叠审计另列 | pass/fail, manifest |
@@ -63,4 +63,4 @@ SC-CL 则在固定实体对上对关系词表采样并优化关系候选排序�
 
 2026-11-06频率对照完成写回：`SC_CTRL_FREQMATCH`对应C2，主文五行候选来源表（`section_id=experiments`，`paper_role=claim-carrying`）。Full−频率匹配随机仅+0.07pp，当前缺乏其超出Full诱导频率桶分布的额外收益证据；该近零结果收窄C2，不修改原有实测值。桶配额来自Full，不能把本组当作独立通用频率采样器或统计等效证明。下一步写作，停止GPU实验。
 
-执行安排见`EXPERIMENT_ROADMAP.md`：当前自动队列仅P0三模型重排；NELL两组来源控制与FB K=3/9/15敏感性分别列为P1/P2，未自动启动训练。
+执行安排见`EXPERIMENT_ROADMAP.md`：按11月7日用户授权，独立守护在P0三模型重排完成后自动接K3→K15，仅两个新增训练组；NELL暂缓。K9复用且新K仅完整重排，暂无新K性能。
