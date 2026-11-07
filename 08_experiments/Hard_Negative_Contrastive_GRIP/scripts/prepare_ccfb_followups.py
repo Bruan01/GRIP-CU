@@ -98,17 +98,27 @@ def preparation_lock(root):
         yield
 
 
+def sampler_identity(plan):
+    identity = {key: plan[key] for key in ('input_sha256', 'source_sha256', 'seed')}
+    commands = {}
+    for arm, command in plan['training_commands'].items():
+        python = Path(command[0])
+        # Resolve equivalent directories without following the venv's Python symlink.
+        commands[arm] = [str(python.parent.resolve() / python.name), *command[1:]]
+    identity['training_commands'] = commands
+    return identity
+
+
 def prepare_negatives(plan, output):
     if plan['arms'] == ['b1']:
         return {'status': 'not_needed_for_b1'}
     root = Path(plan['root'])
     with preparation_lock(root):
         receipt = root / 'sampler_preparation.json'
-        identity = {key: plan[key] for key in ('input_sha256', 'source_sha256', 'seed')}
-        identity['training_commands'] = plan['training_commands']
+        identity = sampler_identity(plan)
         if receipt.exists():
             old = hpo.read_json(receipt)
-            if old['identity'] != identity:
+            if sampler_identity(old['identity']) != identity:
                 raise ValueError('Prepared sampler inputs changed: ' + str(receipt))
             if old['status'] == 'MATERIALIZED':
                 if any(hpo.sha256(path) != sha for path, sha in old['outputs'].items()):

@@ -61,3 +61,21 @@ def test_four_arm_launch_retains_original_45gib_minimum_and_checks_busy_gpu(monk
     monkeypatch.setattr(prep.sprint, 'check_idle_gpu', busy)
     with pytest.raises(RuntimeError, match='GPU busy'):
         prep.launch_check(row, units, {'disk_bytes': {'free': 50 * prep.GIB}})
+
+
+def test_sampler_receipt_accepts_equivalent_python_paths_but_distinguishes_venvs(tmp_path):
+    project = tmp_path / 'project'
+    project.mkdir()
+    for name in ('env-a', 'env-b'):
+        bin_dir = tmp_path / name / 'bin'
+        bin_dir.mkdir(parents=True)
+        (bin_dir / 'python').symlink_to(sys.executable)
+
+    def identity(python, seed_arg='2027'):
+        return prep.sampler_identity({'seed': 2027, 'input_sha256': {}, 'source_sha256': {},
+            'training_commands': {'b1': [str(python), 'train.py', '--seed', seed_arg]}})
+
+    canonical = tmp_path / 'env-a/bin/python'
+    assert identity(project / '../env-a/bin/python') == identity(canonical)
+    assert identity(tmp_path / 'env-b/bin/python') != identity(canonical)
+    assert identity(canonical, '2028') != identity(canonical)

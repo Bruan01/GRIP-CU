@@ -13,5 +13,20 @@ if [[ -n "${ROOT:-}" || -n "${SHARED_ROOT:-}" ]]; then
   echo 'Use the canonical follow-up directories; ROOT/SHARED_ROOT overrides are unsupported here.' >&2
   exit 2
 fi
+if [[ "${CCFB_NELL_COMPACT:-0}" == 1 ]]; then
+  if [[ "$DATASET:$SEED" != nell23k:2026 ]]; then
+    echo 'CCFB_NELL_COMPACT=1 is for the matched NELL23K seed2026 B1 only.' >&2
+    exit 2
+  fi
+  export TMUX_SESSION="${TMUX_SESSION:-ccfb-nell23k-2026}"
+  export TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1
+  export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+  if [[ "${DRY_RUN:-0}" == 1 ]]; then
+    exec "$PYTHON" "$HNG/scripts/run_ccfb_nell_b1_compact.py" --dry_run
+  fi
+  source "$HNG/configs/tmux_guard.sh"
+  tmux_guard_reexec "$0" "$@"
+  exec "$PYTHON" "$HNG/scripts/run_ccfb_nell_b1_compact.py"
+fi
 "$PYTHON" "$HNG/scripts/prepare_ccfb_followups.py" --dataset "$DATASET" --seed "$SEED" --check_launch
 exec bash "$HNG/configs/run_ccfb_sprint.sh"
