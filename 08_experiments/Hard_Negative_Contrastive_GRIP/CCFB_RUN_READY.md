@@ -1,12 +1,29 @@
 # CCF B 冲刺：运行准备与续跑
 
-更新时间：2026-11-05，北京时间。服务器项目目录：
+更新于 2026-11-07，北京时间。服务器项目目录：
 
 ```text
 /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP
 ```
 
-WN 首轮已完成，CoDEx-M 首轮已于 11 月 5 日 15:53 启动。最新启动记录见 [CoDEx-M 第四数据集实验](CODEXM_第四数据集实验.md)，WN 完整成绩见 [WN18RR 第三数据集实验](WN18RR_第三数据集实验.md)。
+WN 与 CoDEx-M 首轮均已完成。NELL 同 3 轮 B1 正在运行。[CoDEx-M 首轮成绩](CODEXM_第四数据集实验.md) · [WN18RR 首轮成绩](WN18RR_第三数据集实验.md)
+
+## 11 月 7 日 NELL 同 3 轮 B1 与 CoDEx-M 复验准备
+
+NELL seed2026 B1 于 22:22:43 启动，tmux 为 `ccfb-nell23k-2026`。22:24 核对到 GPU 进程与真实训练日志，已完成 1/117 个优化器步。运行目录为 `results/runs/ccfb/nell23k/seed2026/`。当前模型加载原有任务和共享 S1，继承 S1 优化器，训练 3 轮。已有 3 轮方法分支的 4,951 条验证记录与本次验证输入逐题一致。测试报告完整 4,944 题的 official_em 和论文口径 4,943 题的 official_harness_em。
+
+启动前实测 15.43 GiB 可用空间。原双断点预算为 16.95 GiB，本批次使用每 10 步保存一个滚动断点。保存新断点时计入两个同时存在的文件体积，最终导出时计入一个断点加 adapter，取两者较大值，再加 10% 余量和 10 GiB 保留空间，门槛为 14.67 GiB。与原计划逐项对照，训练命令唯一变化为 `--save_total_limit 2` 改为 `1`。启动预检保存在 `results/runs/ccfb_preparation_20261104/followups/nell23k_seed2026_compact_preflight.json`。
+
+恢复时使用同一入口与断点模式，启动器会检查已冻结的命令及输入。
+
+```bash
+DATASET=nell23k SEED=2026 CCFB_NELL_COMPACT=1 TMUX_SESSION=ccfb-nell23k-2026 \
+  bash configs/run_ccfb_followup.sh
+```
+
+CoDEx-M seeds 2027、2028 已复用首轮任务、S1、教师评分和 Soft-Mix 1.0 的冻结选择，生成 6 份方法负例清单。每份全量接线覆盖 19,798 条生成 QA 和 2,758 条有效对比 QA，保留 202 条零权重项。11 个后续批次与 30 份方法清单全部通过复核，计划和文件哈希保存在 `results/runs/ccfb_preparation_20261104/followups/report.json` 与各批次 `sampler_preparation.json`。
+
+复核旧清单时发现 Python 路径的等价写法导致身份误报。路径比较现在解析 Python 所在目录，保留不同虚拟环境的身份，同时逐项比较训练参数与数据、源码哈希。15 项相关测试通过。四分支复验仍按至少 45 GiB 的启动门槛排期。
 
 ## 11 月 5 日：后续主矩阵已准备的代码与数据
 

@@ -1,15 +1,15 @@
 # CoDEx-M：第四数据集首轮实验
 
-更新：2026-11-05 16:01，北京时间。本文记录实际启动快照，后续进度以服务器 `run_status.json` 和逐阶段日志为准。
+更新于 2026-11-07，北京时间。首轮四分支全部完成，验证集预选的 Soft-Mix 1.0 测试准确率为 96.2370%。
 
-## 实际启动与当前状态
+## 启动和完成时间
 
 - 启动时间：2026-11-05 15:53:00 北京时间（07:53:00 UTC）。
 - tmux：`ccfb-codexm-2026`；seed：2026。
 - 启动时仓库 HEAD：`c17e4386c0c196f1f55e0ba37ab92288d501a791`。
-- 状态：`RUNNING / tasks`。Qwen2.5-7B-Instruct 已加载到 RTX 3090，正在生成新任务。
-- 16:01 核对：首个 `summarization_s1` 子任务已完成并缓存 368/18,000 条，GPU 利用率 96%，占用 15,980 MiB。该计数只描述这一子任务，不是全实验完成比例。
-- 尚无 S2 或评测成绩；B1 与三个方法均在后续队列中。
+- 11 月 5 日 16:01 核对到 Qwen2.5-7B-Instruct 在 RTX 3090 上运行，首个 `summarization_s1` 子任务已缓存 368/18,000 条。
+- 11 月 6 日 08:09 完成任务生成，产出 238,634 条 context 和 19,798 条 QA，同日 19:12 完成共享 S1。
+- 11 月 7 日 16:28 完成四组验证并冻结主方法，19:56:33 完成四组测试。状态为 `COMPLETE`，总耗时约 52 小时 4 分钟。
 
 服务器项目目录：
 
@@ -22,6 +22,24 @@
 ```text
 /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026
 ```
+
+## 首轮结果
+
+同骨干 GRIP-Qwen2.5-7B 的 CoDEx-M 测试报告值为 94.42%。[GRIP 论文 Table 3](https://arxiv.org/html/2511.07457v2)
+
+| 配置 | 验证集 official_em | 测试集 official_em | 测试正确数 / 10,311 | 较 B1（百分点） | 较论文（百分点） |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 论文 GRIP-Qwen2.5-7B | — | 94.42% | — | — | 0 |
+| B1 纯生成 | 94.0737% | 94.2198% | 9,715 | 0 | −0.2002 |
+| **Soft-Mix 1.0（验证集预选）** | **96.0815%** | **96.2370%** | **9,923** | **+2.0173** | **+1.8170** |
+| Calibrated 1.0 | 96.0524% | 95.9267% | 9,891 | +1.7069 | +1.5067 |
+| Calibrated 0.5 | 94.9952% | 94.9277% | 9,788 | +0.7080 | +0.5077 |
+
+`selection.json` 在测试前按 10,310 道完整验证题选中 `soft_mix_1`，记录 `test_seen=false`。四组分别有 10,310 个唯一验证 ID 和 10,311 个唯一测试 ID，同一划分内的 ID 集合一致。逐题重算 `official_correct` 与各组汇总匹配。Soft-Mix 相对 B1 净多答对 208 题。
+
+全部 19,798 条 QA 参与生成训练。混淆评分与候选对比覆盖 2,758 条可识别实体的关系 QA，另有 202 条关系 QA 在三个方法清单中记录为显式零权重项。三方法使用相同的负例身份。有效 QA 上 Calibrated 1.0 的 λ 为 0.503247–0.628281，Calibrated 0.5 的范围为 0.251624–0.314141。
+
+本轮为 seed2026，使用固定 3 轮 S2。论文的最大训练轮数及早停规则不同。相对论文的差值用于核对数值目标，相对同条件 B1 的差值用于衡量本轮增益。后续使用预定 seeds 2027、2028 确认固定任务、S1 和教师下的 S2 稳定性。
 
 ## 数据与协议
 
@@ -63,24 +81,16 @@ DATASET=codexm SEED=2026 TMUX_SESSION=ccfb-codexm-2026 \
 
 自动顺序：新任务生成 → 共享 S1 → B1 与验证 → 训练集混淆评分 → 冻结负例及完整接线核验 → 三个方法与验证 → 冻结主方法 → 四分支完整测试。Soft-Mix 保留 6 个均匀负例加 3 个混淆引导负例；Random-K 独立对照仍暂缓。
 
-冻结计划为 `experiment_plan.json`，状态为 `run_status.json`；`completed/` 保存完成阶段的命令和输出哈希。当前任务日志为 `tasks.log`，逐条缓存位于 `tasks/cache/`。后续还需从真实生成 QA 登记有效覆盖率、排除项和权重分布；此前 74 项 CPU 检查不替代这些运行证据。
+冻结计划为 `experiment_plan.json`，状态为 `run_status.json`，`completed/` 保存完成阶段的命令和输出哈希。完整成绩见 `selection.json`、`comparison.json` 和 `test/<分支>/summary.json`，逐题预测见各评测目录的 `predictions_correct.jsonl`。任务日志和缓存保存在 `tasks.log` 与 `tasks/cache/`。
 
-SSH 登录后查看：
-
-```bash
-tmux attach -t ccfb-codexm-2026
-```
-
-仅查看当前日志：
+SSH 登录后查看本轮汇总：
 
 ```bash
-tail -f /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/tasks.log
+cat /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/codexm_three_configs_seed2026/comparison.json
 ```
 
 若队列中断，先检查 `run_status.json`、对应日志、GPU 和磁盘，再在同一目录用相同启动命令恢复。入口校验冻结身份及已完成产物，按缓存或 checkpoint 接续；最终 adapter 已保存而验证未完成时只补评测。
 
-## 数值目标与后续记录
+## 后续复验
 
-同骨干论文参考为 CoDEx-M **94.42%**，沿用已核验的 [GRIP 论文 Table 3](https://arxiv.org/html/2511.07457v2)。首轮记录四分支完整验证 / 测试结果，主结果按验证集预选配置报告；同时计算相对论文和相对 B1 的百分点差值。当前尚无本轮结果。
-
-后续配对 seeds 2027、2028 按 [CCF B 冲刺计划](CCFB_冲刺计划.md) 复用固定任务、S1 和教师评分，统一复验首轮冻结的主方法。三种子均值与配对增益完成前，只将首轮作为单次证据。汇总入口为 [结果与论文对照](RESULTS_20261030.md)。
+配对 seeds 2027、2028 的负例清单已由首轮固定教师评分生成，并通过完整训练器资产解析。两组共享原任务、S1 和教师评分，统一复验首轮冻结的 Soft-Mix 1.0。GPU 复验按存储条件和计划排期执行。[CCF B 冲刺计划](CCFB_冲刺计划.md) · [结果与论文对照](RESULTS_20261030.md)
