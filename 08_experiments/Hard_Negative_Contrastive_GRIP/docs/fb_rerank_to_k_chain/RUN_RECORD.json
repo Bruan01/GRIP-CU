@@ -46,8 +46,8 @@
   },
   "watcher_session": "fb_rerank_to_k_watch_20261107",
   "frozen_watcher_code_files": 117,
-  "status": "watching_existing_rerank",
-  "new_training_started": false,
+  "status": "running_k3_after_environment_recovery",
+  "new_training_started": true,
   "new_k_metrics_available": false,
   "tests": "16 passed",
   "parent_startup_observation": {
@@ -152,5 +152,48 @@
   },
   "monitor_observations_verified": 8,
   "frozen_execution_code_matches_reviewed_repository": true,
-  "child_gpu_training_started": false
+  "child_gpu_training_started": true,
+  "parent_rerank_completed": true,
+  "parent_completed_at": "2026-11-06T22:35:52.759889+00:00",
+  "parent_completion_audit": "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107/parent_completion_audit.json",
+  "recovery": {
+    "at": "2026-11-07T05:03:01.566483+00:00",
+    "reason": "Previous execution interrupted during first checkpoint save; original tmux sessions are absent after current WSL instance start.",
+    "boot_id": "78e69f34-7134-4fd7-8456-87bec38b5e7c",
+    "contract_sha256": "f535ffead4176cae2369698c193207ef6b9c7dd7cd9738dba58641ea45facdc2",
+    "training_resume_point": "same frozen Stage1; no complete optimizer/RNG checkpoint available",
+    "last_logged_optimizer_step": 8,
+    "completed_model_budget": 32,
+    "scheduler_max_steps": 120,
+    "seed": 2026,
+    "hyperparameters_changed": false,
+    "new_research_arm": false,
+    "prior_compute_overhead_retained": true,
+    "quarantined": [
+      {
+        "original_path": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8",
+        "preserved_path": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/recovery/20261107_instance_restart/checkpoint-8",
+        "missing": [
+          "adapter_model.safetensors",
+          "optimizer.pt",
+          "scheduler.pt",
+          "rng_state.pth",
+          "trainer_state.json"
+        ],
+        "files": [
+          {
+            "name": ".tmpKX2yKm",
+            "bytes": 2355972056,
+            "allocated_bytes": 281022464
+          },
+          {
+            "name": "README.md",
+            "bytes": 5258,
+            "allocated_bytes": 8192
+          }
+        ]
+      }
+    ]
+  },
+  "watcher_restarted": true
 }

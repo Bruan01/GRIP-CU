@@ -40,3 +40,7 @@
 入口：`scripts/run_fb_k_sensitivity.py prepare/check --config configs/fb_k{3,15}_sensitivity.json`为CPU准备与预检；实际训练只由已部署守护在前序完成后调用各自冻结run。确切运行身份见RUN_RECORD.json。
 
 论文映射：SC_SENS_K，section_id=experiments，paper_role=supporting，claim_links=C7。C7为待验证的K敏感性问题，不预设K9最优或稳健。预计当前三组重排约06:00–08:00结束；K阶段时间随K3实测步速更新，不把资源估计写成实验结果。
+
+## 2026-11-07恢复记录
+
+三模型重排06:35完成并审计，K3于06:36自动接上；原实例会话随后消失，心跳停在07:19，首次第8步保存仅留下未完成临时权重，无optimizer/scheduler/RNG/trainer_state，不能冒充可续训检查点。当前WSL实例12:56启动后，13:03已按原冻结合同从相同Stage1/seed重新启动K3，并恢复相同守护。未完成checkpoint及所有日志移入该K3目录recovery保留，未删文件；这次中断开销须单列，不能把新进程时长当作包含中断的总成本。完成模型预算仍32/120，未新增研究分支。K15继续等待K3。监控进程只在WSL实例运行时工作，实例关闭会终止tmux；本次恢复不改变原失败门、评分规则或训练超参。

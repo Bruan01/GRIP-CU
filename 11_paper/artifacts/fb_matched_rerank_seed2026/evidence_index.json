@@ -1,0 +1,36 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026",
+  "contract_sha256": "e7d14aefcb4c3fd1d7fef81b4ebacbcc1aae1d2585b995894cad795120569eff",
+  "artifact_manifest_sha256": "5b1c812e1a54bad7bd1f416fd13b356c9f47fa70be3d3815794b44f031e59360",
+  "models": {
+    "full": {
+      "label": "Full SC-CL-9",
+      "adapter_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/inputs/adapters/full",
+      "adapter_sha256": {
+        "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+        "adapter_model.safetensors": "5ec4a905fb591aba2df2a8a32a1ccbec99be891f746402cb69206f4233818981"
+      },
+      "borrowed_adapter_source": "/home/kieran/grip-cu-runs/paper_retained/completion_20261104/fb15k237_2/adapter"
+    },
+    "frequency_matched": {
+      "label": "Full-quota-matched Random-9",
+      "adapter_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/inputs/adapters/frequency_matched",
+      "adapter_sha256": {
+        "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+        "adapter_model.safetensors": "e49df0d221e3ea10955fdbfc794a950a0642e73396f35f5f105cf256852ffaf8"
+      },
+      "borrowed_adapter_source": "/home/kieran/grip-cu-runs/fb_frequency_matched_control_20261106_seed2026/training/listed/adapter"
+    },
+    "random9": {
+      "label": "Uniform Random-9",
+      "adapter_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026/inputs/adapters/random9",
+      "adapter_sha256": {
+        "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+        "adapter_model.safetensors": "1ea4b8f62c55b35e2accda70cc0614b941844de578ab7c6bfdabeee0bbb25429"
+      },
+      "borrowed_adapter_source": "/home/kieran/grip-cu-runs/fb_random9_control_20261105_seed2026/training/listed/adapter"
+    }
+  },
+  "all_scores_and_token_counts_retained": true,
+  "borrowed_sources_must_be_retained": true
+}

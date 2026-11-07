@@ -1,0 +1,4 @@
+method,label,n,h1_percent,mrr_percent,h3_percent,direct_em_percent
+full,Full SC-CL-9,10000,94.85,97.24994047619045,99.75,89.9
+frequency_matched,Full-quota-matched Random-9,10000,94.72,97.15165079365077,99.66000000000001,89.83
+random9,Uniform Random-9,10000,93.67999999999999,96.57224206349207,99.56,86.48

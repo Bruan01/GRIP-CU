@@ -1,0 +1,56 @@
+{
+  "status": "pass",
+  "verified_at": "2026-11-07T05:05:43.023369+00:00",
+  "raw_question_model_rows_verified": 30000,
+  "candidate_scores_verified": 300000,
+  "paired_token_identity_verified": true,
+  "all_three_summaries_and_comparisons_recomputed": true,
+  "archive_nonweight_sha256_verified": 159,
+  "archive_weight_sizes_verified": 3,
+  "full_weight_sha256_scope": "Previously verified by frozen controller/base.verify and parent audit; not rehashed during GPU recovery.",
+  "prior_completion_audit": {
+    "status": "pass",
+    "at": "2026-11-06T22:36:36.528045+00:00",
+    "contract_sha256": "e7d14aefcb4c3fd1d7fef81b4ebacbcc1aae1d2585b995894cad795120569eff",
+    "archive_sha256": "5b1c812e1a54bad7bd1f416fd13b356c9f47fa70be3d3815794b44f031e59360",
+    "questions_verified": 30000,
+    "candidate_scores_verified": 300000,
+    "metrics": [
+      {
+        "method": "full",
+        "label": "Full SC-CL-9",
+        "n": 10000,
+        "h1_percent": 94.85,
+        "mrr_percent": 97.24994047619045,
+        "h3_percent": 99.75,
+        "direct_em_percent": 89.9
+      },
+      {
+        "method": "frequency_matched",
+        "label": "Full-quota-matched Random-9",
+        "n": 10000,
+        "h1_percent": 94.72,
+        "mrr_percent": 97.15165079365077,
+        "h3_percent": 99.66000000000001,
+        "direct_em_percent": 89.83
+      },
+      {
+        "method": "random9",
+        "label": "Uniform Random-9",
+        "n": 10000,
+        "h1_percent": 93.67999999999999,
+        "mrr_percent": 96.57224206349207,
+        "h3_percent": 99.56,
+        "direct_em_percent": 86.48
+      }
+    ],
+    "artifact_sizes_verified": 162,
+    "read_only_parent_audit": true
+  },
+  "paper_exports_byte_identical": true,
+  "latex_table_validation": {
+    "status": "pass",
+    "engine": "xelatex",
+    "overfull_boxes": 0
+  }
+}

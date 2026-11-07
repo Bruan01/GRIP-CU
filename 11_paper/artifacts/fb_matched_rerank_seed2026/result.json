@@ -1,0 +1,90 @@
+{
+  "status": "completed",
+  "at": "2026-11-06T22:35:35.547742+00:00",
+  "experiment_id": "SC_FB_MATCHED_RERANK_SEED2026",
+  "n": 10000,
+  "seed": 2026,
+  "score_rule": "mean_log_probability_of_tag_wrapped_answer_tokens_then_clip_20",
+  "metrics": [
+    {
+      "method": "full",
+      "label": "Full SC-CL-9",
+      "n": 10000,
+      "h1_percent": 94.85,
+      "mrr_percent": 97.24994047619045,
+      "h3_percent": 99.75,
+      "direct_em_percent": 89.9
+    },
+    {
+      "method": "frequency_matched",
+      "label": "Full-quota-matched Random-9",
+      "n": 10000,
+      "h1_percent": 94.72,
+      "mrr_percent": 97.15165079365077,
+      "h3_percent": 99.66000000000001,
+      "direct_em_percent": 89.83
+    },
+    {
+      "method": "random9",
+      "label": "Uniform Random-9",
+      "n": 10000,
+      "h1_percent": 93.67999999999999,
+      "mrr_percent": 96.57224206349207,
+      "h3_percent": 99.56,
+      "direct_em_percent": 86.48
+    }
+  ],
+  "comparisons": {
+    "full_minus_frequency_matched": {
+      "n": 10000,
+      "paired_counts": {
+        "both_correct": 9315,
+        "rescue": 170,
+        "regression": 157,
+        "both_wrong": 358
+      },
+      "net_correct": 13,
+      "delta_h1_pp": 0.13,
+      "delta_mrr_pp": 0.09828968253968254
+    },
+    "full_minus_random9": {
+      "n": 10000,
+      "paired_counts": {
+        "both_correct": 9226,
+        "rescue": 259,
+        "regression": 142,
+        "both_wrong": 373
+      },
+      "net_correct": 117,
+      "delta_h1_pp": 1.17,
+      "delta_mrr_pp": 0.6776984126984124
+    },
+    "frequency_matched_minus_random9": {
+      "n": 10000,
+      "paired_counts": {
+        "both_correct": 9231,
+        "rescue": 241,
+        "regression": 137,
+        "both_wrong": 391
+      },
+      "net_correct": 104,
+      "delta_h1_pp": 1.04,
+      "delta_mrr_pp": 0.5794087301587301
+    }
+  },
+  "paper_role": "claim-carrying",
+  "section_id": "experiments",
+  "item_id": "SC_FB_MATCHED_RERANK",
+  "claim_links": [
+    "C2"
+  ],
+  "training_runs": 0,
+  "limitations": [
+    "same frozen adapters, one seed and previously Full-selected hyperparameters",
+    "reranking and direct generation are separate answer-selection rules",
+    "quota-matched random inherits Full per-question training-frequency quotas",
+    "ranking evidence cannot erase direct-EM near-null or low-frequency negative results",
+    "no score-based metric/protocol/adapter selection"
+  ],
+  "next_action": "write all three ranking rows and stop; NELL and K studies remain planning only"
+}

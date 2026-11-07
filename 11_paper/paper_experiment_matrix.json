@@ -429,7 +429,7 @@
     {
       "id": "SC_FB_MATCHED_RERANK",
       "dataset": "FB15K237-2",
-      "status": "launched-no-ranking-results-yet",
+      "status": "observed-single-seed-completed",
       "comparison": [
         "Full",
         "Full-quota-matched Random",
@@ -448,18 +448,19 @@
         "C2"
       ],
       "evidence_refs": [
-        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_matched_rerank/RUN_RECORD.json"
+        "11_paper/artifacts/fb_matched_rerank_seed2026/result.json",
+        "11_paper/artifacts/fb_matched_rerank_seed2026/completion_audit_20261107.json"
       ],
       "known_gaps": [
-        "inference ongoing",
-        "single seed, Full-selected hyperparameters"
+        "one Full-selected configuration and seed",
+        "near-null Full-minus-quota comparison; no unique mechanism claim"
       ],
       "scope": "frozen existing weights; same original ten options; no training; retain prior direct-EM and low-frequency evidence"
     },
     {
       "id": "SC_SENS_K",
       "dataset": "FB15K237-2",
-      "status": "CPU-prepared-and-preflighted; queued after current rerank",
+      "status": "K3 restarted after instance interruption; K15 waiting",
       "comparison": [
         "Full K3",
         "reused Full K9",
@@ -486,10 +487,11 @@
       "evaluation_options": 10,
       "seed": 2026,
       "known_gaps": [
-        "K3 and K15 not trained yet",
-        "single seed at Full-K9-selected configuration",
-        "no generation or cross-K superiority over frequency matching claim"
-      ]
+        "K3 restarted after interrupted checkpoint save; K15 waiting; no completed new-K metrics",
+        "single Full-K9-selected configuration and seed",
+        "ranking-only; no generation or cross-K superiority claim"
+      ],
+      "recovery_ref": "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/recovery_20261107.json"
     }
   ],
   "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md"

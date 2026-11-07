@@ -1,7 +1,7 @@
 {
   "experiment_id": "SC_FB_MATCHED_RERANK_SEED2026",
   "run_dir": "/home/kieran/grip-cu-runs/fb_matched_rerank_20261106_seed2026",
-  "status": "running",
+  "status": "completed",
   "models": [
     "full",
     "frequency_matched",
@@ -86,7 +86,14 @@
     ],
     "estimated_completion_beijing": "2026-11-07 06:00–08:00; throughput-dependent"
   },
-  "latest_full_progress_observed": 120,
-  "models_completed": [],
-  "complete_ranking_comparison_available": false
+  "latest_full_progress_observed": 10000,
+  "models_completed": [
+    "full",
+    "frequency_matched",
+    "random9"
+  ],
+  "complete_ranking_comparison_available": true,
+  "completed_at": "2026-11-06T22:35:52.759889+00:00",
+  "result_ref": "11_paper/artifacts/fb_matched_rerank_seed2026/result.json",
+  "completion_audit": "11_paper/artifacts/fb_matched_rerank_seed2026/completion_audit_20261107.json"
 }
