@@ -1,0 +1,53 @@
+{
+  "optimizer_steps": 125,
+  "scheduler_max_steps": 125,
+  "qa_count": 12334,
+  "listed_qa_count": 2709,
+  "test_count": 3134,
+  "candidate_count": 11,
+  "generation_max_length": 1000,
+  "reference_correct": 2723,
+  "save_steps": 25,
+  "experiment_id": "SC_CTRL_SOURCES_WN18RR_SEED2026",
+  "dataset": "wn18rr",
+  "seed": 2026,
+  "k": 9,
+  "arms": [
+    "random9",
+    "frequency_matched"
+  ],
+  "max_new_training_runs": 2,
+  "reference_run_config": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/run_config.json",
+  "reference_config_sha256": "7f86d37c334093bec0ea3dccff3029cfe9b411de6e6381ba00af55e9b99bf225",
+  "reference_trainer_state": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/trainer_listed/checkpoint-125/trainer_state.json",
+  "reference_selection": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/wn18rr_sccl_seed2026/search_outcome.json",
+  "reference_predictions": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/wn18rr_sccl_seed2026/lambda0p25_final_test/predictions.jsonl",
+  "full_adapter": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/listed/adapter",
+  "full_adapter_sha256": {
+    "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+    "adapter_model.safetensors": "df9e8718df57cc2a80adb7729c7c1f04d1b2248b5d56a11bda5f6d9ce089157f"
+  },
+  "full_bank_sha256": "04e08467b299bc2ebf9cc4422eeb905c2c594bbbc2530e2ea60265331cd1fbeb",
+  "source_scores_sha256": "f2a0220febf6bf073309f499074f187101724e74c4a960cba450a4d1d98301b0",
+  "test_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/wn18rr/processed/processed_test.json",
+  "model_cache": "/mnt/e/GRIP-CU/model_cache",
+  "default_run_dir": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026",
+  "prerequisite_queue": "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107",
+  "prerequisite_plan_sha256": "29c3822c80acf57e697e053d4687d5ecbe50242a0f0c06fdf699476ae5648bf0",
+  "reporting_policy": "All predeclared arms and all signed results retained; manuscript placement follows research question, not outcome direction.",
+  "limitations": [
+    "one seed at historical Full-selected settings; no independent control tuning",
+    "Full-quota control inherits per-question Full frequency-bin recipe",
+    "direct generation and original-list ranking are separate metrics; no full-graph filtered MRR claim",
+    "historical test exposure and task-generation protocol limitations retained",
+    "WN B1 reproduction discrepancy unresolved; these controls do not establish gains over a repaired B1",
+    "K9 covers 9 of 9/10 legal relations; selection headroom limited",
+    "55 historical relation QA rows have null/unverified entity pairs; preserve original parent mask and QA for a conditional historical-pool comparison, not a fully verified train-pair mechanism claim"
+  ],
+  "reference_trainer_state_sha256": "f9bfc9ac6517be4f722e6e907309e5698b978a3ccd7e807002ad5d624aaecd20",
+  "reference_selection_sha256": "d37aebb66e31cde85e2ef473304bd3db9d62d3fd614037f8d43b29bfee5d0363",
+  "reference_predictions_sha256": "d1001aee2c733de2d937f7b71a3f65b2c756ffd37fb0722080766c4dd8746053",
+  "test_sha256": "0156364b9901aba7c7a1f15a82af7af2d40990457a8baf87a14c224c57e548e0",
+  "previous_dataset_run": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026",
+  "previous_dataset_contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285"
+}

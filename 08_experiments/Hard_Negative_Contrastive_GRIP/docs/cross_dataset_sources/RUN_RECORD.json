@@ -1,0 +1,385 @@
+{
+  "at": "2026-11-07T06:04:44.146453+00:00",
+  "status": "watcher_deployed_awaiting_fb_k",
+  "queue_dir": "/home/kieran/grip-cu-runs/cross_dataset_sources_20261107_seed2026",
+  "queue_session": "cross_dataset_sources_watch_20261107",
+  "plan_sha256": "b9ab88c6f9bff7ca70ed47974a27f6bda670a58c153625dd26bc3e7c84a506dd",
+  "watcher_launch_receipt": {
+    "at": "2026-11-07T05:56:47.345856+00:00",
+    "session": "cross_dataset_sources_watch_20261107",
+    "argv": [
+      "/home/kieran/miniconda3/envs/guardenv/bin/python",
+      "-u",
+      "/home/kieran/grip-cu-runs/cross_dataset_sources_20261107_seed2026/code_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_cross_dataset_controls.py",
+      "--plan",
+      "/home/kieran/grip-cu-runs/cross_dataset_sources_20261107_seed2026/plan.json"
+    ],
+    "plan_sha256": "b9ab88c6f9bff7ca70ed47974a27f6bda670a58c153625dd26bc3e7c84a506dd",
+    "code_manifest_sha256": "831cffe06cb464b79c0fb7b1a660d32fed32bf9ede307e185c8315798e9c5b98",
+    "new_control_gpu_training_started": false,
+    "storage_guard_restarted_at": "2026-11-07T06:03:51.675008+00:00"
+  },
+  "frozen_watcher_code_files": 122,
+  "max_new_training_runs": 4,
+  "max_new_direct_evaluations": 4,
+  "max_new_ranking_evaluations": 6,
+  "jobs": [
+    {
+      "dataset": "nell23k",
+      "run_dir": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026",
+      "contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+      "design_sha256": "15c37ed506650d35be64d8d8bf4aa7e7376f5847fc791aa76dd575c579d1e189",
+      "code_digest": "6221cf6d47f37fde0699b44aa4e79144e24e249870805189cc9c705d2abb77a4",
+      "optimizer_steps": 32,
+      "scheduler_max_steps": 240,
+      "original_candidate_count": 10,
+      "preparation_audit": {
+        "status": "pass",
+        "train_only": true,
+        "qa_count": 12014,
+        "listed_qa_count": 2974,
+        "exact_eligibility_and_noncandidate_metadata": true,
+        "pool_size_counts": {
+          "197": 2917,
+          "196": 55,
+          "195": 2
+        },
+        "mean_full_random_overlap": 0.40854068594485543,
+        "mean_full_frequency_overlap": 0.7249495628782784,
+        "forced_frequency_slots": 106,
+        "exact_bin_match_rows": 2974,
+        "fallback_count": 0,
+        "model_loaded": false
+      },
+      "cpu_preflight": {
+        "status": "pass",
+        "arms": [
+          "random9",
+          "frequency_matched"
+        ],
+        "model_loaded": false,
+        "at": "2026-11-07T05:46:38.514291+00:00"
+      },
+      "borrowed_weight_inputs": {
+        "inputs/stage1_adapter/adapter_config.json": {
+          "sha256": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+          "bytes": 1149,
+          "source": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter/adapter_config.json",
+          "borrowed": true
+        },
+        "inputs/stage1_adapter/adapter_model.safetensors": {
+          "sha256": "8bbda3aa6ae112e5f9f618490614137bdc7c241a7a152b7c95ca1aeafa62bd88",
+          "bytes": 2204583480,
+          "source": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter/adapter_model.safetensors",
+          "borrowed": true
+        },
+        "inputs/full_adapter/adapter_config.json": {
+          "sha256": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+          "bytes": 1149,
+          "source": "/home/kieran/grip-cu-runs/paper_retained/nell23k_seed2026_trial1_step32_20261102/adapter/adapter_config.json",
+          "borrowed": true
+        },
+        "inputs/full_adapter/adapter_model.safetensors": {
+          "sha256": "f42d175d134e732e238f0ec9c3d9a35631f3d74a2444011773c20fd4ebafca97",
+          "bytes": 2204583480,
+          "source": "/home/kieran/grip-cu-runs/paper_retained/nell23k_seed2026_trial1_step32_20261102/adapter/adapter_model.safetensors",
+          "borrowed": true
+        }
+      },
+      "new_training_started": false,
+      "new_metrics_available": false,
+      "physical_training_outputs": {
+        "random9": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/random9/training",
+        "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training"
+      }
+    },
+    {
+      "dataset": "wn18rr",
+      "run_dir": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026",
+      "contract_sha256": "5895408ce1a10b0c1a45838f23263636273440b8f322b03d2286749d5bf9a0d1",
+      "design_sha256": "df09d5ad9b5c76079c5f18e525bf90beb36d5e48dfd50a91fcc289ae06351967",
+      "code_digest": "8b28e1194c8b1fe79207a46b051e9e70b224c1ac7eac33d42e32b0165f61e8f1",
+      "optimizer_steps": 125,
+      "scheduler_max_steps": 125,
+      "original_candidate_count": 11,
+      "preparation_audit": {
+        "status": "pass",
+        "training_inputs_train_only": true,
+        "all_train_pairs_verified": false,
+        "unverified_parent_pair_rows": 55,
+        "comparison_scope": "historical_parent_pool_conditional",
+        "qa_count": 12334,
+        "listed_qa_count": 2709,
+        "exact_eligibility_and_noncandidate_metadata": true,
+        "pool_size_counts": {
+          "10": 2703,
+          "9": 6
+        },
+        "mean_full_random_overlap": 8.107050572166852,
+        "mean_full_frequency_overlap": 8.644149132521225,
+        "forced_frequency_slots": 22391,
+        "exact_bin_match_rows": 2709,
+        "fallback_count": 0,
+        "model_loaded": false
+      },
+      "cpu_preflight": {
+        "status": "pass",
+        "arms": [
+          "random9",
+          "frequency_matched"
+        ],
+        "model_loaded": false,
+        "at": "2026-11-07T05:56:29.659516+00:00"
+      },
+      "borrowed_weight_inputs": {
+        "inputs/stage1_adapter/adapter_config.json": {
+          "sha256": "c82c73cf644fb42c78edba8f0e98a5bb816b0de835084178f08ec332401b0371",
+          "bytes": 1151,
+          "source": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter/adapter_config.json",
+          "borrowed": true
+        },
+        "inputs/stage1_adapter/adapter_model.safetensors": {
+          "sha256": "cd3ccdf30f1d0b420001baaa31b0491318b8df0024bee68269fcbf6b2c46d94b",
+          "bytes": 2355972056,
+          "source": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter/adapter_model.safetensors",
+          "borrowed": true
+        },
+        "inputs/full_adapter/adapter_config.json": {
+          "sha256": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+          "bytes": 1151,
+          "source": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/listed/adapter/adapter_config.json",
+          "borrowed": true
+        },
+        "inputs/full_adapter/adapter_model.safetensors": {
+          "sha256": "df9e8718df57cc2a80adb7729c7c1f04d1b2248b5d56a11bda5f6d9ce089157f",
+          "bytes": 2355972056,
+          "source": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/listed/adapter/adapter_model.safetensors",
+          "borrowed": true
+        }
+      },
+      "new_training_started": false,
+      "new_metrics_available": false,
+      "physical_training_outputs": {
+        "random9": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training",
+        "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training"
+      }
+    }
+  ],
+  "tests": {
+    "status": "pass",
+    "passed": 76,
+    "warnings": 14,
+    "seconds": 44.28
+  },
+  "recovered_fb_checkpoint8": {
+    "path": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8",
+    "global_step": 8,
+    "scheduler_max_steps": 120,
+    "safetensors_complete_length": true,
+    "optimizer_scheduler_rng_zip_headers_valid": true,
+    "all_required_files_present": true
+  },
+  "new_source_control_metrics_available": false,
+  "retained_cpu_preparation_attempts": [
+    "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026_prepare_attempt01",
+    "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026_prepare_attempt01",
+    "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026_prepare_attempt02"
+  ],
+  "reporting_policy": "all methods and signed differences retained; research-question-based manuscript placement, including relevant contradictions",
+  "next_action": "watch FB completion; then execute exactly NELL and WN controls and stop",
+  "storage_admission": {
+    "at": "2026-11-07T06:03:51.675008+00:00",
+    "host_backing_volume": "/mnt/c",
+    "host_vhdx": "C:\\Users\\Administrator\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc\\LocalState\\ext4.vhdx",
+    "vhdx_file_bytes": 232393801728,
+    "physical_training_root": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107",
+    "physical_free_bytes": 91738316800,
+    "estimated_remaining_training_bytes": 79985436274,
+    "reserve_bytes": 8589934592,
+    "per_dataset_estimates": {
+      "nell23k": 23201558336,
+      "wn18rr": 32510406158
+    },
+    "plan_before_sha256": "917336660ae2405bcb5d4c6808ef4a0de55dfbf9ba4f75f922d28f8019b5ea90",
+    "plan_after_sha256": "b9ab88c6f9bff7ca70ed47974a27f6bda670a58c153625dd26bc3e7c84a506dd",
+    "originals_retained": true,
+    "model_or_optimizer_configuration_changed": false,
+    "current_k3_process_restarted": false
+  },
+  "storage_redirect_records": [
+    {
+      "at": "2026-11-07T06:02:49.079133+00:00",
+      "logical_path": "/home/kieran/grip-cu-runs/fb_k15_sensitivity_20261107_seed2026/training",
+      "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training",
+      "original_preserved": "/home/kieran/grip-cu-runs/fb_k15_sensitivity_20261107_seed2026/recovery/storage_redirect_20261107/training",
+      "copied_files": [
+        {
+          "path": "run_config.json",
+          "bytes": 3565,
+          "sha256": "429c865b7adeebdf5636a0827bec4d0f2131d0f87f438c65af0ba8917a00b021"
+        }
+      ],
+      "all_sha256_verified": true,
+      "training_configuration_changed": false
+    },
+    {
+      "at": "2026-11-07T06:02:49.000713+00:00",
+      "logical_path": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/training",
+      "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training",
+      "original_preserved": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/recovery/storage_redirect_20261107/training",
+      "copied_files": [
+        {
+          "path": "run_config.json",
+          "bytes": 3556,
+          "sha256": "d743a1935af4e1b887708c98e08b14cdde61d60df37f4dd6d61880fedc8f441a"
+        },
+        {
+          "path": "budget.json",
+          "bytes": 274,
+          "sha256": "b452ae7da60c51d7112afedfcaaf4a113cfd8bbe52008a4544583de9eba4c920"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/optimizer.pt",
+          "bytes": 363476171,
+          "sha256": "4fefa1d0fc532b5bf675c4990a26817afffb408206091095ec8607243082588a"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/adapter_model.safetensors",
+          "bytes": 2355972056,
+          "sha256": "2e79db20d219eb082449ca66ca71c0bb7c1b2d8844fc1fea67e9870c7c68ca38"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/tokenizer.json",
+          "bytes": 11422074,
+          "sha256": "3d4900ac7cf779a8ff03a5bacf85be349ad99858cedc47ae4aa84875bb2ea8a1"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/adapter_config.json",
+          "bytes": 1151,
+          "sha256": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/scheduler.pt",
+          "bytes": 1465,
+          "sha256": "a7359cd251a6fc1e14c1f9c8e0acf3f0720913b05c15e9d32ce6a46f6c6a49df"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/training_args.bin",
+          "bytes": 5329,
+          "sha256": "be447bcd0a99e1a69ff0c2b8beaacec380dc2e8f7897fb586dfe46e91593d086"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/README.md",
+          "bytes": 5258,
+          "sha256": "775c1080f1c18a9bcfd66e3f366249af5e3c5e42f0e3e4be30ed25b390a40766"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/trainer_state.json",
+          "bytes": 6389,
+          "sha256": "cc4c34893660a4cbde7c6c956f1d630123be2f8b030e54e4f0f0355f90b35e9f"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/chat_template.jinja",
+          "bytes": 2507,
+          "sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/tokenizer_config.json",
+          "bytes": 802,
+          "sha256": "ee3b5a17cc5325c11786443894c855bbc50a243ed1bb967fa4f151b845d439a5"
+        },
+        {
+          "path": "trainer_listed/checkpoint-8/rng_state.pth",
+          "bytes": 14645,
+          "sha256": "4abcbdf7ecc49b8c712105a40c04f371939f6a681e8ab1e38240a8db238482d8"
+        }
+      ],
+      "all_sha256_verified": true,
+      "training_configuration_changed": false
+    },
+    {
+      "at": "2026-11-07T06:02:49.269458+00:00",
+      "logical_path": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/frequency_matched/training",
+      "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training",
+      "original_preserved": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/recovery/storage_redirect_20261107/frequency_matched/training",
+      "copied_files": [
+        {
+          "path": "run_config.json",
+          "bytes": 3579,
+          "sha256": "9a38b4f67edd248ad8fffc38122028568f6b52e48da2e227449b4697253597ee"
+        }
+      ],
+      "all_sha256_verified": true,
+      "training_configuration_changed": false
+    },
+    {
+      "at": "2026-11-07T06:02:49.176413+00:00",
+      "logical_path": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/random9/training",
+      "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/random9/training",
+      "original_preserved": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/recovery/storage_redirect_20261107/random9/training",
+      "copied_files": [
+        {
+          "path": "run_config.json",
+          "bytes": 3505,
+          "sha256": "1367e7a1754df1e7dbef37cb41f2064734623c0e79710703a391ba0d7391976d"
+        }
+      ],
+      "all_sha256_verified": true,
+      "training_configuration_changed": false
+    },
+    {
+      "at": "2026-11-07T06:02:49.460057+00:00",
+      "logical_path": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/frequency_matched/training",
+      "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training",
+      "original_preserved": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/recovery/storage_redirect_20261107/frequency_matched/training",
+      "copied_files": [
+        {
+          "path": "run_config.json",
+          "bytes": 3399,
+          "sha256": "445aff2c35dcb8b9ae72d3ae625fd30c4294aa0e80dca2668fea937e0a1dc27d"
+        }
+      ],
+      "all_sha256_verified": true,
+      "training_configuration_changed": false
+    },
+    {
+      "at": "2026-11-07T06:02:49.366239+00:00",
+      "logical_path": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/random9/training",
+      "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training",
+      "original_preserved": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/recovery/storage_redirect_20261107/random9/training",
+      "copied_files": [
+        {
+          "path": "run_config.json",
+          "bytes": 3335,
+          "sha256": "d85ff91f72d515ebc5ef3b7c5a3269a0450caf6f427b86c1868d6d6f71618d37"
+        }
+      ],
+      "all_sha256_verified": true,
+      "training_configuration_changed": false
+    }
+  ],
+  "runtime_training_code_sha256_matched_across_datasets_and_repository": true,
+  "watcher_observation": {
+    "at": "2026-11-07T06:06:04.553875+00:00",
+    "stage": "waiting_fb_k",
+    "status": "running",
+    "parent": {
+      "stage": "running_k3",
+      "status": "running",
+      "at": "2026-11-07T06:06:02.512779+00:00",
+      "completed_k": [],
+      "experiment_state": {
+        "at": "2026-11-07T06:05:49.400851+00:00",
+        "stage": "train",
+        "status": "running",
+        "pid": 10010,
+        "elapsed_seconds": 3557.8,
+        "log": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/logs/train_02.log"
+      }
+    }
+  },
+  "watcher_wait_observations": 12,
+  "new_training_launch_receipts": 0,
+  "root_training_symlink_is_traversed_by_existing_archive_inventory": true,
+  "post_storage_guard_wait_observations": 5
+}

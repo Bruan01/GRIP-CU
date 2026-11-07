@@ -1,0 +1,59 @@
+{
+  "schema": "cross-dataset-source-queue-v1",
+  "repository_root": "/mnt/c/users/administrator/desktop/实验/grip-cu",
+  "parent_queue": "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107",
+  "parent_session": "fb_rerank_to_k_watch_20261107",
+  "parent_plan_sha256": "29c3822c80acf57e697e053d4687d5ecbe50242a0f0c06fdf699476ae5648bf0",
+  "stages": [
+    {
+      "dataset": "nell23k",
+      "run_dir": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026",
+      "contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+      "session": "nell23k_source_controls_seed2026_20261107",
+      "max_new_training_runs": 2,
+      "optimizer_steps": 32,
+      "scheduler_max_steps": 240,
+      "original_evaluation_options": 10,
+      "training_storage_root": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107",
+      "training_targets": {
+        "random9": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/random9/training",
+        "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training"
+      },
+      "estimated_dataset_training_bytes": 23201558336,
+      "minimum_training_storage_free_bytes": 31791492928
+    },
+    {
+      "dataset": "wn18rr",
+      "run_dir": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026",
+      "contract_sha256": "5895408ce1a10b0c1a45838f23263636273440b8f322b03d2286749d5bf9a0d1",
+      "session": "wn18rr_source_controls_seed2026_20261107",
+      "max_new_training_runs": 2,
+      "optimizer_steps": 125,
+      "scheduler_max_steps": 125,
+      "original_evaluation_options": 11,
+      "training_storage_root": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107",
+      "training_targets": {
+        "random9": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training",
+        "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training"
+      },
+      "estimated_dataset_training_bytes": 32510406158,
+      "minimum_training_storage_free_bytes": 41100340750
+    }
+  ],
+  "max_new_training_runs": 4,
+  "poll_seconds": 30,
+  "minimum_free_disk_bytes": 85899345920,
+  "max_new_direct_evaluations": 4,
+  "max_new_full_ranking_evaluations": 6,
+  "new_seeds": 0,
+  "new_hpo_trials": 0,
+  "retrain_full": false,
+  "repeat_full_direct": false,
+  "reporting_policy": "retain all methods and signed outcomes; no result-direction-based continuation or omission",
+  "WN_scope": "conditional historical parent pool; 55 unverified entity pairs explicitly marked",
+  "stop_after_both_datasets": true,
+  "host_backing_volume": "/mnt/c",
+  "minimum_host_backing_free_bytes": 1073741824,
+  "physical_training_volume": "/mnt/e",
+  "training_storage_policy": "all six current/future training output directories use E via preserved logical paths; originals retained; 8GiB physical reserve plus per-dataset checkpoint/optimizer/final-adapter estimate"
+}

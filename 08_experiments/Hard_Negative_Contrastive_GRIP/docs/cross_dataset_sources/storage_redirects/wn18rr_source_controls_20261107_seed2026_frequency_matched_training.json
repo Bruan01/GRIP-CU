@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-07T06:02:49.460057+00:00",
+  "logical_path": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/frequency_matched/training",
+  "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training",
+  "original_preserved": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/recovery/storage_redirect_20261107/frequency_matched/training",
+  "copied_files": [
+    {
+      "path": "run_config.json",
+      "bytes": 3399,
+      "sha256": "445aff2c35dcb8b9ae72d3ae625fd30c4294aa0e80dca2668fea937e0a1dc27d"
+    }
+  ],
+  "all_sha256_verified": true,
+  "training_configuration_changed": false
+}

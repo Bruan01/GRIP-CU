@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-07T06:02:49.269458+00:00",
+  "logical_path": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/frequency_matched/training",
+  "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training",
+  "original_preserved": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/recovery/storage_redirect_20261107/frequency_matched/training",
+  "copied_files": [
+    {
+      "path": "run_config.json",
+      "bytes": 3579,
+      "sha256": "9a38b4f67edd248ad8fffc38122028568f6b52e48da2e227449b4697253597ee"
+    }
+  ],
+  "all_sha256_verified": true,
+  "training_configuration_changed": false
+}

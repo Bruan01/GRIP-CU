@@ -492,6 +492,70 @@
         "ranking-only; no generation or cross-K superiority claim"
       ],
       "recovery_ref": "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/recovery_20261107.json"
+    },
+    {
+      "id": "SC_CTRL_SOURCES_NELL23K",
+      "dataset": "nell23k",
+      "status": "CPU-preflighted; watchdog waiting for FB K; no new control training or metrics",
+      "comparison": [
+        "reused Full K9",
+        "new Uniform Random K9",
+        "new Full-quota-matched Random K9"
+      ],
+      "section_id": "experiments",
+      "item_id": "SC_CTRL_SOURCES_NELL23K",
+      "claim_links": [
+        "C2"
+      ],
+      "paper_role": "claim-carrying",
+      "main_or_appendix": "main_or_appendix_by_research_question",
+      "research_question": "Does the Full-minus-quota observation persist across datasets?",
+      "experimental_design": "one seed2026; dataset-specific Full settings; two new controls; Full reused; no new HPO/validation; keep all signed outcomes",
+      "optimizer_steps": 32,
+      "scheduler_max_steps": 240,
+      "k": 9,
+      "evaluation_options": 10,
+      "evidence_refs": [
+        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/RUN_RECORD.json"
+      ],
+      "known_gaps": [
+        "no completed new control metrics",
+        "one historical Full-selected configuration/seed; historical test exposure retained"
+      ],
+      "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows"
+    },
+    {
+      "id": "SC_CTRL_SOURCES_WN18RR",
+      "dataset": "wn18rr",
+      "status": "CPU-preflighted; watchdog waiting for FB K; no new control training or metrics",
+      "comparison": [
+        "reused Full K9",
+        "new Uniform Random K9",
+        "new Full-quota-matched Random K9"
+      ],
+      "section_id": "experiments",
+      "item_id": "SC_CTRL_SOURCES_WN18RR",
+      "claim_links": [
+        "C2"
+      ],
+      "paper_role": "supporting",
+      "main_or_appendix": "appendix",
+      "research_question": "What happens under small relation vocabularies and near-exhaustive K9 historical pools?",
+      "experimental_design": "one seed2026; dataset-specific Full settings; two new controls; Full reused; no new HPO/validation; keep all signed outcomes",
+      "optimizer_steps": 125,
+      "scheduler_max_steps": 125,
+      "k": 9,
+      "evaluation_options": 11,
+      "evidence_refs": [
+        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/RUN_RECORD.json"
+      ],
+      "known_gaps": [
+        "no completed new control metrics",
+        "one historical Full-selected configuration/seed; historical test exposure retained",
+        "55 historical QA entity pairs unverified; original parent mask preserved; conditional historical-pool comparison only",
+        "B1 reproduction discrepancy unresolved"
+      ],
+      "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows"
     }
   ],
   "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md"

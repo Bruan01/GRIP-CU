@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "train_only": true,
+  "qa_count": 12014,
+  "listed_qa_count": 2974,
+  "exact_eligibility_and_noncandidate_metadata": true,
+  "pool_size_counts": {
+    "197": 2917,
+    "196": 55,
+    "195": 2
+  },
+  "mean_full_random_overlap": 0.40854068594485543,
+  "mean_full_frequency_overlap": 0.7249495628782784,
+  "forced_frequency_slots": 106,
+  "exact_bin_match_rows": 2974,
+  "fallback_count": 0,
+  "model_loaded": false
+}

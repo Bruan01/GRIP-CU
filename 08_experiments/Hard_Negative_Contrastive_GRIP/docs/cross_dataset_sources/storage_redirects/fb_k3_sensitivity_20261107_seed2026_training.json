@@ -1,0 +1,75 @@
+{
+  "at": "2026-11-07T06:02:49.000713+00:00",
+  "logical_path": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/training",
+  "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training",
+  "original_preserved": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/recovery/storage_redirect_20261107/training",
+  "copied_files": [
+    {
+      "path": "run_config.json",
+      "bytes": 3556,
+      "sha256": "d743a1935af4e1b887708c98e08b14cdde61d60df37f4dd6d61880fedc8f441a"
+    },
+    {
+      "path": "budget.json",
+      "bytes": 274,
+      "sha256": "b452ae7da60c51d7112afedfcaaf4a113cfd8bbe52008a4544583de9eba4c920"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/optimizer.pt",
+      "bytes": 363476171,
+      "sha256": "4fefa1d0fc532b5bf675c4990a26817afffb408206091095ec8607243082588a"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "sha256": "2e79db20d219eb082449ca66ca71c0bb7c1b2d8844fc1fea67e9870c7c68ca38"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/tokenizer.json",
+      "bytes": 11422074,
+      "sha256": "3d4900ac7cf779a8ff03a5bacf85be349ad99858cedc47ae4aa84875bb2ea8a1"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/adapter_config.json",
+      "bytes": 1151,
+      "sha256": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/scheduler.pt",
+      "bytes": 1465,
+      "sha256": "a7359cd251a6fc1e14c1f9c8e0acf3f0720913b05c15e9d32ce6a46f6c6a49df"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/training_args.bin",
+      "bytes": 5329,
+      "sha256": "be447bcd0a99e1a69ff0c2b8beaacec380dc2e8f7897fb586dfe46e91593d086"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/README.md",
+      "bytes": 5258,
+      "sha256": "775c1080f1c18a9bcfd66e3f366249af5e3c5e42f0e3e4be30ed25b390a40766"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/trainer_state.json",
+      "bytes": 6389,
+      "sha256": "cc4c34893660a4cbde7c6c956f1d630123be2f8b030e54e4f0f0355f90b35e9f"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/chat_template.jinja",
+      "bytes": 2507,
+      "sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/tokenizer_config.json",
+      "bytes": 802,
+      "sha256": "ee3b5a17cc5325c11786443894c855bbc50a243ed1bb967fa4f151b845d439a5"
+    },
+    {
+      "path": "trainer_listed/checkpoint-8/rng_state.pth",
+      "bytes": 14645,
+      "sha256": "4abcbdf7ecc49b8c712105a40c04f371939f6a681e8ab1e38240a8db238482d8"
+    }
+  ],
+  "all_sha256_verified": true,
+  "training_configuration_changed": false
+}

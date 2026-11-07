@@ -1,0 +1,49 @@
+{
+  "optimizer_steps": 32,
+  "scheduler_max_steps": 240,
+  "qa_count": 12014,
+  "listed_qa_count": 2974,
+  "test_count": 4943,
+  "candidate_count": 10,
+  "generation_max_length": 32,
+  "reference_correct": 4340,
+  "save_steps": 8,
+  "experiment_id": "SC_CTRL_SOURCES_NELL23K_SEED2026",
+  "dataset": "nell23k",
+  "seed": 2026,
+  "k": 9,
+  "arms": [
+    "random9",
+    "frequency_matched"
+  ],
+  "max_new_training_runs": 2,
+  "reference_run_config": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run/run_config.json",
+  "reference_config_sha256": "2d2d2e21d2422d7108462c9db58e45dd32cdac79d2409c8c8bd50ba791694b24",
+  "reference_trainer_state": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run/trainer_listed/checkpoint-32/trainer_state.json",
+  "reference_selection": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/selection.json",
+  "reference_predictions": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/selected_test/predictions.jsonl",
+  "full_adapter": "/home/kieran/grip-cu-runs/paper_retained/nell23k_seed2026_trial1_step32_20261102/adapter",
+  "full_adapter_sha256": {
+    "adapter_config.json": "f113d99bed25a3865c517a67f153432019296535c14570091fa73ea0804f93f5",
+    "adapter_model.safetensors": "f42d175d134e732e238f0ec9c3d9a35631f3d74a2444011773c20fd4ebafca97"
+  },
+  "full_bank_sha256": "09b3899578a7f11b78c6715d8cadb636dc2bb0b1e37dbdf49028350a9d612a21",
+  "source_scores_sha256": "2b7308beac8d903a22eb975a11eadc9ea917c6ada6463e11c50b29abee48d115",
+  "test_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/processed/processed_test.json",
+  "model_cache": "/mnt/e/GRIP-CU/model_cache",
+  "default_run_dir": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026",
+  "prerequisite_queue": "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107",
+  "prerequisite_plan_sha256": "29c3822c80acf57e697e053d4687d5ecbe50242a0f0c06fdf699476ae5648bf0",
+  "reporting_policy": "All predeclared arms and all signed results retained; manuscript placement follows research question, not outcome direction.",
+  "limitations": [
+    "one seed at historical Full-selected settings; no independent control tuning",
+    "Full-quota control inherits per-question Full frequency-bin recipe",
+    "direct generation and original-list ranking are separate metrics; no full-graph filtered MRR claim",
+    "historical test exposure and task-generation protocol limitations retained",
+    "existing NELL train-pair eligibility gate retained; no QA text repair in this campaign"
+  ],
+  "reference_trainer_state_sha256": "6495195ab4b30f676c2ae554aa7f35c1af1ddbee261afa69c47c3dfc057dad57",
+  "reference_selection_sha256": "114e759d8d39584522846abb0f3a246e968168eb234b04b0f56cb6cbf552b558",
+  "reference_predictions_sha256": "f07b44a087e2d63a34e62dc006dc63502dd7ec642bf717f45e5da3e1f4c06688",
+  "test_sha256": "7c423e5a806540a1355b56e0787e2948e8a899c789daa6d5a5464dfff5124425"
+}

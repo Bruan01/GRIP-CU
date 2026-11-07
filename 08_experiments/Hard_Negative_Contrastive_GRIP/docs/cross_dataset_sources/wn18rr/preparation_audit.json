@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "training_inputs_train_only": true,
+  "all_train_pairs_verified": false,
+  "unverified_parent_pair_rows": 55,
+  "comparison_scope": "historical_parent_pool_conditional",
+  "qa_count": 12334,
+  "listed_qa_count": 2709,
+  "exact_eligibility_and_noncandidate_metadata": true,
+  "pool_size_counts": {
+    "10": 2703,
+    "9": 6
+  },
+  "mean_full_random_overlap": 8.107050572166852,
+  "mean_full_frequency_overlap": 8.644149132521225,
+  "forced_frequency_slots": 22391,
+  "exact_bin_match_rows": 2709,
+  "fallback_count": 0,
+  "model_loaded": false
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-07T06:02:49.079133+00:00",
+  "logical_path": "/home/kieran/grip-cu-runs/fb_k15_sensitivity_20261107_seed2026/training",
+  "physical_path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training",
+  "original_preserved": "/home/kieran/grip-cu-runs/fb_k15_sensitivity_20261107_seed2026/recovery/storage_redirect_20261107/training",
+  "copied_files": [
+    {
+      "path": "run_config.json",
+      "bytes": 3565,
+      "sha256": "429c865b7adeebdf5636a0827bec4d0f2131d0f87f438c65af0ba8917a00b021"
+    }
+  ],
+  "all_sha256_verified": true,
+  "training_configuration_changed": false
+}

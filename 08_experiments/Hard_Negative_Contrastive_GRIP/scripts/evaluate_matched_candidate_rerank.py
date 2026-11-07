@@ -14,15 +14,17 @@ from hard_negative_grip.rerank_audit import SCORE_RULE,prompt_digest,rank_fields
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--run-dir',type=Path,required=True);p.add_argument('--model',required=True);a=p.parse_args()
     run=a.run_dir;c=base.verify(run);model_spec=c['models'][a.model];out=run/'models'/a.model
+    candidate_count=c.get('candidate_count',10)
     with base.locked(out):
         cohort=base.jsonl(run/'inputs/cohort.jsonl')
         weights={name:sha256(Path(model_spec['adapter_dir'])/name) for name in ('adapter_config.json','adapter_model.safetensors')}
         base.require(weights==model_spec['adapter_sha256'],'source adapter changed')
         identity=dict(model=a.model,adapter_sha256=weights,cohort_sha256=c['cohort_sha256'],code_digest=c['code_digest'],score_rule=SCORE_RULE,
                       score_batch_size=c['score_batch_size'],max_length=c['max_length'],seed=2026,dtype='bfloat16',tie_rule='original_candidate_order',base_model_identity=c['base_model_identity'])
+        if 'candidate_count' in c:identity['candidate_count']=candidate_count
         if (out/'identity.json').exists():base.require(read_json(out/'identity.json')==identity,'resume model/source/scorer identity changed')
         else:base.require(not (out/'predictions.jsonl').exists(),'predictions without identity');write_json(out/'identity.json',identity)
-        rows=read_rows(out/'predictions.jsonl',cohort,repair_terminal=True)
+        rows=read_rows(out/'predictions.jsonl',cohort,repair_terminal=True,expected_candidates=candidate_count)
         if len(rows)==len(cohort):
             write_json(out/'summary.json',summary(rows,len(cohort)));print('Already complete; no repeated inference.',flush=True);return
         # These imports use the exact frozen evaluation loader and scoring implementation.
@@ -56,10 +58,10 @@ def main():
                     result=score_candidate_prompt(model,tokenizer,input_ids.to(next(model.parameters()).device),item['candidates'],score_clip=None,candidate_batch_size=c['score_batch_size'])
                     raw=[float(v) for v in result.scores[0].detach().cpu().tolist()];lengths=[int(v) for v in result.token_lengths[0].detach().cpu().tolist()]
                     base.require(lengths==expected_lengths,'scorer answer-token accounting changed')
-                    fields=rank_fields(item['candidates'],raw,item['gold_index'],lengths)
+                    fields=rank_fields(item['candidates'],raw,item['gold_index'],lengths,expected_candidates=candidate_count)
                     row=dict(item,split='test',raw_candidate_scores=raw,candidate_token_lengths=lengths,prompt_tokens=token_count,prompt_token_sha256=prompt_digest(ids),score_rule=SCORE_RULE,**fields)
                     base.require(any(normalize_answer(row['response'])==normalize_answer(t) for t in targets)==row['correct'],'rank/EM disagreement')
-                    audit_row(row,item)
+                    audit_row(row,item,expected_candidates=candidate_count)
                     stream.write(json.dumps(row,ensure_ascii=False)+'\n');stream.flush();os.fsync(stream.fileno());rows.append(row)
                     elapsed=time.monotonic()-scoring_started;done=len(rows)-initial
                     heartbeat=dict(status='running',completed=len(rows),expected=len(cohort),scoring_elapsed_seconds=round(elapsed,3),questions_per_second=done/elapsed,

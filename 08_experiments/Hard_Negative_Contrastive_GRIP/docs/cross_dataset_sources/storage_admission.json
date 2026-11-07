@@ -1,0 +1,19 @@
+{
+  "at": "2026-11-07T06:03:51.675008+00:00",
+  "host_backing_volume": "/mnt/c",
+  "host_vhdx": "C:\\Users\\Administrator\\AppData\\Local\\Packages\\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc\\LocalState\\ext4.vhdx",
+  "vhdx_file_bytes": 232393801728,
+  "physical_training_root": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107",
+  "physical_free_bytes": 91738316800,
+  "estimated_remaining_training_bytes": 79985436274,
+  "reserve_bytes": 8589934592,
+  "per_dataset_estimates": {
+    "nell23k": 23201558336,
+    "wn18rr": 32510406158
+  },
+  "plan_before_sha256": "917336660ae2405bcb5d4c6808ef4a0de55dfbf9ba4f75f922d28f8019b5ea90",
+  "plan_after_sha256": "b9ab88c6f9bff7ca70ed47974a27f6bda670a58c153625dd26bc3e7c84a506dd",
+  "originals_retained": true,
+  "model_or_optimizer_configuration_changed": false,
+  "current_k3_process_restarted": false
+}
