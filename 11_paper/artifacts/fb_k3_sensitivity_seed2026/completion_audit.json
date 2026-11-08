@@ -1,0 +1,32 @@
+{
+  "status": "pass",
+  "at": "2026-11-07T10:16:44.995875+00:00",
+  "k": 3,
+  "rows_verified": 10000,
+  "candidate_scores_verified": 100000,
+  "metrics": {
+    "status": "completed",
+    "n": 10000,
+    "expected": 10000,
+    "h1": 0.9528,
+    "mrr": 0.9741007539682536,
+    "h3": 0.9963,
+    "h10": 1.0
+  },
+  "delta_vs_k9": {
+    "n": 10000,
+    "paired_counts": {
+      "both_correct": 9329,
+      "rescue": 199,
+      "regression": 156,
+      "both_wrong": 316
+    },
+    "net_correct": 43,
+    "delta_h1_pp": 0.43,
+    "delta_mrr_pp": 0.16013492063492052
+  },
+  "adapter_sha256": {
+    "adapter_config.json": "6fa202d9271422a5e1c8cf2e9f9f493f568578d32a0b6f6622a2c2ef8f569cbb",
+    "adapter_model.safetensors": "ee8cc287d03d9fab8a974df77fea3c860fc1197fa339c368931fae79131c4eda"
+  }
+}

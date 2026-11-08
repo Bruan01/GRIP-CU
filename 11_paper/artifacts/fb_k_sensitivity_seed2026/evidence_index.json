@@ -1,0 +1,7 @@
+{
+  "queue_dir": "/home/kieran/grip-cu-runs/fb_rerank_to_k_chain_20261107",
+  "plan_sha256": "29c3822c80acf57e697e053d4687d5ecbe50242a0f0c06fdf699476ae5648bf0",
+  "parent_contract_sha256": "e7d14aefcb4c3fd1d7fef81b4ebacbcc1aae1d2585b995894cad795120569eff",
+  "new_training_runs": 2,
+  "all_models_logs_checkpoints_scores_retained": true
+}

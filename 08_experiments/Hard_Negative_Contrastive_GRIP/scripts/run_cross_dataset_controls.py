@@ -15,11 +15,14 @@ import json
 from pathlib import Path
 import shutil
 import sys
+import subprocess
+import time
 
 HNG = Path(__file__).resolve().parents[1]
 ROOT = HNG.parents[1]
 sys.path[:0] = [str(HNG/'scripts'), str(HNG/'src'), str(ROOT/'13_base_method/grip-exp')]
 import run_fb_random9_control as base
+from source_checkpoint_retention import retention_limit, execution_contract, cli_retention, audit_retention, AMENDMENT
 from hard_negative_grip.counterfactuals import load_train_relation_profiles
 from hard_negative_grip.frozen_random import score_groups, uniform_bank_row, validate_frozen_random_manifest
 from hard_negative_grip.frequency_matched import matched_bank_row, validate_frequency_manifest
@@ -133,7 +136,7 @@ def make_training_argv(reference, arm, design):
             i = cmd.index(flag)
             del cmd[i:i+2]
     cmd[cmd.index('--save_steps')+1] = str(design['save_steps'])
-    cmd[cmd.index('--save_total_limit')+1] = '0'  # retain every planned checkpoint
+    cmd[cmd.index('--save_total_limit')+1] = str(retention_limit(design))
     return cmd
 
 
@@ -336,6 +339,17 @@ def cli_check(run, c):
     for name in ARMS:
         arm = run/name
         path = arm/'checks/cli.json'
+        if path.exists():
+            actual = read_json(arm/'training/run_config.json')
+            expected_limit = int(c['training_argv'][name][c['training_argv'][name].index('--save_total_limit')+1])
+            if actual['save_total_limit'] != expected_limit:
+                require(not (arm/'training/listed/adapter/run_metadata.json').exists()
+                        and not list((arm/'training/trainer_listed').glob('checkpoint-*')), 'cannot rewrite retention of an already trained arm')
+                history = run/AMENDMENT.parent/('preflight_before_fix_'+name)
+                history.mkdir(exist_ok=True)
+                shutil.copy2(path, history/'cli.json')
+                shutil.copy2(arm/'training/run_config.json', history/'run_config.json')
+                path.rename(history/'cli_original.json')
         if not path.exists():
             (arm/'training').mkdir(exist_ok=True)
             program = (
@@ -348,10 +362,11 @@ def cli_check(run, c):
                 "verify_cli(read_json(arm/'reference/run_config.json'),read_json(arm/'training/run_config.json'),name,arm);"
                 "write_json(arm/'checks/cli.json',{'n_qa':len(assets[2]),'listed_qa':sum(bool(r['listed_relations']) for r in assets[3]),'model_loaded':False})"
             )
-            base.execute(arm, 'cli_preflight', [str(base.PYTHON), '-c', program, str(run/'contract.json'), name])
+            base.execute(arm, 'cli_preflight', [str(base.PYTHON), '-c', program, c.get('runtime_contract_path',str(run/'contract.json')), name])
         check = read_json(path)
         require(check == dict(n_qa=c['design']['qa_count'], listed_qa=c['design']['listed_qa_count'], model_loaded=False), 'CPU preflight coverage mismatch')
         verify_cli(read_json(run/'reference/run_config.json'), read_json(arm/'training/run_config.json'), name, arm)
+        cli_retention(run, c, name, read_json(arm/'training/run_config.json'))
     write_json(run/'checks/cli.json', dict(status='pass', arms=list(ARMS), model_loaded=False, at=base.now()))
     write_json(run/'status.json', dict(stage='preflighted', status='ready', at=base.now(), new_training_started=False))
 
@@ -375,10 +390,8 @@ def validate_training(run, c, name):
     meta = read_json(arm/'training/listed/adapter/run_metadata.json')
     require(state['global_step'] == meta['trainer_global_step'] == d['optimizer_steps']
             and state['max_steps'] == meta['trainer_max_steps'] == d['scheduler_max_steps'], 'optimizer/scheduler mismatch')
-    for step in range(d['save_steps'], d['optimizer_steps']+1, d['save_steps']):
-        checkpoint = arm/f'training/trainer_listed/checkpoint-{step}'
-        for filename in ('adapter_model.safetensors','optimizer.pt','scheduler.pt','rng_state.pth','trainer_state.json'):
-            require((checkpoint/filename).is_file(), 'missing retained checkpoint state: '+str(checkpoint/filename))
+    retention = audit_retention(run, c, name)
+    write_json(arm/'checks/checkpoint_retention.json',retention)
     return meta
 
 
@@ -430,6 +443,18 @@ def evaluate_ranking(run, c, name):
 
 
 def evaluate_direct(run, c, name):
+    launch = run/'recovery/checkpoint_retention_20261108/evaluation_launch.json'
+    if name == 'random9' and launch.exists():
+        session = read_json(launch)['session']
+        done = launch.parent/'direct_evaluation_done.json'
+        while True:
+            alive = subprocess.run(['tmux','has-session','-t',session],capture_output=True).returncode == 0
+            if done.exists() and not alive:
+                require(read_json(done)['status']=='completed','recovery evaluation failed')
+                return  # Existing, audited model evaluated exactly once by recovery worker.
+            require(alive,'recovery evaluation vanished before completion; no blind retry')
+            write_json(run/'status.json',dict(stage='waiting_recovery_direct',status='running',at=base.now()))
+            time.sleep(15)
     arm = run/name
     out = arm/'evaluation/test'
     base.execute(arm, 'eval_test', [str(base.PYTHON), str(run/'code_snapshot'/base.REL_HNG/'scripts/evaluate_adapter.py'),
@@ -487,12 +512,16 @@ def report(run, c):
                           process_reported_training_seconds=meta.get('seconds'), candidate_forwards=meta.get('candidate_forwards'),
                           timing_scope='process metadata only; retain all resource/event/attempt logs for total cost'))
     write_csv(paper/'training_cost.csv', costs)
+    retention_audits={name:audit_retention(run,c,name) for name in ARMS}
+    write_json(paper/'checkpoint_retention.json',retention_audits)
     result = dict(status='completed', at=base.now(), experiment_id=c['experiment_id'], dataset=d['dataset'],
                   seed=2026, metrics=metrics, comparisons=comparisons, new_training_runs=2,
                   reused_full=True, original_candidate_count=d['candidate_count'],
                   paper_role='claim-carrying' if d['dataset']=='nell23k' else 'supporting', section_id='experiments',
                   item_id='SC_CTRL_SOURCES_'+d['dataset'].upper(), claim_links=['C2'],
                   limitations=d['limitations'], reporting_policy='retain every arm and signed difference; no score-based inclusion or test-based retuning',
+                  checkpoint_retention=retention_audits,
+                  controller_amendment=dict(path=str(run/AMENDMENT),sha256=sha256(run/AMENDMENT)) if (run/AMENDMENT).exists() else None,
                   next_action='retain complete evidence; write scope-appropriate interpretation; no new runs')
     write_json(paper/'result.json', result)
     end = chr(92)*2
@@ -503,8 +532,13 @@ def report(run, c):
         'The quota control inherits Full per-question frequency bins, not an independent frequency-only method. '
         'One Full-selected configuration/seed; direct decoding and original-list ranking are distinct protocols. '
         'WN has eleven original evaluation options; NELL has ten. No full-graph filtered MRR claim.\n')
+    if any(a['missing_steps'] for a in retention_audits.values()):
+        with (paper/'RESULTS.md').open('a') as stream:
+            stream.write('\nRetention failure: NELL Random early checkpoints 8/16/24 were deleted by the original effective save limit=1. Final32 weights/optimizer/scheduler/RNG and full training logs survive; earlier weights are irrecoverable. No retraining or model replacement. See checkpoint_retention.json.\n')
     entries = []
     folders = ['inputs','reference','bank','code_snapshot','paper','checks']
+    if (run/AMENDMENT).exists():
+        folders.append(str(AMENDMENT.parent))
     folders += [name+'/'+folder for name in ARMS for folder in ('training','evaluation','logs','checks')]
     folders += ['ranking/'+name+'/'+folder for name in METHODS for folder in ('inputs','models','logs')]
     for folder in folders:
@@ -512,7 +546,7 @@ def report(run, c):
             if p.is_file() and '__pycache__' not in p.parts and p.name != 'run.lock':
                 entries.append(dict(path=str(p.relative_to(run)), bytes=p.stat().st_size, sha256=sha256(p)))
     write_json(run/'artifact_manifest.json', dict(at=base.now(), artifacts=entries,
-        policy='retain all weights/checkpoints/optimizer/RNG/raw generation/raw candidate scores; mutable control logs separately retained'))
+        policy='retain every existing state and raw output; checkpoint_retention.json explicitly records any irrecoverable historical loss; mutable control logs separate'))
     dest = Path(c['repository_root'])/('11_paper/artifacts/'+d['dataset']+'_source_controls_seed2026')
     dest.mkdir(parents=True, exist_ok=True)
     for p in paper.iterdir():
@@ -552,6 +586,7 @@ def main():
     with base.locked(run):
         try:
             c = prepare(run, a.config) if a.action in ('prepare','run') else base.verify(run)
+            c = execution_contract(run,c)
             if a.action == 'check':
                 cli_check(run, c)
             elif a.action == 'run':

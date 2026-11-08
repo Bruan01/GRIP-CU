@@ -1,0 +1,6 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/fb_k15_sensitivity_20261107_seed2026",
+  "contract_sha256": "c1fd731cd16ef67f6dc03c82c3399689c23d33343eec14a03cbf43b9854f5b6e",
+  "archive_sha256": "0bdbd3e303a3bb393b40992f95d3b554f79724cb86a82af3faa108172ed96139",
+  "borrowed_sources_must_be_retained": true
+}

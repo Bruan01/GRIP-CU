@@ -460,7 +460,7 @@
     {
       "id": "SC_SENS_K",
       "dataset": "FB15K237-2",
-      "status": "K3 restarted after instance interruption; K15 waiting",
+      "status": "observed-single-seed-completed",
       "comparison": [
         "Full K3",
         "reused Full K9",
@@ -480,23 +480,24 @@
         "C7"
       ],
       "evidence_refs": [
-        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/RUN_RECORD.json"
+        "11_paper/artifacts/fb_k_sensitivity_seed2026/result.json",
+        "11_paper/artifacts/fb_k_sensitivity_seed2026/completion_audit_20261108.json"
       ],
       "new_training_runs": 2,
       "ranking_only": true,
       "evaluation_options": 10,
       "seed": 2026,
       "known_gaps": [
-        "K3 restarted after interrupted checkpoint save; K15 waiting; no completed new-K metrics",
-        "single Full-K9-selected configuration and seed",
-        "ranking-only; no generation or cross-K superiority claim"
+        "one Full-K9-selected configuration/seed",
+        "ranking only; fixed updates not equal FLOPs",
+        "K9 cost missing, K3 failed-attempt overhead retained separately"
       ],
       "recovery_ref": "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/recovery_20261107.json"
     },
     {
       "id": "SC_CTRL_SOURCES_NELL23K",
       "dataset": "nell23k",
-      "status": "CPU-preflighted; watchdog waiting for FB K; no new control training or metrics",
+      "status": "Random32 trained, direct evaluation recovered; frequency pending",
       "comparison": [
         "reused Full K9",
         "new Uniform Random K9",
@@ -520,14 +521,15 @@
       ],
       "known_gaps": [
         "no completed new control metrics",
-        "one historical Full-selected configuration/seed; historical test exposure retained"
+        "one historical Full-selected configuration/seed; historical test exposure retained",
+        "Random early8/16/24 checkpoints irrecoverably lost due effective retention1; final32/state/curve survive; no retraining"
       ],
       "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows"
     },
     {
       "id": "SC_CTRL_SOURCES_WN18RR",
       "dataset": "wn18rr",
-      "status": "CPU-preflighted; watchdog waiting for FB K; no new control training or metrics",
+      "status": "not started; corrected effective retention6 preflight passed; queued after NELL",
       "comparison": [
         "reused Full K9",
         "new Uniform Random K9",

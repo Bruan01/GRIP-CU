@@ -1,9 +1,9 @@
 {
   "at": "2026-11-07T06:04:44.146453+00:00",
-  "status": "watcher_deployed_awaiting_fb_k",
+  "status": "running_nell_after_retention_recovery",
   "queue_dir": "/home/kieran/grip-cu-runs/cross_dataset_sources_20261107_seed2026",
   "queue_session": "cross_dataset_sources_watch_20261107",
-  "plan_sha256": "b9ab88c6f9bff7ca70ed47974a27f6bda670a58c153625dd26bc3e7c84a506dd",
+  "plan_sha256": "443704b20dc94985feec614039f2dc2111aa819c5e56774b1d8a9ad7d68ff99b",
   "watcher_launch_receipt": {
     "at": "2026-11-07T05:56:47.345856+00:00",
     "session": "cross_dataset_sources_watch_20261107",
@@ -14,10 +14,11 @@
       "--plan",
       "/home/kieran/grip-cu-runs/cross_dataset_sources_20261107_seed2026/plan.json"
     ],
-    "plan_sha256": "b9ab88c6f9bff7ca70ed47974a27f6bda670a58c153625dd26bc3e7c84a506dd",
-    "code_manifest_sha256": "831cffe06cb464b79c0fb7b1a660d32fed32bf9ede307e185c8315798e9c5b98",
+    "plan_sha256": "443704b20dc94985feec614039f2dc2111aa819c5e56774b1d8a9ad7d68ff99b",
+    "code_manifest_sha256": "75377a053c582adc63ec40c6fdcf5f8128c11f19b4b422a62a1b62b1562ce79e",
     "new_control_gpu_training_started": false,
-    "storage_guard_restarted_at": "2026-11-07T06:03:51.675008+00:00"
+    "storage_guard_restarted_at": "2026-11-07T06:03:51.675008+00:00",
+    "retention_recovery_restarted_at": "2026-11-08T06:30:19.000493+00:00"
   },
   "frozen_watcher_code_files": 122,
   "max_new_training_runs": 4,
@@ -86,12 +87,14 @@
           "borrowed": true
         }
       },
-      "new_training_started": false,
+      "new_training_started": true,
       "new_metrics_available": false,
       "physical_training_outputs": {
         "random9": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/random9/training",
         "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training"
-      }
+      },
+      "retention_amendment_sha256": "ffcfd3da044d51b827fa7608d9620fd0a19f2fd84566d7cae994a2610efb0225",
+      "current_status": "random32 trained; direct evaluation recovering; frequency not started"
     },
     {
       "dataset": "wn18rr",
@@ -162,14 +165,16 @@
       "physical_training_outputs": {
         "random9": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training",
         "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training"
-      }
+      },
+      "retention_amendment_sha256": "ec785800bd5092b60e972ebe2309be95da9c7a0a27dbb42da85d76082915302d",
+      "current_status": "not started; corrected preflight complete"
     }
   ],
   "tests": {
     "status": "pass",
-    "passed": 76,
+    "passed": 85,
     "warnings": 14,
-    "seconds": 44.28
+    "seconds": 43.18
   },
   "recovered_fb_checkpoint8": {
     "path": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8",
@@ -360,26 +365,65 @@
   ],
   "runtime_training_code_sha256_matched_across_datasets_and_repository": true,
   "watcher_observation": {
-    "at": "2026-11-07T06:06:04.553875+00:00",
-    "stage": "waiting_fb_k",
+    "at": "2026-11-08T06:38:52.313906+00:00",
+    "stage": "running_nell23k",
     "status": "running",
-    "parent": {
-      "stage": "running_k3",
+    "completed_datasets": [],
+    "child": {
+      "stage": "waiting_recovery_direct",
       "status": "running",
-      "at": "2026-11-07T06:06:02.512779+00:00",
-      "completed_k": [],
-      "experiment_state": {
-        "at": "2026-11-07T06:05:49.400851+00:00",
-        "stage": "train",
-        "status": "running",
-        "pid": 10010,
-        "elapsed_seconds": 3557.8,
-        "log": "/home/kieran/grip-cu-runs/fb_k3_sensitivity_20261107_seed2026/logs/train_02.log"
-      }
+      "at": "2026-11-08T06:38:41.883223+00:00"
     }
   },
   "watcher_wait_observations": 12,
   "new_training_launch_receipts": 0,
   "root_training_symlink_is_traversed_by_existing_archive_inventory": true,
-  "post_storage_guard_wait_observations": 5
+  "post_storage_guard_wait_observations": 5,
+  "updated_at": "2026-11-08T06:34:19.576503+00:00",
+  "parent_fb_k_completed": true,
+  "retention_recovery": {
+    "at": "2026-11-08T06:34:19.576503+00:00",
+    "root_cause": "requested save_total_limit0 clamped to1 by project training entry",
+    "irrecoverable_missing_steps": {
+      "nell_random9": [
+        8,
+        16,
+        24
+      ]
+    },
+    "retrain_completed_random": false,
+    "future_effective_limits": {
+      "nell_frequency": 5,
+      "wn_random": 6,
+      "wn_frequency": 6
+    },
+    "original_contracts_unchanged": true,
+    "nell23k_random9_actual_save_total_limit": 0,
+    "nell23k_frequency_matched_actual_save_total_limit": 5,
+    "wn18rr_random9_actual_save_total_limit": 6,
+    "wn18rr_frequency_matched_actual_save_total_limit": 6,
+    "nell_final_model_audit": {
+      "at": "2026-11-08T06:20:08.953045+00:00",
+      "contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+      "final_adapter_sha256": {
+        "adapter_model.safetensors": "656ecf73891c1b1845d46fdacf98ffb3952eea41888a9f4ab3215f9ae6627c1e",
+        "adapter_config.json": "d5a5170ae90c88f3d18cb36ad604f347b312da326a20bbd2ad40742762d6b3ec"
+      },
+      "checkpoint32_state_sha256": "17bd615521647ae5dfe2f1bc82b422a2b99a496aaa1bc815bbfca2c340931b7b",
+      "missing_checkpoint_steps": [
+        8,
+        16,
+        24
+      ],
+      "actual_completed_optimizer_steps": 32,
+      "scheduler_max_steps": 240,
+      "final_state_complete": true,
+      "checkpoint32_and_final_weights_identical": true,
+      "earlier_weights_recoverable": false,
+      "no_retraining": true
+    }
+  },
+  "post_retention_fix_observations": 18,
+  "recovery_direct_test_progress_observed": 860,
+  "recovery_direct_test_expected": 4943
 }

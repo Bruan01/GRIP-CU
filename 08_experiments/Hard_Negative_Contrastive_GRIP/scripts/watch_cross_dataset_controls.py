@@ -68,6 +68,12 @@ def launch_once(queue, stage):
                      and not (run/arm/'training/listed/adapter').exists(), 'training already started; do not duplicate')
     argv = [str(base.PYTHON), '-u', str(run/'code_snapshot'/base.REL_HNG/'scripts/run_cross_dataset_controls.py'),
             'run', '--config', str(run/'inputs/design.json'), '--run-dir', str(run)]
+    if 'controller_override' in stage:
+        override=Path(stage['controller_override'])
+        base.require(sha256(override)==stage['controller_override_sha256'],'amended controller changed')
+        from source_checkpoint_retention import AMENDMENT
+        base.require(sha256(run/AMENDMENT)==stage['retention_amendment_sha256'],'retention amendment changed')
+        argv[2]=str(override)
     receipt = dict(status='intent', at=base.now(), contract_sha256=stage['contract_sha256'],
                    session=stage['session'], argv=argv)
     write_json(receipt_path, receipt)

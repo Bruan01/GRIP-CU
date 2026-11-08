@@ -45,7 +45,12 @@ def test_generated_commands_preserve_training_budget_and_frozen_source(tmp_path,
     assert cmd[cmd.index('--listed_negative_source')+1] == 'frequency_matched'
     assert cmd[cmd.index('--random_manifest')+1] == str(tmp_path/'bank/frequency_matched.jsonl')
     assert '--relation_eligibility' not in cmd and '--relation_text_file' not in cmd
-    assert cmd[cmd.index('--save_total_limit')+1] == '0'
+    from hard_negative_grip.run_protection import checkpoint_training_kwargs
+    from source_checkpoint_retention import retention_limit
+    limit=int(cmd[cmd.index('--save_total_limit')+1])
+    assert limit==retention_limit(d)
+    effective=checkpoint_training_kwargs(d['save_steps'],limit)
+    assert effective['save_total_limit']>=d['optimizer_steps']//d['save_steps']
     assert '--max_steps' not in cmd
 
 

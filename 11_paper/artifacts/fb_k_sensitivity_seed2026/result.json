@@ -1,0 +1,72 @@
+{
+  "status": "completed",
+  "at": "2026-11-07T16:40:43.290801+00:00",
+  "experiment_id": "SC_FB_K_SENSITIVITY_SEED2026",
+  "seed": 2026,
+  "metrics": [
+    {
+      "k": 3,
+      "n": 10000,
+      "h1_percent": 95.28,
+      "mrr_percent": 97.41007539682536,
+      "h3_percent": 99.63
+    },
+    {
+      "k": 9,
+      "n": 10000,
+      "h1_percent": 94.85,
+      "mrr_percent": 97.24994047619045,
+      "h3_percent": 99.75
+    },
+    {
+      "k": 15,
+      "n": 10000,
+      "h1_percent": 95.03,
+      "mrr_percent": 97.318119047619,
+      "h3_percent": 99.63
+    }
+  ],
+  "comparisons": {
+    "k3_minus_k9": {
+      "n": 10000,
+      "paired_counts": {
+        "both_correct": 9329,
+        "rescue": 199,
+        "regression": 156,
+        "both_wrong": 316
+      },
+      "net_correct": 43,
+      "delta_h1_pp": 0.43,
+      "delta_mrr_pp": 0.16013492063492052
+    },
+    "k15_minus_k9": {
+      "n": 10000,
+      "paired_counts": {
+        "both_correct": 9355,
+        "rescue": 148,
+        "regression": 130,
+        "both_wrong": 367
+      },
+      "net_correct": 18,
+      "delta_h1_pp": 0.18,
+      "delta_mrr_pp": 0.06817857142857145
+    }
+  },
+  "training_runs": 2,
+  "reused_k9": true,
+  "evaluation_options": 10,
+  "ranking_only": true,
+  "section_id": "experiments",
+  "item_id": "SC_SENS_K",
+  "paper_role": "supporting",
+  "claim_links": [
+    "C7"
+  ],
+  "limitations": [
+    "one seed, fixed Full-K9-selected hyperparameters",
+    "fixed optimizer updates, not equal candidate FLOPs",
+    "no generation robustness or cross-K superiority over quota-matched controls",
+    "K9 training cost not remeasured; report missing cost explicitly"
+  ],
+  "next_action": "write all three K points and stop; no NELL or additional seed/HPO run"
+}

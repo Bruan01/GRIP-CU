@@ -1,0 +1,37 @@
+{
+  "schema": "source-retention-amendment-v1",
+  "at": "2026-11-08T06:25:16.272919+00:00",
+  "original_contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+  "controller_path": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/recovery/checkpoint_retention_20261108/controller_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_cross_dataset_controls.py",
+  "controller_sha256": "90a36df44502e35abc8b145a1daf11d51e6af53648efec41d9d2890f6bafbbf1",
+  "helper_path": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/recovery/checkpoint_retention_20261108/controller_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/source_checkpoint_retention.py",
+  "helper_sha256": "4231265b8f15fe97dff236c518709d2c267a33d0926daa8f43ae245861d8f3d0",
+  "original_argv_sha256": {
+    "random9": "86591e7701404847defe7d8b7e83a1ec27e7fde4a199abc12c9db4209022f618",
+    "frequency_matched": "f50f246cb42be95b2a711dc1f7e557599a96cb5a79b4288ce811970e1cb0a250"
+  },
+  "retention_limits": {
+    "random9": 0,
+    "frequency_matched": 5
+  },
+  "legacy_retention_loss": {
+    "random9": {
+      "missing_steps": [
+        8,
+        16,
+        24
+      ],
+      "irrecoverable": true,
+      "final_adapter_sha256": {
+        "adapter_model.safetensors": "656ecf73891c1b1845d46fdacf98ffb3952eea41888a9f4ab3215f9ae6627c1e",
+        "adapter_config.json": "d5a5170ae90c88f3d18cb36ad604f347b312da326a20bbd2ad40742762d6b3ec"
+      },
+      "checkpoint32_state_sha256": "17bd615521647ae5dfe2f1bc82b422a2b99a496aaa1bc815bbfca2c340931b7b",
+      "acknowledgment_before_evaluation_audit_at": "2026-11-08T06:20:08.953045+00:00"
+    }
+  },
+  "scientific_training_fields_changed": [],
+  "new_optimizer_runs": 0,
+  "scoring_or_candidate_banks_changed": false,
+  "reason": "save_total_limit=0 was clamped to 1; explicit checkpoint counts for unstarted arms; irreversible historical loss disclosed without retraining"
+}

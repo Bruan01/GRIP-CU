@@ -22,7 +22,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_FUTURE_CODEX_S | R2/R3 | 可选小规模补充 | CoDEx-S | 单独转换与关系候选协议 | deferred | MRR, candidate audit |
 | SC_FUTURE_CODEX_L | R2/R7 | 可选大规模压力测 | CoDEx-L | B1 / Random-9 / SC-CL-9 | optional, deferred | cost, MRR, coverage |
 | SC_FB_MATCHED_RERANK | R1/C2 | 直接EM接近时完整候选排序是否也接近 | FB15K237-2 | 既有Full/Full配额匹配/Uniform三权重 | observed 2026-11-07 06:35；Full/配额匹配/Uniform H@1=94.85/94.72/93.68，MRR=97.249940/97.151651/96.572242；Full−配额匹配净13题 | H@1/MRR/H@3、十候选分数/长度、配对rank、频率分组；完成三组后停止 |
-| SC_CTRL_SOURCES_NELL23K | R2/R4/C2 | 频率配额解释的跨图检验 | NELL23K | 复用Full / 新Uniform-9 / 新Full配额匹配-9 | CPU预检通过；守护等待FB K，无新控制训练或性能 | 固定32/240、原十选项；三方法直接EM/排序、配对和所有带符号差值 |
+| SC_CTRL_SOURCES_NELL23K | R2/R4/C2 | 频率配额解释的跨图检验 | NELL23K | 复用Full / 新Uniform-9 / 新Full配额匹配-9 | Random32训练已完成；保存错误导致早期8/16/24权重丢失，32及日志在；14:20恢复完整测试，无最终对照分数 | 固定32/240、原十选项；三方法直接EM/排序、配对和所有带符号差值 |
 | SC_CTRL_SOURCES_WN18RR | R2/R4/C2 | 小关系集合、近穷举负例时的边界 | WN18RR | 复用Full / 新Uniform-9 / 新Full配额匹配-9 | CPU预检通过；守护排在NELL审计后，无新性能；55题实体对未核实、历史池条件对照，B1差异未解决 | 固定125/125、原11选项；三方法直接EM/排序、候选重叠/强制槽及所有差值 |
 | SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | FB15K237-2已完成；NELL已授权新来源对照 | Random-9 + 同一InfoNCE / SC-CL-9 | observed-single-seed, fixed configuration, 2026-11-05；SC-CL89.90%/Random86.48%，+3.42pp | 10,000题完整直接解码EM、配对553/211/净342、配置及过程审计；见artifacts/fb_random9_control_seed2026 |
 | SC_CTRL_FREQMATCH | R4/C2 | 检验频率桶匹配能否复现Full表现 | FB已完成；NELL已授权新来源对照 | frequency-bin-matched Random-9 / Full / Uniform Random | observed 2026-11-06，频率桶匹配随机89.83%；Full89.90%，差+0.07pp/净7；相对均匀随机+3.35pp；频率解释未排除 | 固定32/120步、一次完整测试；五方法表、逐题CSV、频率/困难度诊断和训练曲线；不隔离结构机制 |
@@ -33,7 +33,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_ABL_UNIFORM | R5 | 均匀下限消融 | NELL | rho=0 | planned | MRR, valid rate |
 | SC_ABL_FILTER | R3/R8 | 过滤必要性 | NELL | remove train-known filter | planned-risk | collision, MRR |
 | SC_ABL_INFO_NCE | R6 | 候选损失副作用 | NELL/FB | B1 vs no/with InfoNCE | planned | EM, OOV, NLL |
-| SC_SENS_K | R5/C7 | Full训练负例数量的排序敏感性 | FB15K237-2 | K=3/9/15；K9复用 | K3于06:36启动，实例中断后13:03同配置重启；K15等待，尚无完成K模型或新性能 | 固定32/120、同10,000题十选项；H@1/MRR/H@3、K9配对、训练曲线/成本和完整检查点 |
+| SC_SENS_K | R5/C7 | Full训练负例数量的排序敏感性 | FB15K237-2 | K=3/9/15；K9复用 | observed-single-seed completed 2026-11-08 00:40；H@1=95.28/94.85/95.03，MRR=97.410075/97.249940/97.318119，H@3=99.63/99.75/99.63 | 三点、配对、完整检查点和成本范围；H@1跨度0.43pp，不认定最优K |
 | SC_SENS_RHO | R5 | mixture floor 敏感性 | NELL | rho=0/1/3/2/3 | planned | MRR, audit |
 | SC_SENS_TAU | R5 | utility 温度敏感性 | NELL | tau=0.10/0.25/0.50 | planned | MRR, entropy |
 | SC_AUDIT_LEAK | R3/R8 | split/wiring 硬门 | NELL/FB | train-only, known-pair, K=9 | observed implementation/run audit（NELL及FB train-only bank和wiring）；完整持出重叠审计另列 | pass/fail, manifest |

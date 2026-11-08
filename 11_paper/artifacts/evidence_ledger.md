@@ -2,6 +2,8 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-08 FB K3/9/15完整敏感性（C7） | `11_paper/artifacts/fb_k_sensitivity_seed2026/{result.json,completion_audit_20261108.json,INTERPRETATION.md}` | observed single-seed, all three points complete, fresh30000 rows/300000 scores | “H@1=95.28/94.85/95.03，MRR=97.410075/97.249940/97.318119；H@3=99.63/99.75/99.63。仅本获选配置/seed下变化有限，无单调收益，不宣称最优K、生成鲁棒性或跨K相对频率控制优势。” |
+| 2026-11-08 NELL保存错误与恢复 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/{RETENTION_RECOVERY_20261108.md,RECOVERY_20261108.json}` | Random32 trained; early8/16/24 irrecoverably lost; evaluation recovering, no final comparison | “最终模型、32步完整状态和曲线日志保留；请求0实际保留1，早期权重不可恢复。未来组上限修正，不重训或替换已完成模型。不能声称完整轨迹权重可重放。” |
 | 2026-11-07 FB K敏感性准备与接续守护 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/{RUN_RECORD.json,k3_preparation_audit.json,k15_preparation_audit.json}` | CPU preparation/CLI observed; watcher running; no new K training/results | “两组各3,109题Full K9重放和嵌套抽样通过，QA/损失元数据不变；守护等待三组重排后自动K3→K15，复用K9。不能把准备或排队写成K稳健性实测结论。” |
 | 2026-11-07 FB同候选完整重排 | `11_paper/artifacts/fb_matched_rerank_seed2026/{result.json,completion_audit_20261107.json,INTERPRETATION.md}` | observed single-seed, complete matched 10-way cohort | “Full/配额匹配/Uniform H@1=94.85/94.72/93.68，MRR=97.249940/97.151651/96.572242；Full−配额匹配净13题，排名亦接近。保留原直接EM及低频负结果，不宣称独有机制、统计显著或等效。” |
 | GRIP论文报告的知识图谱外部比较基线 | `13_base_method/grip-exp/grip-paper.pdf` 表2--3；主稿 `tab:grip-published-baselines` | published-reference transcription; not locally reproduced or protocol-matched | “原文报告OFA/GOFA与Qwen/Llama上下文变体的十选一准确率和平均输入token数；本文仅作外部文献参照，不据此计算SC-CL增益。FB15K237-2为10,000题本地子集，跨来源题目与候选身份未逐项核验。” |

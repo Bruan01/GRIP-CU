@@ -1,0 +1,4 @@
+k,reported_training_seconds,candidate_forwards,timing_scope
+3,9944.0,16500,adapter reported process time; recovery history separately retained
+9,,,reused historical K9; total resumed training cost not remeasured
+15,14280.6,66000,adapter reported process time; recovery history separately retained

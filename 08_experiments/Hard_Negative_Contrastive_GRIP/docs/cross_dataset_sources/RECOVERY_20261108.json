@@ -1,0 +1,42 @@
+{
+  "at": "2026-11-08T06:34:19.576503+00:00",
+  "root_cause": "requested save_total_limit0 clamped to1 by project training entry",
+  "irrecoverable_missing_steps": {
+    "nell_random9": [
+      8,
+      16,
+      24
+    ]
+  },
+  "retrain_completed_random": false,
+  "future_effective_limits": {
+    "nell_frequency": 5,
+    "wn_random": 6,
+    "wn_frequency": 6
+  },
+  "original_contracts_unchanged": true,
+  "nell23k_random9_actual_save_total_limit": 0,
+  "nell23k_frequency_matched_actual_save_total_limit": 5,
+  "wn18rr_random9_actual_save_total_limit": 6,
+  "wn18rr_frequency_matched_actual_save_total_limit": 6,
+  "nell_final_model_audit": {
+    "at": "2026-11-08T06:20:08.953045+00:00",
+    "contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+    "final_adapter_sha256": {
+      "adapter_model.safetensors": "656ecf73891c1b1845d46fdacf98ffb3952eea41888a9f4ab3215f9ae6627c1e",
+      "adapter_config.json": "d5a5170ae90c88f3d18cb36ad604f347b312da326a20bbd2ad40742762d6b3ec"
+    },
+    "checkpoint32_state_sha256": "17bd615521647ae5dfe2f1bc82b422a2b99a496aaa1bc815bbfca2c340931b7b",
+    "missing_checkpoint_steps": [
+      8,
+      16,
+      24
+    ],
+    "actual_completed_optimizer_steps": 32,
+    "scheduler_max_steps": 240,
+    "final_state_complete": true,
+    "checkpoint32_and_final_weights_identical": true,
+    "earlier_weights_recoverable": false,
+    "no_retraining": true
+  }
+}

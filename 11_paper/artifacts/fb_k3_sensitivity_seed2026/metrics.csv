@@ -1,0 +1,2 @@
+k,n,h1_percent,mrr_percent,h3_percent,optimizer_steps,scheduler_steps,reported_training_seconds,candidate_forwards,training_timing_scope
+3,10000,95.28,97.41007539682536,99.63,32,120,9944.0,16500,adapter reported process time; recovery history separately retained

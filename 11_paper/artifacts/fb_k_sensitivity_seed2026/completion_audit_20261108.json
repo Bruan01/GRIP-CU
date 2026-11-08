@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "at": "2026-11-08T06:31:15.178255+00:00",
+  "model_question_rows": 30000,
+  "candidate_scores": 300000,
+  "all_three_metrics_and_two_pairs_recomputed": true,
+  "all_K3_K15_planned_states_present": true,
+  "archive_scope": "file sizes freshly verified; full weights SHA inherited from completion audits, not newly rehashed",
+  "result_sha256": "86d1059cfee11c53f314fd8f2d2cf0eeb4df615e337d2609425e64e1c48b49c8",
+  "source_scores_sha256": {
+    "3": "5b66a972ce06205ddbb5165ca6503ac742fa641d12121576bafe787cc0e99d6a",
+    "9": "5272f87a5a64f8330d7ed22cda5fdf8739b82730bbae41e38db8939e4f26dadd",
+    "15": "7d0c2c5643127796bc8480041f0cb10efaf1365974c81f3306466698510b33d4"
+  }
+}

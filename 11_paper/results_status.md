@@ -1,6 +1,11 @@
 # Results status：必须保留在论文工作区
 
-更新日期：2026-11-07
+更新日期：2026-11-08
+
+2026-11-08更新：FB K敏感性已于00:40完整结束并审计。K3/9/15 H@1=95.28/94.85/95.03%，MRR=97.410075/97.249940/97.318119%，H@3=99.63/99.75/99.63%。单seed、同Full-K9获选配置；H@1跨度0.43pp，随K增加没有单调提升，不认定全局最优K，不外推生成鲁棒性或相对配额控制跨K优势。两组新K全部8/16/24/32权重及状态均在；结果、配对、成本范围和新鲜30000行/300000分数审计见`artifacts/fb_k_sensitivity_seed2026/`。
+
+NELL接续在05:02因保存上限错误停止：请求0被训练入口转成1，已完成Random32的8/16/24检查点被轮转删除，不可恢复。完整32步状态、最终模型、全部训练曲线日志在；14:20按原权重恢复直接测试，无重训。后续三组上限改为5/6/6并真实预检；独立恢复控制器/政策保留原契约SHA及错误现场，守护已恢复NELL→WN。详情见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/RETENTION_RECOVERY_20261108.md`。以下保留历史时点。
+
 
 新增授权队列为FB K3→K15→NELL来源对照→WN来源对照→停止。NELL/WN各新增Uniform与Full配额匹配各一组、复用各自Full；两图四组真实CPU入口预检全部通过，接续守护已部署并等待FB K，无新控制训练或性能。WN保留原11选项，55道历史QA实体对未核实，按原mask做条件对照并披露限制。完整计划见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/README.md`。
 

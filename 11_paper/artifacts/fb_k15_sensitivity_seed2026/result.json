@@ -1,0 +1,46 @@
+{
+  "status": "completed",
+  "at": "2026-11-07T16:37:55.501600+00:00",
+  "experiment_id": "SC_FB_K15_SENSITIVITY_SEED2026_FIXED32",
+  "k": 15,
+  "seed": 2026,
+  "metric": {
+    "k": 15,
+    "n": 10000,
+    "h1_percent": 95.03,
+    "mrr_percent": 97.318119047619,
+    "h3_percent": 99.63,
+    "optimizer_steps": 32,
+    "scheduler_steps": 120,
+    "reported_training_seconds": 14280.6,
+    "candidate_forwards": 66000,
+    "training_timing_scope": "adapter reported process time; recovery history separately retained"
+  },
+  "delta_vs_k9": {
+    "n": 10000,
+    "paired_counts": {
+      "both_correct": 9355,
+      "rescue": 148,
+      "regression": 130,
+      "both_wrong": 367
+    },
+    "net_correct": 18,
+    "delta_h1_pp": 0.18,
+    "delta_mrr_pp": 0.06817857142857145
+  },
+  "ranking_only": true,
+  "new_direct_generation": false,
+  "paper_role": "supporting",
+  "section_id": "experiments",
+  "item_id": "SC_SENS_K",
+  "claim_links": [
+    "C7"
+  ],
+  "limitations": [
+    "single seed at previously Full-K9-selected hyperparameters",
+    "fixed update/schedule budget, not equal candidate FLOPs",
+    "ten evaluation options fixed regardless of training K",
+    "no direct-generation robustness or across-K frequency-control superiority claim"
+  ],
+  "next_action": "retain all K points and stop"
+}

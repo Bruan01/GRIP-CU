@@ -7,3 +7,5 @@
 FB恢复后的第8步检查点：global_step=8 / max_steps=120；完整safetensors数据长度与文件长度一致，optimizer/scheduler/RNG文件具有有效zip结构，训练随后继续到第9步。守护运行观察另见RUN_RECORD。
 
 磁盘核验：Windows Lxss注册表确认Ubuntu VHDX位于C盘，C仅余约5.6GiB。六个当前/未来训练输出目录重定向到E盘；复制前后文件清单/大小/mtime不变，所有复制文件SHA一致，原目录保留recovery。K3进程PID10010未重启，继续第10步；现有归档rglob能遍历training根目录符号链接。实际E盘85.44GiB可用，后续产物估计74.49GiB，另保留8GiB；按每数据集启动前重新核验输出路径和真实物理余量。
+
+2026-11-08新增修复验证：五文件85 passed / 14 warnings，43.18秒；新增source_checkpoint_retention测试调用真实checkpoint_training_kwargs，证明0→1并拒绝未来不足的有效上限，锁定模型的历史缺失例外不能覆盖最终状态或新组。此前76项仅检查命令中的0，未验证入口映射，因此不足以证明保存策略正确。剩余三组真实CLI已确认5/6/6；已训完Random保持原32步权重，不重训。

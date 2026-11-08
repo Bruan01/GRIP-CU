@@ -20,7 +20,10 @@
         "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training"
       },
       "estimated_dataset_training_bytes": 23201558336,
-      "minimum_training_storage_free_bytes": 31791492928
+      "minimum_training_storage_free_bytes": 31791492928,
+      "controller_override": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026/recovery/checkpoint_retention_20261108/controller_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_cross_dataset_controls.py",
+      "controller_override_sha256": "90a36df44502e35abc8b145a1daf11d51e6af53648efec41d9d2890f6bafbbf1",
+      "retention_amendment_sha256": "ffcfd3da044d51b827fa7608d9620fd0a19f2fd84566d7cae994a2610efb0225"
     },
     {
       "dataset": "wn18rr",
@@ -37,7 +40,10 @@
         "frequency_matched": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training"
       },
       "estimated_dataset_training_bytes": 32510406158,
-      "minimum_training_storage_free_bytes": 41100340750
+      "minimum_training_storage_free_bytes": 41100340750,
+      "controller_override": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/recovery/checkpoint_retention_20261108/controller_snapshot/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_cross_dataset_controls.py",
+      "controller_override_sha256": "90a36df44502e35abc8b145a1daf11d51e6af53648efec41d9d2890f6bafbbf1",
+      "retention_amendment_sha256": "ec785800bd5092b60e972ebe2309be95da9c7a0a27dbb42da85d76082915302d"
     }
   ],
   "max_new_training_runs": 4,
@@ -55,5 +61,20 @@
   "host_backing_volume": "/mnt/c",
   "minimum_host_backing_free_bytes": 1073741824,
   "physical_training_volume": "/mnt/e",
-  "training_storage_policy": "all six current/future training output directories use E via preserved logical paths; originals retained; 8GiB physical reserve plus per-dataset checkpoint/optimizer/final-adapter estimate"
+  "training_storage_policy": "all six current/future training output directories use E via preserved logical paths; originals retained; 8GiB physical reserve plus per-dataset checkpoint/optimizer/final-adapter estimate",
+  "retention_recovery": {
+    "at": "2026-11-08T06:30:19.000493+00:00",
+    "original_NELL_random32_reused": true,
+    "irrecoverable_NELL_random_checkpoints": [
+      8,
+      16,
+      24
+    ],
+    "future_save_limits": {
+      "nell_frequency": 5,
+      "wn_random": 6,
+      "wn_frequency": 6
+    },
+    "scientific_hyperparameters_changed": false
+  }
 }
