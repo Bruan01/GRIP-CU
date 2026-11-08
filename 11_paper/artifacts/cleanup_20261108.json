@@ -1,0 +1,198 @@
+{
+  "deleted_tracked_files": [
+    {
+      "path": "11_paper/artifacts/SC-CL_ICLR_draft.pdf",
+      "sha256": "561ca2c17b601320ecd426e1815338cf9245f8b346fc00534aed8f25f55432e1",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/SC-CL_results_revision_20261106.pdf",
+      "sha256": "561ca2c17b601320ecd426e1815338cf9245f8b346fc00534aed8f25f55432e1",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/SC-CL_writing_revision_20261028.pdf",
+      "sha256": "2f358d14d9386dfdad82295fa132b7181b5442669da82409cc2dcb4d0852560d",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/README.md",
+      "sha256": "e8ac4e64bfc33f808971a2b14215dc148606129e1e8514e17dea3d78b2fa6926",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/artifacts/SC-CL_ICLR_draft.pdf",
+      "sha256": "880c4818c08ace7a0df7687db4a08b33a5cd5c0738625fe5ee72471633e5fef5",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/artifacts/build_report.md",
+      "sha256": "1eeec809182d107b4c0097baab909237bd2082db575a49181e00b6212290016c",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/main.tex",
+      "sha256": "de111099614fa745273ef235b7a8abc385a0b2e4469a128f9330dda80ca53f11",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/appendix.tex",
+      "sha256": "1e443b1a078048d2fabcc749d469155eec48ed380f586f15089d1825c65823ab",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/conclusion.tex",
+      "sha256": "28bccb92774fe2921ce93ad371667313f809a927b1383349ab1f85ab0f61b686",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/discussion.tex",
+      "sha256": "dda22dd99f0b776cf484418a8640c6e92558102d52af889dbc9b258834a39347",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/experiments.tex",
+      "sha256": "f6ae34467456f09a95ad6164cf867ff9221a5ac3cf0ee60657c163538d7cdfa1",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/formulation.tex",
+      "sha256": "0c1c47e00646e80dbdbd353594a60a83bf9788618c77204539ccc8f51b422c8d",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/introduction.tex",
+      "sha256": "1c6ca4f765ebda2172765abd222945f3a1d4840d6c4ebdfdeebbc3f384c464c9",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/method.tex",
+      "sha256": "383b9ba09b5c2841d7c44b1d93164e1ff8e3cac638ce9a4d9b3318da12b7e021",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/main/sections/related_work.tex",
+      "sha256": "18a5f9d8a49415ff49a75ea18f1fd136e7dfa54827477624b5e9e857f2acf547",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/paper_outline.md",
+      "sha256": "19f64ce64f689a21f1af2943098589c2606a1db39adcd623597bf4632f386be8",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/artifacts/before_writing_revision_20261028/section_plan.md",
+      "sha256": "71e11026d8e6704979f5ffd127aeb77f2586782257e66a2ad8254a83d292b0a4",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/SC-CL_full_review_exercise_student.pdf",
+      "sha256": "3fc6fce6a70a740bd54469cfb6b945667c122b8dee1303d81188c98ac17a70a7",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/main.tex",
+      "sha256": "bfff4d1256ef93f37ce237ba32a2e2b4161b4a8a5b1a80d74575b3f8b05a07c7",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/references.bib",
+      "sha256": "299ce24c3b96115a76404a86cb8ef9165ea9574489ab1c03c94c3eacdcd3d197",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/appendix.tex",
+      "sha256": "7faa067ab4a87359faad62105f4fab7e761a910e236a4092fd8573c79df3fd8c",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/conclusion.tex",
+      "sha256": "42228f91c91049578540b34481e139f8550c06bb81a3f696e504a501e1776e13",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/discussion.tex",
+      "sha256": "470c44beadd245adbf6299f3bede9cc7a2afbc18e8bcf1c1d69d11bb8ab7fd32",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/experiments.tex",
+      "sha256": "b46d6a68fae1fd8e23f556a633c8f2199291915740e1afa67e09e9d4cafed730",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/formulation.tex",
+      "sha256": "226efcc6692e596eedd8e57e2a9e9dfb9e3572df1c775b59834c3412133b4aa0",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/introduction.tex",
+      "sha256": "8a96f38efedfb10145b4e17cd0363ee0db4f7497c2d0dcd78c8c19b24ae813d6",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/method.tex",
+      "sha256": "4be8efa3a4b4b87afe5bc3cb0e32fb1666d4009642ffb08d301c83d1542d0441",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/full_paper_student/sections/related_work.tex",
+      "sha256": "e4e84d2752ec71b2b072c1707bb01dcc2fe71728e775e180ffefd129800a0862",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/instructor_key.md",
+      "sha256": "b38a3c79a498a9bd4c526e7039f1ab90297fb112fd4ad23d60dc439d9081866c",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/review_exercise_student.pdf",
+      "sha256": "d5cf7578217ee28ce833b795995c539ed57be0002256825a47a5ebb7f7038a06",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/teaching/review_exercise_student.tex",
+      "sha256": "cce3224b31437e8f1ce5efe48038e90df986ae969400a201aa8382c02f36ad74",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/template/iclr2026/iclr2026_conference.bib",
+      "sha256": "cdd86e7d4c31854dcf2145871657c944588a6d44c3b72e160ff4baa8df1a52fb",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/template/iclr2026/iclr2026_conference.pdf",
+      "sha256": "cb3d414cfa4702d52de94de1c8123c34b2cf46b7a5510df49dcc1014a6c266cf",
+      "recovery": "git history before this revision"
+    },
+    {
+      "path": "11_paper/template/iclr2026/iclr2026_conference.tex",
+      "sha256": "941b58de6e52f5538de0ebfe2d20425a79e1768cb271d453b7436904b5159859",
+      "recovery": "git history before this revision"
+    }
+  ],
+  "removed_ignored_build_files": [
+    "11_paper/teaching/build/review_exercise_student.aux",
+    "11_paper/teaching/build/review_exercise_student.fdb_latexmk",
+    "11_paper/teaching/build/review_exercise_student.fls",
+    "11_paper/teaching/build/review_exercise_student.log",
+    "11_paper/teaching/build/review_exercise_student.out",
+    "11_paper/teaching/build/review_exercise_student.pdf",
+    "11_paper/teaching/build/review_exercise_student.xdv",
+    "11_paper/teaching/build/student_page1.png",
+    "11_paper/teaching/build/student_page2.png",
+    "11_paper/teaching/full_paper_student/build/main.aux",
+    "11_paper/teaching/full_paper_student/build/main.bbl",
+    "11_paper/teaching/full_paper_student/build/main.blg",
+    "11_paper/teaching/full_paper_student/build/main.fdb_latexmk",
+    "11_paper/teaching/full_paper_student/build/main.fls",
+    "11_paper/teaching/full_paper_student/build/main.log",
+    "11_paper/teaching/full_paper_student/build/main.out",
+    "11_paper/teaching/full_paper_student/build/main.pdf",
+    "11_paper/teaching/full_paper_student/build/main.xdv",
+    "11_paper/teaching/full_paper_student/build/page1.png",
+    "11_paper/artifacts/before_writing_revision_20261028/main/build/main.pdf"
+  ],
+  "retained": "all figures, measured results, tables, source indices, audits, main source, required template",
+  "canonical_pdf": "11_paper/main/main.pdf"
+}

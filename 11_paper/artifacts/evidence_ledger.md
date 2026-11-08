@@ -34,4 +34,6 @@
 | FB 当前 SC-CL bank | `results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/{metadata,wiring}.json`；manifest SHA `bbb24960d747f12a6120f541afbc409a3fef4c922e9ae044e316d8fe2952c71c` | observed bank, wiring and selected test | “train-only bank已冻结，wiring保持12,136条生成QA；当前方法单seed完整测试已完成，见本表FB结果行。” |
 | WN18RR 单种子探索性直接解码 | `results/hpo/wn18rr_sccl_seed2026/lambda0p25_final_test/summary.json`、`predictions.jsonl`、`search_outcome.json`；本地 B1 `results/runs/wn18rr_sccl_3090_20261023/eval/b1/summary.json` | observed partial | “WN18RR 选定候选损失权重 0.25 后一次全测试 EM=86.89%；本地 B1=32.67%；完整重排和公平对照缺失，原论文五次均值不可作配对收益” |
 | CoDEx-M数据协议 | 官方数据、关系文本、全量10-way eval；当前方法结果见本表新增审计行 | observed data; method observed single-seed | CoDEx硬负例不作为关系候选真值；本地单种子生成EM不等同于完整原论文协议复现 |
-| ICLR PDF 编译 | `11_paper/artifacts/SC-CL_ICLR_draft.pdf`、build log | observed artifact | “稿件可编译，非科学结果证据” |
+| ICLR PDF 编译 | `11_paper/main/main.pdf`、`11_paper/artifacts/build_report.md` | observed artifact | “稿件可编译，非科学结果证据” |
+
+2026-11-08写作同步：已完成的FB三来源匹配重排与K3/9/15敏感性正式进入主文（tab:fb-rerank、tab:fb-k-sensitivity）；新增analysis章节承担频率分层与K边界解释。C2保持收窄，C7仅为单seed固定配置下的有限范围排序敏感性；NELL/WN运行中对照不纳入新性能结论。当前唯一全文入口main/main.tex与main/main.pdf。

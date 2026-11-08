@@ -1,0 +1,67 @@
+{
+  "status": "pass",
+  "rank_recomputation": {
+    "fb_matched_rerank_seed2026": {
+      "n": 10000,
+      "metrics_recomputed": {
+        "full": {
+          "h1_percent": 94.85,
+          "mrr_percent": 97.24994047619043,
+          "h3_percent": 99.75
+        },
+        "frequency_matched": {
+          "h1_percent": 94.72,
+          "mrr_percent": 97.15165079365077,
+          "h3_percent": 99.66
+        },
+        "random9": {
+          "h1_percent": 93.68,
+          "mrr_percent": 96.57224206349207,
+          "h3_percent": 99.56
+        }
+      },
+      "all_pair_counts_match": true,
+      "input_sha256": "a680b59b8fd59c349147ef9e1f8e631ff0939c1d46e19a2f0f8b791e680d3a92"
+    },
+    "fb_k_sensitivity_seed2026": {
+      "n": 10000,
+      "metrics_recomputed": {
+        "3": {
+          "h1_percent": 95.28,
+          "mrr_percent": 97.41007539682536,
+          "h3_percent": 99.63
+        },
+        "9": {
+          "h1_percent": 94.85,
+          "mrr_percent": 97.24994047619043,
+          "h3_percent": 99.75
+        },
+        "15": {
+          "h1_percent": 95.03,
+          "mrr_percent": 97.318119047619,
+          "h3_percent": 99.63
+        }
+      },
+      "all_pair_counts_match": true,
+      "input_sha256": "995e30e0245135410034301be7eadc8fb2e15985775e6af637c9e9bb7edb3ede"
+    }
+  },
+  "manuscript_dependencies": 21,
+  "labels": 36,
+  "cited_keys": 16,
+  "preserved_tracked_figure_files": 57,
+  "new_training": false,
+  "evidence_scope": "Recomputed committed per-question rank exports; prior full-score audits inspected, raw GPU score archives not rerun.",
+  "build": {
+    "engine": "XeLaTeX + BibTeX via latexmk",
+    "exit_code": 0,
+    "pages": 14,
+    "overfull_boxes": 0,
+    "undefined_references": 0,
+    "undefined_citations": 0,
+    "missing_characters": 0,
+    "pdf_sha256": "59ddd79fd0528dfa8789cf396e8cf986dfe118bfd91353bf0b5a23f6f7f4ae93",
+    "remaining_warnings": "CJK font style substitutions and some underfull boxes",
+    "visual_inspection": "First page and analysis/discussion pages rendered; tables readable, no overlap"
+  }
+}

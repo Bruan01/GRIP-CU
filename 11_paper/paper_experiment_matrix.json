@@ -455,7 +455,9 @@
         "one Full-selected configuration and seed",
         "near-null Full-minus-quota comparison; no unique mechanism claim"
       ],
-      "scope": "frozen existing weights; same original ten options; no training; retain prior direct-EM and low-frequency evidence"
+      "scope": "frozen existing weights; same original ten options; no training; retain prior direct-EM and low-frequency evidence",
+      "manuscript_display": "tab:fb-rerank",
+      "manuscript_section": "experiments"
     },
     {
       "id": "SC_SENS_K",
@@ -492,7 +494,9 @@
         "ranking only; fixed updates not equal FLOPs",
         "K9 cost missing, K3 failed-attempt overhead retained separately"
       ],
-      "recovery_ref": "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/recovery_20261107.json"
+      "recovery_ref": "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/recovery_20261107.json",
+      "manuscript_display": "tab:fb-k-sensitivity",
+      "manuscript_section": "analysis"
     },
     {
       "id": "SC_CTRL_SOURCES_NELL23K",

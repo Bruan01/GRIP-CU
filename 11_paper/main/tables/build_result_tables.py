@@ -36,6 +36,13 @@ macro_rows=[]
 for method,label in [('random9','均匀随机-9'),('profile_only','Profile-only-9'),('violation_only','Violation-only-9'),('frequency_matched','Full配额匹配随机-9'),('full','Full SC-CL-9')]:
     macro_rows.append([label]+[f"{next(x for x in slices['metrics'] if x['frequency_group']==g and x['method']==method)['macro_relation_em_percent']:.2f}" for g in ('low','middle','high','all')])
 emit('fb_macro.tex','FB五方法的按关系等权平均EM（\\%）。分别在各组测试中出现的关系内等权；全体一列对全部215个测试关系等权，而不是对三组均值等权。低、中、高频组分别包含67、72和76个测试关系。','tab:fb-macro','lrrrr','方法 & 低频 & 中频 & 高频 & 全体关系',macro_rows)
-manifest={str(PAPER/'artifacts'/name):hashlib.sha256((PAPER/'artifacts'/name).read_bytes()).hexdigest() for name in source_names+['fb_frequency_matched_control_seed2026/result.json','fb_component_ablation_seed2026/result.json','fb_random9_control_seed2026/result.json','fb_frequency_slices_seed2026/result.json']}
-(PAPER/'artifacts/writing_revision_20261106/table_sources.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
-print('Built five evidence-backed manuscript tables.')
+rerank=read('fb_matched_rerank_seed2026/result.json')
+ks=read('fb_k_sensitivity_seed2026/result.json')
+assert rerank['status']=='completed' and len(rerank['metrics'])==3
+assert [x['k'] for x in ks['metrics']]==[3,9,15]
+labels={'full':'Full SC-CL-9','frequency_matched':'Full配额匹配随机-9','random9':'均匀随机-9'}
+emit('fb_rerank.tex','FB同题同十选项的完整候选重排（\\%，seed=2026，$n=10{,}000$）。复用三个固定模型，无新训练或选模；直接解码结果另列于表~\\ref{tab:fb-controls}。','tab:fb-rerank','lrrr','候选来源 & H@1 & MRR & H@3',[[labels[x['method']],f"{x['h1_percent']:.2f}",f"{x['mrr_percent']:.4f}",f"{x['h3_percent']:.2f}"] for x in rerank['metrics']])
+emit('fb_k_sensitivity.tex','FB训练负例数的排序敏感性（\\%，seed=2026）。同10,000题及原十选项，K9复用；各K保持相同优化步数，非等计算量。','tab:fb-k-sensitivity','rrrr','训练负例$K$ & H@1 & MRR & H@3',[[x['k'],f"{x['h1_percent']:.2f}",f"{x['mrr_percent']:.4f}",f"{x['h3_percent']:.2f}"] for x in ks['metrics']])
+manifest={str(PAPER/'artifacts'/name):hashlib.sha256((PAPER/'artifacts'/name).read_bytes()).hexdigest() for name in source_names+['fb_frequency_matched_control_seed2026/result.json','fb_component_ablation_seed2026/result.json','fb_random9_control_seed2026/result.json','fb_frequency_slices_seed2026/result.json','fb_matched_rerank_seed2026/result.json','fb_k_sensitivity_seed2026/result.json']}
+(PAPER/'artifacts/table_sources.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+print('Built seven evidence-backed manuscript tables.')

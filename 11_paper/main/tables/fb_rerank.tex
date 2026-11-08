@@ -1,0 +1,14 @@
+\begin{table}[htbp]
+\caption{FB同题同十选项的完整候选重排（\%，seed=2026，$n=10{,}000$）。复用三个固定模型，无新训练或选模；直接解码结果另列于表~\ref{tab:fb-controls}。}
+\label{tab:fb-rerank}
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+候选来源 & H@1 & MRR & H@3 \\
+\midrule
+Full SC-CL-9 & 94.85 & 97.2499 & 99.75 \\
+Full配额匹配随机-9 & 94.72 & 97.1517 & 99.66 \\
+均匀随机-9 & 93.68 & 96.5722 & 99.56 \\
+\bottomrule
+\end{tabular}
+\end{table}
