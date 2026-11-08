@@ -1,0 +1,151 @@
+{
+  "format_version": 1,
+  "status": "COMPLETE",
+  "recorded_at_utc": "2026-11-08T02:08:56+00:00",
+  "principal": "ubuntu2",
+  "uid": 1000,
+  "authorization": "User instructed deletion according to the reviewed exact-path manifest.",
+  "scope": "Unlinked only the 23 listed adapter_model.safetensors files. No directory was recursively removed.",
+  "repository_head_at_execution": "f3e3c21",
+  "filesystem": {
+    "device": "/dev/nvme0n1p2",
+    "measurement": "df available bytes and allocated inode accounting",
+    "free_bytes_before": 12083982336,
+    "expected_target_reclaim_bytes": 37407178752,
+    "free_bytes_after_unlink": 49491161088,
+    "free_bytes_postcheck": 49491075072,
+    "observed_immediate_delta_bytes": 37407178752,
+    "four_arm_launch_floor_bytes": 48318382080,
+    "postcheck_margin_above_floor_bytes": 1172692992
+  },
+  "preflight": {
+    "candidate_count": 23,
+    "all_owned_by_uid_1000": true,
+    "all_regular_files_no_symlinks": true,
+    "all_git_untracked": true,
+    "parent_permissions_sufficient": true,
+    "tmux_sessions_active": false,
+    "gpu_compute_processes_active": false,
+    "candidate_files_open_by_live_process": false,
+    "all_hardlink_names_in_manifest": true,
+    "missing_candidates": [],
+    "errors": []
+  },
+  "paths_relative_to_runs_root": {
+    "duplicate": [
+      "20261018_nell_seed2027/train_listed/trainer_listed.kept/checkpoint-240/adapter_model.safetensors",
+      "20261018_fb15k237_seed2027/train_b1/trainer_b1.kept/checkpoint-240/adapter_model.safetensors",
+      "20261018_fb15k237_seed2027/train_listed/trainer_listed.kept/checkpoint-240/adapter_model.safetensors",
+      "dpo-smoke-20260918_152929/checkpoint-5/adapter_model.safetensors",
+      "dpo-smoke-20260918_152929/checkpoint-5/ref/adapter_model.safetensors",
+      "dpo-full-20260919_000258/checkpoint-5780/ref/adapter_model.safetensors"
+    ],
+    "dpo": [
+      "dpo-smoke-20260918_152929/dpo_adapter/adapter_model.safetensors",
+      "dpo-smoke-20260918_152929/dpo_adapter/ref/adapter_model.safetensors",
+      "dpo-full-20260918_235747/dpo_adapter/adapter_model.safetensors",
+      "dpo-full-20260918_235747/dpo_adapter/ref/adapter_model.safetensors",
+      "dpo-full-20260918_235920/dpo_adapter/adapter_model.safetensors",
+      "dpo-full-20260918_235920/dpo_adapter/ref/adapter_model.safetensors",
+      "dpo-full-20260919_000258/checkpoint-5780/adapter_model.safetensors",
+      "dpo-full-20260919_000258/checkpoint-5790/adapter_model.safetensors",
+      "dpo-full-20260919_000258/checkpoint-5790/ref/adapter_model.safetensors"
+    ],
+    "hpo": [
+      "paper_v2_nell23k/hpo_budget60_seed2026/trial_002/listed/adapter/adapter_model.safetensors",
+      "paper_v2_nell23k/hpo_budget60_seed2026/trial_005/listed/adapter/adapter_model.safetensors"
+    ],
+    "smoke": [
+      "20260926_shared_pool_sampler_smoke/coverage_adaptive_k/listed/adapter/adapter_model.safetensors",
+      "20260926_shared_pool_sampler_smoke/coverage_adaptive_k/trainer_listed/checkpoint-10/adapter_model.safetensors",
+      "20260926_shared_pool_sampler_smoke/random_k/listed/adapter/adapter_model.safetensors",
+      "20260926_shared_pool_sampler_smoke/random_k/trainer_listed/checkpoint-10/adapter_model.safetensors",
+      "20260926_shared_pool_sampler_smoke/top_k_hard/listed/adapter/adapter_model.safetensors",
+      "20260926_shared_pool_sampler_smoke/top_k_hard/trainer_listed/checkpoint-10/adapter_model.safetensors"
+    ]
+  },
+  "groups": {
+    "duplicate": {
+      "count": 6,
+      "allocated_bytes": 9900367872
+    },
+    "dpo": {
+      "count": 9,
+      "allocated_bytes": 16483860480
+    },
+    "hpo": {
+      "count": 2,
+      "allocated_bytes": 4409180160
+    },
+    "smoke": {
+      "count": 6,
+      "allocated_bytes": 6613770240
+    }
+  },
+  "sha256_verified_surviving_final_adapter_pairs": [
+    {
+      "removed": "20261018_nell_seed2027/train_listed/trainer_listed.kept/checkpoint-240/adapter_model.safetensors",
+      "retained": "20261018_nell_seed2027/train_listed/listed/adapter/adapter_model.safetensors",
+      "sha256": "531022b5186ee6db4257c745bb88844393d517cd73493073ba7df9706db98697"
+    },
+    {
+      "removed": "20261018_fb15k237_seed2027/train_b1/trainer_b1.kept/checkpoint-240/adapter_model.safetensors",
+      "retained": "20261018_fb15k237_seed2027/train_b1/b1/adapter/adapter_model.safetensors",
+      "sha256": "68c041060e253522e147dd8c321dcc14d97a5e80708bc2619beaf34a620c6102"
+    },
+    {
+      "removed": "20261018_fb15k237_seed2027/train_listed/trainer_listed.kept/checkpoint-240/adapter_model.safetensors",
+      "retained": "20261018_fb15k237_seed2027/train_listed/listed/adapter/adapter_model.safetensors",
+      "sha256": "6a506f18513f3910521646b71ce3fe4f4f9e9baa4431dedd0dc65ea00aee0f0c"
+    }
+  ],
+  "deleted_internal_duplicate_pairs": [
+    {
+      "first": "dpo-smoke-20260918_152929/checkpoint-5/adapter_model.safetensors",
+      "second": "dpo-smoke-20260918_152929/dpo_adapter/adapter_model.safetensors",
+      "sha256": "5c2d32c60156b446fae1946e9270edaa4c001c23db1f383cebba08e7c5cc7672",
+      "both_deleted": true
+    },
+    {
+      "first": "dpo-smoke-20260918_152929/checkpoint-5/ref/adapter_model.safetensors",
+      "second": "dpo-smoke-20260918_152929/dpo_adapter/ref/adapter_model.safetensors",
+      "sha256": "592571a3cef820fb5bb0f79bee74f3ea599470741c060999260bb75a388c34c7",
+      "both_deleted": true
+    },
+    {
+      "first": "dpo-full-20260919_000258/checkpoint-5780/ref/adapter_model.safetensors",
+      "second": "dpo-full-20260919_000258/checkpoint-5790/ref/adapter_model.safetensors",
+      "sha256": "124342e73877669db410b0ffe3d90969871f690ca5506b5037f591cb0b8d7a15",
+      "both_deleted": true
+    }
+  ],
+  "verified_retained_paths": [
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_001/listed/adapter/adapter_model.safetensors",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_003/listed/adapter/adapter_model.safetensors",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_004/listed/adapter/adapter_model.safetensors",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_001/listed/predictions_correct.jsonl",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_002/listed/predictions_correct.jsonl",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_003/listed/predictions_correct.jsonl",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_004/listed/predictions_correct.jsonl",
+    "paper_v2_nell23k/hpo_budget60_seed2026/trial_005/listed/predictions_correct.jsonl",
+    "20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/s1_adapter/adapter_model.safetensors",
+    "20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/b1/adapter/adapter_model.safetensors",
+    "20260913_qwen7b_tasks_listed_vs_b1_qwen-7b_smoke/listed/adapter/adapter_model.safetensors",
+    "20260926_shared_pool_sampler_smoke/comparison.json",
+    "20260926_shared_pool_sampler_smoke/task_smoke64.json",
+    "ccfb/nell23k/seed2026/run_status.json",
+    "ccfb/nell23k/seed2026/comparison.json",
+    "ccfb/nell23k/seed2026/test/b1/summary.json",
+    "ccfb/nell23k/seed2026/test/b1/predictions_correct.jsonl"
+  ],
+  "verification": {
+    "all_23_candidate_paths_absent_after_unlink": true,
+    "retained_paths_checked": 17,
+    "repo_head_after_unlink": "f3e3c21",
+    "user_modified_inbox_files_preserved_by_sha256": {
+      ".inbox/mlp_probe.py": "c960053d98fab4263f02b9dd4e1a6e27ba83215c2ed44834c667051ba64d5781",
+      ".inbox/train_dpo_smoke.py": "43aaef41591c50addf2e62665f4811a355b3eedd1faae865461bf1379a123562"
+    }
+  },
+  "tradeoff": "DPO, HPO trial_002/trial_005, and 2026-09-26 sampler smoke models can no longer be reloaded from these weight files. Their recorded configs, logs, summaries and available predictions remain."
+}
