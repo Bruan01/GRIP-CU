@@ -6,7 +6,13 @@
 /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP
 ```
 
-WN 与 CoDEx-M 首轮均已完成。NELL seed2026 同 3 轮 B1 已完成。WN seed2026 独立核验和 no-adapter validation 诊断通过；seed2027 四分支正在运行，当前阶段为 B1。[CoDEx-M 首轮成绩](CODEXM_第四数据集实验.md) · [WN18RR 首轮与核验](WN18RR_第三数据集实验.md)
+WN 与 CoDEx-M 首轮均已完成。NELL seed2026 同 3 轮 B1 已完成。WN seed2026 独立核验和 no-adapter validation 诊断通过；seed2027 已完成同 3 轮 B1 和采样冻结，Soft-Mix 1.0 正在训练。其余九个固定批次由 `ccfb-fixed-seed-queue` 在 tmux 串行等待。[CoDEx-M 首轮成绩](CODEXM_第四数据集实验.md) · [WN18RR 首轮与核验](WN18RR_第三数据集实验.md)
+
+## 11 月 8 日：固定多种子队列
+
+WN seed2027 的 B1 validation `official_em` 为 49.6704%（3,034 题）；本 seed 的三个方法及测试尚未完成。队列等待 `ccfb-wn18rr-2027` 完成后，依次处理 NELL23K 2027/2028、WN18RR 2028/2029/2030、FB15k-237 2027/2028、CoDEx-M 2027/2028。每批使用原 `configs/run_ccfb_followup.sh`，重新验证输入、源码、GPU 空闲和至少 45 GiB 的磁盘门槛。空间不足时保持等待；批次失败时停止，不自动重试或清理结果。
+
+队列脚本为 `configs/run_ccfb_remaining_queue.py`；运行状态与日志保存在服务器 `results/runs/ccfb/queue_20261108/status.json`、`queue.log`。约 15:40 北京时间可用 86.96 GiB，不足以存下全部九批；当前 WN 批次完成后会再次测量。机制对照、可选轮数搜索及独立 S1 检查保留在冲刺计划后续阶段，不随固定队列盲目启动。
 
 ## 11 月 8 日：WN 独立核验与 seed2027 启动
 
@@ -14,7 +20,7 @@ WN 与 CoDEx-M 首轮均已完成。NELL seed2026 同 3 轮 B1 已完成。WN se
 
 无 adapter 的 `Qwen/Qwen2.5-7B-Instruct` 在完整 validation 上为 441/3,034（14.5353% official_em）；B1 为 53.2960%，Soft-Mix 为 88.9255%。推理约 898 秒，模型本地离线加载，无 adapter、无 test 评估。命令收据、哈希、逐题预测和 summary 保存在服务器 `results/runs/wn18rr_three_configs_seed2026/diagnostics/base_qwen_validation/`。
 
-WN seed2027 已使用 `configs/run_ccfb_followup.sh` 启动，tmux 为 `ccfb-wn18rr-2027`，目录 `results/runs/ccfb/wn18rr/seed2027/`。输入检查通过，无缺失依赖或代码来源；启动时磁盘可用 46.143 GiB，单批最低门槛 45 GiB，动态单批估算 42.138 GiB，GPU 空闲。整份剩余矩阵约需 325.962 GiB，因此 seed2027 完成后先复查资源，不直接并行启动其他批次。启动记录见 `results/runs/ccfb_preparation_20261104/followups/launch_check_wn18rr_seed2027.json`。
+WN seed2027 已使用 `configs/run_ccfb_followup.sh` 启动，tmux 为 `ccfb-wn18rr-2027`，目录 `results/runs/ccfb/wn18rr/seed2027/`。输入检查通过，无缺失依赖或代码来源；启动时磁盘可用 46.143 GiB，单批最低门槛 45 GiB，动态单批估算 42.138 GiB，GPU 空闲。11 月 7 日按当时剩余矩阵估算需 325.962 GiB；这一启动读数不能覆盖整个矩阵。启动记录见 `results/runs/ccfb_preparation_20261104/followups/launch_check_wn18rr_seed2027.json`。
 
 ## 11 月 7 日 NELL 同 3 轮 B1 与 CoDEx-M 复验准备
 
