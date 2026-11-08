@@ -1,12 +1,20 @@
 # CCF B 冲刺：运行准备与续跑
 
-更新于 2026-11-07，北京时间。服务器项目目录：
+更新于 2026-11-08，北京时间。服务器项目目录：
 
 ```text
 /home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP
 ```
 
-WN 与 CoDEx-M 首轮均已完成。NELL 同 3 轮 B1 正在运行。[CoDEx-M 首轮成绩](CODEXM_第四数据集实验.md) · [WN18RR 首轮成绩](WN18RR_第三数据集实验.md)
+WN 与 CoDEx-M 首轮均已完成。NELL seed2026 同 3 轮 B1 已完成。WN seed2026 独立核验和 no-adapter validation 诊断通过；seed2027 四分支正在运行，当前阶段为 B1。[CoDEx-M 首轮成绩](CODEXM_第四数据集实验.md) · [WN18RR 首轮与核验](WN18RR_第三数据集实验.md)
+
+## 11 月 8 日：WN 独立核验与 seed2027 启动
+
+按冲刺计划第 3.5 节检查后，WN 原始拆分无重复三元组，train/validation/test 间无同一金三元组；processed_train/val/test 与完整评测文件中的图边均逐条等于 86,835 条 train 边。3,034/3,134 个评测题的来源 ID、实体文字、关系答案、11-way 候选和题面检查均通过。四分支逐题预测经项目官方解析器重算与 summary 完全一致。原始实体对重合（同向 7/8，反向 1,073/1,095）与候选位置准确率差异已写入 [WN 实验记录](WN18RR_第三数据集实验.md)。
+
+无 adapter 的 `Qwen/Qwen2.5-7B-Instruct` 在完整 validation 上为 441/3,034（14.5353% official_em）；B1 为 53.2960%，Soft-Mix 为 88.9255%。推理约 898 秒，模型本地离线加载，无 adapter、无 test 评估。命令收据、哈希、逐题预测和 summary 保存在服务器 `results/runs/wn18rr_three_configs_seed2026/diagnostics/base_qwen_validation/`。
+
+WN seed2027 已使用 `configs/run_ccfb_followup.sh` 启动，tmux 为 `ccfb-wn18rr-2027`，目录 `results/runs/ccfb/wn18rr/seed2027/`。输入检查通过，无缺失依赖或代码来源；启动时磁盘可用 46.143 GiB，单批最低门槛 45 GiB，动态单批估算 42.138 GiB，GPU 空闲。整份剩余矩阵约需 325.962 GiB，因此 seed2027 完成后先复查资源，不直接并行启动其他批次。启动记录见 `results/runs/ccfb_preparation_20261104/followups/launch_check_wn18rr_seed2027.json`。
 
 ## 11 月 7 日 NELL 同 3 轮 B1 与 CoDEx-M 复验准备
 
