@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "at": "2026-11-08T14:58:43.375528+00:00",
+  "contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+  "archive_sha256": "332845b5622fd11cc290fbf334a36009ac491dbe13a25d6cbe8d422b42e3a4cb",
+  "model_question_rows": 14829,
+  "candidate_scores": 148290,
+  "direct_flags": 14829,
+  "all_pairs_and_identities_verified": true
+}

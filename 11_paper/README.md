@@ -33,3 +33,7 @@ BSTINPUTS=../template/iclr2026: latexmk -xelatex -bibtex -interaction=nonstopmod
 ```
 
 需要XeLaTeX和正文指定的中文字体。编译产物位于`main/build/main.pdf`，核验后复制到正式阅读版`main/main.pdf`；七张表的输入hash写入`artifacts/table_sources.json`。本轮修订与验证记录见`artifacts/writing_revision_20261108.md`。
+
+## Gemini写作交接
+
+整理于2026-11-09：阅读[交接入口](gemini_handoff/00_README.md)，其中包含上下文、全部关键结果、写作提示和可携带的源码/证据ZIP。新增NELL来源对照已经完成并经交接核验，但尚未进入当前PDF；该差异已明确标出。
