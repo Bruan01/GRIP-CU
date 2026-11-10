@@ -1,0 +1,6 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026",
+  "contract_sha256": "5895408ce1a10b0c1a45838f23263636273440b8f322b03d2286749d5bf9a0d1",
+  "archive_sha256": "dd6a5f33ef8f124f0c4d057bc6b1f2b8cae09a20be008f06bc87ec21dac03c2e",
+  "borrowed_sources_must_be_retained": true
+}

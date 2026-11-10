@@ -1,0 +1,164 @@
+{
+  "status": "completed",
+  "at": "2026-11-09T18:12:57.608421+00:00",
+  "experiment_id": "SC_CTRL_SOURCES_WN18RR_SEED2026",
+  "dataset": "wn18rr",
+  "seed": 2026,
+  "metrics": [
+    {
+      "method": "full",
+      "label": "Full SC-CL-9",
+      "n": 3134,
+      "direct_em_percent": 86.88576898532227,
+      "h1_percent": 88.41735800893427,
+      "mrr_percent": 93.1465339418435,
+      "h3_percent": 97.83024888321634,
+      "candidate_count": 11
+    },
+    {
+      "method": "random9",
+      "label": "Uniform Random-9",
+      "n": 3134,
+      "direct_em_percent": 74.98404594767071,
+      "h1_percent": 76.99425654116145,
+      "mrr_percent": 86.74443634079887,
+      "h3_percent": 96.04339502233567,
+      "candidate_count": 11
+    },
+    {
+      "method": "frequency_matched",
+      "label": "Full-quota-matched Random-9",
+      "n": 3134,
+      "direct_em_percent": 78.39821314613911,
+      "h1_percent": 80.3446075303127,
+      "mrr_percent": 88.97169801764572,
+      "h3_percent": 97.47925973197192,
+      "candidate_count": 11
+    }
+  ],
+  "comparisons": {
+    "full_minus_random9": {
+      "ranking": {
+        "n": 3134,
+        "paired_counts": {
+          "both_correct": 2334,
+          "rescue": 437,
+          "regression": 79,
+          "both_wrong": 284
+        },
+        "net_correct": 358,
+        "delta_h1_pp": 11.423101467772815,
+        "delta_mrr_pp": 6.402097601044632
+      },
+      "direct_left_minus_right": {
+        "n": 3134,
+        "net_correct": 373,
+        "delta_em_pp": 11.901723037651564,
+        "paired_counts": {
+          "both_correct": 2258,
+          "rescue": 465,
+          "regression": 92,
+          "both_wrong": 319
+        }
+      }
+    },
+    "full_minus_frequency_matched": {
+      "ranking": {
+        "n": 3134,
+        "paired_counts": {
+          "both_correct": 2406,
+          "rescue": 365,
+          "regression": 112,
+          "both_wrong": 251
+        },
+        "net_correct": 253,
+        "delta_h1_pp": 8.07275047862157,
+        "delta_mrr_pp": 4.174835924197763
+      },
+      "direct_left_minus_right": {
+        "n": 3134,
+        "net_correct": 266,
+        "delta_em_pp": 8.487555839183152,
+        "paired_counts": {
+          "both_correct": 2335,
+          "rescue": 388,
+          "regression": 122,
+          "both_wrong": 289
+        }
+      }
+    },
+    "frequency_matched_minus_random9": {
+      "ranking": {
+        "n": 3134,
+        "paired_counts": {
+          "both_correct": 2259,
+          "rescue": 259,
+          "regression": 154,
+          "both_wrong": 462
+        },
+        "net_correct": 105,
+        "delta_h1_pp": 3.3503509891512446,
+        "delta_mrr_pp": 2.2272616768468696
+      },
+      "direct_left_minus_right": {
+        "n": 3134,
+        "net_correct": 107,
+        "delta_em_pp": 3.414167198468411,
+        "paired_counts": {
+          "both_correct": 2189,
+          "rescue": 268,
+          "regression": 161,
+          "both_wrong": 516
+        }
+      }
+    }
+  },
+  "new_training_runs": 2,
+  "reused_full": true,
+  "original_candidate_count": 11,
+  "paper_role": "supporting",
+  "section_id": "experiments",
+  "item_id": "SC_CTRL_SOURCES_WN18RR",
+  "claim_links": [
+    "C2"
+  ],
+  "limitations": [
+    "one seed at historical Full-selected settings; no independent control tuning",
+    "Full-quota control inherits per-question Full frequency-bin recipe",
+    "direct generation and original-list ranking are separate metrics; no full-graph filtered MRR claim",
+    "historical test exposure and task-generation protocol limitations retained",
+    "WN B1 reproduction discrepancy unresolved; these controls do not establish gains over a repaired B1",
+    "K9 covers 9 of 9/10 legal relations; selection headroom limited",
+    "55 historical relation QA rows have null/unverified entity pairs; preserve original parent mask and QA for a conditional historical-pool comparison, not a fully verified train-pair mechanism claim"
+  ],
+  "reporting_policy": "retain every arm and signed difference; no score-based inclusion or test-based retuning",
+  "checkpoint_retention": {
+    "random9": {
+      "status": "complete",
+      "retained_steps": [
+        25,
+        50,
+        75,
+        100,
+        125
+      ],
+      "missing_steps": []
+    },
+    "frequency_matched": {
+      "status": "complete",
+      "retained_steps": [
+        25,
+        50,
+        75,
+        100,
+        125
+      ],
+      "missing_steps": []
+    }
+  },
+  "controller_amendment": {
+    "path": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/recovery/checkpoint_retention_20261108/amendment.json",
+    "sha256": "ec785800bd5092b60e972ebe2309be95da9c7a0a27dbb42da85d76082915302d"
+  },
+  "next_action": "retain complete evidence; write scope-appropriate interpretation; no new runs"
+}

@@ -1,0 +1,6 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/nell23k_source_controls_20261107_seed2026",
+  "contract_sha256": "a09c4065759136687021365407ca9cd834be4e8571d948f492becc8e23412285",
+  "archive_sha256": "332845b5622fd11cc290fbf334a36009ac491dbe13a25d6cbe8d422b42e3a4cb",
+  "borrowed_sources_must_be_retained": true
+}

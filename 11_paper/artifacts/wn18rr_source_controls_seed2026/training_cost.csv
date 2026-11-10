@@ -1,0 +1,3 @@
+method,optimizer_steps,scheduler_max_steps,process_reported_training_seconds,candidate_forwards,timing_scope
+random9,125,125,44731.4,135450,process metadata only; retain all resource/event/attempt logs for total cost
+frequency_matched,125,125,39566.1,135450,process metadata only; retain all resource/event/attempt logs for total cost

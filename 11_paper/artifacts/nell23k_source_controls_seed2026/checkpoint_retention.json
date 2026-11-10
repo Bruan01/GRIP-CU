@@ -1,0 +1,25 @@
+{
+  "random9": {
+    "status": "completed_with_irrecoverable_intermediate_checkpoint_loss",
+    "retained_steps": [
+      32
+    ],
+    "missing_steps": [
+      8,
+      16,
+      24
+    ],
+    "no_retraining": true,
+    "loss_acknowledged_before_new_test_result": true
+  },
+  "frequency_matched": {
+    "status": "complete",
+    "retained_steps": [
+      8,
+      16,
+      24,
+      32
+    ],
+    "missing_steps": []
+  }
+}

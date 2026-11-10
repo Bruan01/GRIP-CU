@@ -1,0 +1,16 @@
+# Reproducible LaTeX and Python caches.
+**/build/
+**/__pycache__/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.xdv
+
+# Standalone table layout checks; retain the corresponding .tex and results.
+artifacts/**/table_preview.pdf
+artifacts/**/tables_preview.pdf
