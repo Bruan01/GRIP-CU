@@ -17,6 +17,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 
 | ID | 审稿问题 | 目的 | 数据 | 方法/控制 | 状态 | 主要输出 |
 |---|---|---|---|---|---|---|
+| SC_SAMPLER_SIGNALS_FOUR_DATASETS | C2/C8解释边界 | 核验实际采样行为及异质性 | NELL/CoDEx/FB/WN | 冻结Full/已有实际控制/解析Uniform，FB单信号 | observed-descriptive；八页图已生成，未插入正文 | 题内百分位、联合富集、逐题差异，见artifacts/sampling_diagnostics_seed2026 |
 | SC_MAIN_CORE_NELL | R1/R6 | 核心主效果 | NELL23K | B1 / Random-9 / Freq-Random-9 / SC-CL-9 | observed-single-seed；三来源完整直接/排序已完成，组件控制待补 | EM, OOV, MRR, H@1/3/10, NLL |
 | SC_MAIN_CORE_FB | R1/R6 | 核心跨图验证 | FB15K237-2 | 同上 | observed-single-seed；Random/单信号/配额匹配及三模型完整重排已完成 | 同上 |
 | SC_MAIN_WN18RR | R2 | 标准小关系集迁移 | WN18RR | B1 / Random-9 / SC-CL-9 | exploratory single-seed three-source direct/ranking completed; historical-pool conditional | EM, MRR, Hits, false-negative audit |

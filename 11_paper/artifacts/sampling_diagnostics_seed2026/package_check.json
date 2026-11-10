@@ -1,0 +1,133 @@
+{
+  "status": "pass",
+  "pdf_checks": [
+    {
+      "file": "diagnostics_codexm.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "diagnostics_fb15k237_2.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "diagnostics_nell23k.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "diagnostics_wn18rr.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "fig01_selection_distributions.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "fig02_joint_selection_lift.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "fig03_relation_marginals.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "fig04_fb_component_fingerprints.pdf",
+      "pages": 1,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    },
+    {
+      "file": "sampling_diagnostics_all.pdf",
+      "pages": 8,
+      "font_types": [
+        "/CIDFontType2",
+        "/Type0"
+      ]
+    }
+  ],
+  "svg_files": 8,
+  "png_files": 10,
+  "local_links_checked": 19,
+  "source_data_matches_independent_and_figure_qa": true,
+  "previous_marginals_byte_identical": true,
+  "file_sha256": {
+    "artifacts/sampling_diagnostics_seed2026/.gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+    "artifacts/sampling_diagnostics_seed2026/README.md": "c9f8ee886eda2fcaf3c1ab20125da08942701bbf616014394cd945a08e802e2d",
+    "artifacts/sampling_diagnostics_seed2026/analyze_diagnostics.py": "8b5baccd9d5e8681525642f62bdb5914d3b453332c44b7d209f38ee9e46c36ca",
+    "artifacts/sampling_diagnostics_seed2026/check_package.py": "bedbf4cc5acfa16465f00a4582c9068ffbb9fff75a66708d08d44b13d30ed5d6",
+    "artifacts/sampling_diagnostics_seed2026/figure_contract.md": "6f947c043afdaefd00a9d261034638763c617f25acdd5f0902a50c2289decf83",
+    "artifacts/sampling_diagnostics_seed2026/independent_validation.json": "e2ca54378da1aa3620226e7c36f16d9a8eb788688267f2fb2d096ef772f369ff",
+    "artifacts/sampling_diagnostics_seed2026/literature_sources.json": "cfddb93355eabfbd4c97390341fe464a45bf2cfe8f6fe7f067cd13769521dd63",
+    "artifacts/sampling_diagnostics_seed2026/provenance.json": "56511481f721ccf5ef8a3502315645b5da0e61ab081dfebd4e2b4f861071a118",
+    "artifacts/sampling_diagnostics_seed2026/source_data/histograms.csv": "d23ade481a67e7778edd652c4ac7d50a577b9074ae839edd1273edd3f2a6cc22",
+    "artifacts/sampling_diagnostics_seed2026/source_data/joint_grid.csv": "3706d63e76761ac6fecb3228857e62f04fe97425299ed5c85bde35e9c24edabe",
+    "artifacts/sampling_diagnostics_seed2026/source_data/method_summary.csv": "c09f118eba18818905bc6ef66a936a5e82bf7a12553ba013dd8fd2249295a803",
+    "artifacts/sampling_diagnostics_seed2026/source_data/questions.csv": "a2de385e54306bdc8c03226f1f2a62c34fb6b244c84d4a775bff67be25fbb7b6",
+    "artifacts/sampling_diagnostics_seed2026/source_data/relation_distribution.csv": "db51cd33d0ea46d52a0e04d842610b8c1f97ff0488ba8aa2ea73711ef6be004e",
+    "artifacts/sampling_diagnostics_seed2026/validate_exports.py": "6f080d9ad7bbc791f38b7dfe43eeef3515fa5b86d685bd59764cbfe1a8894a4e",
+    "artifacts/sampling_diagnostics_seed2026/validation.json": "16c26ee039d4c0f1f70ca7b3bb185063ecb1cfb8200f2f2c50b65b62dfb84147",
+    "main/figures/sampling_diagnostics_seed2026/.gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+    "main/figures/sampling_diagnostics_seed2026/README.md": "86cd345c75fe0b5ae9741fe3677f0dd97b8e2abb24ab62a7c52f31f2956c8a66",
+    "main/figures/sampling_diagnostics_seed2026/build_figures.py": "3cb29312778423e3f34c2645236cb2165a92d18e13b735f83e9d2bfa3ae8e1de",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_codexm.pdf": "b22d0ee1104bbbedd21da010666e3077b336135d5f19ff454c1f5f0faa81ca11",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_codexm.png": "cffbdde89ad05ac578025faa7a5bfbfa37721679ed92c13c4a6a53afe8b29213",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_codexm.svg": "8f51af15afe389df01be8e805cdad22076c6990ad571356f2ba9573f00f40ba7",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_fb15k237_2.pdf": "e4b81b1a26c671a062581173312c13840bc2e1a509c96b806e72582e6f7f9009",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_fb15k237_2.png": "df2fbce75012d98f218febfbd0a29c701986751e02c7f7a858a0e31f7a54fc78",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_fb15k237_2.svg": "9ecdcc74851170aa1c2e845661a282ef06cc52122760926cb05d70f8fe379e5b",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_nell23k.pdf": "193ff2ba3291c0e041bf6b27c81015481b7e7cccb5cf1907fd9eb332abbdd35b",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_nell23k.png": "6da74744b53423ba3a13e358cc0836f5a072f53756c4965c4a74bfae7c4c6659",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_nell23k.svg": "df14d51e7f172d1b4e0b7d41b6e468be02944ce2a127fba5d9c613142f2c7157",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_wn18rr.pdf": "1c2044abf9114d6c9d96ec58ae5ccfe29667f98621e4d3225f9c46ca165feea7",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_wn18rr.png": "76ece650cf1f647c884ece135d447322783c7805687bdfbba653461177ded5dd",
+    "main/figures/sampling_diagnostics_seed2026/diagnostics_wn18rr.svg": "b8c553d4b7dd4a9541a3f8af43ba1b458c1bd52b29fc1f2bb15d40263a63bb39",
+    "main/figures/sampling_diagnostics_seed2026/fig01_selection_distributions.pdf": "d35894decaf8ce5fd2ba1cf6c6e48fb936bde9eeac06b5fa91db67adad4b5051",
+    "main/figures/sampling_diagnostics_seed2026/fig01_selection_distributions.png": "02d0e6827e919fe6afc1ad0e045b122562b5a9cd6af71c2bd56d6dce7927271b",
+    "main/figures/sampling_diagnostics_seed2026/fig01_selection_distributions.svg": "c946fd6cec30abbc3b56ae8e3405e625212283aef78528695f6500d860aedbeb",
+    "main/figures/sampling_diagnostics_seed2026/fig02_joint_selection_lift.pdf": "1ae20e396b85321fc6868cb505cc94edf1f4abbe52dcf2496afd9dac015c8451",
+    "main/figures/sampling_diagnostics_seed2026/fig02_joint_selection_lift.png": "14b15edbf2fe321f4cb413d195e7a2e2b5f2fc6fa0c408b4404bedeac9c232c8",
+    "main/figures/sampling_diagnostics_seed2026/fig02_joint_selection_lift.svg": "9fc5b86ded74b2365b17d8fe34dd95e72b0d4ffeb77c31f836ef61f5fc9c3685",
+    "main/figures/sampling_diagnostics_seed2026/fig03_relation_marginals.pdf": "e3ad35c6b2b567c687647dbdadf124dc2ba29294329f5516a90301a5bcae829d",
+    "main/figures/sampling_diagnostics_seed2026/fig03_relation_marginals.png": "d68ae134e9f9e06c0ee072d8cbfe3f54a7da9600e348eb46c62ed7fab79160c3",
+    "main/figures/sampling_diagnostics_seed2026/fig03_relation_marginals.svg": "4c7801ac793f0882a2ac05aaf5eb5b7d443bfa93aebfc5e796b842c2d4e67533",
+    "main/figures/sampling_diagnostics_seed2026/fig04_fb_component_fingerprints.pdf": "14f8da38e284b8d20153f285b442af0c83671de8dcbfcbc2bf339571c75ace26",
+    "main/figures/sampling_diagnostics_seed2026/fig04_fb_component_fingerprints.png": "a84bc6f008f648f19d38963e9771536081d9f7b6674de0ef2ba69196d341b080",
+    "main/figures/sampling_diagnostics_seed2026/fig04_fb_component_fingerprints.svg": "363913169500c01916c4958ac74aa2ad49f785a2c663edba316f139801079d6c",
+    "main/figures/sampling_diagnostics_seed2026/figure_catalog.json": "1d4d949d00798daad2d0b7799e885f0335df7b3ca0d87ea24af69114b72b0837",
+    "main/figures/sampling_diagnostics_seed2026/overview.png": "cfe130bb09c20a5e3ec54ff18298e88bb4a06741f08a6ea18b28c154c1a16080",
+    "main/figures/sampling_diagnostics_seed2026/overview_grayscale.png": "67fbb6c749764b2c878fc481f4c8539b9e02102a2c70e8e8d2166570fde454c0",
+    "main/figures/sampling_diagnostics_seed2026/paper_figures.tex": "beeb310536a494a84ff0bbe8032be6ec1f842cbf03a4d99788de82eb2c01432a",
+    "main/figures/sampling_diagnostics_seed2026/qa_report.json": "19cfce6c0d2cdf49a05f540d7419c6fb00c1d6e313bbc7822c1c449d6bb540a1",
+    "main/figures/sampling_diagnostics_seed2026/render_review.json": "8e9622408fe2f9430f3b55c9cd6474b7ac282e100b80506d90c318c401eee4a4",
+    "main/figures/sampling_diagnostics_seed2026/sampling_diagnostics_all.pdf": "32e9269866cb3bf9793cd1be8374a79cadf464250f37328a396b237c084b28e7"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "fig01_selection_distributions": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 88,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      4.2
+    ]
+  },
+  "fig02_joint_selection_lift": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 105,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      2.9
+    ]
+  },
+  "fig03_relation_marginals": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 54,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      5.8
+    ]
+  },
+  "fig04_fb_component_fingerprints": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 32,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      2.9
+    ]
+  },
+  "diagnostics_nell23k": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 79,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      5.8
+    ]
+  },
+  "diagnostics_codexm": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 80,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      5.8
+    ]
+  },
+  "diagnostics_fb15k237_2": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 86,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      5.8
+    ]
+  },
+  "diagnostics_wn18rr": {
+    "text_outside_canvas": [],
+    "editable_svg_text_count": 68,
+    "pdf_pages": 1,
+    "size_inches": [
+      7.2,
+      5.8
+    ]
+  },
+  "_package": {
+    "combined_pdf_pages": 8,
+    "source_data_sha256": {
+      "histograms.csv": "d23ade481a67e7778edd652c4ac7d50a577b9074ae839edd1273edd3f2a6cc22",
+      "joint_grid.csv": "3706d63e76761ac6fecb3228857e62f04fe97425299ed5c85bde35e9c24edabe",
+      "method_summary.csv": "c09f118eba18818905bc6ef66a936a5e82bf7a12553ba013dd8fd2249295a803",
+      "questions.csv": "a2de385e54306bdc8c03226f1f2a62c34fb6b244c84d4a775bff67be25fbb7b6",
+      "relation_distribution.csv": "db51cd33d0ea46d52a0e04d842610b8c1f97ff0488ba8aa2ea73711ef6be004e"
+    }
+  }
+}

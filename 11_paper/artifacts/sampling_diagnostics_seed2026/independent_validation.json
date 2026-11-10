@@ -1,0 +1,72 @@
+{
+  "status": "pass",
+  "questions": 11507,
+  "method_dataset_groups": 16,
+  "checks": [
+    "histogram unit mass",
+    "joint grid unit mass",
+    "joint/1D marginal equality",
+    "question/aggregate percentile equality",
+    "exact analytic Uniform mean 0.5",
+    "WN historical 55-pair scope"
+  ],
+  "paired_hardness": {
+    "nell23k": {
+      "uniform_observed": {
+        "mean_difference": 0.05869901957862494,
+        "median_difference": 0.05795262267343487,
+        "full_harder_question_fraction": 0.67182246133154,
+        "equal_question_fraction": 0.0003362474781439139
+      },
+      "quota_observed": {
+        "mean_difference": 0.0494813897090846,
+        "median_difference": 0.0501974055273548,
+        "full_harder_question_fraction": 0.6533288500336247,
+        "equal_question_fraction": 0.0
+      }
+    },
+    "codexm": {
+      "legal_uniform_expected": {
+        "mean_difference": 0.05204599318753484,
+        "median_difference": 0.05555555555555547,
+        "full_harder_question_fraction": 0.7104972375690608,
+        "equal_question_fraction": 0.003683241252302026
+      }
+    },
+    "fb15k237_2": {
+      "uniform_observed": {
+        "mean_difference": 0.07061835778332491,
+        "median_difference": 0.07064176245210729,
+        "full_harder_question_fraction": 0.6896108073335477,
+        "equal_question_fraction": 0.000643293663557414
+      },
+      "quota_observed": {
+        "mean_difference": 0.06747309853458719,
+        "median_difference": 0.06800766283524906,
+        "full_harder_question_fraction": 0.6844644580250885,
+        "equal_question_fraction": 0.0
+      }
+    },
+    "wn18rr": {
+      "uniform_observed": {
+        "mean_difference": 0.010606619908945493,
+        "median_difference": 0.011111111111111072,
+        "full_harder_question_fraction": 0.5415282392026578,
+        "equal_question_fraction": 0.1111111111111111
+      },
+      "quota_observed": {
+        "mean_difference": 0.001099216603092572,
+        "median_difference": 0.0,
+        "full_harder_question_fraction": 0.19306016980435586,
+        "equal_question_fraction": 0.6478405315614618
+      }
+    }
+  },
+  "source_data_sha256": {
+    "histograms.csv": "d23ade481a67e7778edd652c4ac7d50a577b9074ae839edd1273edd3f2a6cc22",
+    "joint_grid.csv": "3706d63e76761ac6fecb3228857e62f04fe97425299ed5c85bde35e9c24edabe",
+    "method_summary.csv": "c09f118eba18818905bc6ef66a936a5e82bf7a12553ba013dd8fd2249295a803",
+    "questions.csv": "a2de385e54306bdc8c03226f1f2a62c34fb6b244c84d4a775bff67be25fbb7b6",
+    "relation_distribution.csv": "db51cd33d0ea46d52a0e04d842610b8c1f97ff0488ba8aa2ea73711ef6be004e"
+  }
+}

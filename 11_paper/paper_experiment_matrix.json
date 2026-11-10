@@ -663,6 +663,49 @@
         "marginal closeness does not establish performance or mechanism"
       ],
       "takeaway": "Full has lower marginal JSD than corresponding Uniform reference in all four datasets, but much flatter mass than raw training edges. Quota controls exactly retain per-question frequency-bin composition."
+    },
+    {
+      "id": "SC_SAMPLER_SIGNALS_FOUR_DATASETS",
+      "dataset": [
+        "NELL23K",
+        "CoDEx-M",
+        "FB15K237-2",
+        "WN18RR"
+      ],
+      "status": "observed-descriptive-single-seed-figures-ready",
+      "comparison": [
+        "Full actual K9 bank",
+        "completed aligned Uniform/quota controls where available",
+        "exact legal-pool Uniform expectation",
+        "completed FB Profile-only/Violation-only banks"
+      ],
+      "metrics": [
+        "within-query structure and frozen-B1 hardness percentiles",
+        "joint log2 selection lift",
+        "paired question-level hardness differences",
+        "raw-edge vs negative relation marginals"
+      ],
+      "section_id": "analysis",
+      "item_id": "SC_SAMPLER_SIGNALS_FOUR_DATASETS",
+      "paper_role": "supporting",
+      "claim_links": [
+        "C2",
+        "C8"
+      ],
+      "manuscript_display": "eight figure sets prepared; not yet inserted",
+      "evidence_refs": [
+        "11_paper/review/sampling_plot_literature_20261110.md",
+        "11_paper/artifacts/sampling_diagnostics_seed2026/source_data/method_summary.csv",
+        "11_paper/artifacts/sampling_diagnostics_seed2026/independent_validation.json"
+      ],
+      "known_gaps": [
+        "single frozen bank, no independent-seed uncertainty",
+        "CoDEx has analytic Uniform reference only",
+        "WN historical masks and 55 unverified entity pairs retained",
+        "generation-time B1 difficulty is not final-model score or false-negative truth",
+        "selection enrichment does not prove a causal performance mechanism"
+      ],
+      "takeaway": "Full shifts structure/hardness ranks upward most clearly on NELL/CoDEx/FB; WN shifts weakly and remains close to quota. FB single-signal selection attributes follow their design directions."
     }
   ],
   "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md",

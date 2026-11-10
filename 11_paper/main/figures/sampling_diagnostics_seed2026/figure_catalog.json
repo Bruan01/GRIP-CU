@@ -1,0 +1,108 @@
+{
+  "figures": [
+    {
+      "name": "fig01_selection_distributions",
+      "surface": "paper_main",
+      "claim": "Within-query hardness and structure selection shifts across four datasets.",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "fig01_selection_distributions.pdf",
+        "fig01_selection_distributions.svg",
+        "fig01_selection_distributions.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "fig02_joint_selection_lift",
+      "surface": "paper_main",
+      "claim": "Joint selection enrichment relative to exact eligible Uniform.",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "fig02_joint_selection_lift.pdf",
+        "fig02_joint_selection_lift.svg",
+        "fig02_joint_selection_lift.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "fig03_relation_marginals",
+      "surface": "appendix",
+      "claim": "Observed marginals are flatter than training-edge marginals, without a distribution-fitting claim.",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "fig03_relation_marginals.pdf",
+        "fig03_relation_marginals.svg",
+        "fig03_relation_marginals.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "fig04_fb_component_fingerprints",
+      "surface": "paper_main",
+      "claim": "Actual FB single-signal bank attributes follow their design directions.",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "fig04_fb_component_fingerprints.pdf",
+        "fig04_fb_component_fingerprints.svg",
+        "fig04_fb_component_fingerprints.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "diagnostics_nell23k",
+      "surface": "appendix",
+      "claim": "Raw scores and per-question paired shifts for NELL23K",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "diagnostics_nell23k.pdf",
+        "diagnostics_nell23k.svg",
+        "diagnostics_nell23k.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "diagnostics_codexm",
+      "surface": "appendix",
+      "claim": "Raw scores and per-question paired shifts for CoDEx-M",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "diagnostics_codexm.pdf",
+        "diagnostics_codexm.svg",
+        "diagnostics_codexm.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "diagnostics_fb15k237_2",
+      "surface": "appendix",
+      "claim": "Raw scores and per-question paired shifts for FB15K237-2",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "diagnostics_fb15k237_2.pdf",
+        "diagnostics_fb15k237_2.svg",
+        "diagnostics_fb15k237_2.png"
+      ],
+      "review": "render_review.json"
+    },
+    {
+      "name": "diagnostics_wn18rr",
+      "surface": "appendix",
+      "claim": "Raw scores and per-question paired shifts for WN18RR",
+      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
+      "script": "build_figures.py",
+      "outputs": [
+        "diagnostics_wn18rr.pdf",
+        "diagnostics_wn18rr.svg",
+        "diagnostics_wn18rr.png"
+      ],
+      "review": "render_review.json"
+    }
+  ]
+}

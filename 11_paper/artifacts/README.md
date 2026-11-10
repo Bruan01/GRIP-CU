@@ -16,6 +16,7 @@
 | WN三来源控制，已完成、探索性 | [结果及限制](wn18rr_source_controls_seed2026/result.json)、[逐题](wn18rr_source_controls_seed2026/paired_all_methods.csv) |
 | NELL后续未改善结果 | [续训测试](nell23k_refinement_test_20261104.json)、[第二轮验证](nell23k_round2_no_go_20261105.json) |
 | 四数据集实际采样分布与原图比较 | [分析、来源与独立验证](sampling_distribution_seed2026/README.md)、[六页图册](../main/figures/sampling_distribution_seed2026/sampling_distributions_all.pdf) |
+| 文献启发的四图采样信号与联合选择诊断 | [定义、实测数值与核验](sampling_diagnostics_seed2026/README.md)、[八页图册](../main/figures/sampling_diagnostics_seed2026/sampling_diagnostics_all.pdf)、[原文调研](../review/sampling_plot_literature_20261110.md) |
 | 最新PDF与实验一致性审查 | [修订报告](../review/SC-CL_sota_revision_audit_20261110.md)、[独立核验JSON](../review/sota_evidence_audit_20261110.json) |
 
 NELL控制的早期检查点丢失说明保留在对应`checkpoint_retention.json`；WN实体对核验缺口和历史B1差异保留在结果限制中。配额匹配组继承Full逐题选桶配方，不是独立的一般频率采样方法。

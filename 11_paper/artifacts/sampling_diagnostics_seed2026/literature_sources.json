@@ -1,0 +1,43 @@
+[
+  {
+    "source": "progcl",
+    "read_pdf_url": "https://proceedings.mlr.press/v162/xia22b/xia22b.pdf",
+    "inspected_parts": [
+      "Fig.1",
+      "Fig.3",
+      "Fig.4"
+    ],
+    "pdf_sha256": "e87e29d6816fea5c584eaf782aa8414fed1df691f3c8ea1bcf4c0afde1963863",
+    "third_party_pdf_in_repository": false
+  },
+  {
+    "source": "sans",
+    "read_pdf_url": "https://aclanthology.org/2020.emnlp-main.492.pdf",
+    "inspected_parts": [
+      "Fig.2",
+      "Table 8"
+    ],
+    "pdf_sha256": "bf56f21a91c7cd8eecab62b8d9155dc407b263df3130ce9d33989851ddf79014",
+    "third_party_pdf_in_repository": false
+  },
+  {
+    "source": "mcns",
+    "read_pdf_url": "https://arxiv.org/pdf/2005.09863",
+    "inspected_parts": [
+      "Fig.3",
+      "Fig.6"
+    ],
+    "pdf_sha256": "7c002b7ec06eb076a0bf58859ae66e6a7657b5acb000e31651b08f76f5e74ff2",
+    "third_party_pdf_in_repository": false
+  },
+  {
+    "source": "contrastive_loss",
+    "read_pdf_url": "https://arxiv.org/pdf/2012.09740",
+    "inspected_parts": [
+      "main Fig.3",
+      "supplement Fig.1"
+    ],
+    "pdf_sha256": "f6d1d027aea26988b717ee0052d1d3bc958e507c43dfb31b36c034dedfdd7ce4",
+    "third_party_pdf_in_repository": false
+  }
+]

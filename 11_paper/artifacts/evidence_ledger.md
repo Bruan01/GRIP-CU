@@ -4,6 +4,7 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-10 文献启发的采样信号诊断（C2/C8边界） | `sampling_diagnostics_seed2026/`及`main/figures/sampling_diagnostics_seed2026/` | computed/descriptive; eight figures, not inserted | “Full相对实际Uniform的题内困难度均值NELL/FB/WN提高5.87/7.06/1.06个百分点；CoDEx相对解析参考提高5.20点。FB单信号选择方向可核验；WN Full/配额接近，不能仅以难度解释性能差异。” |
 | 2026-11-10 四数据集采样分布（C8） | `11_paper/artifacts/sampling_distribution_seed2026/`及`main/figures/sampling_distribution_seed2026/` | computed/descriptive, six figures ready; manuscript insertion optional | “Full较相应Uniform参考更接近原训练图，但仍明显更分散；不作拟合成功、因果或准确率解释。CoDEx无已训练控制，WN55条核验例外保留。” |
 | 2026-11-10 WN三来源写入（C2探索性边界） | `11_paper/artifacts/wn18rr_source_controls_seed2026/{result.json,paired_all_methods.csv,checkpoint_retention.json}` | completed and written; tab:cross-dataset-sources / tab:cross-source-pairs | “Full直接86.89%、H@1为88.42%；较配额+8.49/+8.07pp；历史池、55条未核实实体对、B1差异保留，不推广为统一机制。” |
 | 2026-11-10 NELL三来源写入（C2） | `11_paper/artifacts/nell23k_source_controls_seed2026/{result.json,paired_all_methods.csv,checkpoint_retention.json}` | completed and written; current32-step model distinct from historical240-step model | “Full−配额直接+0.26pp、排序−0.30pp；Random早期8/16/24状态不可恢复，final32完整；旧条目中的待完成仅属历史时点。” |

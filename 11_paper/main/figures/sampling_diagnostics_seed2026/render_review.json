@@ -1,0 +1,37 @@
+{
+  "status": "accepted",
+  "backend": "guardenv Python / Matplotlib; Pillow previews",
+  "inspected_color_figures": [
+    "fig01_selection_distributions",
+    "fig02_joint_selection_lift",
+    "fig03_relation_marginals",
+    "fig04_fb_component_fingerprints",
+    "diagnostics_nell23k",
+    "diagnostics_codexm",
+    "diagnostics_fb15k237_2",
+    "diagnostics_wn18rr"
+  ],
+  "inspected_grayscale": "overview_grayscale.png",
+  "fixes": [
+    "Shared percentile histogram limits within each row.",
+    "Removed absent control entries from per-dataset legends.",
+    "Increased joint-map colorbar/footer spacing.",
+    "Restricted log-axis tick labels to visible limits.",
+    "Expanded all paired-ECDF limits to [-0.6,0.6] and asserted every observation is retained.",
+    "Added sign annotations for |log2 lift|>=0.5 and crosses for empty baseline cells for grayscale reading."
+  ],
+  "scope": "Readable at intended double-column width; no final target-journal certification. Fixed bank, no cross-seed confidence intervals.",
+  "latex_insertion_smoke": {
+    "status": "pass",
+    "engine": "pdflatex (TeX Live 2023)",
+    "pages": 2,
+    "included_figures": [
+      "fig01_selection_distributions",
+      "fig02_joint_selection_lift",
+      "fig04_fb_component_fingerprints"
+    ],
+    "log_overfull_boxes": 0,
+    "scope": "Temporary article wrapper; existing manuscript unchanged.",
+    "log_sha256": "ff47eeb9081e9f1619de1c672e9f30c240b379cace6e0191bed33716c09d773c"
+  }
+}

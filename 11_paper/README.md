@@ -6,6 +6,7 @@
 - [最新修订审查](review/SC-CL_sota_revision_audit_20261110.md)：逐页问题、实验遗漏、来源与可直接使用的替换文字。
 - [仓库 LaTeX 正文](main/main.tex)及[对应 PDF](main/main.pdf)：现有可编辑版本，与上面的新版PDF不同，已于2026-11-10加入NELL/WN三来源正文结果与附录核验说明。
 - [四数据集采样分布图](main/figures/sampling_distribution_seed2026/README.md)：六张实测分布图、JS距离与条件分布，含可编辑SVG与论文插入片段。
+- [文献启发的采样诊断](main/figures/sampling_diagnostics_seed2026/README.md)：八页新版图，含四图相似度/困难度、联合富集、关系边际、FB成分对照及逐题差异；[调研依据](review/sampling_plot_literature_20261110.md)。
 - [实验证据索引](artifacts/README.md)：按实验查找结果、逐题CSV和审计。
 - [Gemini交接包](gemini_handoff/00_README.md)：2026-11-09静态快照；其WN“未完成”状态已过时，最新结果见证据索引和修订审查。
 

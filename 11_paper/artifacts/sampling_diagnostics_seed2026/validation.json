@@ -1,0 +1,70 @@
+{
+  "status": "pass",
+  "datasets": {
+    "nell23k": {
+      "questions": 2974,
+      "full_slots": 26766,
+      "legal_candidates": 585819,
+      "methods": [
+        "legal_uniform_expected",
+        "full",
+        "uniform_observed",
+        "quota_observed"
+      ],
+      "max_selected_feature_error": 0.0,
+      "unverified_pairs": 0,
+      "all_bank_choices_legal": true,
+      "exact_cached_pool_match": true,
+      "analytic_uniform_mean_percentile": 0.49999999999997286
+    },
+    "codexm": {
+      "questions": 2715,
+      "full_slots": 24435,
+      "legal_candidates": 135657,
+      "methods": [
+        "legal_uniform_expected",
+        "full"
+      ],
+      "max_selected_feature_error": 0.0,
+      "unverified_pairs": 0,
+      "all_bank_choices_legal": true,
+      "exact_cached_pool_match": false,
+      "analytic_uniform_mean_percentile": 0.5000000000000235
+    },
+    "fb15k237_2": {
+      "questions": 3109,
+      "full_slots": 27981,
+      "legal_candidates": 720705,
+      "methods": [
+        "legal_uniform_expected",
+        "full",
+        "uniform_observed",
+        "quota_observed",
+        "profile_only_observed",
+        "violation_only_observed"
+      ],
+      "max_selected_feature_error": 0.0,
+      "unverified_pairs": 0,
+      "all_bank_choices_legal": true,
+      "exact_cached_pool_match": true,
+      "analytic_uniform_mean_percentile": 0.5000000000000048
+    },
+    "wn18rr": {
+      "questions": 2709,
+      "full_slots": 24381,
+      "legal_candidates": 27084,
+      "methods": [
+        "legal_uniform_expected",
+        "full",
+        "uniform_observed",
+        "quota_observed"
+      ],
+      "max_selected_feature_error": 0.0,
+      "unverified_pairs": 55,
+      "all_bank_choices_legal": true,
+      "exact_cached_pool_match": true,
+      "analytic_uniform_mean_percentile": 0.5000000000000273
+    }
+  },
+  "interpretation": "Frozen B1 generation scores; no final-model calibration or false-negative labels."
+}
