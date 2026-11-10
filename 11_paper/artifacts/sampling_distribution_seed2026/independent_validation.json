@@ -1,0 +1,20 @@
+{
+  "status": "pass",
+  "claim_type": "computed",
+  "eligible_questions": 11507,
+  "marginal_distributions": 24,
+  "metric_rows_checked": 48,
+  "conditional_rows_checked": 88,
+  "independent_checks": [
+    "entropy-form base2 JS divergence",
+    "total variation",
+    "raw edge normalization",
+    "negative-slot integer counts",
+    "exact quota bin identities",
+    "gold row to conditional-slot identities",
+    "unique question IDs",
+    "finite metrics",
+    "portable source CSV hashes"
+  ],
+  "scope": "One frozen seed2026 bank per dataset; checks do not establish unknown fact truth or cross-seed uncertainty."
+}

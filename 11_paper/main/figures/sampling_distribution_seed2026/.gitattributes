@@ -1,0 +1,2 @@
+# Preserve editable vector files, code and QA hashes byte-for-byte.
+* -text

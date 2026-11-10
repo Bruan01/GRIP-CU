@@ -1,0 +1,119 @@
+{
+  "nell23k": {
+    "label": "NELL23K",
+    "train_relations": 198,
+    "raw_train_relation_ids": 198,
+    "train_edges": 24321,
+    "eligible_questions": 2974,
+    "negative_slots": 26766,
+    "k": 9,
+    "seed": 2026,
+    "observed_methods": [
+      "full",
+      "uniform_observed",
+      "quota_observed"
+    ],
+    "quota_matched_questions": 2974,
+    "unverified_historical_pairs": 0,
+    "controls_missing": [],
+    "raw_head10pct_edge_share": 0.45540890588380406,
+    "full_head10pct_relation_share": 0.11525816334155273,
+    "eligible_gold_to_train_edges": {
+      "js_divergence_bits": 0.0169110209521165,
+      "total_variation": 0.09663461635505209,
+      "log2_frequency_wasserstein": 0.05461530815593368
+    }
+  },
+  "codexm": {
+    "label": "CoDEx-M",
+    "train_relations": 51,
+    "raw_train_relation_ids": 51,
+    "train_edges": 185584,
+    "eligible_questions": 2715,
+    "negative_slots": 24435,
+    "k": 9,
+    "seed": 2026,
+    "observed_methods": [
+      "full"
+    ],
+    "quota_matched_questions": 0,
+    "unverified_historical_pairs": 0,
+    "controls_missing": [
+      "trained Uniform",
+      "trained quota control"
+    ],
+    "raw_head10pct_edge_share": 0.6498351150961289,
+    "full_head10pct_relation_share": 0.1467157765500307,
+    "eligible_gold_to_train_edges": {
+      "js_divergence_bits": 0.0035930173354887605,
+      "total_variation": 0.03757557646504063,
+      "log2_frequency_wasserstein": 0.08423796293908335
+    }
+  },
+  "fb15k237_2": {
+    "label": "FB15K237-2",
+    "train_relations": 233,
+    "raw_train_relation_ids": 237,
+    "train_edges": 272115,
+    "eligible_questions": 3109,
+    "negative_slots": 27981,
+    "k": 9,
+    "seed": 2026,
+    "observed_methods": [
+      "full",
+      "uniform_observed",
+      "quota_observed",
+      "profile_only_observed",
+      "violation_only_observed"
+    ],
+    "quota_matched_questions": 3109,
+    "unverified_historical_pairs": 0,
+    "controls_missing": [],
+    "raw_head10pct_edge_share": 0.5665141576171839,
+    "full_head10pct_relation_share": 0.11164718916407562,
+    "eligible_gold_to_train_edges": {
+      "js_divergence_bits": 0.017420062696301697,
+      "total_variation": 0.09480043531866522,
+      "log2_frequency_wasserstein": 0.0629487814089039
+    }
+  },
+  "wn18rr": {
+    "label": "WN18RR",
+    "train_relations": 11,
+    "raw_train_relation_ids": 11,
+    "train_edges": 86835,
+    "eligible_questions": 2709,
+    "negative_slots": 24381,
+    "k": 9,
+    "seed": 2026,
+    "observed_methods": [
+      "full",
+      "uniform_observed",
+      "quota_observed"
+    ],
+    "quota_matched_questions": 2709,
+    "unverified_historical_pairs": 55,
+    "controls_missing": [],
+    "raw_head10pct_edge_share": 0.7429147233258478,
+    "full_head10pct_relation_share": 0.13223411673024077,
+    "eligible_gold_to_train_edges": {
+      "js_divergence_bits": 0.0006044127284058377,
+      "total_variation": 0.01281250237128019,
+      "log2_frequency_wasserstein": 0.01448808237675499
+    },
+    "verified_subset_sensitivity": {
+      "n": 2654,
+      "full_to_train_edges": {
+        "js_divergence_bits": 0.35201408507081183,
+        "total_variation": 0.6110383103642805,
+        "log2_frequency_wasserstein": 3.0850077931725988
+      },
+      "full_all_vs_verified_tv": 0.0007781671936407039,
+      "uniform_expected_to_train_edges": {
+        "js_divergence_bits": 0.36362562269580717,
+        "total_variation": 0.6171883564163685,
+        "log2_frequency_wasserstein": 3.1806646661291444
+      }
+    }
+  }
+}

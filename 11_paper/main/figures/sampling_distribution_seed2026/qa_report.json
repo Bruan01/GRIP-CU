@@ -1,0 +1,121 @@
+{
+  "fig01_cumulative_four_datasets": {
+    "svg_editable_text_nodes": 64,
+    "png_pixels": [
+      2161,
+      1724
+    ],
+    "width_mm": 183.0,
+    "height_mm": 146.0,
+    "text_outside_canvas": [],
+    "sha256": {
+      "svg": "c52a3eadddc71eb1e4dc511bfc954d3cad20a3f2e0e6b53eb9bed9c836cfe932",
+      "pdf": "3f6932af865595270cc8dd406e84494ab875278b619be529f94925cf2bb1c46a",
+      "png": "d2a977e827b441c91bcaf65959d0049e3149366fc1db728f9a0b5e8e51c66d5d"
+    }
+  },
+  "fig02_distribution_distance": {
+    "svg_editable_text_nodes": 66,
+    "png_pixels": [
+      2161,
+      1570
+    ],
+    "width_mm": 183.0,
+    "height_mm": 133.0,
+    "text_outside_canvas": [],
+    "sha256": {
+      "svg": "b59aaae44eae2c5c8b1db904fa3baf3432c3cd0529a30b418cf817806b0f6783",
+      "pdf": "2c4e7c3bcb6381448d5d196f5bbb2fa6abd993951a71abd232007b8f8ea21161",
+      "png": "724f5a6fba870b3612a08599bd3bfed9351cbb845813ec5ceaf22e4902dfddd4"
+    }
+  },
+  "distribution_nell23k": {
+    "svg_editable_text_nodes": 101,
+    "png_pixels": [
+      2161,
+      1818
+    ],
+    "width_mm": 183.0,
+    "height_mm": 154.0,
+    "text_outside_canvas": [],
+    "sha256": {
+      "svg": "4bb39a9cb23976e7bb6535242b16f7ba6c11bf5870aa97bd35a40807c81a8ade",
+      "pdf": "0a3592f073014a72207bfe837fc0e133df9f7448340570ed6ac265e661f9d6bd",
+      "png": "2572a365478a8eb92790cc945cbb58ebff9d904b8764c0cfb7ade37edc5c1b55"
+    }
+  },
+  "distribution_codexm": {
+    "svg_editable_text_nodes": 100,
+    "png_pixels": [
+      2161,
+      1818
+    ],
+    "width_mm": 183.0,
+    "height_mm": 154.0,
+    "text_outside_canvas": [],
+    "sha256": {
+      "svg": "7119c40dac4acd49acfa72a6a746f642b00a1584daebd0d8825dd54147be3071",
+      "pdf": "5432863a4bfe326ba6a4430f4d4e39379c6d7ce979656669d941849a8259b568",
+      "png": "5b28a4c692baf005074780dcc669abadf0b1e206b7dd8c0a38d3850d545b70b0"
+    }
+  },
+  "distribution_fb15k237_2": {
+    "svg_editable_text_nodes": 98,
+    "png_pixels": [
+      2161,
+      1818
+    ],
+    "width_mm": 183.0,
+    "height_mm": 154.0,
+    "text_outside_canvas": [],
+    "sha256": {
+      "svg": "5dc027322e2463fe45f45d6fd9d7a8af46a43d0beedd36ab21de1ba21e673988",
+      "pdf": "2ce7d559c9e835fe6c6b43461116b7cccf03a89f9641b67bc0254aa98c1f494c",
+      "png": "daad51ec0e160ffef7f4beb395d165fa6bf0d4134bdb97b6fa1fb232eaf2f2ef"
+    }
+  },
+  "distribution_wn18rr": {
+    "svg_editable_text_nodes": 108,
+    "png_pixels": [
+      2161,
+      1818
+    ],
+    "width_mm": 183.0,
+    "height_mm": 154.0,
+    "text_outside_canvas": [],
+    "sha256": {
+      "svg": "d41fa2c45a056bd39659a7aa05974d9600ade7fd9c3e7ed182666b6255be4d9b",
+      "pdf": "f312dae94a752bd7ab7f55779cc3d795f4f62f1ebf4ad7b36003a1e79c2d4c07",
+      "png": "c792add71ae4955250fc4f1ab84a5223f8da7cd3982b22371ec192514c73a4bd"
+    }
+  },
+  "scope": "Python-only generation and export; all panels from frozen-bank aggregate CSV; no new sampling or training",
+  "combined_pdf_pages": 6,
+  "source_data_sha256": {
+    "conditional_frequency_distribution.csv": "658562e6d03882d66c6201e4c0c9e567dbd4a34a211581e81fa7673160e8d896",
+    "distribution_metrics.csv": "f6c79f21fb9e1ba74b079dfbe44a177916358e54c84172d3bc49a757b2b3eab3",
+    "eligible_question_summary.csv": "5b80678a1c77035bf19745526cc0da51379ef7cd6f83f47ac3d2a5c48757a54f",
+    "frequency_bin_distribution.csv": "93e07331891c61a74dd1024dce1fe0a866cf4fe16dac3d4ae90196ec1948c4b5",
+    "relation_distribution.csv": "db51cd33d0ea46d52a0e04d842610b8c1f97ff0488ba8aa2ea73711ef6be004e"
+  },
+  "render_inspection": {
+    "status": "pass",
+    "reviewed": [
+      "two four-dataset summary figures",
+      "all four dataset panels in contact sheet",
+      "full-size CoDEx-M and FB detail",
+      "grayscale contact sheet"
+    ],
+    "revisions": [
+      "expanded panel gutter around heatmap colorbar and method labels",
+      "added per-gold-bin QA counts and signed marks for stronger conditional changes",
+      "removed absent control legends from individual figures",
+      "shortened summary panel titles"
+    ],
+    "scope": "inspected Python PNG exports; PDF text/fonts and SVG text checked structurally, not independently rasterized"
+  },
+  "pdf_font_types": [
+    "/Type0"
+  ],
+  "generating_script_sha256": "5a17ff5b2ac5e360f00336b8fb3625c89cc18471067df8ad56da8a59e3a29d27"
+}

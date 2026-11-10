@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "python_executable": "/home/kieran/miniconda3/envs/guardenv/bin/python",
+  "matplotlib": "3.10.9",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "pillow": "12.2.0",
+  "pypdf": "6.11.0",
+  "backend": "Python only; Agg/Pillow previews and vector exports",
+  "execution": "CPU only"
+}

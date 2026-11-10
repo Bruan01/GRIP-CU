@@ -1,0 +1,44 @@
+{
+  "status": "pass",
+  "datasets": {
+    "nell23k": {
+      "status": "pass",
+      "raw_train_profiles_match_frozen_profiles": true,
+      "cohort_and_gold_alignment": true,
+      "all_candidates_unique_and_legal": true,
+      "probabilities_and_conditional_rows_normalized": true,
+      "exact_quota_rows": 2974,
+      "independently_verified_all_train_pairs": true
+    },
+    "codexm": {
+      "status": "pass",
+      "raw_train_profiles_match_frozen_profiles": true,
+      "cohort_and_gold_alignment": true,
+      "all_candidates_unique_and_legal": true,
+      "probabilities_and_conditional_rows_normalized": true,
+      "exact_quota_rows": 0,
+      "independently_verified_all_train_pairs": true
+    },
+    "fb15k237_2": {
+      "status": "pass",
+      "raw_train_profiles_match_frozen_profiles": true,
+      "cohort_and_gold_alignment": true,
+      "all_candidates_unique_and_legal": true,
+      "probabilities_and_conditional_rows_normalized": true,
+      "exact_quota_rows": 3109,
+      "independently_verified_all_train_pairs": true
+    },
+    "wn18rr": {
+      "status": "pass",
+      "raw_train_profiles_match_frozen_profiles": true,
+      "cohort_and_gold_alignment": true,
+      "all_candidates_unique_and_legal": true,
+      "probabilities_and_conditional_rows_normalized": true,
+      "exact_quota_rows": 2709,
+      "independently_verified_all_train_pairs": false
+    }
+  },
+  "claim_type": "computed",
+  "source_scope": "train-only raw edges and frozen seed2026 banks; no new sampling/training/inference",
+  "statistics": "descriptive marginals and conditional frequency distributions; no independent seed uncertainty or hypothesis tests"
+}

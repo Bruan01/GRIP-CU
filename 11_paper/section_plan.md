@@ -13,6 +13,7 @@
 | Appendix: cross-source pairs | 完整报告两图三来源配对及核验限制 | tab:cross-source-pairs；WN11选项、55条未核实实体对、B1差异；NELL检查点例外 |
 | Analysis: transitions | 展示纠错、退化及净变化 | 表tab:fb-paired；Full与配额匹配348/341，689题不同 |
 | Analysis: frequency slices | 检查是否存在低频补偿性收益 | 表tab:fb-frequency-slices；train边界215/689；净−17/+1/+23，未显示低频优势 |
+| Analysis: sampling distributions (prepared) | 比较原始关系边质量与实际负库，区分边缘与条件变化 | 六图与插入片段已导出；四图JS/TV及QA计数核验完成；未自动增加正文篇幅 |
 | Analysis: K sensitivity | 检验更多训练负例是否单调改善排序 | tab:fb-k-sensitivity；K3/9/15同十选项；非等FLOPs、不重新选K |
 | Discussion / Conclusion | 把机制解释限定在证据允许范围 | 频率替代解释未排除，配额来源Full且非独立通用频率方法；不宣称统计等效/因果/跨seed稳定 |
 | Appendix: reproducibility | 区分历史与当前参数，完整报告关系等权指标 | FB32/120、实际loss温度权重；表tab:fb-macro；所有层级和方法 |
