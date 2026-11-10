@@ -34,13 +34,15 @@ NAMES = {"nell23k": "NELL23K", "codexm": "CoDEx-M", "fb15k237_2": "FB15K237-2", 
 LABELS = {"train_edges": "Training edges", "eligible_gold": "Eligible QA gold",
           "full": "Full SC-CL", "uniform_observed": "Uniform (observed)",
           "quota_observed": "Quota-matched", "legal_uniform_expected": "Uniform (expected)",
-          "profile_only_observed": "Profile only", "violation_only_observed": "Violation only"}
+          "profile_only_observed": "Profile only", "violation_only_observed": "Violation only",
+          "frequency_only": "Train-frequency PPS"}
 COLORS = {"train_edges": "#44494D", "eligible_gold": "#B39A70", "full": "#427C96",
           "uniform_observed": "#899795", "quota_observed": "#9B859E", "legal_uniform_expected": "#687578",
-          "profile_only_observed": "#B5A796", "violation_only_observed": "#9DAFC0"}
+          "profile_only_observed": "#B5A796", "violation_only_observed": "#9DAFC0",
+          "frequency_only": "#8B755B"}
 STYLES = {"train_edges": "-", "eligible_gold": (0, (5, 2)), "full": "-",
           "uniform_observed": (0, (4, 2)), "quota_observed": (0, (2, 2)),
-          "legal_uniform_expected": (0, (1, 2))}
+          "legal_uniform_expected": (0, (1, 2)), "frequency_only": (0, (6, 2))}
 plt.rcParams.update({"font.size": 7, "axes.titlesize": 8, "axes.labelsize": 7,
     "xtick.labelsize": 6.5, "ytick.labelsize": 6.5, "legend.fontsize": 6.6,
     "axes.spines.right": False, "axes.spines.top": False, "axes.linewidth": .65,
@@ -71,11 +73,12 @@ def legend_handles(methods):
                    linestyle=STYLES.get(m, "-"), label=LABELS[m]) for m in methods]
 
 
-def cdf(ax, dataset, rel, include_gold=True):
+def cdf(ax, dataset, rel, include_gold=True, include_frequency_only=False):
     values = rel[dataset]
     n = len(values["train_edges"])
     x = np.r_[0, np.arange(1, n + 1) / n * 100]
-    methods = ["train_edges", "eligible_gold", "uniform_observed", "quota_observed", "legal_uniform_expected", "full"]
+    methods = ["frequency_only"] if include_frequency_only else []
+    methods += ["train_edges", "eligible_gold", "uniform_observed", "quota_observed", "legal_uniform_expected", "full"]
     for method in methods:
         if method not in values or (method == "eligible_gold" and not include_gold):
             continue
@@ -91,7 +94,7 @@ def cdf(ax, dataset, rel, include_gold=True):
 def distance_bars(ax, dataset, metrics, all_controls=False):
     order = ["full", "uniform_observed", "quota_observed"]
     if all_controls:
-        order += ["profile_only_observed", "violation_only_observed"]
+        order += ["profile_only_observed", "violation_only_observed", "frequency_only"]
     order += ["legal_uniform_expected"]
     order = [m for m in order if m in metrics[dataset]]
     y = np.arange(len(order))
@@ -155,10 +158,47 @@ def main():
         for method in {r["method"] for r in rrows if r["dataset"] == dataset}:
             rows = sorted([r for r in rrows if r["dataset"] == dataset and r["method"] == method], key=lambda r: int(r["train_rank"]))
             rel[dataset][method] = np.array([float(r["probability"]) for r in rows])
+    frequency_source = PAPER / "artifacts/fb_frequency_only_control_seed2026/selected_candidates.csv"
+    frequency_candidates = csv_rows(frequency_source)
+    assert len(frequency_candidates) == summary["fb15k237_2"]["negative_slots"]
+    fb_train_rows = sorted([r for r in rrows if r["dataset"] == "fb15k237_2" and r["method"] == "train_edges"],
+                           key=lambda r: int(r["train_rank"]))
+    train_by_relation = {r["relation"]: r for r in fb_train_rows}
+    candidate_counts = defaultdict(int)
+    for candidate in frequency_candidates:
+        relation = candidate["relation"]
+        assert relation in train_by_relation
+        assert int(candidate["train_edge_count"]) == int(train_by_relation[relation]["train_edge_count"])
+        candidate_counts[relation] += 1
+    candidate_total = sum(candidate_counts.values())
+    assert candidate_total == summary["fb15k237_2"]["negative_slots"]
+    rel["fb15k237_2"]["frequency_only"] = np.array([
+        candidate_counts[r["relation"]] / candidate_total for r in fb_train_rows
+    ])
     metrics = defaultdict(dict)
     for r in mrows:
         if r["reference"] == "train_edges":
             metrics[r["dataset"]][r["method"]] = r
+    p = rel["fb15k237_2"]["train_edges"]
+    q = rel["fb15k237_2"]["frequency_only"]
+    mixture = (p + q) / 2
+    def positive_kl(x, y):
+        mask = x > 0
+        return np.sum(x[mask] * np.log2(x[mask] / y[mask]))
+    frequency_js = .5 * positive_kl(p, mixture) + .5 * positive_kl(q, mixture)
+    top_count = int(np.ceil(.1 * len(fb_train_rows)))
+    top_mass = float(np.sum(q[:top_count]))
+    full_top_mass = float(np.sum(rel["fb15k237_2"]["full"][:top_count]))
+    metrics["fb15k237_2"]["frequency_only"] = {"js_divergence_bits": frequency_js}
+    frequency_diagnostic = {
+        "source": str(frequency_source.relative_to(PAPER)),
+        "source_sha256": sha(frequency_source),
+        "candidate_slots": candidate_total,
+        "top_train_frequency_relations": top_count,
+        "top_frequency_mass_percent": 100 * top_mass,
+        "full_top_frequency_mass_percent": 100 * full_top_mass,
+        "js_divergence_bits_to_train_edges": float(frequency_js),
+    }
     qa = {}
     with PdfPages(HERE / "sampling_distributions_all.pdf", metadata={"Title": "SC-CL sampling distributions across four datasets", "CreationDate": None, "ModDate": None}) as pdfbook:
         fig, axs = plt.subplots(2, 2, figsize=(183 / 25.4, 146 / 25.4))
@@ -189,15 +229,30 @@ def main():
             fig.subplots_adjust(left=.14, right=.97, bottom=.145, top=.89, hspace=.53, wspace=.95)
             fig.suptitle(f"{NAMES[dataset]}: original graph, QA targets and frozen negative candidates", fontsize=9, y=.97)
             fig.text(.5, .93, f"{s['train_edges']:,} train edges | {s['train_relations']} relation labels | {s['eligible_questions']:,} eligible QA | {s['negative_slots']:,} negative slots", ha="center", fontsize=7)
-            ax = axs[0, 0]; cdf(ax, dataset, rel); decorate(ax, "a", "Marginal concentration")
+            ax = axs[0, 0]
+            cdf(ax, dataset, rel, include_frequency_only=(dataset == "fb15k237_2"))
+            decorate(ax, "a", "Marginal concentration")
 
             ax = axs[0, 1]
             data = [r for r in brows if r["dataset"] == dataset]
             bins = sorted({int(r["frequency_bin"]) for r in data})
-            for j, method in enumerate(("train_edges", "eligible_gold", "full")):
+            bin_methods = ["train_edges", "eligible_gold", "full"]
+            if dataset == "fb15k237_2":
+                bin_methods.append("frequency_only")
+            bar_width = .19 if len(bin_methods) == 4 else .24
+            for j, method in enumerate(bin_methods):
                 lookup = {int(r["frequency_bin"]): 100 * float(r["probability"]) for r in data if r["method"] == method}
-                ax.bar(np.arange(len(bins)) + (j - 1) * .25, [lookup[b] for b in bins], width=.24,
-                       color=COLORS[method], alpha=.88, edgecolor="white", lw=.15)
+                if method == "frequency_only":
+                    lookup = {int(r["frequency_bin"]): 0.0 for r in data if r["method"] == "train_edges"}
+                    for relation_row, probability in zip(fb_train_rows, rel["fb15k237_2"]["frequency_only"]):
+                        b = int(relation_row["frequency_bin"])
+                        lookup[b] = lookup.get(b, 0.0) + 100 * float(probability)
+                offset = (j - (len(bin_methods) - 1) / 2) * bar_width
+                ax.bar(np.arange(len(bins)) + offset, [lookup.get(b, 0.0) for b in bins], width=bar_width * .96,
+                       color=COLORS[method], alpha=.88,
+                       edgecolor=COLORS[method] if method == "frequency_only" else "white",
+                       hatch="///" if method == "frequency_only" else None,
+                       lw=.45 if method == "frequency_only" else .15)
             stride = max(1, len(bins) // 8)
             ticks = np.arange(len(bins))[::stride]
             ax.set_xticks(ticks, [str(bins[i]) for i in ticks])
@@ -227,9 +282,10 @@ def main():
 
             ax = axs[1, 1]; distance_bars(ax, dataset, metrics, all_controls=True)
             decorate(ax, "d", "Distance to training-edge marginals")
-            visible = [m for m in ("train_edges", "eligible_gold", "full", "uniform_observed", "quota_observed", "legal_uniform_expected")
+            visible = [m for m in ("train_edges", "eligible_gold", "full", "uniform_observed", "quota_observed",
+                                   "profile_only_observed", "violation_only_observed", "frequency_only", "legal_uniform_expected")
                        if m in rel[dataset] and not (m == "legal_uniform_expected" and "uniform_observed" in rel[dataset])]
-            fig.legend(handles=legend_handles(visible), ncol=2 if len(visible) == 4 else 3,
+            fig.legend(handles=legend_handles(visible), ncol=min(4, max(2, (len(visible) + 1) // 2)),
                        loc="lower center", bbox_to_anchor=(.53, .036), columnspacing=1.2, handlelength=2.5)
             note = "Uniform expectation uses each eligible question's legal pool; gray heatmap rows have no observed gold QA."
             if dataset == "wn18rr":
@@ -251,7 +307,9 @@ def main():
         sheet.paste(im, ((i % 2) * cellw, (i // 2) * cellh))
     sheet.save(HERE / "overview_four_datasets.png")
     ImageOps.grayscale(sheet).save(HERE / "overview_four_datasets_grayscale.png")
-    qa["scope"] = "Python-only generation and export; all panels from frozen-bank aggregate CSV; no new sampling or training"
+    qa["scope"] = "Python-only generation/export from frozen-bank aggregates and the completed frequency-only bank; no new sampling or training"
+    qa["frequency_only_distribution"] = frequency_diagnostic
+    qa["additional_source_sha256"] = {str(frequency_source.relative_to(PAPER)): sha(frequency_source)}
     qa["combined_pdf_pages"] = len(book.pages)
     qa["source_data_sha256"] = {p.name: sha(p) for p in sorted((source / "source_data").glob("*.csv"))}
     qa["render_inspection"] = "pending visual review"

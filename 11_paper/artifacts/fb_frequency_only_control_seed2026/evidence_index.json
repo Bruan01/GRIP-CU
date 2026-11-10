@@ -1,0 +1,6 @@
+{
+  "run_dir": "/home/kieran/grip-cu-runs/fb_frequency_only_control_20261110_seed2026",
+  "contract_sha256": "cd49385fc7911e83b7fdeb53cf76367817fac3319ee40bf6cf5be98f43044436",
+  "archive_sha256": "7bec922e0e610800f67724381652c4158d534b322a59cf32a67a341fb654972e",
+  "borrowed_sources_must_be_retained": true
+}

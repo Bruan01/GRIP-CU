@@ -16,7 +16,7 @@
 \begin{figure}[p]
   \centering
   \includegraphics[width=\linewidth]{figures/sampling_distribution_seed2026/distribution_fb15k237_2.pdf}
-  \caption{FB15K237-2采样分布：272,115条训练边、233个映射后关系标签、3,109道合格训练QA与27,981个Full负候选槽位；原始训练关系ID为237个。面板定义同图~\ref{fig:sampling-nell}，d同时保留两个已完成单信号控制。Full与配额匹配组逐题频率桶配额相同，但具体关系可不同；频次边缘分布相似不确立身份等效或性能解释。}
+  \caption{FB15K237-2采样分布：272,115条训练边、233个映射后关系标签、3,109道合格训练QA与27,981个Full及独立频次比例组负候选槽位；原始训练关系ID为237个。面板定义同图~\ref{fig:sampling-nell}；a、b、d另显示独立训练频次比例采样。其实际负候选边缘分布到训练边分布的JS散度为0.003，Full为0.272；分布接近不代表预测性能更高，该组直接EM为70.57\%。c仍显示Full相对合法池Uniform的条件频率桶差异；d同时保留两个单信号控制。Full与配额匹配组逐题频率桶配额相同，但具体关系可不同。}
   \label{fig:sampling-fb}
 \end{figure}
 

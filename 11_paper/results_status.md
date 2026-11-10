@@ -1,5 +1,11 @@
 # Results status：必须保留在论文工作区
 
+## 2026-11-11当前状态：FB独立频次比例对照已完成
+
+`SC_CTRL_FREQONLY_FB`使用训练图关系边数成比例、指数1、逐次无放回抽样，未继承Full逐题频率桶或读取结构/B1分数。seed2026、K=9、32步/120步调度；10,000题直接EM为70.57%，同原十选项重排H@1/MRR/H@3为87.01%/92.1324%/96.72%。Full相对该组直接EM高19.33个百分点（纠错2,251、退化318），H@1高7.84个百分点。结果只检验这一规则及此前为Full选定的固定配置；不构成所有频率方法无效或结构因果证据。完整产物见`artifacts/fb_frequency_only_control_seed2026/`，已写入主文六来源表、配对表和排序表及附录复现设置；FB采样分布附图的a/b/d面板也加入该bank，实测JS=0.003215（Full 0.2715），不据此作因果解释。
+
+## 启动时记录（已被上方完成结果覆盖）
+
 2026-11-10新增授权与准备：FB独立频次比例采样组`SC_CTRL_FREQONLY_FB`已完成bank构建与CPU一致性准备，尚无新性能；同seed2026、K9、32/120，随后一次直接测试及完整同十选项重排。该组不继承Full逐题桶配额。固定计划见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md`，运行状态和最终结果见`artifacts/fb_frequency_only_control_seed2026/`。本段是准备时点记录，不将运行中实验标为完成。旧NELL/WN“待完成”描述为历史，两组来源对照实际均已完成。
 
 ## 2026-11-10当前状态：NELL与WN来源对照已写入论文

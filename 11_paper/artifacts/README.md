@@ -8,7 +8,7 @@
 | FB均匀负采样控制 | [结果](fb_random9_control_seed2026/result.json) |
 | FB两个单信号控制 | [汇总](fb_component_ablation_seed2026/result.json)、[Profile](fb_profile_only_control_seed2026/result.json)、[Violation](fb_violation_only_control_seed2026/result.json) |
 | FB Full诱导频率配额匹配 | [结果与解释](fb_frequency_matched_control_seed2026/INTERPRETATION.md) |
-| FB独立训练频次比例采样，2026-11-10启动 | [范围与状态](fb_frequency_only_control_seed2026/README.md)、[启动身份](fb_frequency_only_control_seed2026/RUNNING.json)；尚无新性能 |
+| FB独立训练频次比例采样，2026-11-11完成 | [结果、范围与限制](fb_frequency_only_control_seed2026/README.md)、[结果JSON](fb_frequency_only_control_seed2026/result.json)、[配对数据](fb_frequency_only_control_seed2026/paired_all_methods.csv) |
 | FB三来源完整同候选重排 | [结果与解释](fb_matched_rerank_seed2026/INTERPRETATION.md) |
 | FB频率分层及关系等权宏平均 | [解释](fb_frequency_slices_seed2026/INTERPRETATION.md)、[逐题](fb_frequency_slices_seed2026/question_slices.csv)、[逐关系](fb_frequency_slices_seed2026/per_relation.csv) |
 | FB训练K3/9/15排序敏感性 | [汇总解释](fb_k_sensitivity_seed2026/INTERPRETATION.md)，K3/K15单独目录保留训练曲线与配置 |

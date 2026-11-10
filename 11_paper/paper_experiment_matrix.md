@@ -1,6 +1,6 @@
 # SC-CL experiment matrix
 
-2026-11-10新增`SC_CTRL_FREQONLY_FB`：FB独立train边频次比例无放回采样，不读取Full配额/结构/B1分数；同seed2026、K9、32/120。实现和CPU准备已完成，正式性能未产生；结果导出`artifacts/fb_frequency_only_control_seed2026/`，计划见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md`。`section_id=experiments`、`paper_role=claim-carrying`、`claim_links=[C2]`，目标为主文来源对照。旧NELL/WN待运行状态已被两图实际完成结果覆盖。
+2026-11-11更新`SC_CTRL_FREQONLY_FB`：FB独立train边频次比例无放回采样已完成，seed2026、K9、32/120；直接EM70.57%、同原十选项H@1=87.01%、MRR=92.1324%。该指数1全局频次规则低于Full和Uniform，只支持对该具体规则的结论。结果、逐题配对与构库审计见`artifacts/fb_frequency_only_control_seed2026/`；计划见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md`。`section_id=experiments`、`paper_role=claim-carrying`、`claim_links=[C2]`，已进入主文三张表与附录复现设置。
 
 2026-11-10当前状态：NELL/WN三来源完整结果已写入正文表`tab:cross-dataset-sources`及附录配对表`tab:cross-source-pairs`；WN为历史候选池条件下的单种子探索性证据。
 
@@ -11,7 +11,7 @@
 排队或验证集提升不计为新的完整测试实测结论。
 
 本矩阵把关键评审问题映射到可执行实验。当前状态不是“全部 preset”：NELL23K 已有
-seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试，以及固定配置Random/Profile/Violation组件对照。本文范围限定为知识图谱关系候选排序；CLEGR 的图级问答不纳入当前方法
+seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试，以及固定配置Random/Profile/Violation组件对照、Full配额匹配及独立频次比例控制。本文范围限定为知识图谱关系候选排序；CLEGR 的图级问答不纳入当前方法
 或实验矩阵。WN18RR已完成三来源完整直接解码与原11选项重排；未对控制独立调参，历史池核验和B1复现问题仍保留。主数据矩阵为 NELL23K、FB15K237-2、WN18RR 和 CoDEx-M；canonical FB、YAGO3-10、CoDEx-S/L 暂缓。
 `local-ready` 表示输入资产已盘点，不表示模型已经运行；`needs-conversion` 表示还需要数据转换、关系文本映射和 adapter/wiring 检查。
 
@@ -30,7 +30,8 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_CTRL_SOURCES_NELL23K | R2/R4/C2 | 频率配额解释的跨图检验 | NELL23K | 复用Full / 新Uniform-9 / 新Full配额匹配-9 | completed；Full/Uniform/配额直接87.80/87.17/87.54，H@1为90.33/90.17/90.63；早期Random8/16/24状态丢失限制保留 | 固定32/240、原十选项；三方法直接EM/排序、配对和所有带符号差值 |
 | SC_CTRL_SOURCES_WN18RR | R2/R4/C2 | 小关系集合、近穷举负例时的边界 | WN18RR | 复用Full / 新Uniform-9 / 新Full配额匹配-9 | completed exploratory；Full/Uniform/配额直接86.89/74.98/78.40，H@1为88.42/76.99/80.34；55题未核实与B1差异保留 | 固定125/125、原11选项；三方法直接EM/排序、候选重叠/强制槽及所有差值 |
 | SC_CTRL_RANDOM | R1/C2 | 固定配置下候选来源对照 | FB与NELL已完成；WN另列探索性来源控制 | Random-9 + 同一InfoNCE / SC-CL-9 | observed-single-seed, fixed configuration, 2026-11-05；SC-CL89.90%/Random86.48%，+3.42pp | 10,000题完整直接解码EM、配对553/211/净342、配置及过程审计；见artifacts/fb_random9_control_seed2026 |
-| SC_CTRL_FREQMATCH | R4/C2 | 检验频率桶匹配能否复现Full表现 | FB与NELL已完成；WN另列探索性来源控制 | frequency-bin-matched Random-9 / Full / Uniform Random | observed 2026-11-06，频率桶匹配随机89.83%；Full89.90%，差+0.07pp/净7；相对均匀随机+3.35pp；频率解释未排除 | 固定32/120步、一次完整测试；五方法表、逐题CSV、频率/困难度诊断和训练曲线；不隔离结构机制 |
+| SC_CTRL_FREQMATCH | R4/C2 | 检验频率桶匹配能否复现Full表现 | FB与NELL已完成；WN另列探索性来源控制 | frequency-bin-matched Random-9 / Full / Uniform Random | observed 2026-11-06，频率桶匹配随机89.83%；Full89.90%，差+0.07pp/净7；相对均匀随机+3.35pp；频率解释未排除 | 固定32/120步、一次完整测试；六来源表保留旧五组及独立频率比例组；不隔离结构机制 |
+| SC_CTRL_FREQONLY_FB | R1/R4/C2 | 独立全局训练频率采样能否复现Full | FB15K237-2 | p(r)∝训练边数，无放回K=9；与Full/配额匹配/Uniform对照 | completed observed single-seed；独立频次组EM70.57%、H@1 87.01%、MRR92.1324%；低于Uniform和Full | 固定32/120步、10,000题直接测试与原十选项重排；指数1单一规则、Full选定配置、无新HPO或重复种子；不能推断结构因果或所有频率规则 |
 | SC_CTRL_PROFILE | R1/C2/C5 | 在结构画像基础上检验B1违例项增量 | 本轮FB15K237-2；NELL暂缓 | Full / Profile-only；与Violation-only、Random组成四行表 | observed 2026-11-06，Profile84.89%；Full−Profile+5.01pp，Profile−Random−1.59pp | 单seed固定32步、完整测试EM、配对差、四方法逐题CSV和来源审计 |
 | SC_CTRL_VIOLATION | R1/C2/C4 | 在B1违例度基础上检验结构项增量 | 本轮FB15K237-2；NELL暂缓 | Full SC-CL-9 / Violation-only-9；复用Random-9 | observed 2026-11-06，Violation87.09%；Full−Violation+2.81pp，Violation−Random+0.61pp | 固定32步、同10,000题直接解码EM、Full−Violation配对差、三方法表及过程审计 |
 | SC_CTRL_SANS | R1/R4 | 结构负采样参考 | NELL/FB | SANS-style structural control | optional | MRR, H@10 |
@@ -45,7 +46,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_AUDIT_FALSE_NEG | R3 | 开放世界风险 | NELL/FB/WN/CoDEx-M | heldout positive overlap + train-known audit; CoDEx hard negatives separate | planned | train collision, heldout overlap, unresolved OWA |
 | SC_SLICE_ARITY | R4/R6 | 一对多/多对一失败切片 | NELL/FB | degree/arity bins | planned | n, MRR, H@10, EM |
 | SC_SLICE_FREQUENCY | R4/C2/C6 | 总体净差是否掩盖频率层级间抵消 | FB15K237-2 | 五方法，重点Full/Full配额匹配 | observed CPU-only，train边界215/689；净变化低−17/中+1/高+23；无低频优势 | 10,000题、215关系、micro/macro、348/341配对重算；主文及附录表 |
-| SC_DIST_SAMPLING_FOUR_DATASETS | C2/C8 | 比较原图、QA与实际采样分布 | NELL/CoDEx/FB/WN | 原始train / Full / 已有控制 / 合法池均匀解析参考 | completed descriptive seed2026；四数据集六图已导出，尚未插入全文 | JS/TV/Wasserstein、频率桶、条件矩阵；CoDEx控制缺失与WN55题限制保留 |
+| SC_DIST_SAMPLING_FOUR_DATASETS | C2/C8 | 比较原图、QA与实际采样分布 | NELL/CoDEx/FB/WN | 原始train / Full / 已有控制 / 合法池均匀解析参考 | completed descriptive seed2026；四张附录图已插入，FB图追加独立频次PPS的边缘分布 | JS/TV/Wasserstein、频率桶、条件矩阵；PPS频次分布来自新完成bank；CoDEx控制缺失与WN55题限制保留 |
 | SC_SLICE_SPARSE | R4 | 结构稀疏切片 | NELL/FB | profile sparsity bins | planned | n, margin, MRR |
 | SC_STAT_SEEDS | R5 | 随机稳定性 | NELL/FB: 5 seeds; WN/CoDEx-M: >=3, preferably 5 | seeds 2026--2030 where run | planned | mean/std, paired CI |
 | SC_COST | R7 | 资源—收益 | NELL/FB/WN/CoDEx-M | bank/scoring/training profiling | partial-observed（NELL） | wall-clock, memory, tokens |

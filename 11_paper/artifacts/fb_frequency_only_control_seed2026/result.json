@@ -1,0 +1,166 @@
+{
+  "status": "completed",
+  "at": "2026-11-10T15:06:32.873056+00:00",
+  "experiment_id": "SC_CTRL_FREQONLY_FB_SEED2026_FIXED32",
+  "seed": 2026,
+  "n": 10000,
+  "metrics": [
+    {
+      "method": "full",
+      "n": 10000,
+      "direct_em_percent": 89.9,
+      "h1_percent": 94.85,
+      "mrr_percent": 97.24994047619045,
+      "h3_percent": 99.75
+    },
+    {
+      "method": "frequency_matched",
+      "n": 10000,
+      "direct_em_percent": 89.83,
+      "h1_percent": 94.72,
+      "mrr_percent": 97.15165079365077,
+      "h3_percent": 99.66000000000001
+    },
+    {
+      "method": "random9",
+      "n": 10000,
+      "direct_em_percent": 86.48,
+      "h1_percent": 93.67999999999999,
+      "mrr_percent": 96.57224206349207,
+      "h3_percent": 99.56
+    },
+    {
+      "method": "frequency_only",
+      "n": 10000,
+      "direct_em_percent": 70.57,
+      "h1_percent": 87.01,
+      "mrr_percent": 92.1324166666666,
+      "h3_percent": 96.72
+    }
+  ],
+  "comparisons": {
+    "full_minus_frequency_only": {
+      "direct": {
+        "n": 10000,
+        "left": "full",
+        "right": "frequency_only",
+        "delta_left_minus_right_pp": 19.33,
+        "net_correct": 1933,
+        "paired_counts": {
+          "both_correct": 6739,
+          "rescue": 2251,
+          "regression": 318,
+          "both_wrong": 692
+        }
+      },
+      "ranking": {
+        "n": 10000,
+        "paired_counts": {
+          "both_correct": 8461,
+          "rescue": 1024,
+          "regression": 240,
+          "both_wrong": 275
+        },
+        "net_correct": 784,
+        "delta_h1_pp": 7.84,
+        "delta_mrr_pp": 5.117523809523827
+      }
+    },
+    "frequency_matched_minus_frequency_only": {
+      "direct": {
+        "n": 10000,
+        "left": "frequency_matched",
+        "right": "frequency_only",
+        "delta_left_minus_right_pp": 19.26,
+        "net_correct": 1926,
+        "paired_counts": {
+          "both_correct": 6751,
+          "rescue": 2232,
+          "regression": 306,
+          "both_wrong": 711
+        }
+      },
+      "ranking": {
+        "n": 10000,
+        "paired_counts": {
+          "both_correct": 8456,
+          "rescue": 1016,
+          "regression": 245,
+          "both_wrong": 283
+        },
+        "net_correct": 771,
+        "delta_h1_pp": 7.71,
+        "delta_mrr_pp": 5.019234126984142
+      }
+    },
+    "random9_minus_frequency_only": {
+      "direct": {
+        "n": 10000,
+        "left": "random9",
+        "right": "frequency_only",
+        "delta_left_minus_right_pp": 15.91,
+        "net_correct": 1591,
+        "paired_counts": {
+          "both_correct": 6553,
+          "rescue": 2095,
+          "regression": 504,
+          "both_wrong": 848
+        }
+      },
+      "ranking": {
+        "n": 10000,
+        "paired_counts": {
+          "both_correct": 8372,
+          "rescue": 996,
+          "regression": 329,
+          "both_wrong": 303
+        },
+        "net_correct": 667,
+        "delta_h1_pp": 6.67,
+        "delta_mrr_pp": 4.4398253968254116
+      }
+    }
+  },
+  "training_runs": 1,
+  "selection": "fixed_step32",
+  "paper_role": "claim-carrying",
+  "section_id": "experiments",
+  "item_id": "SC_CTRL_FREQONLY_FB",
+  "claim_links": [
+    "C2"
+  ],
+  "preparation_audit": {
+    "status": "pass",
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "k": 9,
+    "seed": 2026,
+    "train_only": true,
+    "all_train_pairs_verified": true,
+    "same_legal_pool": true,
+    "same_non_candidate_metadata": true,
+    "frequency_exponent": 1,
+    "sampling_inputs": [
+      "train.txt",
+      "rel2text.json",
+      "training QA",
+      "train entity text",
+      "existing eligibility gate",
+      "seed"
+    ],
+    "score_files_opened_for_sampling": 0,
+    "uses_full_candidates_for_sampling": false,
+    "uses_gold_frequency_similarity": false,
+    "selection_independent_of_full_bank": true,
+    "new_training_started": false,
+    "performance_results_available": false
+  },
+  "limitations": [
+    "one seed at historical Full-selected configuration; no equal HPO",
+    "only one independent frequency rule (exponent=1) tested; a negative result does not establish structural causality",
+    "shared 464 QA repairs and historical test exposure retained",
+    "fixed original ten-option ranking, not full-graph filtered MRR",
+    "no equivalence or generalization claim from small observed differences"
+  ],
+  "next_action": "interpret all signed results; do not tune sampler or reopen test"
+}

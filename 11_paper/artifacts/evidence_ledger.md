@@ -1,8 +1,9 @@
 # Evidence ledger：SC-CL
 
-2026-11-10新增运行记录：`SC_CTRL_FREQONLY_FB`已实现、CPU预检并启动一组独立训练边频次比例采样（seed2026、K9、32/120）；不使用Full逐题配额/结构/B1分数。尚无新模型性能，不能记为已完成实验。范围与启动身份见[独立频次对照](fb_frequency_only_control_seed2026/README.md)；最终以该目录`result.json`为准。`section_id=experiments`、`paper_role=claim-carrying`、`claim_links=[C2]`。以下历史条目不覆盖最新完成结果。
+2026-11-11完成记录：`SC_CTRL_FREQONLY_FB`为seed2026、K=9、32/120步的独立训练边频次比例控制，不使用Full逐题配额、结构画像或B1分数。10,000题直接EM=70.57%，原十选项重排H@1/MRR/H@3=87.01/92.1324/96.72；仅说明该指数1全局规则在Full选定配置下未复现Full或Uniform，不推断结构因果或所有频率方法。范围、结果与配对证据见[独立频次对照](fb_frequency_only_control_seed2026/README.md)。`section_id=experiments`、`paper_role=claim-carrying`、`claim_links=[C2]`。
 
 | Claim | Evidence location | Status | Safe wording |
+| 2026-11-11 FB独立训练频次比例对照 | `fb_frequency_only_control_seed2026/{result.json,metrics.csv,paired_all_methods.csv,selected_candidates.csv,preparation_audit.json}`；分布图`../main/figures/sampling_distribution_seed2026/distribution_fb15k237_2.pdf`；表源SHA见`table_sources.json` | completed, observed fixed-configuration single-seed; exponent-1 global PPS without replacement | “直接EM 70.57%、H@1 87.01%、MRR 92.1324%；低于Uniform (86.48% EM/H@1 93.68%) 与Full。该负结果仅说明这一频率规则在固定Full配置下不足，不证明结构因果或其他频率规则无效。” |
 |---|---|---|---|
 | 2026-11-10 文献启发的采样信号诊断（C2/C8边界） | `sampling_diagnostics_seed2026/`及`main/figures/sampling_diagnostics_seed2026/` | computed/descriptive; eight figures, not inserted | “Full相对实际Uniform的题内困难度均值NELL/FB/WN提高5.87/7.06/1.06个百分点；CoDEx相对解析参考提高5.20点。FB单信号选择方向可核验；WN Full/配额接近，不能仅以难度解释性能差异。” |
 | 2026-11-10 四数据集采样分布（C8） | `11_paper/artifacts/sampling_distribution_seed2026/`及`main/figures/sampling_distribution_seed2026/` | computed/descriptive, six figures ready; manuscript insertion optional | “Full较相应Uniform参考更接近原训练图，但仍明显更分散；不作拟合成功、因果或准确率解释。CoDEx无已训练控制，WN55条核验例外保留。” |

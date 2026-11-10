@@ -53,7 +53,7 @@ NELL/FB/WN采用其已完成控制的原始候选库；FB还包含Profile-only�
 
 ## 图与论文文字
 
-[六页完整图册](../../main/figures/sampling_distribution_seed2026/sampling_distributions_all.pdf)包含两张总览及四个数据集独立四面板。每图均提供SVG、PDF和PNG；[图表入口](../../main/figures/sampling_distribution_seed2026/README.md)含重绘命令及LaTeX插入片段。主文与原全文PDF本轮未自动改动。
+[六页完整图册](../../main/figures/sampling_distribution_seed2026/sampling_distributions_all.pdf)包含两张总览及四个数据集独立四面板。每图均提供SVG、PDF和PNG；[图表入口](../../main/figures/sampling_distribution_seed2026/README.md)含重绘命令及LaTeX插入片段。2026-11-11更新：四张数据集图已通过`main/sections/appendix.tex`插入论文附录；FB四面板新增频次比例组边缘分布叠加，源候选与核验记录见`fb_frequency_only_control_seed2026/selected_candidates.csv`及图表QA。
 
 可用于论文的陈述：
 

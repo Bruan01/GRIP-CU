@@ -1,5 +1,5 @@
 \begin{table}[htbp]
-\caption{FB15K237-2候选来源对照（10,000题，直接解码EM，seed=2026）。各组使用同一Stage~1、训练QA、合法池、$K=9$、损失与优化设置，固定32步并保持120步调度。$\Delta$为Full减该行。配额匹配组继承Full逐题频率桶配额，并非独立通用频率采样器；本表不提供跨种子不确定性或统计等效结论。}
+\caption{FB15K237-2候选来源对照（10,000题，直接解码EM，seed=2026）。各组使用同一Stage~1、训练QA、合法池、$K=9$、损失与优化设置，固定32步并保持120步调度。独立频次组按训练边数成比例无放回抽样；配额匹配组继承Full逐题频率桶配额。$\Delta$为Full减该行。结果限于单种子和Full选定配置。}
 \label{tab:fb-controls}
 \centering\small
 \begin{tabular}{lrrr}
@@ -11,6 +11,7 @@ Full SC-CL-9 & 8,990 & 89.90 & +0.00 \\
 Profile-only-9 & 8,489 & 84.89 & +5.01 \\
 Violation-only-9 & 8,709 & 87.09 & +2.81 \\
 Full配额匹配随机-9 & 8,983 & 89.83 & +0.07 \\
+独立频次比例随机-9 & 7,057 & 70.57 & +19.33 \\
 \bottomrule
 \end{tabular}
 \end{table}
