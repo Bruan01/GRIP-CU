@@ -1,7 +1,7 @@
 {
   "fig01_selection_distributions": {
     "text_outside_canvas": [],
-    "editable_svg_text_count": 88,
+    "editable_svg_text_count": 65,
     "pdf_pages": 1,
     "size_inches": [
       7.2,
@@ -10,7 +10,7 @@
   },
   "fig02_joint_selection_lift": {
     "text_outside_canvas": [],
-    "editable_svg_text_count": 105,
+    "editable_svg_text_count": 74,
     "pdf_pages": 1,
     "size_inches": [
       7.2,
@@ -19,11 +19,11 @@
   },
   "fig03_relation_marginals": {
     "text_outside_canvas": [],
-    "editable_svg_text_count": 54,
+    "editable_svg_text_count": 38,
     "pdf_pages": 1,
     "size_inches": [
       7.2,
-      5.8
+      3.25
     ]
   },
   "fig04_fb_component_fingerprints": {
@@ -38,15 +38,6 @@
   "diagnostics_nell23k": {
     "text_outside_canvas": [],
     "editable_svg_text_count": 79,
-    "pdf_pages": 1,
-    "size_inches": [
-      7.2,
-      5.8
-    ]
-  },
-  "diagnostics_codexm": {
-    "text_outside_canvas": [],
-    "editable_svg_text_count": 80,
     "pdf_pages": 1,
     "size_inches": [
       7.2,
@@ -72,7 +63,8 @@
     ]
   },
   "_package": {
-    "combined_pdf_pages": 8,
+    "combined_pdf_pages": 7,
+    "excluded_dataset": "codexm: no trained Uniform or quota-matched control bank",
     "source_data_sha256": {
       "histograms.csv": "d23ade481a67e7778edd652c4ac7d50a577b9074ae839edd1273edd3f2a6cc22",
       "joint_grid.csv": "3706d63e76761ac6fecb3228857e62f04fe97425299ed5c85bde35e9c24edabe",

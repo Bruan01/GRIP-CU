@@ -1,46 +1,31 @@
 % Requires graphicx; paths are relative to 11_paper/main.
-% Prepared insertions; not yet included in the manuscript.
+% Main-text figures included from sections/analysis.tex.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/sampling_diagnostics_seed2026/fig01_selection_distributions.pdf}
-  \caption{Actual negative-selection distributions in four datasets.
-  Within each eligible training question, legal relations are ranked by frozen
-  B1 difficulty (top) and relation-profile similarity (bottom), using midranks
-  for ties. Each question contributes equal mass; each actual bank contains
-  nine distinct negatives (seed 2026). Expected Uniform averages all legal
-  candidates analytically. CoDEx-M has no observed Uniform or quota control.
-  WN18RR retains the historical pool, including 55 unverified entity pairs.
-  These are generation-time diagnostics, not final-model prediction scores.}
+  \caption{三个具有已训练均匀与配额对照的数据集实际负例库的题内选择分布。上排为冻结B1困难度百分位，下排为关系画像相似度百分位；均在每题合法候选池内计算，并列取中秩。每道题等权，每个实际bank每题包含九个不同负例（seed=2026）。均匀期望对各题合法池内的全部候选求平均。CoDEx-M因没有已训练的对应对照而不纳入本图；WN18RR沿用历史候选池，包含55道实体对未核实问题。图示为候选生成分数，不是最终模型预测分数。}
   \label{fig:sampling-selection-signals}
 \end{figure*}
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/sampling_diagnostics_seed2026/fig02_joint_selection_lift.pdf}
-  \caption{Joint selection enrichment over the same eligible pools.
-  Color shows $\log_2(P_{\mathrm{Full}}/P_{\mathrm{Uniform,expected}})$ in fixed
-  structure-percentile and B1-hardness-percentile bins. Zero denotes equal
-  mass; $+1$ denotes twofold enrichment. All panels share color limits
-  $[-2,2]$, with extensions for values beyond the limits. Signs mark cells
-  with absolute log2 lift at least 0.5. Gray crosses have no eligible mass;
-  zero Full mass uses the lower extension without pseudocounts.
-  Enrichment describes the sampler and does not establish causal interaction
-  or downstream improvement. WN18RR is conditional on its historical pool.}
+  \caption{三个具有已训练均匀与配额对照的数据集相对于逐题均匀期望的联合选择富集。颜色表示固定的结构相似度与B1困难度百分位二维桶上的$\log_2(P_{\mathrm{Full}}/P_{\mathrm{Uniform}})$。0表示质量相同，$+1$表示Full质量为参照的两倍。所有面板使用$[-2,2]$色限，超出部分以色条两端延伸。正负号标记绝对log2富集至少为0.5的格子；灰叉表示合法池在该格中没有质量。Full质量为0时使用色条下端且不加伪计数。WN18RR结果限定于历史候选池。该图描述采样分布，不检验因果交互或下游性能提升。}
   \label{fig:sampling-joint-lift}
 \end{figure*}
 
 \begin{figure*}[t]
   \centering
+  \includegraphics[width=\textwidth]{figures/sampling_diagnostics_seed2026/fig03_relation_marginals.pdf}
+  \caption{三个数据集的训练图关系边际与Full实际负例关系边际。每个点代表一个映射后的训练关系标签，横纵轴分别为其训练边概率及Full负例概率，采用双对数坐标。虚线为边际概率相等线，用于描述偏离程度；不拟合幂律，也不预设采样目标是匹配训练边分布。所有图均为seed 2026冻结候选库；WN18RR保留历史候选池范围。}
+  \label{fig:sampling-relation-marginals}
+\end{figure*}
+
+\begin{figure*}[t]
+  \centering
   \includegraphics[width=\textwidth]{figures/sampling_diagnostics_seed2026/fig04_fb_component_fingerprints.pdf}
-  \caption{Completed FB15K237-2 candidate-source controls.
-  Points show actual-bank mean within-question percentiles of relation-profile
-  similarity and frozen B1 difficulty. The expected Uniform mean is exactly
-  0.5 on both axes. Profile-only and Violation-only alter the respective
-  selection attributes, while Full shifts both. Points represent one frozen
-  bank realization, without cross-seed uncertainty; selection shifts do not
-  by themselves demonstrate a performance mechanism.}
+  \caption{FB15K237-2已完成候选来源对照的选择信号指纹。点表示实际bank在逐题结构相似度与冻结B1困难度百分位上的均值；解析Uniform的两轴均值精确为0.5。Profile-only主要改变结构属性，Violation-only主要改变B1困难度，Full在两者上均有移动。每组为单一冻结bank实现，不估计跨种子不确定性；采样分数移动本身不证明性能机制。}
   \label{fig:sampling-component-signals}
 \end{figure*}
 
-% Appendix: include fig03_relation_marginals.pdf and diagnostics_DATASET.pdf.
-% All figures have editable SVG counterparts and PNG previews in this folder.
+% Dataset-specific appendix figures are in appendix_figures.tex.

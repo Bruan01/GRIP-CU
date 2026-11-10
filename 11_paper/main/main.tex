@@ -8,10 +8,15 @@
 \usepackage{iclr2026_conference,times}
 \input{math_commands.tex}
 
+% Follow the user-designated 2026-11-09 manuscript PDF (A4, single column),
+% rather than the letter-sized draft produced by the untouched ICLR defaults.
+\usepackage[a4paper,left=19mm,right=19mm,top=20mm,bottom=19mm,
+            headheight=14pt,headsep=8mm]{geometry}
+
 \usepackage{fontspec}
 \usepackage{xeCJK}
 \setmainfont{TeX Gyre Termes}
-\setCJKmainfont{AR PL UMing CN}
+\setCJKmainfont[AutoFakeBold=1.6]{AR PL UMing CN}
 \setCJKsansfont{Droid Sans Fallback}
 \setCJKmonofont{Droid Sans Fallback}
 \XeTeXlinebreaklocale "zh"
@@ -26,23 +31,48 @@
 \pgfplotsset{compat=1.18}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{fancyhdr}
 
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+% Use the designated manuscript's clean, unnumbered review layout rather than
+% the ICLR ruler overlay, while retaining anonymous author information below.
+\makeatletter
+\iclrfinaltrue
+\renewcommand{\@maketitle}{%
+  \vspace*{10mm}%
+  \begin{center}
+    {\LARGE\bfseries\@title\par}
+    \vskip 0.8em
+    {\large Anonymous Authors\par}
+    {\normalsize Paper under double-blind review\par}
+  \end{center}
+  \vskip 18mm
+}
+\renewenvironment{abstract}
+  {\par\begin{center}\bfseries 摘要\end{center}\begin{quote}}
+  {\end{quote}\par\vskip 1.5em}
+\makeatother
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
 \setlist{nosep,leftmargin=*}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \newcommand{\scc}{\textsc{SC-CL}}
 \newcommand{\bone}{\textsc{B1}}
 
-\title{开放世界知识图谱关系候选排序的可审计结构反事实对比学习}
+\title{面向参数内化生成式知识图谱推理的\\双信号结构反事实对比学习}
 \author{}
 
 % \iclrfinalcopy % Keep commented for the anonymous review template.
 \begin{document}
 
 \maketitle
+\thispagestyle{plain}
 
 \begin{abstract}
-生成式关系预测中的训练候选既具有具体关系身份，也具有频率等统计组成，二者对性能的作用需要区分。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning, \scc），融合训练图关系画像与冻结基线的分数违例度，在过滤训练已知关系后构建可追溯的固定候选库，并联合优化候选级InfoNCE与原始生成目标。三个主数据集的单种子本地评估显示，验证选定配置相对B1的直接解码EM高2.24--8.03个百分点，该比较包含训练调参。来源对照进一步揭示跨图差异：FB15K237-2上Full与其频率配额匹配随机的直接EM为89.90\%与89.83\%，重排H@1差0.13个百分点；NELL23K上Full相对配额组直接EM高0.26个百分点、重排H@1低0.30个百分点。第四个数据集WN18RR的历史候选池条件对照中，Full直接EM达86.89\%，分别高于均匀随机与配额组11.90和8.49个百分点，重排H@1达88.42\%；该结果仍受实体对核验缺口与B1复现差异限制。FB频率分层未显示Full的低频优势，训练负例数从3到15亦未带来单调排序改善。上述结果支持可追溯候选学习的条件性收益，并表明候选来源优势依赖数据集、统计组成和答案选择规则，不能由单图观察推断普遍机制。
+参数内化生成式图推理通过微调将关系信息写入语言模型，但候选级对比学习的效果也取决于训练中选取哪些替代关系。本文提出结构反事实对比学习（Structure-Counterfactual Contrastive Learning, \scc），将训练图关系画像与冻结generation-only基线的实例级分数违例度结合，在排除训练已知关系后构建固定候选库，并与原始生成目标联合优化。在NELL23K、CoDEx-M和FB15K237-2的单种子本地测试中，验证选定配置相对本地B1的直接解码EM分别提高3.22、2.24和8.03个百分点；这些比较包含配置搜索，不能单独归因于候选采样。在FB固定配置来源对照中，Full的直接EM高于均匀随机3.42个百分点，但与保留其逐题频率桶配额的随机对照仅差0.07个百分点；Full的215关系等权Macro-EM为75.21\%，低于配额组的76.15\%。NELL上Full相对配额组的直接EM高0.26个百分点，而重排H@1低0.30个百分点。WN18RR历史候选池条件对照呈现更大差异：Full直接EM较配额组高8.49个百分点，重排H@1高8.07个百分点；该单种子结果保留55条训练实体对核验缺口及本地B1复现差异。三个具有已训练均匀与配额对照的数据集的采样诊断显示，Full在NELL和FB更明显地偏向题内B1判定较困难的候选，WN的移动较弱；FB单信号控制的选择分数变化符合各自定义的信号方向。CoDEx-M因缺少已训练的逐题对照而不纳入该诊断。频率分层与$K=3,9,15$排序结果均未显示普遍、单调的收益模式。现有结果支持对候选来源进行可追溯和分层评估；采样分布本身不证明性能差异的因果机制。
 \end{abstract}
 
 \input{sections/introduction}

@@ -3,7 +3,7 @@
     {
       "name": "fig01_selection_distributions",
       "surface": "paper_main",
-      "claim": "Within-query hardness and structure selection shifts across four datasets.",
+      "claim": "Within-query hardness and structure selection shifts across three datasets with trained controls.",
       "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
       "script": "build_figures.py",
       "outputs": [
@@ -16,7 +16,7 @@
     {
       "name": "fig02_joint_selection_lift",
       "surface": "paper_main",
-      "claim": "Joint selection enrichment relative to exact eligible Uniform.",
+      "claim": "Joint selection enrichment relative to exact eligible Uniform for three datasets with trained controls.",
       "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
       "script": "build_figures.py",
       "outputs": [
@@ -62,19 +62,6 @@
         "diagnostics_nell23k.pdf",
         "diagnostics_nell23k.svg",
         "diagnostics_nell23k.png"
-      ],
-      "review": "render_review.json"
-    },
-    {
-      "name": "diagnostics_codexm",
-      "surface": "appendix",
-      "claim": "Raw scores and per-question paired shifts for CoDEx-M",
-      "source_data": "../../../artifacts/sampling_diagnostics_seed2026/source_data/",
-      "script": "build_figures.py",
-      "outputs": [
-        "diagnostics_codexm.pdf",
-        "diagnostics_codexm.svg",
-        "diagnostics_codexm.png"
       ],
       "review": "render_review.json"
     },

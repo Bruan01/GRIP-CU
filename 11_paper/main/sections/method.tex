@@ -33,12 +33,12 @@ $\overline{d}_{H,r}=|H_r|^{-1}\sum_{h\in H_r}d_{\mathrm{out}}(h)$ 是不同头�
 
 \subsection{冻结 B1 的边界违例度}
 
-\bone{} 是原始 GRIP 的 generation-only 基线。我们在训练问题上离线计算全关系词表的 continuation score。若离线记录已有 pairwise confusion，则直接使用裁剪到 $[0,1]$ 的 confusion；否则对候选和正关系的分数差使用平滑违例度
+\bone{} 是从共享 Stage~1 初始化继续训练得到的原始 GRIP generation-only Stage~2 分支；\scc{} 使用同一 Stage~1 adapter 初始化。我们在训练问题上离线计算全关系词表的 continuation score。若离线记录已有 pairwise confusion，则直接使用裁剪到 $[0,1]$ 的 confusion；否则按该运行评分清单指定的温度，对候选和正关系的分数差使用平滑违例度
 \begin{equation}
     V_{\bone}(q,r)=\sigma\left(\frac{z_{\bone}(q,r)-z_{\bone}(q,r^+)}{\tau_v}\right).
     \label{eq:violation}
 \end{equation}
-候选分数越接近或超过正关系，$V_{\bone}$ 越大。B1 在训练问题上的离线分数于候选库构造时固定，提供与 Stage~2 参数更新分离的候选评分依据。
+候选分数越接近或超过正关系，$V_{\bone}$ 越大。本文核验的四数据集候选bank均直接使用已缓存的pairwise confusion，因此式~\ref{eq:violation}的温度回退路径未用于这些bank。B1在训练问题上的离线分数于候选库构造时固定，提供与后续Stage~2参数更新分离的候选评分依据。
 
 \subsection{结构反事实候选分布}
 
@@ -54,7 +54,7 @@ $\overline{d}_{H,r}=|H_r|^{-1}\sum_{h\in H_r}d_{\mathrm{out}}(h)$ 是不同头�
     \frac{\exp(u(q,r)/\tau_s)}{\sum_{r'\in P_q}\exp(u(q,r')/\tau_s)}.
     \label{eq:sampling}
 \end{equation}
-我们从 $p(r\mid q)$ 无放回抽取 $K=9$ 个负候选。主实验参数为 $\rho=1/3$、$\alpha=1$、$\beta=1$、$\tau_s=0.25$。当 $|P_q|<K$ 时，记录该样本及候选不足原因，保持每个有效样本的候选互异性；实验报告候选构造失败数。
+我们从 $p(r\mid q)$ 无放回抽取 $K=9$ 个负候选。主实验参数为 $\rho=1/3$、$\alpha=1$、$\beta=1$、$\tau_s=0.25$。当 $|P_q|<K$时，若构造配置不允许shortfall，bank构建记录失败并停止，不将不足$K$的候选行默认为完整样本；本研究纳入的三个主实验库均满足每题九个候选。WN18RR的历史bank范围与55道未核实实体对另行说明。
 
 结构反事实操作在固定实体对上替换关系标签，其候选池与开放世界真值约定见问题定义节。
 

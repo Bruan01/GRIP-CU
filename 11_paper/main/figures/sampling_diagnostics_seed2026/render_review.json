@@ -7,7 +7,6 @@
     "fig03_relation_marginals",
     "fig04_fb_component_fingerprints",
     "diagnostics_nell23k",
-    "diagnostics_codexm",
     "diagnostics_fb15k237_2",
     "diagnostics_wn18rr"
   ],
@@ -18,11 +17,13 @@
     "Increased joint-map colorbar/footer spacing.",
     "Restricted log-axis tick labels to visible limits.",
     "Expanded all paired-ECDF limits to [-0.6,0.6] and asserted every observation is retained.",
-    "Added sign annotations for |log2 lift|>=0.5 and crosses for empty baseline cells for grayscale reading."
+    "Added sign annotations for |log2 lift|>=0.5 and crosses for empty baseline cells for grayscale reading.",
+    "Excluded CoDEx-M because it has no trained Uniform or quota-matched bank; removed its stale exports and updated the appendix figure set.",
+    "Reflowed the aggregate plots to three aligned-control datasets and inspected the regenerated color and grayscale contact sheets."
   ],
-  "scope": "Readable at intended double-column width; no final target-journal certification. Fixed bank, no cross-seed confidence intervals.",
+  "scope": "Seven figure sets; diagnostics cover NELL23K, FB15K237-2 and WN18RR. CoDEx-M is excluded for lack of trained paired controls. Readable at intended double-column width; no final target-journal certification. Fixed banks, no cross-seed confidence intervals.",
   "latex_insertion_smoke": {
-    "status": "pass",
+    "status": "prior temporary-wrapper smoke; not rerun after the scope change",
     "engine": "pdflatex (TeX Live 2023)",
     "pages": 2,
     "included_figures": [
@@ -31,7 +32,7 @@
       "fig04_fb_component_fingerprints"
     ],
     "log_overfull_boxes": 0,
-    "scope": "Temporary article wrapper; existing manuscript unchanged.",
+    "scope": "Historical pre-revision check only; manuscript figure inclusion was updated in this revision.",
     "log_sha256": "ff47eeb9081e9f1619de1c672e9f30c240b379cace6e0191bed33716c09d773c"
   }
 }

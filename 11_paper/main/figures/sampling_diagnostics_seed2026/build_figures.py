@@ -19,8 +19,8 @@ from pypdf import PdfReader
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE.parents[2] / 'artifacts/sampling_diagnostics_seed2026'
-DS = ['nell23k','codexm','fb15k237_2','wn18rr']
-NAMES = dict(zip(DS,['NELL23K','CoDEx-M','FB15K237-2','WN18RR']))
+DS = ['nell23k','fb15k237_2','wn18rr']
+NAMES = {'nell23k':'NELL23K','fb15k237_2':'FB15K237-2','wn18rr':'WN18RR'}
 LABELS = {'full':'Full SC-CL','legal_uniform_expected':'Uniform (expected)',
           'uniform_observed':'Uniform (observed)','quota_observed':'Quota-matched',
           'profile_only_observed':'Profile only','violation_only_observed':'Violation only'}
@@ -112,8 +112,13 @@ def export(fig,name,book):
     plt.close(fig)
 
 def main():
+    # CoDEx-M has no trained Uniform or quota-matched bank, so this revision
+    # excludes it from comparative diagnostics and removes its stale exports.
+    for ext in ('pdf', 'svg', 'png'):
+        (HERE / f'diagnostics_codexm.{ext}').unlink(missing_ok=True)
+
     with PdfPages(HERE / 'sampling_diagnostics_all.pdf') as book:
-        fig,axes=plt.subplots(2,4,figsize=(7.2,4.2))
+        fig,axes=plt.subplots(2,3,figsize=(7.2,4.2))
         fig.subplots_adjust(left=.075,right=.985,bottom=.17,top=.83,wspace=.3,hspace=.65)
         for j,d in enumerate(DS):
             histogram(axes[0,j],d,'hardness_percentile',j==0)
@@ -126,10 +131,10 @@ def main():
             ymax=max(a.get_ylim()[1] for a in row)
             for a in row: a.set_ylim(0,ymax)
         legend(fig,.985)
-        fig.text(.5,.045,'K = 9; seed = 2026. Within-query midranks; higher = harder / more similar.\nCoDEx-M: expected Uniform only. WN18RR: historical pool, including 55 unverified pairs.',ha='center',fontsize=6.3)
+        fig.text(.5,.045,'K = 9; seed = 2026. Within-query midranks; higher = harder / more similar.\nThree datasets with aligned observed controls; WN18RR retains 55 unverified historical pairs.',ha='center',fontsize=6.3)
         export(fig,'fig01_selection_distributions',book)
 
-        fig,axes=plt.subplots(1,4,figsize=(7.2,2.9))
+        fig,axes=plt.subplots(1,3,figsize=(7.2,2.9))
         fig.subplots_adjust(left=.075,right=.985,bottom=.42,top=.84,wspace=.36)
         for j,d in enumerate(DS):
             im=heat(axes[j],d); title(axes[j],NAMES[d],chr(97+j))
@@ -139,9 +144,9 @@ def main():
         fig.text(.5,.018,'Gray ×: no eligible mass. Signs: |log2 lift| ≥ 0.5. Zero Full mass uses the lower extension.\nWN18RR retains historical pools; selection enrichment is descriptive.',ha='center',fontsize=6.1)
         export(fig,'fig02_joint_selection_lift',book)
 
-        fig,axes=plt.subplots(2,2,figsize=(7.2,5.8))
-        fig.subplots_adjust(left=.1,right=.98,bottom=.13,top=.9,wspace=.3,hspace=.55)
-        for j,(d,ax) in enumerate(zip(DS,axes.flat)):
+        fig,axes=plt.subplots(1,3,figsize=(7.2,3.25))
+        fig.subplots_adjust(left=.08,right=.985,bottom=.2,top=.86,wspace=.4)
+        for j,(d,ax) in enumerate(zip(DS,axes)):
             x=np.array(REL[d]['train_edges']); y=np.array(REL[d]['full'])
             assert np.all(x>0)
             pos=y>0; low=min(x.min(),y[pos].min())*.7; high=max(x.max(),y.max())*1.3
@@ -153,6 +158,7 @@ def main():
             ticks=10.**np.arange(np.ceil(np.log10(low)),np.floor(np.log10(high))+1)
             ax.set_xticks(ticks); ax.set_yticks(ticks)
             ax.xaxis.set_minor_locator(NullLocator()); ax.yaxis.set_minor_locator(NullLocator())
+            ax.set_box_aspect(1)
             title(ax,NAMES[d],chr(97+j)); ax.grid(color='#ECEEEE',lw=.5); ax.set_axisbelow(True)
             ax.legend(loc='upper left',fontsize=6)
         fig.text(.5,.035,'Each dot is one mapped relation label. Both axes use log scales.\nThe equality line is descriptive; no power-law fit or original-distribution matching objective is assumed.',ha='center',fontsize=6.3)
@@ -187,7 +193,7 @@ def main():
             cb=fig.colorbar(im,cax=cbax,extend='both',ticks=[-2,0,2]); cb.set_label('log2 lift',labelpad=2)
             ax=axes[1,1]
             qs=[r for r in QUESTIONS if r['dataset']==d]
-            controls=['uniform_observed','quota_observed'] if d!='codexm' else ['legal_uniform_expected']
+            controls=['uniform_observed','quota_observed']
             for m in controls:
                 delta=np.sort([float(r['full_hardness_percentile'])-float(r[m+'_hardness_percentile']) for r in qs])
                 assert delta.min()>=-.6 and delta.max()<=.6, 'ECDF range must retain every question'
@@ -197,10 +203,11 @@ def main():
             ax.set_xticks([-.6,0,.6]); ax.grid(axis='y',color='#ECEEEE',lw=.5)
             ax.legend(loc='lower right',fontsize=6); title(ax,'Question-level paired differences','d')
             legend(fig,.99,[m for m in ORDER if m in HIST[d]['structure_raw']]); fig.suptitle(NAMES[d]+' | actual training-negative diagnostics',y=.90,fontsize=10)
-            scope='WN18RR retains 55 unverified historical entity pairs.' if d=='wn18rr' else ('Uniform is analytic only; no trained CoDEx-M control is implied.' if d=='codexm' else 'Uniform and quota-matched curves use the completed, aligned control banks.')
+            scope=('WN18RR retains 55 unverified historical entity pairs.' if d=='wn18rr'
+                   else 'Uniform and quota-matched curves use the completed, aligned control banks.')
             fig.text(.5,.035,'K = 9; seed = 2026. Each question contributes equal mass.\n'+scope+'\nFrozen B1 scores describe candidate generation; they are not final SC-CL predictions.',ha='center',fontsize=6.3)
             export(fig,'diagnostics_'+d,book)
-    assert len(PdfReader(HERE/'sampling_diagnostics_all.pdf').pages)==8
+    assert len(PdfReader(HERE/'sampling_diagnostics_all.pdf').pages)==7
     thumbs=[]
     for name in QA:
         with Image.open(HERE/f'{name}.png') as im:
@@ -210,8 +217,9 @@ def main():
     for i,im in enumerate(thumbs):
         contact.paste(im,((i%2)*920,sum(row_heights[:i//2])))
     contact.save(HERE/'overview.png'); ImageOps.grayscale(contact).save(HERE/'overview_grayscale.png')
-    QA['_package']={'combined_pdf_pages':8,'source_data_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted((DATA/'source_data').glob('*.csv'))}}
+    QA['_package']={'combined_pdf_pages':7,'excluded_dataset':'codexm: no trained Uniform or quota-matched control bank',
+                    'source_data_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted((DATA/'source_data').glob('*.csv'))}}
     (HERE/'qa_report.json').write_text(json.dumps(QA,indent=2)+'\n')
-    print('Exported eight figure sets and combined PDF',flush=True)
+    print('Exported seven figure sets and combined PDF',flush=True)
 
 if __name__=='__main__': main()

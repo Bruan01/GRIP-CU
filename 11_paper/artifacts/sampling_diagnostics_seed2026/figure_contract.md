@@ -7,11 +7,13 @@ Question: how do the actual K=9, seed=2026 negative banks change relation-profil
 similarity and frozen B1 difficulty within each eligible training question?
 This is a sampler diagnostic, not a distribution of final model predictions.
 
-Cohort: exactly the previous four-dataset distribution audit (2974 / 2715 /
-3109 / 2709 questions). WN18RR retains its historical masks and 55 unverified
-entity pairs. CoDEx-M has no observed Uniform/quota bank; its baseline is an
-analytic expectation over its legal candidate pool. Other controls use actual
-completed banks. Pending frequency-only training is outside this cohort.
+Cohort: the current figures include only the three datasets with completed,
+query-aligned observed Uniform and quota-matched banks (NELL23K, FB15K237-2,
+WN18RR; 2974 / 3109 / 2709 questions). The archived source CSVs retain the
+previous four-dataset audit. CoDEx-M has no trained Uniform/quota bank and is
+excluded from the figures and manuscript diagnostic conclusions. WN18RR
+retains its historical masks and 55 unverified entity pairs. Pending
+frequency-only training is outside this cohort.
 
 Measures: reconstruct the five-feature log1p relation-profile similarity from
 frozen profiles; use cached pairwise_confusion as B1 violation/difficulty.
@@ -26,10 +28,10 @@ masked, observed zeros have -infinity lift and use the lower color extension.
 Common color range [-2,2]; no pseudocounts. Within-query rank ties imply the
 Uniform histogram need not be flat, especially with only 9–10 WN candidates.
 
-Figures: (1) hardness/structure percentile histograms in a four-dataset grid;
+Figures: (1) hardness/structure percentile histograms in a three-dataset grid;
 (2) joint selection-lift grid; (3) raw-edge vs negative relation probability
 scatter with descriptive equality line; (4) completed FB single-signal control
-mean-percentile fingerprints; (5–8) per-dataset raw signal and paired
+mean-percentile fingerprints; (5–7) per-dataset raw signal and paired
 question-level diagnostics. Marginal scatter imports already audited CSV data.
 No mixture model or true/false negative labels: those labels are unavailable.
 No power-law fit, temperature sweep, or embedding projection is invented.
