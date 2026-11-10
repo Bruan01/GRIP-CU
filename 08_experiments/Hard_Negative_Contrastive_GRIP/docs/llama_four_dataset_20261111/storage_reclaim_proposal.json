@@ -1,0 +1,503 @@
+{
+  "status": "proposal_only_not_authorized_not_executed",
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "candidate_files": [
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794030557000000000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794030560000000000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794030560000000000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794030560000000000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794033019876800700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794033023162948100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794033023172427400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794033023199486500,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794035428847128600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794035432417744500,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794035432430494800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794035432456268800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794050572172044600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794050575529168800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794050575545971200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-8/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794050575579773700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794054177322014000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794054180559157500,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794054180571611400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-16/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794054180598452800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794057702173929400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794057705407086200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794057705416278200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-24/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794057705437760800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-8/adapter_model.safetensors",
+      "bytes": 2204583480,
+      "mtime_ns": 1794131356382111900,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-8/optimizer.pt",
+      "bytes": 60699531,
+      "mtime_ns": 1794131357599671100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-8/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794131357612700000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-8/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794131357636482100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-16/adapter_model.safetensors",
+      "bytes": 2204583480,
+      "mtime_ns": 1794134141223716100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-16/optimizer.pt",
+      "bytes": 60699531,
+      "mtime_ns": 1794134142417024500,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-16/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794134142430902900,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-16/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794134142455993700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-24/adapter_model.safetensors",
+      "bytes": 2204583480,
+      "mtime_ns": 1794136939861754400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-24/optimizer.pt",
+      "bytes": 60699531,
+      "mtime_ns": 1794136941977982400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-24/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794136941997138500,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-24/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794136942054255100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-25/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794162198156281800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-25/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794162201767560200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-25/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794162201780007800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-25/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794162201817014300,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-50/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794171221265892800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-50/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794171224505743100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-50/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794171224521757100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-50/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794171224550897200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-75/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794180318727967800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-75/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794180322008132600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-75/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794180322019640900,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-75/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794180322045796900,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-100/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794189333826332300,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-100/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794189337087302300,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-100/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794189337099120800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-100/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794189337125426000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-25/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794212255436024700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-25/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794212258971970900,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-25/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794212258983140300,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-25/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794212259011810000,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-50/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794220647951717800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-50/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794220650842927300,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-50/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794220650856078600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-50/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794220650885717100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-75/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794228083880837600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-75/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794228086752792600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-75/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794228086765008700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-75/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794228086788287800,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-100/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794235486996785400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-100/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794235489903716200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-100/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794235489913716400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-100/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794235489932990400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-8/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794294949305876700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-8/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794294952864755100,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-8/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794294952874058500,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-8/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794294952913394200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-16/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794298004366802600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-16/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794298007995729700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-16/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794298008006238200,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-16/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794298008035446600,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-24/adapter_model.safetensors",
+      "bytes": 2355972056,
+      "mtime_ns": 1794301216423538900,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-24/optimizer.pt",
+      "bytes": 363476171,
+      "mtime_ns": 1794301221236423300,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-24/scheduler.pt",
+      "bytes": 1465,
+      "mtime_ns": 1794301221250937700,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    },
+    {
+      "path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-24/rng_state.pth",
+      "bytes": 14645,
+      "mtime_ns": 1794301221305937400,
+      "reason": "earlier checkpoint tensor/state only; preserve JSON/log/config files"
+    }
+  ],
+  "total_bytes": 53026791092,
+  "retained_final_model_and_resume_directories": [
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-32",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k3_sensitivity_20261107_seed2026/training/listed/adapter",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/trainer_listed/checkpoint-32",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/fb_k15_sensitivity_20261107_seed2026/training/listed/adapter",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-32",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/nell23k_source_controls_20261107_seed2026/frequency_matched/training/listed/adapter",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/trainer_listed/checkpoint-125",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/random9/training/listed/adapter",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/trainer_listed/checkpoint-125",
+    "/mnt/e/GRIP-CU/artifacts/retained_training_20261107/wn18rr_source_controls_20261107_seed2026/frequency_matched/training/listed/adapter",
+    "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/trainer_listed/checkpoint-32",
+    "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training/listed/adapter"
+  ],
+  "preserve": "all final adapters, final checkpoint states, JSON/config/curves, raw predictions, candidate banks, scores and existing logs",
+  "irreversible_loss": "Early checkpoint model weights and optimizer/RNG/scheduler states would no longer be recoverable; conflicts with prior all-checkpoint retention policy without explicit new authorization."
+}

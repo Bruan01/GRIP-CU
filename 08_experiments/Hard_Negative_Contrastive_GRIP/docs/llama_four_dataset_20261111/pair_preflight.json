@@ -1,0 +1,37 @@
+{
+  "status": "pass_with_disclosed_WN_historical_limit",
+  "datasets": [
+    {
+      "dataset": "wn18rr",
+      "candidate_eligible": 2709,
+      "unverified_entity_pairs": 55,
+      "unsupported_gold": 0,
+      "train_only": true,
+      "scope": "historical WN pool retained"
+    },
+    {
+      "dataset": "fb15k237_2",
+      "candidate_eligible": 3109,
+      "unverified_entity_pairs": 0,
+      "unsupported_gold": 0,
+      "train_only": true,
+      "scope": "all eligible train entity pairs verified"
+    },
+    {
+      "dataset": "codexm",
+      "candidate_eligible": 2715,
+      "unverified_entity_pairs": 0,
+      "unsupported_gold": 0,
+      "train_only": true,
+      "scope": "all eligible train entity pairs verified"
+    },
+    {
+      "dataset": "nell23k",
+      "candidate_eligible": 2974,
+      "unverified_entity_pairs": 0,
+      "unsupported_gold": 0,
+      "train_only": true,
+      "scope": "all eligible train entity pairs verified"
+    }
+  ]
+}

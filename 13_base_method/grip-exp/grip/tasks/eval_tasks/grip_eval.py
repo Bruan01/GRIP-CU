@@ -95,4 +95,6 @@ class GRIPEvalDataset(BaseEvalDataset):
             user_content = context + "\n" + template
 
         sample = self._format_chat_template(user_content)
-        return self.tokenizer(sample, return_tensors="pt")["input_ids"], question, answer
+        bos = getattr(self.tokenizer, "bos_token", None)
+        return self.tokenizer(sample, return_tensors="pt",
+                              **({"add_special_tokens": False} if bos and sample.startswith(bos) else {}))["input_ids"], question, answer

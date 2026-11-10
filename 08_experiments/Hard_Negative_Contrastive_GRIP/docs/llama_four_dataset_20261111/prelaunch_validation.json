@@ -1,0 +1,159 @@
+{
+  "status": "pass",
+  "scope": "CPU and setup only; no Llama model performance",
+  "native_qa_message_audits": [
+    {
+      "task_sha256": "c3f11ab0010153221c371a1366f8651433f4feaf96a7852f3c5dc1d436d934e8",
+      "source_task_sha256": "feb7c3621119666b60c91f52a1b70a0b37f0bf9610ab283664cc253384c2db12",
+      "qa_count": 12334,
+      "context_count": 163662,
+      "all_message_contents_verified": true,
+      "model": "llama3-8b",
+      "dataset": "wn18rr"
+    },
+    {
+      "task_sha256": "a0bbb19a7272cedbb5a08a4d0c005775920f5b9766c7fe301c858956d96601a4",
+      "source_task_sha256": "596509a27d3a0f3e4192d547d699a615e9d58c59af90c150951af76e4a336014",
+      "qa_count": 12136,
+      "context_count": 295613,
+      "all_message_contents_verified": true,
+      "model": "llama3-8b",
+      "dataset": "fb15k237_2"
+    },
+    {
+      "task_sha256": "b9c17cb1dee75d3a1ce8c13a8c403d428a0195711b5b174cf5342dbcfec73a00",
+      "source_task_sha256": "d6be7af96e5f56d838e18d9a7b2628f642467926e0a63130702c20d5dbac2e28",
+      "qa_count": 12300,
+      "context_count": 236027,
+      "all_message_contents_verified": true,
+      "model": "llama3-8b",
+      "dataset": "codexm"
+    },
+    {
+      "task_sha256": "8b96453e50b69bc6e187567daee325e4a007d09a7f71f336b295cd6376e2cf41",
+      "source_task_sha256": "75f804181261c2bd00e67315fe1cb35d409a1e8a6b0862708627f3f987d3066d",
+      "qa_count": 12014,
+      "context_count": 80820,
+      "all_message_contents_verified": true,
+      "model": "llama3-8b",
+      "dataset": "nell23k"
+    }
+  ],
+  "successful_real_cli_preflights": 8,
+  "regression": {
+    "passed": 43,
+    "files": [
+      "test_listed_training.py",
+      "test_task_file.py",
+      "test_matched_rerank.py"
+    ]
+  },
+  "contract_sha256": "277a6791731c87a8161181cb88ac62474a5f0ac16380abb3d0a37abe1b51b469",
+  "python": "/home/kieran/miniconda3/envs/guardenv/bin/python",
+  "versions": {
+    "torch": "2.13.0",
+    "transformers": "5.20.1",
+    "peft": "0.21.1",
+    "accelerate": "1.13.0"
+  },
+  "git_head": "9eb90669a9af5cf64716af70ad8f2d597cabe96b",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "free_e_bytes": 43068334080,
+  "free_c_bytes": 4048375808,
+  "native_training_tokenization_audit": {
+    "status": "pass",
+    "single_bos": true,
+    "listed_and_task_dataset_match_native": true,
+    "original_default_would_duplicate_bos": true,
+    "token_count": 52
+  },
+  "native_eval_tokenization_audit": {
+    "status": "pass",
+    "checks": [
+      {
+        "dataset": "wn18rr",
+        "first_prompt_single_bos": true,
+        "tokens": 202
+      },
+      {
+        "dataset": "fb15k237_2",
+        "first_prompt_single_bos": true,
+        "tokens": 215
+      },
+      {
+        "dataset": "codexm",
+        "first_prompt_single_bos": true,
+        "tokens": 191
+      },
+      {
+        "dataset": "nell23k",
+        "first_prompt_single_bos": true,
+        "tokens": 211
+      }
+    ]
+  },
+  "model_download": {
+    "status": "completed",
+    "model_dir": "/mnt/e/GRIP-CU/model_cache/meta-llama--Llama-3.1-8B-Instruct",
+    "verified_files": 14,
+    "at": 1794337535.636355
+  },
+  "stage_at_recording": {
+    "at": "2026-11-10T19:07:07.946886+00:00",
+    "dataset": "wn18rr",
+    "stage": "s1",
+    "status": "running",
+    "pid": 1195363,
+    "elapsed_seconds": 60.25047884398373,
+    "log": "/home/kieran/grip-cu-runs/llama_four_20261111/logs/wn18rr_s1.log",
+    "log_age_seconds": 0.2859632968902588,
+    "free_e_bytes": 43068334080,
+    "free_c_bytes": 2960719872,
+    "gpu": {
+      "returncode": 0,
+      "stdout": "17246 MiB, 8 %",
+      "stderr": ""
+    }
+  },
+  "performance_results_available": false,
+  "native_padding_audit": {
+    "status": "pass",
+    "tokenizer_length": 128256,
+    "base_vocab_size": 128256,
+    "pad_token": "<|finetune_right_pad_id|>",
+    "pad_token_id": 128004,
+    "embedding_resize_required": false,
+    "reason": "use existing dedicated Llama padding token; attention-masked padding has no new trainable row"
+  },
+  "startup_attempts": {
+    "first": "failed before optimizer step: embedding resize allocation",
+    "recovery": "existing dedicated PAD; same training budget",
+    "failure_evidence": "/home/kieran/grip-cu-runs/llama_four_20261111/recovery/native_padding_attempt1"
+  },
+  "actual_gpu_startup": {
+    "model": "LlamaForCausalLM",
+    "device": "cuda:0",
+    "trainable_lora_parameters": 42467328,
+    "stage": "wn18rr_stage1",
+    "schedule_steps": 320,
+    "embedding_resize_observed": false,
+    "optimizer_completion_not_claimed": true,
+    "status_at_recording": {
+      "at": "2026-11-10T19:15:43.934794+00:00",
+      "dataset": "wn18rr",
+      "stage": "s1",
+      "status": "running",
+      "pid": 1201236,
+      "elapsed_seconds": 241.20545549300732,
+      "log": "/home/kieran/grip-cu-runs/llama_four_20261111/logs/wn18rr_s1.log",
+      "log_age_seconds": 41.254210233688354,
+      "free_e_bytes": 43068334080,
+      "free_c_bytes": 1873031168,
+      "gpu": {
+        "returncode": 0,
+        "stdout": "18978 MiB, 27 %",
+        "stderr": ""
+      }
+    }
+  }
+}

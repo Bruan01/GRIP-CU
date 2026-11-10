@@ -712,7 +712,7 @@ def train_stage2(
         texts, metas = build_qa_assets(record, tokenizer)
     dataset = ListedQADataset(texts, metas, tokenizer)
     stage_args = copy(args)
-    use_checkpointing = lambda_candidate > 0
+    use_checkpointing = lambda_candidate > 0 or bool(args.s1_gradient_checkpointing)
     if use_checkpointing:
         # Candidate scoring is one padded (K+1)-way forward. Keep the original
         # effective batch; microbatch stays 1 on 24GB Qwen2.5-7B.
@@ -1413,9 +1413,13 @@ def _run_main(args: argparse.Namespace) -> None:
                 texts=qa_texts,
                 metas=qa_metas,
             )
-        summaries["b1"] = evaluate_variant(
-            args, eval_record, b1_adapter, output_dir / "b1", model=model, tokenizer=tokenizer
-        )
+        if args.defer_eval:
+            print(f"[b1] evaluation deferred for {b1_adapter}", flush=True)
+            summaries["b1"] = {"deferred": True}
+        else:
+            summaries["b1"] = evaluate_variant(
+                args, eval_record, b1_adapter, output_dir / "b1", model=model, tokenizer=tokenizer
+            )
         if tracker is not None:
             tracker.log_evaluation("b1", summaries["b1"])
         del model, tokenizer

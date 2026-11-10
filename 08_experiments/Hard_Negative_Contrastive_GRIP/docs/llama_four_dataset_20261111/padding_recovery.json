@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-11T03:11:39.717566+08:00",
+  "reason": "Llama default [PAD] addition forced expensive embedding resize; use existing reserved pad ID128004, no vocabulary/weight resize",
+  "previous_attempt_completed_optimizer_steps": 0,
+  "failed_logs": "/home/kieran/grip-cu-runs/llama_four_20261111/recovery/native_padding_attempt1",
+  "cpu_audit": {
+    "status": "pass",
+    "tokenizer_length": 128256,
+    "base_vocab_size": 128256,
+    "pad_token": "<|finetune_right_pad_id|>",
+    "pad_token_id": 128004,
+    "embedding_resize_required": false,
+    "reason": "use existing dedicated Llama padding token; attention-masked padding has no new trainable row"
+  }
+}

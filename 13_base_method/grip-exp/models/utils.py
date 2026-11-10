@@ -259,7 +259,12 @@ def get_hf_llm_tokenizer(
         **kwargs,
     )
     pad_token = "[PAD]"
-    if pad_token not in tokenizer.get_vocab():
+    # Llama 3.1 already reserves a dedicated padding token. Reuse it rather
+    # than resizing both 8B embedding matrices for a single unused PAD row.
+    # Existing adapters with an explicit [PAD] token retain their vocabulary.
+    if pad_token not in tokenizer.get_vocab() and "<|finetune_right_pad_id|>" in tokenizer.get_vocab():
+        tokenizer.pad_token = "<|finetune_right_pad_id|>"
+    elif pad_token not in tokenizer.get_vocab():
         tokenizer.add_special_tokens({"pad_token": pad_token})
     else:
         tokenizer.pad_token = pad_token

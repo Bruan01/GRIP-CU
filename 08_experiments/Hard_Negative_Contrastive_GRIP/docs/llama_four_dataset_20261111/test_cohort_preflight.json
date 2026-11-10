@@ -1,0 +1,38 @@
+{
+  "status": "pass",
+  "datasets": [
+    {
+      "dataset": "wn18rr",
+      "questions": 3134,
+      "candidate_count": 11,
+      "unique_gold_all": true,
+      "normalized_distractor_collision_questions": 0,
+      "original_options_retained": true
+    },
+    {
+      "dataset": "fb15k237_2",
+      "questions": 10000,
+      "candidate_count": 10,
+      "unique_gold_all": true,
+      "normalized_distractor_collision_questions": 12,
+      "original_options_retained": true
+    },
+    {
+      "dataset": "codexm",
+      "questions": 10311,
+      "candidate_count": 10,
+      "unique_gold_all": true,
+      "normalized_distractor_collision_questions": 0,
+      "original_options_retained": true
+    },
+    {
+      "dataset": "nell23k",
+      "questions": 4943,
+      "candidate_count": 10,
+      "unique_gold_all": true,
+      "normalized_distractor_collision_questions": 0,
+      "original_options_retained": true
+    }
+  ],
+  "scope": "CPU input and option identity only; no model results"
+}

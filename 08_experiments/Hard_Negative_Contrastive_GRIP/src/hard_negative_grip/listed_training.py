@@ -104,7 +104,9 @@ class ListedQADataset(torch.utils.data.Dataset):
 
     @staticmethod
     def _encode_item(text: str, meta: dict, tokenizer) -> dict:
-        encoded = tokenizer(text, truncation=True, padding=False)
+        bos = getattr(tokenizer, "bos_token", None)
+        encoded = tokenizer(text, truncation=True, padding=False,
+                            **({"add_special_tokens": False} if bos and text.startswith(bos) else {}))
         prefix = meta.get("prefix_text") or ""
         positive = meta.get("positive_relation") or ""
         listed = [rel for rel in (meta.get("listed_relations") or []) if rel and rel != positive]

@@ -1,0 +1,1677 @@
+{
+  "model_name": "llama3-8b",
+  "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+  "model_cache": "/mnt/e/GRIP-CU/model_cache",
+  "seed": 2026,
+  "datasets": [
+    {
+      "dataset": "wn18rr",
+      "reference_config": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/run_config.json",
+      "reference_config_sha256": "7f86d37c334093bec0ea3dccff3029cfe9b411de6e6381ba00af55e9b99bf225",
+      "reference": {
+        "format_version": 1,
+        "run_id": "wn18rr_sccl_hpo_s2026_lc0p25",
+        "created_at_utc": "2026-10-25T07:25:07.688918+00:00",
+        "dataset": "wn18rr",
+        "negative_source": "structure_counterfactual",
+        "last_step": "train",
+        "paths": {
+          "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25",
+          "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/tasks/grip_wn18rr_tasks.json",
+          "eval_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/processed/processed_val.json",
+          "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/raw",
+          "model_cache_dir": "/mnt/e/GRIP-CU/model_cache",
+          "scores_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/b1_train_scores",
+          "sampler_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank",
+          "bank_source_dir": null,
+          "manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank/counterfactual_bank.jsonl",
+          "s1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter",
+          "b1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage2_adapter",
+          "entity_text_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/raw/entity2text.txt"
+        },
+        "protocol": {
+          "listed_negative_k": 9,
+          "expected_listed_qa": 2709,
+          "seed": "2026",
+          "torch_dtype": "bfloat16",
+          "model_name": "qwen-7b",
+          "candidate_batch_size": "8",
+          "filter_splits": [
+            "train"
+          ],
+          "swanlab_project": "",
+          "swanlab_experiment_name": "wn18rr_sccl_hpo_s2026_lc0p25",
+          "swanlab_group": "structure_counterfactual-k9",
+          "swanlab_mode": "online",
+          "uniform_mix": "0.3333333333333333",
+          "structure_weight": "1.0",
+          "violation_weight": "1.0",
+          "temperature": "0.25",
+          "lambda_candidate": "0.25",
+          "contrastive_temperature": "1.0",
+          "train_learning_rate": "1e-3",
+          "train_weight_decay": "1e-4",
+          "train_max_grad_norm": "1.0",
+          "involve_qa_epochs": "5",
+          "train_lora_r": "24",
+          "train_lora_alpha": "48",
+          "per_device_train_batch_size": "4",
+          "gradient_accumulation_steps": "128",
+          "run_variant": "hpo_rung3_lc0p25"
+        },
+        "stage_history": [
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-10-25T07:25:07.689632+00:00",
+            "pid": 326395,
+            "command": "STEP=train DATASET=wn18rr NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank RUN_ID=wn18rr_sccl_hpo_s2026_lc0p25 RUN_VARIANT=hpo_rung1_lc0p25 SEED=2026 LAMBDA_CANDIDATE=0.25 STOP_AFTER_STEP=25 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=1.0 TRAIN_LEARNING_RATE=1e-3 TRAIN_WEIGHT_DECAY=1e-4 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/configs/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-10-25T09:52:26.830122+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-10-25T14:56:49.460241+00:00",
+            "pid": 444402,
+            "command": "STEP=train DATASET=wn18rr NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank RUN_ID=wn18rr_sccl_hpo_s2026_lc0p25 RUN_VARIANT=hpo_rung2_lc0p25 SEED=2026 LAMBDA_CANDIDATE=0.25 STOP_AFTER_STEP=50 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=1.0 TRAIN_LEARNING_RATE=1e-3 TRAIN_WEIGHT_DECAY=1e-4 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/configs/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-10-25T17:12:14.082682+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-10-25T20:39:56.389104+00:00",
+            "pid": 514473,
+            "command": "STEP=train DATASET=wn18rr NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank RUN_ID=wn18rr_sccl_hpo_s2026_lc0p25 RUN_VARIANT=hpo_rung3_lc0p25 SEED=2026 LAMBDA_CANDIDATE=0.25 STOP_AFTER_STEP=125 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=1.0 TRAIN_LEARNING_RATE=1e-3 TRAIN_WEIGHT_DECAY=1e-4 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/configs/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-10-26T03:14:51.905352+00:00",
+            "exit_code": 0
+          }
+        ],
+        "status": "completed",
+        "updated_at_utc": "2026-10-26T03:14:51.905352+00:00",
+        "stage": "listed",
+        "method_name": "structure_counterfactual_contrastive_grip",
+        "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/tasks/grip_wn18rr_tasks.json",
+        "eval_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/processed/processed_val.json",
+        "output_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25",
+        "s1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter",
+        "model_name": "qwen-7b",
+        "dtype": "bfloat16",
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "target_modules": [
+          "down_proj",
+          "up_proj",
+          "gate_proj"
+        ],
+        "num_train_epochs": 1.0,
+        "involve_qa_epochs": 5.0,
+        "s1_stop_loss_threshold": 0.15,
+        "per_device_train_batch_size": 4,
+        "gradient_accumulation_steps": 128,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0001,
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 1.0,
+        "lambda_candidate": 0.25,
+        "memory_size": 0,
+        "temperature": 1.0,
+        "gen_max_length": 32,
+        "seed": 2026,
+        "swanlab_project": "",
+        "swanlab_group": "",
+        "swanlab_mode": "online",
+        "s1_gradient_checkpointing": true,
+        "training_arguments": {
+          "bf16": true,
+          "fp16": false,
+          "tf32": false,
+          "lr_scheduler_type": "linear",
+          "logging_strategy": "steps",
+          "logging_steps": 1,
+          "remove_unused_columns": false,
+          "ddp_find_unused_parameters": false
+        },
+        "listed_negative_k": 9,
+        "listed_negative_source": "structure_counterfactual",
+        "negative_sampling_mode": "structure_counterfactual",
+        "error_memory_uniform_mix": 0.3333333333333333,
+        "error_memory_weight": 1.0,
+        "error_memory_violation_weight": 1.0,
+        "error_memory_temperature": 0.25,
+        "listed_negative_seed": 2026,
+        "error_memory_manifest": null,
+        "counterfactual_manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank/counterfactual_bank.jsonl",
+        "counterfactual_metadata": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank/metadata.json",
+        "counterfactual_sampling": {
+          "uniform_mix": 0.3333333333333333,
+          "structure_weight": 1.0,
+          "violation_weight": 1.0,
+          "temperature": 0.25
+        },
+        "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/raw",
+        "skip_train": false,
+        "defer_eval": true,
+        "save_steps": 25,
+        "save_total_limit": 2,
+        "stop_after_step": 125,
+        "resume_from_checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/trainer_listed/checkpoint-50",
+        "no_resume": false,
+        "allow_underfit_listed": false,
+        "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched.",
+        "training_config": {
+          "stage": "listed",
+          "dataset": "wn18rr",
+          "method_name": "structure_counterfactual_contrastive_grip",
+          "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/tasks/grip_wn18rr_tasks.json",
+          "eval_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/processed/processed_val.json",
+          "output_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25",
+          "s1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter",
+          "model_name": "qwen-7b",
+          "dtype": "bfloat16",
+          "lora_r": 24,
+          "lora_alpha": 48,
+          "target_modules": [
+            "down_proj",
+            "up_proj",
+            "gate_proj"
+          ],
+          "num_train_epochs": 1.0,
+          "involve_qa_epochs": 5.0,
+          "s1_stop_loss_threshold": 0.15,
+          "per_device_train_batch_size": 4,
+          "gradient_accumulation_steps": 128,
+          "learning_rate": 0.001,
+          "weight_decay": 0.0001,
+          "adam_epsilon": 1e-08,
+          "max_grad_norm": 1.0,
+          "lambda_candidate": 0.25,
+          "memory_size": 0,
+          "temperature": 1.0,
+          "gen_max_length": 32,
+          "seed": 2026,
+          "swanlab_project": "",
+          "swanlab_group": "",
+          "swanlab_mode": "online",
+          "s1_gradient_checkpointing": true,
+          "training_arguments": {
+            "bf16": true,
+            "fp16": false,
+            "tf32": false,
+            "lr_scheduler_type": "linear",
+            "logging_strategy": "steps",
+            "logging_steps": 1,
+            "remove_unused_columns": false,
+            "ddp_find_unused_parameters": false
+          },
+          "listed_negative_k": 9,
+          "listed_negative_source": "structure_counterfactual",
+          "negative_sampling_mode": "structure_counterfactual",
+          "error_memory_uniform_mix": 0.3333333333333333,
+          "error_memory_weight": 1.0,
+          "error_memory_violation_weight": 1.0,
+          "error_memory_temperature": 0.25,
+          "listed_negative_seed": 2026,
+          "error_memory_manifest": null,
+          "counterfactual_manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank/counterfactual_bank.jsonl",
+          "counterfactual_metadata": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_3090_20261023/artifacts/structure_counterfactual_bank/metadata.json",
+          "counterfactual_sampling": {
+            "uniform_mix": 0.3333333333333333,
+            "structure_weight": 1.0,
+            "violation_weight": 1.0,
+            "temperature": 0.25
+          },
+          "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/raw",
+          "skip_train": false,
+          "defer_eval": true,
+          "save_steps": 25,
+          "save_total_limit": 2,
+          "stop_after_step": 125,
+          "resume_from_checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/wn18rr_sccl_hpo_s2026_lc0p25/trainer_listed/checkpoint-50",
+          "no_resume": false,
+          "allow_underfit_listed": false,
+          "created_at_utc": "2026-10-25T20:41:43.619519+00:00",
+          "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched."
+        }
+      },
+      "source_task": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/tasks/grip_wn18rr_tasks.json",
+      "task_sha256": "feb7c3621119666b60c91f52a1b70a0b37f0bf9610ab283664cc253384c2db12",
+      "raw": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/wn18rr/raw",
+      "valid": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/wn18rr/processed/processed_val.json",
+      "test": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/wn18rr/processed/processed_test.json",
+      "valid_sha256": "0977646ae09739f6155cbeccf7fb8bedaf3009c2098e2c2f062bb025e93bff3e",
+      "test_sha256": "0156364b9901aba7c7a1f15a82af7af2d40990457a8baf87a14c224c57e548e0",
+      "candidate_count": 11,
+      "gen_max_length": 1000,
+      "expected_test": 3134,
+      "relation_text_file": null,
+      "entity_text_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/wn18rr/raw/entity2text.txt",
+      "raw_train_sha256": "038612e783c215ee5f3ca9fbfca27b8d0739be1028fe4ee7c174aecf0b83d5df"
+    },
+    {
+      "dataset": "fb15k237_2",
+      "reference_config": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run/run_config.json",
+      "reference_config_sha256": "52bdca6ab015fae63cbba6c96095a9097403a18d9557ea76bf7aedb3085f65e9",
+      "reference": {
+        "format_version": 1,
+        "run_id": "fb15k237_2_direct_em_optuna_t001",
+        "created_at_utc": "2026-11-02T19:52:14.557039+00:00",
+        "dataset": "fb15k237_2",
+        "negative_source": "structure_counterfactual",
+        "last_step": "train",
+        "paths": {
+          "run_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run",
+          "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/assets/grip_fb15k237_2_tasks_train_pair_repaired.json",
+          "eval_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/processed/processed_val.json",
+          "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/raw",
+          "model_cache_dir": "/mnt/e/GRIP-CU/model_cache",
+          "scores_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/training_assets/b1_train_scores",
+          "sampler_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9",
+          "bank_source_dir": null,
+          "manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/counterfactual_bank.jsonl",
+          "s1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/b1/stage1_adapter",
+          "b1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/b1/stage2_adapter",
+          "entity_text_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/assets/entity2text_train.txt"
+        },
+        "protocol": {
+          "listed_negative_k": 9,
+          "expected_listed_qa": 3109,
+          "seed": "2026",
+          "torch_dtype": "bfloat16",
+          "model_name": "qwen-7b",
+          "candidate_batch_size": "8",
+          "filter_splits": [
+            "train"
+          ],
+          "swanlab_project": "",
+          "swanlab_experiment_name": "fb15k237_2_direct_em_optuna_t001",
+          "swanlab_group": "structure_counterfactual-k9",
+          "swanlab_mode": "online",
+          "uniform_mix": "0.3333333333333333",
+          "structure_weight": "1.0",
+          "violation_weight": "1.0",
+          "temperature": "0.25",
+          "lambda_candidate": "0.11229873660012951",
+          "contrastive_temperature": "0.8863961214238169",
+          "train_learning_rate": "0.000947622749310518",
+          "train_weight_decay": "8.889902164812924e-05",
+          "train_max_grad_norm": "1.0",
+          "involve_qa_epochs": "5",
+          "train_lora_r": "24",
+          "train_lora_alpha": "48",
+          "per_device_train_batch_size": "1",
+          "gradient_accumulation_steps": "512",
+          "run_variant": "optuna_rung_32"
+        },
+        "stage_history": [
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-11-02T19:52:14.557132+00:00",
+            "pid": 1787623,
+            "command": "STEP=train DATASET=fb15k237_2 NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9 RUN_ID=fb15k237_2_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_8 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=8 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-11-02T20:46:25.750778+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-11-02T21:05:46.347784+00:00",
+            "pid": 1800286,
+            "command": "STEP=train DATASET=fb15k237_2 NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9 RUN_ID=fb15k237_2_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_16 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=16 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-11-02T21:58:49.229117+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-11-02T22:18:40.282251+00:00",
+            "pid": 1812737,
+            "command": "STEP=train DATASET=fb15k237_2 NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9 RUN_ID=fb15k237_2_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_32 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=32 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-11-02T23:57:20.032233+00:00",
+            "exit_code": 0
+          }
+        ],
+        "status": "completed",
+        "updated_at_utc": "2026-11-02T23:57:20.032233+00:00",
+        "stage": "listed",
+        "method_name": "structure_counterfactual_contrastive_grip",
+        "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/assets/grip_fb15k237_2_tasks_train_pair_repaired.json",
+        "relation_eligibility": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/relation_eligibility.json",
+        "eval_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/processed/processed_val.json",
+        "output_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run",
+        "s1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/b1/stage1_adapter",
+        "model_name": "qwen-7b",
+        "dtype": "bfloat16",
+        "lora_r": 24,
+        "lora_alpha": 48,
+        "target_modules": [
+          "down_proj",
+          "up_proj",
+          "gate_proj"
+        ],
+        "num_train_epochs": 0.0,
+        "involve_qa_epochs": 5.0,
+        "s1_stop_loss_threshold": 0.15,
+        "per_device_train_batch_size": 1,
+        "gradient_accumulation_steps": 512,
+        "learning_rate": 0.000947622749310518,
+        "weight_decay": 8.889902164812924e-05,
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 1.0,
+        "lambda_candidate": 0.11229873660012951,
+        "memory_size": 0,
+        "temperature": 0.8863961214238169,
+        "gen_max_length": 32,
+        "seed": 2026,
+        "swanlab_project": "",
+        "swanlab_group": "",
+        "swanlab_mode": "online",
+        "s1_gradient_checkpointing": true,
+        "training_arguments": {
+          "bf16": true,
+          "fp16": false,
+          "tf32": false,
+          "lr_scheduler_type": "linear",
+          "logging_strategy": "steps",
+          "logging_steps": 1,
+          "remove_unused_columns": false,
+          "ddp_find_unused_parameters": false
+        },
+        "listed_negative_k": 9,
+        "listed_negative_source": "structure_counterfactual",
+        "negative_sampling_mode": "structure_counterfactual",
+        "error_memory_uniform_mix": 0.3333333333333333,
+        "error_memory_weight": 1.0,
+        "error_memory_violation_weight": 1.0,
+        "error_memory_temperature": 0.25,
+        "listed_negative_seed": 2026,
+        "error_memory_manifest": null,
+        "counterfactual_manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/counterfactual_bank.jsonl",
+        "counterfactual_metadata": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/metadata.json",
+        "counterfactual_sampling": {
+          "uniform_mix": 0.3333333333333333,
+          "structure_weight": 1.0,
+          "violation_weight": 1.0,
+          "temperature": 0.25
+        },
+        "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/raw",
+        "skip_train": false,
+        "defer_eval": true,
+        "save_steps": 16,
+        "save_total_limit": 1,
+        "stop_after_step": 32,
+        "resume_from_checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run/trainer_listed/checkpoint-16",
+        "no_resume": false,
+        "allow_underfit_listed": false,
+        "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched.",
+        "training_config": {
+          "stage": "listed",
+          "dataset": "fb15k237_2",
+          "method_name": "structure_counterfactual_contrastive_grip",
+          "input_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/assets/grip_fb15k237_2_tasks_train_pair_repaired.json",
+          "relation_eligibility": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/relation_eligibility.json",
+          "eval_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/processed/processed_val.json",
+          "output_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run",
+          "s1_adapter": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/b1/stage1_adapter",
+          "model_name": "qwen-7b",
+          "dtype": "bfloat16",
+          "lora_r": 24,
+          "lora_alpha": 48,
+          "target_modules": [
+            "down_proj",
+            "up_proj",
+            "gate_proj"
+          ],
+          "num_train_epochs": 0.0,
+          "involve_qa_epochs": 5.0,
+          "s1_stop_loss_threshold": 0.15,
+          "per_device_train_batch_size": 1,
+          "gradient_accumulation_steps": 512,
+          "learning_rate": 0.000947622749310518,
+          "weight_decay": 8.889902164812924e-05,
+          "adam_epsilon": 1e-08,
+          "max_grad_norm": 1.0,
+          "lambda_candidate": 0.11229873660012951,
+          "memory_size": 0,
+          "temperature": 0.8863961214238169,
+          "gen_max_length": 32,
+          "seed": 2026,
+          "swanlab_project": "",
+          "swanlab_group": "",
+          "swanlab_mode": "online",
+          "s1_gradient_checkpointing": true,
+          "training_arguments": {
+            "bf16": true,
+            "fp16": false,
+            "tf32": false,
+            "lr_scheduler_type": "linear",
+            "logging_strategy": "steps",
+            "logging_steps": 1,
+            "remove_unused_columns": false,
+            "ddp_find_unused_parameters": false
+          },
+          "listed_negative_k": 9,
+          "listed_negative_source": "structure_counterfactual",
+          "negative_sampling_mode": "structure_counterfactual",
+          "error_memory_uniform_mix": 0.3333333333333333,
+          "error_memory_weight": 1.0,
+          "error_memory_violation_weight": 1.0,
+          "error_memory_temperature": 0.25,
+          "listed_negative_seed": 2026,
+          "error_memory_manifest": null,
+          "counterfactual_manifest": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/counterfactual_bank.jsonl",
+          "counterfactual_metadata": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/assets/k9/metadata.json",
+          "counterfactual_sampling": {
+            "uniform_mix": 0.3333333333333333,
+            "structure_weight": 1.0,
+            "violation_weight": 1.0,
+            "temperature": 0.25
+          },
+          "raw_dir": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/raw",
+          "skip_train": false,
+          "defer_eval": true,
+          "save_steps": 16,
+          "save_total_limit": 1,
+          "stop_after_step": 32,
+          "resume_from_checkpoint": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/fb15k237_2/search/trials/trial_0001/train_run/trainer_listed/checkpoint-16",
+          "no_resume": false,
+          "allow_underfit_listed": false,
+          "created_at_utc": "2026-11-02T22:20:39.842595+00:00",
+          "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched."
+        }
+      },
+      "source_task": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/assets/grip_fb15k237_2_tasks_train_pair_repaired.json",
+      "task_sha256": "596509a27d3a0f3e4192d547d699a615e9d58c59af90c150951af76e4a336014",
+      "raw": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/fb15k237_2/raw",
+      "valid": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/04_benchmark/data/fb15k237_2/processed/processed_val.json",
+      "test": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/fb15k237_2/processed/processed_test.json",
+      "valid_sha256": "0f7cf158726893dffdef2d8bdcece6495084befe5eb0ac9a2adc11668e2c47da",
+      "test_sha256": "c77dde51aafc7b1ce3a5011ade914343c2689f8b38b12774ea4840ec1c9068ed",
+      "candidate_count": 10,
+      "gen_max_length": 32,
+      "expected_test": 10000,
+      "relation_text_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/fb15k237_2/raw/rel2text.json",
+      "entity_text_file": "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/assets/entity2text_train.txt",
+      "raw_train_sha256": "61099230e4439f90885ca9767739e31e8e32f54736fa1c35952b27997bc7c08a"
+    },
+    {
+      "dataset": "codexm",
+      "reference_config": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run/run_config.json",
+      "reference_config_sha256": "6860069f4476e6965d5df93a139a51cbd00f132eb0a125e30329d09e547b1a55",
+      "reference": {
+        "format_version": 1,
+        "run_id": "codexm_direct_em_optuna_t001",
+        "created_at_utc": "2026-11-01T05:35:06.094744+00:00",
+        "dataset": "codexm",
+        "negative_source": "structure_counterfactual",
+        "last_step": "train",
+        "paths": {
+          "run_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run",
+          "input_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/tasks/grip_codexm_tasks.json",
+          "eval_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/processed/processed_val.json",
+          "raw_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw",
+          "model_cache_dir": "/mnt/e/GRIP-CU/model_cache",
+          "scores_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/training_assets/b1_train_scores",
+          "sampler_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9",
+          "bank_source_dir": null,
+          "manifest": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/counterfactual_bank.jsonl",
+          "s1_adapter": "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/codexm_taskfile_3090/stage1_adapter",
+          "b1_adapter": "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/codexm_taskfile_3090/stage2_adapter",
+          "entity_text_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw/entity2text.txt"
+        },
+        "protocol": {
+          "listed_negative_k": 9,
+          "expected_listed_qa": 2715,
+          "seed": "2026",
+          "torch_dtype": "bfloat16",
+          "model_name": "qwen-7b",
+          "candidate_batch_size": "8",
+          "filter_splits": [
+            "train"
+          ],
+          "swanlab_project": "",
+          "swanlab_experiment_name": "codexm_direct_em_optuna_t001",
+          "swanlab_group": "structure_counterfactual-k9",
+          "swanlab_mode": "online",
+          "uniform_mix": "0.3333333333333333",
+          "structure_weight": "1.0",
+          "violation_weight": "1.0",
+          "temperature": "0.25",
+          "lambda_candidate": "0.11229873660012951",
+          "contrastive_temperature": "0.8863961214238169",
+          "train_learning_rate": "0.000947622749310518",
+          "train_weight_decay": "8.889902164812924e-05",
+          "train_max_grad_norm": "1.0",
+          "involve_qa_epochs": "5",
+          "train_lora_r": "4",
+          "train_lora_alpha": "8",
+          "per_device_train_batch_size": "1",
+          "gradient_accumulation_steps": "512",
+          "run_variant": "optuna_rung_32"
+        },
+        "stage_history": [
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-11-01T05:35:06.094867+00:00",
+            "pid": 1370433,
+            "command": "STEP=train DATASET=codexm NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9 RUN_ID=codexm_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_8 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=8 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-11-01T06:26:05.124879+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-11-01T06:42:23.138531+00:00",
+            "pid": 1382191,
+            "command": "STEP=train DATASET=codexm NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9 RUN_ID=codexm_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_16 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=16 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-11-01T07:33:55.220572+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-11-01T07:49:54.147477+00:00",
+            "pid": 1393861,
+            "command": "STEP=train DATASET=codexm NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9 RUN_ID=codexm_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_32 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=32 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-11-01T09:21:23.562454+00:00",
+            "exit_code": 0
+          }
+        ],
+        "status": "completed",
+        "updated_at_utc": "2026-11-01T09:21:23.562454+00:00",
+        "stage": "listed",
+        "method_name": "structure_counterfactual_contrastive_grip",
+        "input_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/tasks/grip_codexm_tasks.json",
+        "relation_eligibility": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/relation_eligibility.json",
+        "eval_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/processed/processed_val.json",
+        "output_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run",
+        "s1_adapter": "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/codexm_taskfile_3090/stage1_adapter",
+        "model_name": "qwen-7b",
+        "dtype": "bfloat16",
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "target_modules": [
+          "down_proj",
+          "up_proj",
+          "gate_proj"
+        ],
+        "num_train_epochs": 0.0,
+        "involve_qa_epochs": 5.0,
+        "s1_stop_loss_threshold": 0.15,
+        "per_device_train_batch_size": 1,
+        "gradient_accumulation_steps": 512,
+        "learning_rate": 0.000947622749310518,
+        "weight_decay": 8.889902164812924e-05,
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 1.0,
+        "lambda_candidate": 0.11229873660012951,
+        "memory_size": 0,
+        "temperature": 0.8863961214238169,
+        "gen_max_length": 32,
+        "seed": 2026,
+        "swanlab_project": "",
+        "swanlab_group": "",
+        "swanlab_mode": "online",
+        "s1_gradient_checkpointing": true,
+        "training_arguments": {
+          "bf16": true,
+          "fp16": false,
+          "tf32": false,
+          "lr_scheduler_type": "linear",
+          "logging_strategy": "steps",
+          "logging_steps": 1,
+          "remove_unused_columns": false,
+          "ddp_find_unused_parameters": false
+        },
+        "listed_negative_k": 9,
+        "listed_negative_source": "structure_counterfactual",
+        "negative_sampling_mode": "structure_counterfactual",
+        "error_memory_uniform_mix": 0.3333333333333333,
+        "error_memory_weight": 1.0,
+        "error_memory_violation_weight": 1.0,
+        "error_memory_temperature": 0.25,
+        "listed_negative_seed": 2026,
+        "error_memory_manifest": null,
+        "counterfactual_manifest": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/counterfactual_bank.jsonl",
+        "counterfactual_metadata": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/metadata.json",
+        "counterfactual_sampling": {
+          "uniform_mix": 0.3333333333333333,
+          "structure_weight": 1.0,
+          "violation_weight": 1.0,
+          "temperature": 0.25
+        },
+        "raw_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw",
+        "skip_train": false,
+        "defer_eval": true,
+        "save_steps": 16,
+        "save_total_limit": 1,
+        "stop_after_step": 32,
+        "resume_from_checkpoint": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run/trainer_listed/checkpoint-16",
+        "no_resume": false,
+        "allow_underfit_listed": false,
+        "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched.",
+        "training_config": {
+          "stage": "listed",
+          "dataset": "codexm",
+          "method_name": "structure_counterfactual_contrastive_grip",
+          "input_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/tasks/grip_codexm_tasks.json",
+          "relation_eligibility": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/relation_eligibility.json",
+          "eval_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/processed/processed_val.json",
+          "output_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run",
+          "s1_adapter": "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/codexm_taskfile_3090/stage1_adapter",
+          "model_name": "qwen-7b",
+          "dtype": "bfloat16",
+          "lora_r": 4,
+          "lora_alpha": 8,
+          "target_modules": [
+            "down_proj",
+            "up_proj",
+            "gate_proj"
+          ],
+          "num_train_epochs": 0.0,
+          "involve_qa_epochs": 5.0,
+          "s1_stop_loss_threshold": 0.15,
+          "per_device_train_batch_size": 1,
+          "gradient_accumulation_steps": 512,
+          "learning_rate": 0.000947622749310518,
+          "weight_decay": 8.889902164812924e-05,
+          "adam_epsilon": 1e-08,
+          "max_grad_norm": 1.0,
+          "lambda_candidate": 0.11229873660012951,
+          "memory_size": 0,
+          "temperature": 0.8863961214238169,
+          "gen_max_length": 32,
+          "seed": 2026,
+          "swanlab_project": "",
+          "swanlab_group": "",
+          "swanlab_mode": "online",
+          "s1_gradient_checkpointing": true,
+          "training_arguments": {
+            "bf16": true,
+            "fp16": false,
+            "tf32": false,
+            "lr_scheduler_type": "linear",
+            "logging_strategy": "steps",
+            "logging_steps": 1,
+            "remove_unused_columns": false,
+            "ddp_find_unused_parameters": false
+          },
+          "listed_negative_k": 9,
+          "listed_negative_source": "structure_counterfactual",
+          "negative_sampling_mode": "structure_counterfactual",
+          "error_memory_uniform_mix": 0.3333333333333333,
+          "error_memory_weight": 1.0,
+          "error_memory_violation_weight": 1.0,
+          "error_memory_temperature": 0.25,
+          "listed_negative_seed": 2026,
+          "error_memory_manifest": null,
+          "counterfactual_manifest": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/counterfactual_bank.jsonl",
+          "counterfactual_metadata": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/assets/k9/metadata.json",
+          "counterfactual_sampling": {
+            "uniform_mix": 0.3333333333333333,
+            "structure_weight": 1.0,
+            "violation_weight": 1.0,
+            "temperature": 0.25
+          },
+          "raw_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw",
+          "skip_train": false,
+          "defer_eval": true,
+          "save_steps": 16,
+          "save_total_limit": 1,
+          "stop_after_step": 32,
+          "resume_from_checkpoint": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/codexm/search/trials/trial_0001/train_run/trainer_listed/checkpoint-16",
+          "no_resume": false,
+          "allow_underfit_listed": false,
+          "created_at_utc": "2026-11-01T07:52:01.569735+00:00",
+          "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched."
+        }
+      },
+      "source_task": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/tasks/grip_codexm_tasks.json",
+      "task_sha256": "d6be7af96e5f56d838e18d9a7b2628f642467926e0a63130702c20d5dbac2e28",
+      "raw": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw",
+      "valid": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/processed/processed_val.json",
+      "test": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/processed/processed_test.json",
+      "valid_sha256": "44a6f19c6e65512de897e181f5088bcafcaf1a25af42dd073b855379ba3ea00b",
+      "test_sha256": "5e7a8469e5365e7f3e6b367dd3ab9333acb12957f0dd2984fb94513d6dc27fbe",
+      "candidate_count": 10,
+      "gen_max_length": 32,
+      "expected_test": 10311,
+      "relation_text_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw/rel2text.json",
+      "entity_text_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/codexm/raw/entity2text.txt",
+      "raw_train_sha256": "d99c3437ab51690391a26d96976adf6e5494dba7ef6902e77000551bfa566556"
+    },
+    {
+      "dataset": "nell23k",
+      "reference_config": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run/run_config.json",
+      "reference_config_sha256": "2d2d2e21d2422d7108462c9db58e45dd32cdac79d2409c8c8bd50ba791694b24",
+      "reference": {
+        "format_version": 1,
+        "run_id": "nell23k_direct_em_optuna_t001",
+        "created_at_utc": "2026-10-31T19:04:37.754257+00:00",
+        "dataset": "nell23k",
+        "negative_source": "structure_counterfactual",
+        "last_step": "train",
+        "paths": {
+          "run_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run",
+          "input_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json",
+          "eval_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/processed/processed_val.json",
+          "raw_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/raw",
+          "model_cache_dir": "/mnt/e/GRIP-CU/model_cache",
+          "scores_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/training_assets/b1_train_scores",
+          "sampler_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9",
+          "bank_source_dir": null,
+          "manifest": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/counterfactual_bank.jsonl",
+          "s1_adapter": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter",
+          "b1_adapter": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/control_20261018_C1/adapter",
+          "entity_text_file": null
+        },
+        "protocol": {
+          "listed_negative_k": 9,
+          "expected_listed_qa": 2974,
+          "seed": "2026",
+          "torch_dtype": "bfloat16",
+          "model_name": "qwen-7b",
+          "candidate_batch_size": "8",
+          "filter_splits": [
+            "train"
+          ],
+          "swanlab_project": "",
+          "swanlab_experiment_name": "nell23k_direct_em_optuna_t001",
+          "swanlab_group": "structure_counterfactual-k9",
+          "swanlab_mode": "online",
+          "uniform_mix": "0.3333333333333333",
+          "structure_weight": "1.0",
+          "violation_weight": "1.0",
+          "temperature": "0.25",
+          "lambda_candidate": "0.11229873660012951",
+          "contrastive_temperature": "0.8863961214238169",
+          "train_learning_rate": "0.000947622749310518",
+          "train_weight_decay": "8.889902164812924e-05",
+          "train_max_grad_norm": "1.0",
+          "involve_qa_epochs": "10",
+          "train_lora_r": "4",
+          "train_lora_alpha": "8",
+          "per_device_train_batch_size": "1",
+          "gradient_accumulation_steps": "512",
+          "run_variant": "optuna_rung_32"
+        },
+        "stage_history": [
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-10-31T19:04:37.754368+00:00",
+            "pid": 1259927,
+            "command": "STEP=train DATASET=nell23k NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9 RUN_ID=nell23k_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_8 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=8 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-10-31T19:57:04.973552+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-10-31T20:18:30.458252+00:00",
+            "pid": 1272617,
+            "command": "STEP=train DATASET=nell23k NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9 RUN_ID=nell23k_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_16 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=16 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-10-31T21:10:07.594874+00:00",
+            "exit_code": 0
+          },
+          {
+            "step": "train",
+            "status": "completed",
+            "started_at_utc": "2026-10-31T21:31:54.358506+00:00",
+            "pid": 1285219,
+            "command": "STEP=train DATASET=nell23k NEGATIVE_SOURCE=structure_counterfactual LISTED_NEGATIVE_K=9 BANK_SOURCE_DIR= SAMPLER_DIR=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9 RUN_ID=nell23k_direct_em_optuna_t001 RUN_VARIANT=optuna_rung_32 SEED=2026 LAMBDA_CANDIDATE=0.11229873660012951 STOP_AFTER_STEP=32 DEFER_EVAL=1 CONTRASTIVE_TEMPERATURE=0.8863961214238169 TRAIN_LEARNING_RATE=0.000947622749310518 TRAIN_WEIGHT_DECAY=8.889902164812924e-05 TRAIN_MAX_GRAD_NORM=1.0 COUNTERFACTUAL_UNIFORM_MIX=0.3333333333333333 COUNTERFACTUAL_STRUCTURE_WEIGHT=1.0 COUNTERFACTUAL_VIOLATION_WEIGHT=1.0 COUNTERFACTUAL_TEMPERATURE=0.25 ARTIFACT_ROOT=/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/training_assets MODEL_CACHE_DIR=/mnt/e/GRIP-CU/model_cache bash /home/kieran/grip-cu-runs/shared_cache/runners/f856e0539ce8c2b3ca3ad312e36e488d24cddc65b54b674cfd554fe7761d4438/run_error_memory_wsl.sh ",
+            "finished_at_utc": "2026-10-31T23:06:31.009720+00:00",
+            "exit_code": 0
+          }
+        ],
+        "status": "completed",
+        "updated_at_utc": "2026-10-31T23:06:31.009720+00:00",
+        "stage": "listed",
+        "method_name": "structure_counterfactual_contrastive_grip",
+        "input_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json",
+        "relation_eligibility": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/relation_eligibility.json",
+        "eval_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/processed/processed_val.json",
+        "output_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run",
+        "s1_adapter": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter",
+        "model_name": "qwen-7b",
+        "dtype": "bfloat16",
+        "lora_r": 4,
+        "lora_alpha": 8,
+        "target_modules": [
+          "down_proj",
+          "up_proj",
+          "gate_proj"
+        ],
+        "num_train_epochs": 0.0,
+        "involve_qa_epochs": 10.0,
+        "s1_stop_loss_threshold": 0.15,
+        "per_device_train_batch_size": 1,
+        "gradient_accumulation_steps": 512,
+        "learning_rate": 0.000947622749310518,
+        "weight_decay": 8.889902164812924e-05,
+        "adam_epsilon": 1e-08,
+        "max_grad_norm": 1.0,
+        "lambda_candidate": 0.11229873660012951,
+        "memory_size": 0,
+        "temperature": 0.8863961214238169,
+        "gen_max_length": 32,
+        "seed": 2026,
+        "swanlab_project": "",
+        "swanlab_group": "",
+        "swanlab_mode": "online",
+        "s1_gradient_checkpointing": true,
+        "training_arguments": {
+          "bf16": true,
+          "fp16": false,
+          "tf32": false,
+          "lr_scheduler_type": "linear",
+          "logging_strategy": "steps",
+          "logging_steps": 1,
+          "remove_unused_columns": false,
+          "ddp_find_unused_parameters": false
+        },
+        "listed_negative_k": 9,
+        "listed_negative_source": "structure_counterfactual",
+        "negative_sampling_mode": "structure_counterfactual",
+        "error_memory_uniform_mix": 0.3333333333333333,
+        "error_memory_weight": 1.0,
+        "error_memory_violation_weight": 1.0,
+        "error_memory_temperature": 0.25,
+        "listed_negative_seed": 2026,
+        "error_memory_manifest": null,
+        "counterfactual_manifest": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/counterfactual_bank.jsonl",
+        "counterfactual_metadata": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/metadata.json",
+        "counterfactual_sampling": {
+          "uniform_mix": 0.3333333333333333,
+          "structure_weight": 1.0,
+          "violation_weight": 1.0,
+          "temperature": 0.25
+        },
+        "raw_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/raw",
+        "skip_train": false,
+        "defer_eval": true,
+        "save_steps": 16,
+        "save_total_limit": 1,
+        "stop_after_step": 32,
+        "resume_from_checkpoint": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run/trainer_listed/checkpoint-16",
+        "no_resume": false,
+        "allow_underfit_listed": false,
+        "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched.",
+        "training_config": {
+          "stage": "listed",
+          "dataset": "nell23k",
+          "method_name": "structure_counterfactual_contrastive_grip",
+          "input_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json",
+          "relation_eligibility": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/relation_eligibility.json",
+          "eval_file": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/processed/processed_val.json",
+          "output_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run",
+          "s1_adapter": "/mnt/e/GRIP-CU/artifacts/stage2_memory_retention/nell_r1/stage1_20261018T154406Z/adapter",
+          "model_name": "qwen-7b",
+          "dtype": "bfloat16",
+          "lora_r": 4,
+          "lora_alpha": 8,
+          "target_modules": [
+            "down_proj",
+            "up_proj",
+            "gate_proj"
+          ],
+          "num_train_epochs": 0.0,
+          "involve_qa_epochs": 10.0,
+          "s1_stop_loss_threshold": 0.15,
+          "per_device_train_batch_size": 1,
+          "gradient_accumulation_steps": 512,
+          "learning_rate": 0.000947622749310518,
+          "weight_decay": 8.889902164812924e-05,
+          "adam_epsilon": 1e-08,
+          "max_grad_norm": 1.0,
+          "lambda_candidate": 0.11229873660012951,
+          "memory_size": 0,
+          "temperature": 0.8863961214238169,
+          "gen_max_length": 32,
+          "seed": 2026,
+          "swanlab_project": "",
+          "swanlab_group": "",
+          "swanlab_mode": "online",
+          "s1_gradient_checkpointing": true,
+          "training_arguments": {
+            "bf16": true,
+            "fp16": false,
+            "tf32": false,
+            "lr_scheduler_type": "linear",
+            "logging_strategy": "steps",
+            "logging_steps": 1,
+            "remove_unused_columns": false,
+            "ddp_find_unused_parameters": false
+          },
+          "listed_negative_k": 9,
+          "listed_negative_source": "structure_counterfactual",
+          "negative_sampling_mode": "structure_counterfactual",
+          "error_memory_uniform_mix": 0.3333333333333333,
+          "error_memory_weight": 1.0,
+          "error_memory_violation_weight": 1.0,
+          "error_memory_temperature": 0.25,
+          "listed_negative_seed": 2026,
+          "error_memory_manifest": null,
+          "counterfactual_manifest": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/counterfactual_bank.jsonl",
+          "counterfactual_metadata": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/assets/k9/metadata.json",
+          "counterfactual_sampling": {
+            "uniform_mix": 0.3333333333333333,
+            "structure_weight": 1.0,
+            "violation_weight": 1.0,
+            "temperature": 0.25
+          },
+          "raw_dir": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/raw",
+          "skip_train": false,
+          "defer_eval": true,
+          "save_steps": 16,
+          "save_total_limit": 1,
+          "stop_after_step": 32,
+          "resume_from_checkpoint": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/stage2_three_dataset_20261030/nell23k/search/trials/trial_0001/train_run/trainer_listed/checkpoint-16",
+          "no_resume": false,
+          "allow_underfit_listed": false,
+          "created_at_utc": "2026-10-31T21:33:41.718823+00:00",
+          "note": "Stage 1 is shared graph-context storage. Stage 2 then forks: b1 = original GRIP generation loss; listed = generation + InfoNCE. A paper task JSON trains S1 on context+summarization and S2 on generated QA; relation-like QA items sample 9 negatives from the official train-graph relation vocabulary with the process.py permutation rule (--listed_negative_source train_graph), error_memory accepts a frozen train-only GRIP-conditioned error-memory bank, and structure_counterfactual accepts a frozen train-only bank scored by relation-profile similarity plus B1 score violation. These modes only change negative identities. Prompts stay unchanged. Val/test EM uses the standard processed GRIP graph record. Both Stage-2 arms use the full QA epoch budget (no S2 early stop) so the generation objective is compute-matched."
+        }
+      },
+      "source_task": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/tasks/grip_nell23k_tasks.json",
+      "task_sha256": "75f804181261c2bd00e67315fe1cb35d409a1e8a6b0862708627f3f987d3066d",
+      "raw": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/raw",
+      "valid": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/processed/processed_val.json",
+      "test": "/mnt/c/users/administrator/desktop/实验/grip-cu/04_benchmark/data/nell23k/processed/processed_test.json",
+      "valid_sha256": "cd775294ba400f166f295cd98d1a8237002875d2487c3de1b46989aa4fe0d2c8",
+      "test_sha256": "7c423e5a806540a1355b56e0787e2948e8a899c789daa6d5a5464dfff5124425",
+      "candidate_count": 10,
+      "gen_max_length": 32,
+      "expected_test": 4943,
+      "relation_text_file": null,
+      "entity_text_file": null,
+      "raw_train_sha256": "a55a45f9415df76cc75908775741fbddf0a7530d21430281efb238f006202f21"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/candidates.py",
+      "sha256": "59d46dd7125e3aa4c9edac0c18d863e943ae532a2ef364946ce20346461e9757"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/counterfactuals.py",
+      "sha256": "b495c5bfeb6597edabdd9953e1b0146100f5b926f5664ce79a5a43afa1289d94"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/decode_io.py",
+      "sha256": "de28d6b308b42bfc942c89bd380c8a6fe7bd5595bd4858c1e094b0f3f3c6aae3"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/error_memory_sampling.py",
+      "sha256": "485d4c22edd2edc961319b101f6f8cf815928be4d653f35587bd3377eeec4e17"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/frequency_matched.py",
+      "sha256": "70ae7e34c4ba3ad266900b9e2037a14cf2dade15ce75e6cdcdb8f2edecae591d"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/frequency_only.py",
+      "sha256": "65644a3282b89c23b0bd7d57a25a28861abe43d40dea6f7997643e529f80e8ce"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/frozen_random.py",
+      "sha256": "6643fc74d908e9c46f589994c204c422faf34d142b8604d1bc7a9e3a1bcde651"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/k_sensitivity.py",
+      "sha256": "d663a51f45ea0e6d99d082a6c9437a993266b50bf144f0d5e45ed24a699c5014"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/listed_training.py",
+      "sha256": "4a134079961b86c6ae85177bdbafa4376d2ea7d6f89fa0ceb62ce0bd3fe34a0d"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/losses.py",
+      "sha256": "918e1baead91b0504f42092cc44e0df56607fb526202538427a3e88829f54ad2"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/matched_control.py",
+      "sha256": "7fa13015d46c2c6806500e3f3f7619af7ee7ac86a565d22d96779deeafb65383"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/metrics.py",
+      "sha256": "a4affed6ed4e1a7cfb2da01df1d5bb6d4a7f9508c26dbc4c42fc6874bd2c056d"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/official_lists.py",
+      "sha256": "32c5a73f8087f3972f6917df36273981f6df79f69d61ad06d986449eabddbd5c"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/offline_mining.py",
+      "sha256": "ab70427239a20496b1ba2ddc6668e20882e126406d2b4f96f81ff4635077dc0a"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/offline_scoring.py",
+      "sha256": "4cdbff89940c3021e85796e257e5204f142b676542187e3d73ed1188839c4e0a"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/rerank_audit.py",
+      "sha256": "7e4ae6b941f7d425afeb4996847558b9f75c220c335268f010a74c18266e4e9e"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/run_protection.py",
+      "sha256": "df4df65bbeca736aae010d064ab7b3fb4812b40305556973a5a7a7466523820b"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/scoring.py",
+      "sha256": "25a60e2c0d483b5f91d06099e8efb3c63b2322c475ba497b8691e44d6241f080"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/swanlab_tracking.py",
+      "sha256": "cd69be4fbf59376ca47885be46181ad6cecec2ea7de6f438d0100da990d30c41"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/task_file.py",
+      "sha256": "3deffcf12cbbd79eb72ea699d2105b40fd26a3960494c7b06c06a14ee972c3b6"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/training_budget.py",
+      "sha256": "3094f4848c0b642fd93a59e7226be9f6c18969a281663d0636fb707b1753a6c7"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/__init__.py",
+      "sha256": "7ad04c381f013f908b0ee49747949a2c47fe3f0868b5b466d66a289aa71b7996"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/analyze_fb_frequency_slices.py",
+      "sha256": "189e3f382213eefb7d361876809e127f76b570d6d76edcff5f7f29c52f6e446d"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/build_structure_counterfactual_bank.py",
+      "sha256": "e45e41149c0eda53af861901ee926d9d3cc1b5179322a208395cfd6ec1e03264"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/compare_candidate_rerank_runs.py",
+      "sha256": "d87e83402fcbd27ceec2c7a67d86dee9a6a19b98b234afe0898923d47d91c2c9"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/completion_evidence.py",
+      "sha256": "223f6deffaec37a7f4c88ef5e306ca0e3355d79ffab7b4e5f100355c36725c6f"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/confirm_stage2_candidates.py",
+      "sha256": "b8f611e8b39bdc46152d16fc7a200f23e51a28f5087b66615760b2981cd95486"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/derive_structure_counterfactual_bank.py",
+      "sha256": "7e1d3e38e6ec8dd690e17930120acae4f06a7a73c07dfe80faae240ad36556a4"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/evaluate_adapter.py",
+      "sha256": "b56ff069b792eea50b1068ec6b1dd6d186dd0be978568537ba0c7283b6aee112"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/evaluate_candidate_rerank.py",
+      "sha256": "69512af3da83f495810a23c38b2ae79cc07af99d9746eb89b5cd48a818351c84"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/evaluate_matched_candidate_rerank.py",
+      "sha256": "a34f955d7dada707908279469962791d343d8941d2a04ddefe824110777e2018"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/hpo_reuse.py",
+      "sha256": "e938f073b6fe4558d4571fc421d699b850da509e2e57f4e120f589c521e170fd"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/import_historical_candidate_rerank.py",
+      "sha256": "e0bca201d16db63b553aa66b4f3733f264f64e3b53138420a8ab4b31d200f65e"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/mine_error_memory_negatives.py",
+      "sha256": "4115c6fd01727dac235ab0bf2e45ebac1c7b22bbfcb966584231b001b701565c"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/mine_rollout_hard_negatives.py",
+      "sha256": "20e7cd4f4ac5eeb5bd2b71abca0e934d975ca6acb57ed7b8e2f02a72f609be2b"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/optuna_direct_em_search.py",
+      "sha256": "0e74d947f7bbd34e4da8b7c325683132a0fa4be9fd77bfd40b1ca9c9def0348a"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/record_run_artifacts.py",
+      "sha256": "0598cc7c619b305e7cc0af8c18b60bc37f1ab992b0094d9b31e5487159ad33dc"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/refine_nell_stage2.py",
+      "sha256": "f20be440431f58f7850f7a949cc56d1b323df5cc4ab7843d3d9e3587a340dec9"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_cross_dataset_controls.py",
+      "sha256": "90a36df44502e35abc8b145a1daf11d51e6af53648efec41d9d2890f6bafbbf1"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_frequency_matched_control.py",
+      "sha256": "1a3e82243fd67709c631f1865cd2037cd8c9a680736c0b01ad5b4239a960677f"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_frequency_only_control.py",
+      "sha256": "f0bce0b1b81e43eb79c3361151f99b73441648dd1c32cbf335678d3b1737acb3"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_k_sensitivity.py",
+      "sha256": "8273a3b7169687eb56badc9407ea24a14171125d8a46a16c04597a8d6f161c32"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_random9_control.py",
+      "sha256": "87fd9721b17baf724500b52dba97352e1ab41439b1ca4cc46b6bb1b19963911a"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_rerank_campaign.py",
+      "sha256": "4219ef65f21b58ff981c458a7c941fd5c042d69ebc9d614687b5b893b4a7b6f7"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_violation_only_control.py",
+      "sha256": "86fc40aba82bd9af70060b8d539c2b61c843a6a5590fcb5da7b0f11030a305b5"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_llama_four_datasets.py",
+      "sha256": "c535c9871b6a3bbe1eaf1ad5ae1e6a514a08411251809d46fce4f069dc65e504"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/score_relation_candidates_offline.py",
+      "sha256": "92e2d9601382ad03ba8824aa2ebe1e81ba7ceb55e858de72457f593f8c322d61"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/search_nell_stage2_round2.py",
+      "sha256": "7aeb80b255f946a5d387adfedb40d789c985a7e627dd5da4002b03e9b4f03057"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/source_checkpoint_retention.py",
+      "sha256": "4231265b8f15fe97dff236c518709d2c267a33d0926daa8f43ae245861d8f3d0"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/supervise_nell_fb_hpo.py",
+      "sha256": "479d248effe5601441ee49e7def4b0772d1c207e2b0fccabf6ab34b72a97d6b8"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/supervise_stage2_three_datasets.py",
+      "sha256": "dac2ecd35d23b76ed402a6b0023656f123b033bcbf5e128695e87ff7bfc83b1e"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/train_listed_contrastive.py",
+      "sha256": "4a263ca795d0025dbb3682df082a2560405e631323e2b494681b9059e81f2e83"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/verify_error_memory_wiring.py",
+      "sha256": "3c5d983a38c6213821d66052d89a687a9144942d7d860a498277d58b31ddb493"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_cross_dataset_controls.py",
+      "sha256": "a9da226d208b3050ffbe0feff4fb40ee6219e90f6549ca65d2986aa4ec092f62"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_fb_component_chain.py",
+      "sha256": "66fe58a6f92ef0c7167d47d20255a007c53526e0564aeeb67155ecbe935f2275"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_fb_rerank_to_k.py",
+      "sha256": "00ebbd61b432b016c64d55240afe9ef5199458331702113422cc69e8460cb82c"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_research_completion.py",
+      "sha256": "e770176b39b94b69886800512ca30c059f921199f00a776cb8a482a88da87ac1"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_stage2_queue.py",
+      "sha256": "b648a25c8701f2d11b9556209a99e147bc2190699a920a42b4a26148eb734cdf"
+    },
+    {
+      "path": "13_base_method/grip-exp/constants.py",
+      "sha256": "3f440d3368f159b8c7d607afe6c06288bf54d0078aa082029c4bdc96b1501370"
+    },
+    {
+      "path": "13_base_method/grip-exp/utils.py",
+      "sha256": "1c17b28599341bae7f38361a8e864eed82322f2e0f905ea4fae59ef32f5cd2a2"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/base_args.py",
+      "sha256": "bd42e45c8427f74363c98c7dd84912618c9d963d4ce7f422ab66c4ccd2f3fd81"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/eval_args.py",
+      "sha256": "a8a8dd7d52abee102220a6132c033be72dcf96c49fefe5f7e38176531bbddde5"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/inf_args.py",
+      "sha256": "a12302fcd744afba8306c6cfd51413836a18f3f65f0438e809a0f47281afb3fb"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/model_args.py",
+      "sha256": "616b5e25766be50305d16eb21013193f9d122807f850535113510a212f67f48e"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/task_args.py",
+      "sha256": "6d950c5dbc0a63d80c232f6af039cff2ab3f47e10d3fd1d30d5fc70a27c198f2"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/train_args.py",
+      "sha256": "02e6af116f7acc4a7127235082abf14f4c6d1b1e3730c5656190c2ee8207de6d"
+    },
+    {
+      "path": "13_base_method/grip-exp/arguments/__init__.py",
+      "sha256": "523480336b2bfbf3ca41f99610c50ad4e2dca400b936236a480e2ca42277ed60"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/__init__.py",
+      "sha256": "d86207cd7eb5b6695fe8213653072e38952faaf108f775146364aa4f7b555c07"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/__init__.py",
+      "sha256": "30c134fe0cec0d7c8bc63af7a1c1122d274fbbb74165702ffd3016f2f4bf53ae"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/clegr/process.py",
+      "sha256": "b52bc94f48b92148350eae9073f0b4123aa91eed0d5898b730dfe9748f8fa09a"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/clegr/__init__.py",
+      "sha256": "2d2ca0ac19525319dc7443096d36744c671381a9fd742a374df86280cb21dd2c"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/codexm/process.py",
+      "sha256": "d408d116d96a820bf848b7eded2580c6fb08ad25e8ea4980140916eaf8a6ebc9"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/codexm/__init__.py",
+      "sha256": "8124ebc0655f1bc201c688e20864428933b2134e362691eda33056446036d5bd"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/cwq/process.py",
+      "sha256": "4bde15dbb3493b94c8924ec987a7cfe58863b159b6ef66c658aaf3331dd7b52e"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/cwq/__init__.py",
+      "sha256": "6a1ea5f7faa8db097fdd58d84566a2252cfd8081f0c8af5bb1f314007fb5e8d5"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/fb15k237/process.py",
+      "sha256": "b1dd512393e372354c9434757cc24aff0c8760f256aefe6b23927d5ddf506ee9"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/fb15k237/__init__.py",
+      "sha256": "bc994863aa69b23252859ec05429a8fd2fb8034495afaafdd2140b623b9da73c"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/fb15k237_2/process.py",
+      "sha256": "3651656f7df6c13c11893f619ca242ba33d91402ceaecd5336bf77bd99f326c3"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/fb15k237_2/__init__.py",
+      "sha256": "6a6283d82ad3ab5af566938800ad7b3fe75bb70edceaee429c2ce010490fc741"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/nell23k/build_bridge_and_split.py",
+      "sha256": "b69d8eb793202f2e320ab06d2bd957d92709bffa91a9f723a372f6b3cc0db4f2"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/nell23k/process.py",
+      "sha256": "151944c4d587704d5fa27c16cc4143abb61b86a94c01e48885f500f4ac00cff0"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/nell23k/__init__.py",
+      "sha256": "b6a00c8a361ed44ddb588e2dbb4647a23c74db90b82e87ea32fcc822e7f43cdb"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/scene_graph/process.py",
+      "sha256": "ababdc669431df1313029f46ee0ab14c3d7705ae7d0ae274c519db6f250e88bd"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/scene_graph/__init__.py",
+      "sha256": "988d0d3f4809fdc6eb2982519ba0f4ed4dec6de68814148a30f60d04322fa9bb"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/webqsp/process.py",
+      "sha256": "f20d6d83fd984e4a2c69441c9bc5a94537fac8fcc2d38c3dbf590f22cea32fb5"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/webqsp/__init__.py",
+      "sha256": "32d3573f1338b3c4f058b6f4bb4e3598d74a6b55cf2419fe9e279099f27eefb0"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/wn18rr/process.py",
+      "sha256": "759d34ba90e6c00dbaaa54577689496226bf294c16766dd0ae123aaf4076a60d"
+    },
+    {
+      "path": "13_base_method/grip-exp/data/raw_datasets/wn18rr/__init__.py",
+      "sha256": "d1c0393b381d83e28001126204fbf549553e7365323fb03c6438cd06471756ce"
+    },
+    {
+      "path": "13_base_method/grip-exp/evaluation/metrics.py",
+      "sha256": "7baaf0d9e2235bfc1fa4d23170db05988af0b1563780673e49ebd99b6b3552ba"
+    },
+    {
+      "path": "13_base_method/grip-exp/evaluation/utils.py",
+      "sha256": "e5eca953d318cf54c19b8002915a16fc4e322359ee3f2b53f75f7bbc2d63629f"
+    },
+    {
+      "path": "13_base_method/grip-exp/evaluation/__init__.py",
+      "sha256": "247faac7171841f3729ffa28873c82af560a20a53cfff5d49b5e5b66c1f8de6a"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/offline_relation_scoring.py",
+      "sha256": "f05367a92709c0fdc2a9a63d1ac2b784ad61f55658d0a87772e0844c4a7991a6"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/paper_protocol.py",
+      "sha256": "76dec97404dcd6b28d9890e0e81348f986d5a3db4148703f34802b186bce640e"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/relation_cecr.py",
+      "sha256": "459bbc294aa6018f388d9234a19c3d4b7fb751db982a062b3cf49279e54df540"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/__init__.py",
+      "sha256": "3f6fd9fdf0851a986af27ac106b70062c335da3d4e0066abb6ed68e7b3365ddc"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/utils.py",
+      "sha256": "2800b133500bef6de0418447767d13e2f2d2060fa236c633563e7d66b39a4758"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/__init__.py",
+      "sha256": "f10a8af296f2629bf08c14b740369b9cc4f5053314037546fb790d78e6c2be88"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/eval_tasks/base.py",
+      "sha256": "b6825b5acc69b22ce2296bd75a28b854d46f36b75ed2af83f9934fc5e3e2a1da"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/eval_tasks/grip_eval.py",
+      "sha256": "3f9e5db109eb658c02787f9c37fe2a0f4fe03a8e420225afc39f5052f496731b"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/eval_tasks/standard_eval.py",
+      "sha256": "05bc9cbd6befbc0e70c0912d1791255036e4998e5ef9a41a9419574968ea6e88"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/eval_tasks/__init__.py",
+      "sha256": "55208ddb7c6d1c9506e583ffde85c97f61e4afae0137cafebabb7026a266bece"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/gen_base.py",
+      "sha256": "865f13d3aa252efb58cc0e3cc86bac50e1395eb8797369ccd5df850b601d7caf"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/gen_bridge.py",
+      "sha256": "e75a37d348481bd88f40b84aeaf4fecfbe8a9c84456e0e905a66c16ae7c79a08"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/gen_context.py",
+      "sha256": "cbba216010c0fb007f7d5ac2e24b16365cfad3374dbe72c8770cfdc674752fad"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/gen_context_qa.py",
+      "sha256": "197c455f7bcf4566eef6c2fc9aeff4d84e0c593fb24cb3e4e758d375fa10dcf8"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/gen_reasoning_qa.py",
+      "sha256": "63de56e2275bb4584db1466ce8b8ebcb64f329637f5de39dd7734b742ce3df20"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/gen_summarization.py",
+      "sha256": "1d05afb3c906bd13861d4f2ebe7387166e7dff3b1b3dad86ef026779daa707e5"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/task_dataset.py",
+      "sha256": "1fa2300ba2c6d776b271d13737628df243a5256df7d8ea0c8953c9cc634a8af1"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/train_system_prompts.py",
+      "sha256": "5b464b598af44735914bf774eefeb8649f087e05799dd3c56e6c176ef18116be"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/tasks/train_tasks/__init__.py",
+      "sha256": "c37c81c95edc778d72d13b64ffce1aace800af48d54b26487fb03139a7648b98"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/training/candidate_scorer.py",
+      "sha256": "f4f2945538aa9fc8281ea1eb9e12759b858b2e20a8f5d480c22c9eb9b6827cf2"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/training/train.py",
+      "sha256": "e0ffb0752f5107c279abda5f2982e1bb5e56caad1ef0d02c4862b9541264c717"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/training/utils.py",
+      "sha256": "c46146d9ca9a70c28e851d452a42b7a5980abe2af5f064b99bd7a95add93bb00"
+    },
+    {
+      "path": "13_base_method/grip-exp/grip/training/__init__.py",
+      "sha256": "5be34aff9e67b11dd73572943f33db1a82b192fa23e76e3d1197453347b6a2a3"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/utils.py",
+      "sha256": "863b7fc61b8d6e46a2d4271e18124953d51e30eb11a308b3a72fc65b5ca8aef3"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/__init__.py",
+      "sha256": "2f4c1591fba796c3197ae52a58570c14ea737fe8203b29f5bdf5c7a4785cc6c3"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/emb_models/base.py",
+      "sha256": "d8c2791ad12d21b183ed33873c100f3c0d947cec571725a44eb98d5008b86dc6"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/emb_models/hf.py",
+      "sha256": "a3671b413d023483c55ca8890f182fad3c6c2cf1ae8a956c1e8871f0f620edcf"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/emb_models/__init__.py",
+      "sha256": "a2820b09b8b0a9091154f88454ac97dd1c3b5db854126a09d7d2686b0b7e0ac9"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/ft_models/hf.py",
+      "sha256": "a891eeef8ab96c3e0458aa9f6fc36cb8eae0a382f8a790d4b0409fca11257138"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/ft_models/__init__.py",
+      "sha256": "9eddf366109b6d2ebba9b485dd66525e3b70c4117ec42d0f2d29610c144243c2"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/inf_models/base.py",
+      "sha256": "12a6e0629f822fedb3a8de2f31da10843ad094ffafbdde77b3d9cab3faba563f"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/inf_models/claude.py",
+      "sha256": "0fc433fbf45d52c4c7233bd621d67f6f4c638272f536abe933ab15d8a231bf60"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/inf_models/hf.py",
+      "sha256": "f54ba537f1ed6400d94781fab76682c6bc1244e46260f0b611aaf0aaf6154fba"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/inf_models/oai.py",
+      "sha256": "003e37c027e32c2417d613ad6a3b4cd239383d264ce8bc1add441df51c40ea01"
+    },
+    {
+      "path": "13_base_method/grip-exp/models/inf_models/__init__.py",
+      "sha256": "a7d36c806780af8a9f531e456cfcf70ea8939a6d0151c0b69fd054911f1cd038"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/analyze_grip_failures.py",
+      "sha256": "48bae1ad53ee4bedc091ed008ed54381ca4341a769ca04019172e10e284e8953"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/analyze_offline_confusion.py",
+      "sha256": "310d5ac20b4db3705930fe300593923a5d86f150c47c16e722898dfcffcb7f0b"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/audit_confusion_database.py",
+      "sha256": "892dea48cc8377a47d2add2862290de43fb20d88d5b3fe1d1ab2e37fc1060898"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/benchmark_offline_relation_scoring.py",
+      "sha256": "e4688c5ccd306c28ecb53f4fe24492a8193a16738724cfea40ae6facf9fb3af6"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/build_cecr_hard_negative_qa.py",
+      "sha256": "85072b53e8ad53012f7e4f959e1ea3b72e6660e7b4c42ad48941de457dee23e2"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/build_clegr_paper_split.py",
+      "sha256": "cc629e721f65d8e723a37b5ef7568e954435368c9dc773c7b3e1456e13db1b17"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/build_format_aligned_qa.py",
+      "sha256": "54c1a9e1c9de924eefc35b88ecff6522891742d041dffeb22109287b265a7c53"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/build_relation_memory.py",
+      "sha256": "7c03caf35ae6d2976555999a177bf34910d525d63aaf4e3dfef5373c8fa113af"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/diagnose_e12_format_mismatch.py",
+      "sha256": "633e329542ef162d536cf5dc2170ca6655762cc91d16035123fcc97847908ba4"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/download_model.py",
+      "sha256": "f65a0bea504fdc4ef9ee0b74761f044b0787db0a72385ffb66db8645a134b4f2"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/evaluate_cecr_evidence.py",
+      "sha256": "b4cebfe374b801328222473d1c6e037843720873b5b3c4d30f59770f54abddb7"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/extract_offline_ranking_preview.py",
+      "sha256": "b26b9377869948220a51f74d2ae1b6d906792e877029d8d2d68647f2efc56f6b"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/generate_nell23k_tasks.py",
+      "sha256": "e60adae10f29f677fa56eac203d7e80d92b454d9f3d0feec6ace4a2f6b2109e3"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/infer_eval_nell23k.py",
+      "sha256": "5b1d04bf7fb99a2f520696c93fcd96da439f42bd4867a369cc1c4bc502aef38f"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/judge_clegr_siliconflow.py",
+      "sha256": "3265e6eb6f71cec916f5913e67863fbf742148cec202266a0a7ce912afbe7543"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/merge_confusion_shards.py",
+      "sha256": "29ab48ac842d6ac6b8b1f5cf9cf9336e3abdafbe4d49d2e36128150608f2a088"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/mp_wrapper.py",
+      "sha256": "b3f7468601460dd342a930cce2b8e27a67c236f02e14f2fbf7549f1ad004f03a"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/offline_relation_candidate_scoring.py",
+      "sha256": "3947fded183075ee29c57fa7fcaa3c9f52661e32aa597f818d1b4cd1c5571cbf"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/process_raw_data.py",
+      "sha256": "b71d97a227c79cfcae23e21664f324f4344b44bf53d75a87b9f9081c74eaee65"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/regression_compare_offline_scoring.py",
+      "sha256": "b934a52a3f609fa3ae62a1cb24f2b365088619de2e12db41b723a18aa6185d93"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/run_eval.py",
+      "sha256": "db9a03315cfc1af9cf41279693e32ac77b2499136f4eab02cb8311c41c81434e"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/run_grip.py",
+      "sha256": "7ca494433d920eb7ab62ab12a09a365298a6a0f77525ac92505899c104819d70"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/run_llm.py",
+      "sha256": "953b14e5dbdc35ed63a77bb87f3d1db6dcd22f5e5ff1ac0922e2f7b9ee00c01c"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/run_standard_jsonl_resumable.py",
+      "sha256": "f436a1cc189bb431bdc6de4e052b3ea80b57e84cb874ca8d1098e21c26628c8c"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/train_nell23k_lora.py",
+      "sha256": "5176461890cca4ea5007f116b42f099fdfa60108226a1ec2b136bdaab1a2efac"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/train_task_file_adapter.py",
+      "sha256": "fa49ffbaf9826e4c2cbebb7473107aefd7bc5b81124cd53f466eb814a17c5835"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/validate_paper_protocol.py",
+      "sha256": "e4814fc1c6123b7a7de67dfafe594e25da83ada8df22b8434345939af320f7e3"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/verify_candidate_scorer_consistency.py",
+      "sha256": "51cc0965f9fb2e80d617c40347782208bf9fcfd79c7a64643f961d04762216e8"
+    },
+    {
+      "path": "13_base_method/grip-exp/scripts/watch_task_progress.py",
+      "sha256": "32c09d890da5894d96a69c8dbe03dbd44d393e123938681a0d8ac6d8e7cd3851"
+    },
+    {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/watch_llama_campaign.py",
+      "sha256": "8c82ca1063f0474ffcdaa387ffe715e57c03ddbf70d6f87a512134180b7d2013"
+    }
+  ],
+  "source_digest": "51b15947b61ec4c1e6e34dd0ef2aa8bc6de44b84a6a255fea1a5b5baca42594f",
+  "stage1_epochs": 1.0,
+  "policy": "Qwen-selected fixed Stage2 configurations transferred without new HPO; matched B1 uses same Stage1/steps/optimizer, lambda=0; no test-based selection",
+  "retention": "one active checkpoint; after final adapter and history identity captured, discard only new campaign checkpoint tensors; retain all final Stage1/B1/SC-CL adapters",
+  "wn_scope": "historical training pool with potentially unverified entity pairs; count and disclose; no repaired-B1 or clean-pair claim",
+  "prelaunch_revision": {
+    "at": "2026-11-11T03:01:16.650780+08:00",
+    "changes": [
+      {
+        "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/evaluate_matched_candidate_rerank.py",
+        "before": "a0af2f44ba3a406b2cd18a835c24697df06232dcd5197a7a0866820bfe72762e",
+        "after": "a34f955d7dada707908279469962791d343d8941d2a04ddefe824110777e2018"
+      },
+      {
+        "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_llama_four_datasets.py",
+        "before": "42467e90cd816108d157adf2bfc32b3f764cad8d01c59eb57d1db839861ec026",
+        "after": "34457ff59a0e4f1fe0e9b096f2477e438ea42c6ea176b144b20460b31d46be17"
+      }
+    ],
+    "reason": "explicit dataset metadata, uniform deferred B1 evaluation, process cleanup, step-budget validation, consolidated table and model-identified scorer; no training yet"
+  },
+  "native_chat_fix": {
+    "changes": [
+      {
+        "path": "08_experiments/Hard_Negative_Contrastive_GRIP/src/hard_negative_grip/listed_training.py",
+        "before": "3f30429936cefbe6a918af39ab7ae586e4e14c484308dd9de8b76ffae3f895a5",
+        "after": "4a134079961b86c6ae85177bdbafa4376d2ea7d6f89fa0ceb62ce0bd3fe34a0d"
+      },
+      {
+        "path": "13_base_method/grip-exp/grip/tasks/eval_tasks/grip_eval.py",
+        "before": "e6c0060990b7035186ccebde8e7a72de5162cb00ad5dc11715ac942702186d62",
+        "after": "3f9e5db109eb658c02787f9c37fe2a0f4fe03a8e420225afc39f5052f496731b"
+      },
+      {
+        "path": "13_base_method/grip-exp/grip/tasks/train_tasks/task_dataset.py",
+        "before": "7decd21216711cae75809734112edd59fad09b910de01a9ced6699bc85bb4c01",
+        "after": "1fa2300ba2c6d776b271d13737628df243a5256df7d8ea0c8953c9cc634a8af1"
+      }
+    ],
+    "single_bos_token": true,
+    "validated_before_training": true
+  },
+  "padding_recovery": {
+    "at": "2026-11-11T03:11:39.717566+08:00",
+    "reason": "Llama default [PAD] addition forced expensive embedding resize; use existing reserved pad ID128004, no vocabulary/weight resize",
+    "previous_attempt_completed_optimizer_steps": 0,
+    "failed_logs": "/home/kieran/grip-cu-runs/llama_four_20261111/recovery/native_padding_attempt1",
+    "cpu_audit": {
+      "status": "pass",
+      "tokenizer_length": 128256,
+      "base_vocab_size": 128256,
+      "pad_token": "<|finetune_right_pad_id|>",
+      "pad_token_id": 128004,
+      "embedding_resize_required": false,
+      "reason": "use existing dedicated Llama padding token; attention-masked padding has no new trainable row"
+    }
+  }
+}

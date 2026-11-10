@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "tokenizer_length": 128256,
+  "base_vocab_size": 128256,
+  "pad_token": "<|finetune_right_pad_id|>",
+  "pad_token_id": 128004,
+  "embedding_resize_required": false,
+  "reason": "use existing dedicated Llama padding token; attention-masked padding has no new trainable row"
+}

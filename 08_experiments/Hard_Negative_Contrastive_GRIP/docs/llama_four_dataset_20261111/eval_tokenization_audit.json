@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "dataset": "wn18rr",
+      "first_prompt_single_bos": true,
+      "tokens": 202
+    },
+    {
+      "dataset": "fb15k237_2",
+      "first_prompt_single_bos": true,
+      "tokens": 215
+    },
+    {
+      "dataset": "codexm",
+      "first_prompt_single_bos": true,
+      "tokens": 191
+    },
+    {
+      "dataset": "nell23k",
+      "first_prompt_single_bos": true,
+      "tokens": 211
+    }
+  ]
+}

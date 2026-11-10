@@ -38,7 +38,9 @@ class TaskDataset(Dataset):
             self.data_list = self.context_samples
 
     def tokenize_function(self, text):
-        return self.tokenizer(text, truncation=True, padding=False)
+        bos = getattr(self.tokenizer, "bos_token", None)
+        return self.tokenizer(text, truncation=True, padding=False,
+                              **({"add_special_tokens": False} if bos and text.startswith(bos) else {}))
 
     def __len__(self):
         return len(self.data_list)

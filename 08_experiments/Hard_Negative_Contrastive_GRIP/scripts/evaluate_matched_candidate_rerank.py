@@ -21,6 +21,7 @@ def main():
         base.require(weights==model_spec['adapter_sha256'],'source adapter changed')
         identity=dict(model=a.model,adapter_sha256=weights,cohort_sha256=c['cohort_sha256'],code_digest=c['code_digest'],score_rule=SCORE_RULE,
                       score_batch_size=c['score_batch_size'],max_length=c['max_length'],seed=2026,dtype='bfloat16',tie_rule='original_candidate_order',base_model_identity=c['base_model_identity'])
+        if 'model_name' in c:identity['model_name']=c['model_name']
         if 'candidate_count' in c:identity['candidate_count']=candidate_count
         if (out/'identity.json').exists():base.require(read_json(out/'identity.json')==identity,'resume model/source/scorer identity changed')
         else:base.require(not (out/'predictions.jsonl').exists(),'predictions without identity');write_json(out/'identity.json',identity)
@@ -36,7 +37,7 @@ def main():
         from utils import set_random_seed
         from evaluation.utils import normalize_answer
         set_random_seed(2026)
-        args=argparse.Namespace(model_name='qwen-7b',model_cache_dir=c['model_cache'],dtype='bfloat16')
+        args=argparse.Namespace(model_name=c.get('model_name','qwen-7b'),model_cache_dir=c['model_cache'],dtype='bfloat16')
         model=tokenizer=None;started=time.monotonic();initial=len(rows)
         try:
             model,tokenizer=load_adapter(args,Path(model_spec['adapter_dir']),trainable=False)
