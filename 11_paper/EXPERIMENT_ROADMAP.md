@@ -4,7 +4,11 @@
 
 ## 历史实验安排（保留原时点与恢复记录）
 
-# 后续实验安排（2026-11-08）
+# 后续实验安排
+
+2026-11-10新增：用户授权一组FB独立训练边频次比例采样对照（`SC_CTRL_FREQONLY_FB`），不读取Full逐题配额、结构画像或B1分数；seed2026、K9、32/120，与既有Full/配额/Uniform比较直接EM和同十选项重排。实现和CPU准备已完成，完整结果尚未产生。冻结范围、运行路径和停止条件见[计划](../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md)；实时以运行根status.json及[结果导出目录](artifacts/fb_frequency_only_control_seed2026/)为准。NELL/WN原来源对照均已完成，以下11月8日排队文字仅为历史。
+
+## 2026-11-08历史安排
 
 依据：FB Full直接EM89.90%、Full诱导频率配额匹配89.83%；完整重排H@1为94.85/94.72%，也保持接近。按11月7日最新授权，先完成当前K敏感性，再自动接NELL与WN来源对照。现有负结果不删除；不把新指标或新数据集作为挽救旧指标的选择门。
 

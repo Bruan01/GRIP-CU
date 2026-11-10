@@ -1,0 +1,18 @@
+{
+  "status": "launched",
+  "experiment_id": "SC_CTRL_FREQONLY_FB_SEED2026_FIXED32",
+  "run_dir": "/home/kieran/grip-cu-runs/fb_frequency_only_control_20261110_seed2026",
+  "tmux_session": "fb_freqonly_20261110",
+  "controller_argv": [
+    "/home/kieran/miniconda3/envs/guardenv/bin/python",
+    "-u",
+    "/mnt/c/users/administrator/desktop/\u5b9e\u9a8c/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_fb_frequency_only_control.py",
+    "run",
+    "--run-dir",
+    "/home/kieran/grip-cu-runs/fb_frequency_only_control_20261110_seed2026"
+  ],
+  "controller_sha256": "f0bce0b1b81e43eb79c3361151f99b73441648dd1c32cbf335678d3b1737acb3",
+  "contract_sha256": "cd49385fc7911e83b7fdeb53cf76367817fac3319ee40bf6cf5be98f43044436",
+  "training_complete": false,
+  "performance_results_available": false
+}

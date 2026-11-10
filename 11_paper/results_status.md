@@ -1,5 +1,7 @@
 # Results status：必须保留在论文工作区
 
+2026-11-10新增授权与准备：FB独立频次比例采样组`SC_CTRL_FREQONLY_FB`已完成bank构建与CPU一致性准备，尚无新性能；同seed2026、K9、32/120，随后一次直接测试及完整同十选项重排。该组不继承Full逐题桶配额。固定计划见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md`，运行状态和最终结果见`artifacts/fb_frequency_only_control_seed2026/`。本段是准备时点记录，不将运行中实验标为完成。旧NELL/WN“待完成”描述为历史，两组来源对照实际均已完成。
+
 ## 2026-11-10当前状态：NELL与WN来源对照已写入论文
 
 正文`main/sections/experiments.tex`新增跨图来源小节与`tab:cross-dataset-sources`；附录新增WN历史池核验范围及`tab:cross-source-pairs`。NELL/WN均为三来源完整直接解码与原选项重排；没有新训练或选模。

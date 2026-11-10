@@ -1,6 +1,6 @@
 {
   "mainline": "structure-counterfactual-contrastive-learning",
-  "status_note": "Current single-seed direct configuration results complete for NELL/CoDEx/FB. FB source controls, full reranking, frequency slices and K3/9/15 are complete. NELL three-source direct/ranking and exploratory WN historical-pool three-source direct/ranking are written in tab:cross-dataset-sources and tab:cross-source-pairs. WN retains 55 unverified training entity pairs and unresolved B1 replication. All signed differences retained; no new runs or independent HPO.",
+  "status_note": "Current single-seed direct configuration results complete for NELL/CoDEx/FB. FB source controls, full reranking, frequency slices and K3/9/15 are complete. NELL three-source direct/ranking and exploratory WN historical-pool three-source direct/ranking are written in tab:cross-dataset-sources and tab:cross-source-pairs. WN retains 55 unverified training entity pairs and unresolved B1 replication. All signed differences retained; no new runs or independent HPO. 2026-11-10: one independent train-frequency proportional FB control launched, fixed32/120; no new performance yet. Existing NELL/WN controls remain completed.",
   "excluded_datasets": [
     {
       "dataset": [
@@ -584,6 +584,85 @@
       "manuscript_display": "tab:cross-dataset-sources; tab:cross-source-pairs",
       "manuscript_section": "experiments; appendix",
       "takeaway": "Full minus quota direct +8.487556pp and H@1 +8.072750pp; exploratory historical-pool conditional evidence, not repaired-B1 main comparison."
+    },
+    {
+      "id": "SC_CTRL_FREQONLY_FB",
+      "review_questions": [
+        "R1",
+        "R4"
+      ],
+      "dataset": "FB15K237-2",
+      "comparison": [
+        "Full SC-CL-9",
+        "Full-quota-matched Random-9",
+        "Uniform Random-9",
+        "Independent frequency-proportional Random-9"
+      ],
+      "hypothesis": "A standalone train-edge-frequency sampler may reproduce Full without inherited per-question quotas; no performance assumption.",
+      "status": "launched-20261110-no-new-performance",
+      "seed": 2026,
+      "optimizer_steps": 32,
+      "scheduler_max_steps": 120,
+      "frequency_exponent": 1,
+      "selection_rule": "sequential PPS without replacement; weight=train edge count",
+      "paper_role": "claim-carrying",
+      "section_id": "experiments",
+      "item_id": "SC_CTRL_FREQONLY_FB",
+      "claim_links": [
+        "C2"
+      ],
+      "target_display": "main-text candidate source comparison",
+      "evidence_path": "11_paper/artifacts/fb_frequency_only_control_seed2026",
+      "plan": "08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md",
+      "limitations": [
+        "single seed; Full-selected configuration; no new HPO",
+        "negative result only tests this frequency rule, not structural causality",
+        "shared QA repairs and test history retained"
+      ]
+    },
+    {
+      "id": "SC_DIST_SAMPLING_FOUR_DATASETS",
+      "dataset": [
+        "NELL23K",
+        "CoDEx-M",
+        "FB15K237-2",
+        "WN18RR"
+      ],
+      "status": "observed-descriptive-single-seed-figures-ready",
+      "comparison": [
+        "raw train-edge relation marginals",
+        "eligible QA gold",
+        "Full K9 actual banks",
+        "existing controls where available",
+        "per-query legal-uniform analytic expectation"
+      ],
+      "metrics": [
+        "base2 Jensen-Shannon divergence",
+        "total variation",
+        "log2 frequency Wasserstein",
+        "frequency-bin mass",
+        "conditional gold-bin to negative-bin shifts"
+      ],
+      "section_id": "analysis",
+      "item_id": "SC_DIST_SAMPLING_FOUR_DATASETS",
+      "paper_role": "supporting",
+      "claim_links": [
+        "C2",
+        "C8"
+      ],
+      "manuscript_display": "fig:sampling-marginals; fig:sampling-divergence; four appendix figures prepared, not yet inserted",
+      "evidence_refs": [
+        "11_paper/artifacts/sampling_distribution_seed2026/summary.json",
+        "11_paper/artifacts/sampling_distribution_seed2026/source_data/distribution_metrics.csv",
+        "11_paper/artifacts/sampling_distribution_seed2026/independent_validation.json"
+      ],
+      "known_gaps": [
+        "one frozen bank realization, no independent seed uncertainty",
+        "CoDEx trained Uniform/quota controls absent; analytic reference only",
+        "WN55 unverified historical training pairs; conditional comparison",
+        "marginal closeness does not establish performance or mechanism"
+      ],
+      "takeaway": "Full has lower marginal JSD than corresponding Uniform reference in all four datasets, but much flatter mass than raw training edges. Quota controls exactly retain per-question frequency-bin composition."
     }
   ],
   "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md",

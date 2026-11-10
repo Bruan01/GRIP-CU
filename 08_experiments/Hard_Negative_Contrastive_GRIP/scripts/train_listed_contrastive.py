@@ -90,6 +90,7 @@ from hard_negative_grip.task_file import (  # noqa: E402
     validate_error_memory_manifest,
     validate_frozen_random_manifest,
     validate_frequency_manifest,
+    validate_frequency_only_manifest,
 )
 from models.utils import get_hf_llm_tokenizer, get_lora_model  # noqa: E402
 from utils import set_random_seed  # noqa: E402
@@ -246,7 +247,7 @@ def parse_args() -> argparse.Namespace:
         help="Immutable ErrorMemory-9 JSONL manifest; required for error_memory.",
     )
     parser.add_argument("--random_manifest", type=Path, default=None,
-                        help="Immutable train-only bank; required for frozen_random or frequency_matched.")
+                        help="Immutable train-only bank; required for frozen_random, frequency_matched or frequency_only.")
     parser.add_argument(
         "--counterfactual_manifest",
         type=Path,
@@ -1197,6 +1198,7 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
         if args.listed_negative_source in {
             "frozen_random",
             "frequency_matched",
+            "frequency_only",
             "train_graph",
             "error_memory",
             "structure_counterfactual",
@@ -1221,11 +1223,13 @@ def resolve_training_assets(args: argparse.Namespace) -> tuple[dict | None, list
             counterfactual_manifest = load_counterfactual_manifest(
                 args.counterfactual_manifest
             )
-        if args.listed_negative_source in {"frozen_random", "frequency_matched"}:
+        if args.listed_negative_source in {"frozen_random", "frequency_matched", "frequency_only"}:
             if args.random_manifest is None:
                 raise ValueError(f"{args.listed_negative_source} requires --random_manifest")
             random_manifest = load_error_memory_manifest(args.random_manifest)
-            validator = validate_frequency_manifest if args.listed_negative_source == "frequency_matched" else validate_frozen_random_manifest
+            validator = {"frequency_matched": validate_frequency_manifest,
+                         "frequency_only": validate_frequency_only_manifest,
+                         "frozen_random": validate_frozen_random_manifest}[args.listed_negative_source]
             validator(random_manifest, k=args.listed_negative_k)
             expected_seed = args.listed_negative_seed if args.listed_negative_seed is not None else args.seed
             if any(row["seed"] != expected_seed for row in random_manifest.values()):

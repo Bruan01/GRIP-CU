@@ -1,5 +1,7 @@
 # SC-CL experiment matrix
 
+2026-11-10新增`SC_CTRL_FREQONLY_FB`：FB独立train边频次比例无放回采样，不读取Full配额/结构/B1分数；同seed2026、K9、32/120。实现和CPU准备已完成，正式性能未产生；结果导出`artifacts/fb_frequency_only_control_seed2026/`，计划见`../08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_frequency_only_control/PLAN.md`。`section_id=experiments`、`paper_role=claim-carrying`、`claim_links=[C2]`，目标为主文来源对照。旧NELL/WN待运行状态已被两图实际完成结果覆盖。
+
 2026-11-10当前状态：NELL/WN三来源完整结果已写入正文表`tab:cross-dataset-sources`及附录配对表`tab:cross-source-pairs`；WN为历史候选池条件下的单种子探索性证据。
 
 2026-10-30 本轮验收调整：按用户要求，先完成 NELL23K、FB15K237-2、CoDEx-M
@@ -42,6 +44,7 @@ seed=2026 的可审计 SC-CL 实测，FB15K237-2 已有当前SC-CL完整测试�
 | SC_AUDIT_FALSE_NEG | R3 | 开放世界风险 | NELL/FB/WN/CoDEx-M | heldout positive overlap + train-known audit; CoDEx hard negatives separate | planned | train collision, heldout overlap, unresolved OWA |
 | SC_SLICE_ARITY | R4/R6 | 一对多/多对一失败切片 | NELL/FB | degree/arity bins | planned | n, MRR, H@10, EM |
 | SC_SLICE_FREQUENCY | R4/C2/C6 | 总体净差是否掩盖频率层级间抵消 | FB15K237-2 | 五方法，重点Full/Full配额匹配 | observed CPU-only，train边界215/689；净变化低−17/中+1/高+23；无低频优势 | 10,000题、215关系、micro/macro、348/341配对重算；主文及附录表 |
+| SC_DIST_SAMPLING_FOUR_DATASETS | C2/C8 | 比较原图、QA与实际采样分布 | NELL/CoDEx/FB/WN | 原始train / Full / 已有控制 / 合法池均匀解析参考 | completed descriptive seed2026；四数据集六图已导出，尚未插入全文 | JS/TV/Wasserstein、频率桶、条件矩阵；CoDEx控制缺失与WN55题限制保留 |
 | SC_SLICE_SPARSE | R4 | 结构稀疏切片 | NELL/FB | profile sparsity bins | planned | n, margin, MRR |
 | SC_STAT_SEEDS | R5 | 随机稳定性 | NELL/FB: 5 seeds; WN/CoDEx-M: >=3, preferably 5 | seeds 2026--2030 where run | planned | mean/std, paired CI |
 | SC_COST | R7 | 资源—收益 | NELL/FB/WN/CoDEx-M | bank/scoring/training profiling | partial-observed（NELL） | wall-clock, memory, tokens |

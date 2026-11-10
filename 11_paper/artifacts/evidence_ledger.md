@@ -1,7 +1,10 @@
 # Evidence ledger：SC-CL
 
+2026-11-10新增运行记录：`SC_CTRL_FREQONLY_FB`已实现、CPU预检并启动一组独立训练边频次比例采样（seed2026、K9、32/120）；不使用Full逐题配额/结构/B1分数。尚无新模型性能，不能记为已完成实验。范围与启动身份见[独立频次对照](fb_frequency_only_control_seed2026/README.md)；最终以该目录`result.json`为准。`section_id=experiments`、`paper_role=claim-carrying`、`claim_links=[C2]`。以下历史条目不覆盖最新完成结果。
+
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-10 四数据集采样分布（C8） | `11_paper/artifacts/sampling_distribution_seed2026/`及`main/figures/sampling_distribution_seed2026/` | computed/descriptive, six figures ready; manuscript insertion optional | “Full较相应Uniform参考更接近原训练图，但仍明显更分散；不作拟合成功、因果或准确率解释。CoDEx无已训练控制，WN55条核验例外保留。” |
 | 2026-11-10 WN三来源写入（C2探索性边界） | `11_paper/artifacts/wn18rr_source_controls_seed2026/{result.json,paired_all_methods.csv,checkpoint_retention.json}` | completed and written; tab:cross-dataset-sources / tab:cross-source-pairs | “Full直接86.89%、H@1为88.42%；较配额+8.49/+8.07pp；历史池、55条未核实实体对、B1差异保留，不推广为统一机制。” |
 | 2026-11-10 NELL三来源写入（C2） | `11_paper/artifacts/nell23k_source_controls_seed2026/{result.json,paired_all_methods.csv,checkpoint_retention.json}` | completed and written; current32-step model distinct from historical240-step model | “Full−配额直接+0.26pp、排序−0.30pp；Random早期8/16/24状态不可恢复，final32完整；旧条目中的待完成仅属历史时点。” |
 | 2026-11-08 FB K3/9/15完整敏感性（C7） | `11_paper/artifacts/fb_k_sensitivity_seed2026/{result.json,completion_audit_20261108.json,INTERPRETATION.md}` | observed single-seed, all three points complete, fresh30000 rows/300000 scores | “H@1=95.28/94.85/95.03，MRR=97.410075/97.249940/97.318119；H@3=99.63/99.75/99.63。仅本获选配置/seed下变化有限，无单调收益，不宣称最优K、生成鲁棒性或跨K相对频率控制优势。” |

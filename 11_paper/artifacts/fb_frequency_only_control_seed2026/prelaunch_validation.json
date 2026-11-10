@@ -1,0 +1,70 @@
+{
+  "scope": "CPU preparation and launcher verification; no new model performance",
+  "initial_regression_batch": {
+    "passed": 55,
+    "files": [
+      "test_frequency_only_control.py before report fixture",
+      "test_frequency_matched_control.py",
+      "test_matched_random_control.py"
+    ]
+  },
+  "final_frequency_only_batch": {
+    "passed": 16,
+    "includes": "synthetic complete direct/ranking report and changed-weight rejection"
+  },
+  "real_cli_preflight": {
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "model_loaded": false
+  },
+  "preparation_audit": {
+    "status": "pass",
+    "n_qa": 12136,
+    "listed_qa": 3109,
+    "k": 9,
+    "seed": 2026,
+    "train_only": true,
+    "all_train_pairs_verified": true,
+    "same_legal_pool": true,
+    "same_non_candidate_metadata": true,
+    "frequency_exponent": 1,
+    "sampling_inputs": [
+      "train.txt",
+      "rel2text.json",
+      "training QA",
+      "train entity text",
+      "existing eligibility gate",
+      "seed"
+    ],
+    "score_files_opened_for_sampling": 0,
+    "uses_full_candidates_for_sampling": false,
+    "uses_gold_frequency_similarity": false,
+    "selection_independent_of_full_bank": true,
+    "new_training_started": false,
+    "performance_results_available": false
+  },
+  "training_volume": {
+    "training_physical_path": "/mnt/e/GRIP-CU/artifacts/fb_frequency_only_control_20261110_seed2026/training",
+    "free_training_volume_bytes": 20026109952,
+    "free_c_bytes": 5322625024,
+    "planned_checkpoints": [
+      8,
+      16,
+      24,
+      32
+    ],
+    "no_cleanup": true,
+    "at": "2026-11-10T06:18:30.668614+00:00"
+  },
+  "top24_train_relations_share_of_sampled_slots": {
+    "full": 0.11164718916407562,
+    "frequency_only": 0.5310031807297809
+  },
+  "head_definition": "24 of 233 relations ordered by decreasing train edge count, ties by label; descriptive bank diagnostic",
+  "bank_sha256": "bcb5b2ea6a6e8dcb12b2c568d09045b40117727aa08acc1ab92f3e2b0ae94d49",
+  "contract_sha256": "cd49385fc7911e83b7fdeb53cf76367817fac3319ee40bf6cf5be98f43044436",
+  "controller_sha256": "f0bce0b1b81e43eb79c3361151f99b73441648dd1c32cbf335678d3b1737acb3",
+  "status": "pass",
+  "training_complete": false,
+  "new_performance_available": false
+}

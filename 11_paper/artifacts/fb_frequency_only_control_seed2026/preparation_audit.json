@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "n_qa": 12136,
+  "listed_qa": 3109,
+  "k": 9,
+  "seed": 2026,
+  "train_only": true,
+  "all_train_pairs_verified": true,
+  "same_legal_pool": true,
+  "same_non_candidate_metadata": true,
+  "frequency_exponent": 1,
+  "sampling_inputs": [
+    "train.txt",
+    "rel2text.json",
+    "training QA",
+    "train entity text",
+    "existing eligibility gate",
+    "seed"
+  ],
+  "score_files_opened_for_sampling": 0,
+  "uses_full_candidates_for_sampling": false,
+  "uses_gold_frequency_similarity": false,
+  "selection_independent_of_full_bank": true,
+  "new_training_started": false,
+  "performance_results_available": false
+}
