@@ -7,5 +7,7 @@
   "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/fb_random9_control_seed2026/result.json": "70c39859cfa1331544d6c35161d2793dbe3e286124267321dcde690082e0dfda",
   "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/fb_frequency_slices_seed2026/result.json": "6f69ba2ba814f8672b247b83fb44560b753105073e9d0fdbfe8d503ef523f014",
   "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/fb_matched_rerank_seed2026/result.json": "f64c8575aaea2dc67d0f6186dc6b38e543557cba68c921184b2fb3d0328d578d",
-  "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/fb_k_sensitivity_seed2026/result.json": "86d1059cfee11c53f314fd8f2d2cf0eeb4df615e337d2609425e64e1c48b49c8"
+  "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/fb_k_sensitivity_seed2026/result.json": "86d1059cfee11c53f314fd8f2d2cf0eeb4df615e337d2609425e64e1c48b49c8",
+  "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/nell23k_source_controls_seed2026/result.json": "3a0dd37e336d21454a636a7a240bac34b5cd495fb65881d73c6c388f010493d8",
+  "/mnt/c/Users/Administrator/Desktop/实验/GRIP-CU/11_paper/artifacts/wn18rr_source_controls_seed2026/result.json": "42a6f4849a2d29092cd44a2f4a5e48488f1cafeb0e885a7a6f8929e44ed5b349"
 }

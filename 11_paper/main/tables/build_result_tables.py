@@ -43,6 +43,29 @@ assert [x['k'] for x in ks['metrics']]==[3,9,15]
 labels={'full':'Full SC-CL-9','frequency_matched':'Full配额匹配随机-9','random9':'均匀随机-9'}
 emit('fb_rerank.tex','FB同题同十选项的完整候选重排（\\%，seed=2026，$n=10{,}000$）。复用三个固定模型，无新训练或选模；直接解码结果另列于表~\\ref{tab:fb-controls}。','tab:fb-rerank','lrrr','候选来源 & H@1 & MRR & H@3',[[labels[x['method']],f"{x['h1_percent']:.2f}",f"{x['mrr_percent']:.4f}",f"{x['h3_percent']:.2f}"] for x in rerank['metrics']])
 emit('fb_k_sensitivity.tex','FB训练负例数的排序敏感性（\\%，seed=2026）。同10,000题及原十选项，K9复用；各K保持相同优化步数，非等计算量。','tab:fb-k-sensitivity','rrrr','训练负例$K$ & H@1 & MRR & H@3',[[x['k'],f"{x['h1_percent']:.2f}",f"{x['mrr_percent']:.4f}",f"{x['h3_percent']:.2f}"] for x in ks['metrics']])
-manifest={str(PAPER/'artifacts'/name):hashlib.sha256((PAPER/'artifacts'/name).read_bytes()).hexdigest() for name in source_names+['fb_frequency_matched_control_seed2026/result.json','fb_component_ablation_seed2026/result.json','fb_random9_control_seed2026/result.json','fb_frequency_slices_seed2026/result.json','fb_matched_rerank_seed2026/result.json','fb_k_sensitivity_seed2026/result.json']}
+cross_sources=['nell23k_source_controls_seed2026/result.json','wn18rr_source_controls_seed2026/result.json']
+cross_rows=[]
+paired_rows=[]
+pair_labels={'full_minus_random9':'Full $-$ 均匀随机','full_minus_frequency_matched':'Full $-$ 配额匹配','frequency_matched_minus_random9':'配额匹配 $-$ 均匀随机'}
+for dataset,name,n,options in [('NELL23K',cross_sources[0],4943,10),('WN18RR',cross_sources[1],3134,11)]:
+    result=read(name)
+    assert result['status']=='completed' and result['seed']==2026
+    observed={x['method']:x for x in result['metrics']}
+    assert set(observed)=={'full','random9','frequency_matched'}
+    for i,method in enumerate(('random9','frequency_matched','full')):
+        item=observed[method]
+        assert item['n']==n and item['candidate_count']==options
+        cross_rows.append([dataset if i==0 else '',labels[method],*[f"{item[key]:.2f}" for key in ('direct_em_percent','h1_percent','mrr_percent','h3_percent')]])
+    for i,(key,label) in enumerate(pair_labels.items()):
+        item=result['comparisons'][key]
+        direct=item['direct_left_minus_right'];ranking=item['ranking']
+        assert direct['n']==n and ranking['n']==n
+        dc=direct['paired_counts'];rc=ranking['paired_counts']
+        assert dc['rescue']-dc['regression']==direct['net_correct']
+        assert rc['rescue']-rc['regression']==ranking['net_correct']
+        paired_rows.append([dataset if i==0 else '',label,f"{dc['rescue']}/{dc['regression']}",f"{direct['delta_em_pp']:+.2f}",f"{rc['rescue']}/{rc['regression']}",f"{ranking['delta_h1_pp']:+.2f}"])
+emit('cross_dataset_sources.tex','NELL23K与WN18RR的三来源完整测试结果（\\%，seed=2026）。NELL共4,943题、原10选项；WN共3,134题、原11选项。各图复用历史获选Full，新增两个固定配置控制，不独立重新调参。WN为历史候选池条件下的探索性比较，实体对核验与B1复现限制见附录~\\ref{sec:wn-exploratory}；这里的MRR为原选项内重排指标。','tab:cross-dataset-sources','llrrrr','数据集 & 候选来源 & 直接EM & H@1 & MRR & H@3',cross_rows)
+emit('cross_source_pairs.tex','跨图三来源的逐题配对变化（seed=2026）。纠错/退化均按左侧方法减右侧方法计算；$\\Delta$单位为百分点。直接EM与重排H@1分别计数，不将不同答案选择规则混为一种指标；不提供跨种子不确定性估计。','tab:cross-source-pairs','llrrrr','数据集 & 比较方向 & 直接纠错/退化 & $\\Delta$ EM & 排序纠错/退化 & $\\Delta$ H@1',paired_rows)
+manifest={str(PAPER/'artifacts'/name):hashlib.sha256((PAPER/'artifacts'/name).read_bytes()).hexdigest() for name in source_names+['fb_frequency_matched_control_seed2026/result.json','fb_component_ablation_seed2026/result.json','fb_random9_control_seed2026/result.json','fb_frequency_slices_seed2026/result.json','fb_matched_rerank_seed2026/result.json','fb_k_sensitivity_seed2026/result.json']+cross_sources}
 (PAPER/'artifacts/table_sources.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
-print('Built seven evidence-backed manuscript tables.')
+print('Built nine evidence-backed manuscript tables.')

@@ -2,6 +2,8 @@
 
 | Claim | Evidence location | Status | Safe wording |
 |---|---|---|---|
+| 2026-11-10 WN三来源写入（C2探索性边界） | `11_paper/artifacts/wn18rr_source_controls_seed2026/{result.json,paired_all_methods.csv,checkpoint_retention.json}` | completed and written; tab:cross-dataset-sources / tab:cross-source-pairs | “Full直接86.89%、H@1为88.42%；较配额+8.49/+8.07pp；历史池、55条未核实实体对、B1差异保留，不推广为统一机制。” |
+| 2026-11-10 NELL三来源写入（C2） | `11_paper/artifacts/nell23k_source_controls_seed2026/{result.json,paired_all_methods.csv,checkpoint_retention.json}` | completed and written; current32-step model distinct from historical240-step model | “Full−配额直接+0.26pp、排序−0.30pp；Random早期8/16/24状态不可恢复，final32完整；旧条目中的待完成仅属历史时点。” |
 | 2026-11-08 FB K3/9/15完整敏感性（C7） | `11_paper/artifacts/fb_k_sensitivity_seed2026/{result.json,completion_audit_20261108.json,INTERPRETATION.md}` | observed single-seed, all three points complete, fresh30000 rows/300000 scores | “H@1=95.28/94.85/95.03，MRR=97.410075/97.249940/97.318119；H@3=99.63/99.75/99.63。仅本获选配置/seed下变化有限，无单调收益，不宣称最优K、生成鲁棒性或跨K相对频率控制优势。” |
 | 2026-11-08 NELL保存错误与恢复 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/{RETENTION_RECOVERY_20261108.md,RECOVERY_20261108.json}` | Random32 trained; early8/16/24 irrecoverably lost; evaluation recovering, no final comparison | “最终模型、32步完整状态和曲线日志保留；请求0实际保留1，早期权重不可恢复。未来组上限修正，不重训或替换已完成模型。不能声称完整轨迹权重可重放。” |
 | 2026-11-07 FB K敏感性准备与接续守护 | `08_experiments/Hard_Negative_Contrastive_GRIP/docs/fb_rerank_to_k_chain/{RUN_RECORD.json,k3_preparation_audit.json,k15_preparation_audit.json}` | CPU preparation/CLI observed; watcher running; no new K training/results | “两组各3,109题Full K9重放和嵌套抽样通过，QA/损失元数据不变；守护等待三组重排后自动K3→K15，复用K9。不能把准备或排队写成K稳健性实测结论。” |

@@ -1,6 +1,6 @@
 {
   "mainline": "structure-counterfactual-contrastive-learning",
-  "status_note": "Single-seed direct decoding is complete for NELL23K, CoDEx-M and FB15K237-2. FB has matched Uniform/Profile/Violation/Full-quota-frequency controls and train-defined frequency slices. Full 89.90 vs quota-matched 89.83 narrows C2; low-frequency slices show no Full advantage. WN remains exploratory. Ranking and direct decoding, historical models and current configurations remain separate. 2026-11-07: bounded watcher will continue current rerank into K3 then K15 training/ranking; NELL is deferred; no new K metrics yet.",
+  "status_note": "Current single-seed direct configuration results complete for NELL/CoDEx/FB. FB source controls, full reranking, frequency slices and K3/9/15 are complete. NELL three-source direct/ranking and exploratory WN historical-pool three-source direct/ranking are written in tab:cross-dataset-sources and tab:cross-source-pairs. WN retains 55 unverified training entity pairs and unresolved B1 replication. All signed differences retained; no new runs or independent HPO.",
   "excluded_datasets": [
     {
       "dataset": [
@@ -53,13 +53,15 @@
         "Hits@10"
       ],
       "status": "observed-single-seed",
-      "evidence_status": "current direct decoding observed; independent historical ranking evidence retained",
+      "evidence_status": "current direct decoding and three-source full original-list ranking complete; independent historical long-run model kept separate",
       "evidence_refs": [
-        "11_paper/artifacts/nell23k_single_seed_test_20261102.json"
+        "11_paper/artifacts/nell23k_single_seed_test_20261102.json",
+        "11_paper/artifacts/nell23k_source_controls_seed2026/result.json"
       ],
       "known_gaps": [
         "single seed",
-        "matched Random/frequency and current-model full ranking missing"
+        "component ablations deferred",
+        "independent per-method tuning absent"
       ],
       "falsifier": "SC-CL-9 is not better than frequency-matched random or EM drops beyond the preregistered threshold."
     },
@@ -94,7 +96,6 @@
       ],
       "known_gaps": [
         "single Full-selected configuration",
-        "ranking controls incomplete",
         "frequency alternative not excluded"
       ],
       "falsifier": "The effect disappears after adapter and task-format parity checks."
@@ -107,8 +108,9 @@
       ],
       "dataset": "WN18RR",
       "comparison": [
-        "B1",
-        "Random-9",
+        "B1 reference with unresolved replication gap",
+        "Uniform Random-9",
+        "Full-quota-matched Random-9",
         "SC-CL-9"
       ],
       "hypothesis": "The relation-candidate protocol remains useful on a small relation vocabulary.",
@@ -119,9 +121,18 @@
         "EM",
         "wall_clock"
       ],
-      "status": "exploratory-single-seed-generation",
-      "evidence_status": "full direct decoding observed; baseline replication and controls open",
-      "falsifier": "No transfer benefit after matched task, adapter, and candidate checks."
+      "status": "exploratory-single-seed-source-controls-completed",
+      "evidence_status": "three-source direct decoding and original eleven-option ranking complete; historical pool conditional",
+      "falsifier": "No transfer benefit after matched task, adapter, and candidate checks.",
+      "evidence_refs": [
+        "11_paper/artifacts/wn18rr_source_controls_seed2026/result.json"
+      ],
+      "known_gaps": [
+        "single seed",
+        "55 unverified historical training entity pairs",
+        "B1 reproduction discrepancy",
+        "Full-selected rather than independently tuned controls"
+      ]
     },
     {
       "id": "SC_MAIN_CODEX_M",
@@ -210,11 +221,12 @@
         "direct_decode_EM",
         "paired_rescue_regression"
       ],
-      "status": "FB observed near-null; NELL deferred",
+      "status": "FB and NELL observed; dataset-dependent conditional differences",
       "evidence_status": "Full89.90 vs quota-matched89.83; C2 narrowed",
       "falsifier": "Frequency-matched random is as strong as SC-CL.",
       "evidence_refs": [
-        "11_paper/artifacts/fb_frequency_matched_control_seed2026/result.json"
+        "11_paper/artifacts/fb_frequency_matched_control_seed2026/result.json",
+        "11_paper/artifacts/nell23k_source_controls_seed2026/result.json"
       ],
       "claim_links": [
         "C2"
@@ -501,7 +513,7 @@
     {
       "id": "SC_CTRL_SOURCES_NELL23K",
       "dataset": "nell23k",
-      "status": "Random32 trained, direct evaluation recovered; frequency pending",
+      "status": "observed-single-seed-completed",
       "comparison": [
         "reused Full K9",
         "new Uniform Random K9",
@@ -513,7 +525,7 @@
         "C2"
       ],
       "paper_role": "claim-carrying",
-      "main_or_appendix": "main_or_appendix_by_research_question",
+      "main_or_appendix": "main results table; appendix protocol and complete paired counts",
       "research_question": "Does the Full-minus-quota observation persist across datasets?",
       "experimental_design": "one seed2026; dataset-specific Full settings; two new controls; Full reused; no new HPO/validation; keep all signed outcomes",
       "optimizer_steps": 32,
@@ -521,19 +533,24 @@
       "k": 9,
       "evaluation_options": 10,
       "evidence_refs": [
-        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/RUN_RECORD.json"
+        "11_paper/artifacts/nell23k_source_controls_seed2026/result.json",
+        "11_paper/artifacts/nell23k_source_controls_seed2026/paired_all_methods.csv",
+        "11_paper/artifacts/nell23k_source_controls_seed2026/checkpoint_retention.json"
       ],
       "known_gaps": [
-        "no completed new control metrics",
-        "one historical Full-selected configuration/seed; historical test exposure retained",
-        "Random early8/16/24 checkpoints irrecoverably lost due effective retention1; final32/state/curve survive; no retraining"
+        "single seed and historical Full-selected settings; no independent per-method tuning",
+        "historical Full reused rather than retrained with current control code",
+        "Random early8/16/24 checkpoints irrecoverably lost; final32/state/curve retained; no retraining"
       ],
-      "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows"
+      "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows",
+      "manuscript_display": "tab:cross-dataset-sources; tab:cross-source-pairs",
+      "manuscript_section": "experiments; appendix",
+      "takeaway": "Full minus quota direct +0.262998pp but H@1 -0.303459pp; answer-selection rule changes the direction."
     },
     {
       "id": "SC_CTRL_SOURCES_WN18RR",
       "dataset": "wn18rr",
-      "status": "not started; corrected effective retention6 preflight passed; queued after NELL",
+      "status": "observed-exploratory-single-seed-completed",
       "comparison": [
         "reused Full K9",
         "new Uniform Random K9",
@@ -545,7 +562,7 @@
         "C2"
       ],
       "paper_role": "supporting",
-      "main_or_appendix": "appendix",
+      "main_or_appendix": "main results table; appendix protocol and complete paired counts",
       "research_question": "What happens under small relation vocabularies and near-exhaustive K9 historical pools?",
       "experimental_design": "one seed2026; dataset-specific Full settings; two new controls; Full reused; no new HPO/validation; keep all signed outcomes",
       "optimizer_steps": 125,
@@ -553,16 +570,23 @@
       "k": 9,
       "evaluation_options": 11,
       "evidence_refs": [
-        "08_experiments/Hard_Negative_Contrastive_GRIP/docs/cross_dataset_sources/RUN_RECORD.json"
+        "11_paper/artifacts/wn18rr_source_controls_seed2026/result.json",
+        "11_paper/artifacts/wn18rr_source_controls_seed2026/paired_all_methods.csv",
+        "11_paper/artifacts/wn18rr_source_controls_seed2026/checkpoint_retention.json"
       ],
       "known_gaps": [
-        "no completed new control metrics",
-        "one historical Full-selected configuration/seed; historical test exposure retained",
-        "55 historical QA entity pairs unverified; original parent mask preserved; conditional historical-pool comparison only",
+        "single seed and historical Full-selected settings; no independent per-method tuning",
+        "historical Full reused rather than retrained with current control code",
+        "55 historical QA entity pairs unverified; original parent mask retained",
         "B1 reproduction discrepancy unresolved"
       ],
-      "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows"
+      "reporting_policy": "research-question-based placement; preserve relevant positive/null/negative evidence and all three rows",
+      "manuscript_display": "tab:cross-dataset-sources; tab:cross-source-pairs",
+      "manuscript_section": "experiments; appendix",
+      "takeaway": "Full minus quota direct +8.487556pp and H@1 +8.072750pp; exploratory historical-pool conditional evidence, not repaired-B1 main comparison."
     }
   ],
-  "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md"
+  "execution_roadmap": "11_paper/EXPERIMENT_ROADMAP.md",
+  "updated_at": "2026-11-10",
+  "current_writing_scope": "Completed NELL and exploratory WN source controls integrated into manuscript; no new runs or HPO."
 }

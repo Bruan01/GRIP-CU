@@ -1,0 +1,17 @@
+\begin{table}[htbp]
+\caption{NELL23K与WN18RR的三来源完整测试结果（\%，seed=2026）。NELL共4,943题、原10选项；WN共3,134题、原11选项。各图复用历史获选Full，新增两个固定配置控制，不独立重新调参。WN为历史候选池条件下的探索性比较，实体对核验与B1复现限制见附录~\ref{sec:wn-exploratory}；这里的MRR为原选项内重排指标。}
+\label{tab:cross-dataset-sources}
+\centering\small
+\begin{tabular}{llrrrr}
+\toprule
+数据集 & 候选来源 & 直接EM & H@1 & MRR & H@3 \\
+\midrule
+NELL23K & 均匀随机-9 & 87.17 & 90.17 & 94.42 & 98.83 \\
+ & Full配额匹配随机-9 & 87.54 & 90.63 & 94.73 & 98.87 \\
+ & Full SC-CL-9 & 87.80 & 90.33 & 94.53 & 98.73 \\
+WN18RR & 均匀随机-9 & 74.98 & 76.99 & 86.74 & 96.04 \\
+ & Full配额匹配随机-9 & 78.40 & 80.34 & 88.97 & 97.48 \\
+ & Full SC-CL-9 & 86.89 & 88.42 & 93.15 & 97.83 \\
+\bottomrule
+\end{tabular}
+\end{table}

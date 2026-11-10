@@ -1,0 +1,42 @@
+{
+  "status": "pass",
+  "scope": "Integrate completed NELL and exploratory WN controls into editable manuscript; no new training/inference.",
+  "pdf": "11_paper/main/main.pdf",
+  "pdf_pages": 15,
+  "table_cells_checked_against_result_json": 48,
+  "unchanged_previous_audit_input_sha256": 15,
+  "evidence_cpu_audit": "guardenv audit_sota_evidence_20261110.py rerun passed",
+  "compile": "fresh XeLaTeX/BibTeX/latexmk in /tmp; no undefined citations/references or overfull boxes in final log",
+  "render_inspection": {
+    "pages": [
+      1,
+      7,
+      10,
+      11
+    ],
+    "result": "title/abstract, cross-dataset table, WN protocol and complete paired table readable; no visible clipping or overlap"
+  },
+  "dataset_scope": "NELL/CoDEx/FB primary configuration comparison; WN fourth dataset as exploratory historical-pool source control",
+  "manuscript_displays": [
+    "tab:cross-dataset-sources",
+    "tab:cross-source-pairs"
+  ],
+  "new_references_added": false,
+  "preserved_user_pdf_sha256": "e43beece93efd821b9f46116f65e934ca6599a0e3a3a9c8e276bb54a6b996b54",
+  "output_pdf_sha256": "9eebc2d60a31c3012f1960d332caa7372c442222e69b3c9b035cbc528cd0f0e6",
+  "tables_sha256": {
+    "cross_dataset_sources.tex": "14319634fd4214a661e2eddfcef3860fa727db38f3c8c3943abab6d74e0b429f",
+    "cross_source_pairs.tex": "fe0223544b9da9f2f17bd0b04ab4e4171ebaafd8d8222066150ae984f1da2d05"
+  },
+  "wn_training_reference": {
+    "path": "/home/kieran/grip-cu-runs/wn18rr_source_controls_20261107_seed2026/reference/run_config.json",
+    "sha256": "7f86d37c334093bec0ea3dccff3029cfe9b411de6e6381ba00af55e9b99bf225"
+  },
+  "limitations_retained": [
+    "single seed; Full-selected settings, no independent per-method tuning",
+    "55 WN training QA entity pairs unverified; eleven original options",
+    "WN B1 replication discrepancy unresolved",
+    "historical Full reused; not current-version retraining",
+    "NELL early Random checkpoints lost; final32 retained"
+  ]
+}
