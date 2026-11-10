@@ -1,0 +1,600 @@
+{
+  "seed": 2026,
+  "method": "soft_mix_1",
+  "scope": "Descriptive comparison of archived fixed adapter pairs. The selected seed results do not estimate training variability.",
+  "error_definition": "Wrong strict official answer within versus outside the normalized candidate list.",
+  "datasets": {
+    "nell23k": {
+      "n": 4943,
+      "excluded_question_id": "nell23k:test:4943",
+      "test_em": {
+        "b1": 0.8778069997976937,
+        "soft_mix_1": 0.8834715759660126
+      },
+      "errors": {
+        "b1": {
+          "correct": 4339,
+          "wrong_in_list": 409,
+          "wrong_out_of_list": 195
+        },
+        "soft_mix_1": {
+          "correct": 4367,
+          "wrong_in_list": 347,
+          "wrong_out_of_list": 229
+        }
+      },
+      "gains": 178,
+      "regressions": 150,
+      "net": 28,
+      "both_correct": 4189,
+      "both_wrong": 426,
+      "mcnemar": {
+        "discordant": 328,
+        "p_value": 0.13588577686901646,
+        "log10_p_value": -0.8668259983857118,
+        "chi2_cc": 2.222560975609756
+      },
+      "common_in_list_confusions": {
+        "b1": [
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:agentcreated",
+            "predicted_normalized": "conceptbookwriter",
+            "count": 4
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptlocationlocatedwithinlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:animalthatfeedoninsect",
+            "predicted_normalized": "conceptanimalsuchasinvertebrate",
+            "count": 3
+          }
+        ],
+        "soft_mix_1": [
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptlocationlocatedwithinlocation",
+            "count": 7
+          },
+          {
+            "gold": "concept:mutualproxyfor",
+            "predicted_normalized": "conceptproxyfor",
+            "count": 5
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptatlocation",
+            "count": 5
+          },
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:agentcreated",
+            "predicted_normalized": "conceptbookwriter",
+            "count": 4
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "concept:animalthatfeedoninsect",
+          11
+        ],
+        [
+          "concept:agentactsinlocation",
+          6
+        ],
+        [
+          "concept:locationlocatedwithinlocation",
+          5
+        ],
+        [
+          "concept:agentparticipatedinevent",
+          4
+        ],
+        [
+          "concept:animalsuchasinsect",
+          4
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "concept:mutualproxyfor",
+          -19
+        ],
+        [
+          "concept:animalpreyson",
+          -9
+        ],
+        [
+          "concept:subpartof",
+          -5
+        ],
+        [
+          "concept:organizationdissolvedatdate",
+          -5
+        ],
+        [
+          "concept:statelocatedingeopoliticallocation",
+          -4
+        ]
+      ],
+      "s2_training": {
+        "b1": {
+          "seconds": 6529.4,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "soft_mix_1": {
+          "seconds": 18077.8,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 13571.9
+      },
+      "inputs": {
+        "results/runs/ccfb/nell23k/seed2026/test/b1/predictions_correct.jsonl": "323bc62ba4cac30475a5f2c1edaf75bcfe960fd46943eafd7ce1b268ceb3eb19",
+        "results/runs/paper_v2_nell23k/hpo_budget60_seed2026/selected_test/predictions_correct.jsonl": "2404c866e3b19c96546deab6ccf31b441ad86bd109e74be902be2f85efb2bd5b",
+        "data/nell23k/recurrent_relation_prediction_full.aligned.json": "5f383019fa87e4c3490174c551395121762ae2b47eebc86a92d6ba84e878bc53"
+      }
+    },
+    "fb15k237": {
+      "n": 10000,
+      "excluded_question_id": null,
+      "test_em": {
+        "b1": 0.8896,
+        "soft_mix_1": 0.9036
+      },
+      "errors": {
+        "b1": {
+          "correct": 8896,
+          "wrong_in_list": 809,
+          "wrong_out_of_list": 295
+        },
+        "soft_mix_1": {
+          "correct": 9036,
+          "wrong_in_list": 504,
+          "wrong_out_of_list": 460
+        }
+      },
+      "gains": 523,
+      "regressions": 383,
+      "net": 140,
+      "both_correct": 8513,
+      "both_wrong": 581,
+      "mcnemar": {
+        "discordant": 906,
+        "p_value": 3.715857075962855e-06,
+        "log10_p_value": -5.429940998745773,
+        "chi2_cc": 21.32560706401766
+      },
+      "common_in_list_confusions": {
+        "b1": [
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award nominations received",
+            "count": 20
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "awards won by works",
+            "count": 16
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award nominations for individuals",
+            "count": 14
+          },
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "award nominations received",
+            "count": 14
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "awards won by work",
+            "count": 12
+          }
+        ],
+        "soft_mix_1": [
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "awards won by works",
+            "count": 16
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award winners",
+            "count": 12
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "awards won by individual",
+            "count": 10
+          },
+          {
+            "gold": "Film Release Region and Date",
+            "predicted_normalized": "films country of production",
+            "count": 8
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award nominations received",
+            "count": 7
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "Webpage Categories",
+          50
+        ],
+        [
+          "Nominations Received by an Award Nominee",
+          44
+        ],
+        [
+          "Film Release Region and Date",
+          20
+        ],
+        [
+          "Film's Country of Production",
+          16
+        ],
+        [
+          "Film Locations Featured",
+          13
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "Award Nominations Received",
+          -33
+        ],
+        [
+          "Award Nominees",
+          -19
+        ],
+        [
+          "Second Level Divisions of a Country",
+          -13
+        ],
+        [
+          "Award Nominations for Individuals",
+          -12
+        ],
+        [
+          "Place in HUD County",
+          -9
+        ]
+      ],
+      "s2_training": {
+        "b1": {
+          "seconds": 6261.7,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "soft_mix_1": {
+          "seconds": 18958.2,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 53436.3
+      },
+      "inputs": {
+        "results/runs/fb15k237_three_configs_seed2026/test/b1_seed2026/predictions_correct.jsonl": "b3d841d5532e123c8d9fdb3e9ebb0f44ab64815488118f4b3e1b2997e158dff2",
+        "results/runs/fb15k237_three_configs_seed2026/test/soft_mix_1/predictions_correct.jsonl": "77c378e4a8647daa18d66f9b0057a4a9cc4e7c0a03ce5fad889321dfa01b877f",
+        "data/fb15k237/recurrent_relation_prediction_full.json": "c5c7bbca97693d69423682ce986146773d8f3e708174285d302796cb2745987e"
+      }
+    },
+    "wn18rr": {
+      "n": 3134,
+      "excluded_question_id": null,
+      "test_em": {
+        "b1": 0.5513720485003191,
+        "soft_mix_1": 0.8883216336949585
+      },
+      "errors": {
+        "b1": {
+          "correct": 1728,
+          "wrong_in_list": 1406,
+          "wrong_out_of_list": 0
+        },
+        "soft_mix_1": {
+          "correct": 2784,
+          "wrong_in_list": 324,
+          "wrong_out_of_list": 26
+        }
+      },
+      "gains": 1104,
+      "regressions": 48,
+      "net": 1056,
+      "both_correct": 1680,
+      "both_wrong": 302,
+      "mcnemar": {
+        "discordant": 1152,
+        "p_value": 9.085276977636761e-262,
+        "log10_p_value": -261.04166182806694,
+        "chi2_cc": 966.1675347222222
+      },
+      "common_in_list_confusions": {
+        "b1": [
+          {
+            "gold": "hypernym",
+            "predicted_normalized": "instance hypernym",
+            "count": 299
+          },
+          {
+            "gold": "hypernym",
+            "predicted_normalized": "verb group",
+            "count": 140
+          },
+          {
+            "gold": "derivationally related form",
+            "predicted_normalized": "verb group",
+            "count": 127
+          },
+          {
+            "gold": "derivationally related form",
+            "predicted_normalized": "instance hypernym",
+            "count": 118
+          },
+          {
+            "gold": "derivationally related form",
+            "predicted_normalized": "hypernym",
+            "count": 103
+          }
+        ],
+        "soft_mix_1": [
+          {
+            "gold": "derivationally related form",
+            "predicted_normalized": "member of domain usage",
+            "count": 40
+          },
+          {
+            "gold": "hypernym",
+            "predicted_normalized": "instance hypernym",
+            "count": 37
+          },
+          {
+            "gold": "derivationally related form",
+            "predicted_normalized": "hypernym",
+            "count": 32
+          },
+          {
+            "gold": "derivationally related form",
+            "predicted_normalized": "member meronym",
+            "count": 28
+          },
+          {
+            "gold": "hypernym",
+            "predicted_normalized": "verb group",
+            "count": 27
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "hypernym",
+          468
+        ],
+        [
+          "derivationally related form",
+          351
+        ],
+        [
+          "synset domain topic of",
+          66
+        ],
+        [
+          "has part",
+          52
+        ],
+        [
+          "member meronym",
+          51
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "verb group",
+          -1
+        ],
+        [
+          "similar to",
+          -1
+        ]
+      ],
+      "s2_training": {
+        "b1": {
+          "seconds": 6682.4,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "soft_mix_1": {
+          "seconds": 18939.3,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 27404.3
+      },
+      "inputs": {
+        "results/runs/wn18rr_three_configs_seed2026/test/b1_seed2026/predictions_correct.jsonl": "649129e8f6f8c994e3f27b61df2ab0b68b4a2e4031b76aeb338d5f1b72e036c0",
+        "results/runs/wn18rr_three_configs_seed2026/test/soft_mix_1/predictions_correct.jsonl": "24d9f86ad5e8c4a0e70f8f2ba9fa998f699bf431aec7943b1a37bca560cab3ad",
+        "data/wn18rr/recurrent_relation_prediction_full.json": "8afcb11652ab6fa6b1dc35b7eec7d2bd079e423ac5e7dcd3a3b71d2558c09657"
+      }
+    },
+    "codexm": {
+      "n": 10311,
+      "excluded_question_id": null,
+      "test_em": {
+        "b1": 0.9421976529919504,
+        "soft_mix_1": 0.9623702841625449
+      },
+      "errors": {
+        "b1": {
+          "correct": 9715,
+          "wrong_in_list": 425,
+          "wrong_out_of_list": 171
+        },
+        "soft_mix_1": {
+          "correct": 9923,
+          "wrong_in_list": 300,
+          "wrong_out_of_list": 88
+        }
+      },
+      "gains": 291,
+      "regressions": 83,
+      "net": 208,
+      "both_correct": 9632,
+      "both_wrong": 305,
+      "mcnemar": {
+        "discordant": 374,
+        "p_value": 3.412305029477688e-28,
+        "log10_p_value": -27.466952153736084,
+        "chi2_cc": 114.56951871657753
+      },
+      "common_in_list_confusions": {
+        "b1": [
+          {
+            "gold": "country of citizenship",
+            "predicted_normalized": "place of birth",
+            "count": 52
+          },
+          {
+            "gold": "employer",
+            "predicted_normalized": "educated at",
+            "count": 40
+          },
+          {
+            "gold": "place of death",
+            "predicted_normalized": "place of birth",
+            "count": 27
+          },
+          {
+            "gold": "residence",
+            "predicted_normalized": "place of birth",
+            "count": 15
+          },
+          {
+            "gold": "country of citizenship",
+            "predicted_normalized": "country of origin",
+            "count": 14
+          }
+        ],
+        "soft_mix_1": [
+          {
+            "gold": "employer",
+            "predicted_normalized": "educated at",
+            "count": 37
+          },
+          {
+            "gold": "country of citizenship",
+            "predicted_normalized": "place of birth",
+            "count": 20
+          },
+          {
+            "gold": "place of death",
+            "predicted_normalized": "place of birth",
+            "count": 18
+          },
+          {
+            "gold": "residence",
+            "predicted_normalized": "place of birth",
+            "count": 14
+          },
+          {
+            "gold": "place of birth",
+            "predicted_normalized": "place of death",
+            "count": 11
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "place of death",
+          65
+        ],
+        [
+          "country of citizenship",
+          50
+        ],
+        [
+          "residence",
+          21
+        ],
+        [
+          "employer",
+          14
+        ],
+        [
+          "country",
+          13
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "place of birth",
+          -13
+        ],
+        [
+          "cast member",
+          -8
+        ],
+        [
+          "country of origin",
+          -4
+        ],
+        [
+          "languages spoken, written, or signed",
+          -3
+        ],
+        [
+          "instrument",
+          -1
+        ]
+      ],
+      "s2_training": {
+        "b1": {
+          "seconds": 6487.9,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "soft_mix_1": {
+          "seconds": 17708.6,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 39745.9
+      },
+      "inputs": {
+        "results/runs/codexm_three_configs_seed2026/test/b1/predictions_correct.jsonl": "b01822b091a3f111f22b6b5b7e973900faac6f7838b63b3f554213ecf99fa863",
+        "results/runs/codexm_three_configs_seed2026/test/soft_mix_1/predictions_correct.jsonl": "251653e49761dd91dca8e839f13d223f5a2516bf11477f0fa2f7ba87e3dab0b7",
+        "data/codexm/recurrent_relation_prediction_full.json": "7df93874c979df2f9f87e20b750b906ca995d7934a11c189ae0ca116d22ccd5f"
+      }
+    }
+  }
+}
