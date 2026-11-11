@@ -29,7 +29,7 @@ def execute(dataset,stage,cmd):
  if done.exists():
   assert read_json(done)['argv']==cmd,'completed stage command changed';return
  assert shutil.disk_usage('/mnt/e').free>4*1024**3,'E storage reserve insufficient'
- assert shutil.disk_usage('/mnt/c').free>1024**3,'C storage reserve insufficient'
+ assert shutil.disk_usage('/mnt/c').free>6*1024**3,'C startup reserve requires 6 GiB for observed host paging pressure'
  gpu=base.capture(['nvidia-smi','--query-compute-apps=pid,process_name,used_memory','--format=csv,noheader'])
  assert gpu.get('returncode')==0 and not gpu['stdout'].strip(),'another GPU compute process is active'
  log=RUN/'logs'/f'{dataset}_{stage}.log';log.parent.mkdir(exist_ok=True)
@@ -45,7 +45,7 @@ def execute(dataset,stage,cmd):
     state(**heartbeat)
     with (RUN/'resources.jsonl').open('a') as h:h.write(json.dumps(dict(at=base.now(),**heartbeat))+'\n')
     if code is not None:break
-    if free<1024**3 or c_free<512*1024**2:
+    if free<1024**3 or c_free<1024**3:
      p.terminate();p.wait(timeout=60);raise RuntimeError('own worker stopped at physical disk safety reserve')
     if heartbeat['log_age_seconds']>1800:write_json(RUN/'attention.json',dict(at=base.now(),reason='no new log for 30 minutes; worker still alive, inspect CPU/loading/checkpoint activity',**heartbeat))
     time.sleep(30)
@@ -104,7 +104,7 @@ def prepare_data(s):
  write_json(work/'data_audit.json',audit);return work
 
 def args_for(s,work,out,stage):
- ref=s['reference'];cmd=[str(PYTHON),str(RUN/'code_snapshot'/base.REL_HNG/'scripts/train_listed_contrastive.py'),'--input_file',str(work/'task.json'),'--eval_file',s['valid'],'--output_dir',str(out),'--stage',stage,'--model_name','llama3-8b','--model_cache_dir',str(CACHE),'--dtype','bfloat16','--raw_dir',s['raw'],'--dataset',s['dataset'],'--seed','2026','--save_steps','16','--save_total_limit','1','--s1_gradient_checkpointing','--swanlab_mode','offline','--defer_eval']
+ ref=s['reference'];cmd=[str(PYTHON),str(RUN/'code_snapshot'/base.REL_HNG/'scripts/train_listed_contrastive.py'),'--input_file',str(work/'task.json'),'--eval_file',s['valid'],'--output_dir',str(out),'--stage',stage,'--model_name','llama3-8b','--model_cache_dir',str(CACHE),'--dtype','bfloat16','--raw_dir',s['raw'],'--dataset',s['dataset'],'--seed','2026','--save_steps','1','--save_total_limit','1','--s1_gradient_checkpointing','--swanlab_mode','offline','--defer_eval']
  fields=['lora_r','lora_alpha','learning_rate','weight_decay','adam_epsilon','max_grad_norm','temperature','involve_qa_epochs']
  for k in fields:cmd.extend(['--'+k,str(ref[k])])
  cmd+=['--gradient_accumulation_steps',str(ref['gradient_accumulation_steps']*ref['per_device_train_batch_size']),'--num_train_epochs','1','--per_device_train_batch_size','1','--target_modules',*ref['target_modules'],'--gen_max_length',str(s['gen_max_length'])]

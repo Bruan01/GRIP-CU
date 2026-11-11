@@ -1,15 +1,16 @@
 {
-  "status": "wn18rr_stage1_padding_recovery",
-  "pid": 1200808,
+  "status": "storage_recovery_restart",
+  "pid": 1296575,
   "session": "llama_four_20261111",
   "controller_argv": [
     "/home/kieran/miniconda3/envs/guardenv/bin/python",
     "-u",
     "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_llama_four_datasets.py"
   ],
-  "contract_sha256": "277a6791731c87a8161181cb88ac62474a5f0ac16380abb3d0a37abe1b51b469",
-  "previous_attempt_completed_optimizer_steps": 0,
+  "contract_sha256": "353491e8cdd8203da52e7ca5c0e16d673fcf4a899bccdac1e5034dd8560c8e56",
   "training_complete": false,
   "performance_results_available": false,
+  "prior_attempt_optimizer_steps": 2,
+  "prior_checkpoint_available": false,
   "run_dir": "/home/kieran/grip-cu-runs/llama_four_20261111"
 }

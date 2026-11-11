@@ -1174,7 +1174,7 @@
     },
     {
       "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_llama_four_datasets.py",
-      "sha256": "c535c9871b6a3bbe1eaf1ad5ae1e6a514a08411251809d46fce4f069dc65e504"
+      "sha256": "eef9c9f7c6283db1608d40c83bd4edb66de226009e54c92f57b951f9630dbd73"
     },
     {
       "path": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/score_relation_candidates_offline.py",
@@ -1617,7 +1617,7 @@
       "sha256": "8c82ca1063f0474ffcdaa387ffe715e57c03ddbf70d6f87a512134180b7d2013"
     }
   ],
-  "source_digest": "51b15947b61ec4c1e6e34dd0ef2aa8bc6de44b84a6a255fea1a5b5baca42594f",
+  "source_digest": "e8e16119a759362486457b9c8022b9ee1017feddc4b7359f9621a1f522001c8f",
   "stage1_epochs": 1.0,
   "policy": "Qwen-selected fixed Stage2 configurations transferred without new HPO; matched B1 uses same Stage1/steps/optimizer, lambda=0; no test-based selection",
   "retention": "one active checkpoint; after final adapter and history identity captured, discard only new campaign checkpoint tensors; retain all final Stage1/B1/SC-CL adapters",
@@ -1673,5 +1673,21 @@
       "embedding_resize_required": false,
       "reason": "use existing dedicated Llama padding token; attention-masked padding has no new trainable row"
     }
+  },
+  "c_disk_recovery": {
+    "at": "2026-11-11T10:03:31.191234+08:00",
+    "failed_attempt_completed_optimizer_steps": 2,
+    "checkpoint_available": false,
+    "recovery_mode": "fresh same-budget restart; cannot recover first two updates",
+    "startup_c_reserve_gib": 6,
+    "runtime_c_reserve_gib": 1,
+    "save_steps": 1,
+    "save_total_limit": 1,
+    "model_relocation_receipt_sha256": "bf87e1a24483c252ee472c28ae3612749a2c9bed27732abccf161ae645eaf7f3",
+    "failure_evidence": "/home/kieran/grip-cu-runs/llama_four_20261111/recovery/c_disk_after_step2",
+    "losses_before_interruption": [
+      3.096,
+      2.264
+    ]
   }
 }

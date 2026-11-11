@@ -1,0 +1,31 @@
+{
+  "status": "completed",
+  "reason": "C physical disk exhausted during Llama training; preserve final models while relocating same bytes to E with original logical paths",
+  "free_c_before": 3474944000,
+  "files": [
+    {
+      "original": "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/codexm_taskfile_3090/stage1_adapter/adapter_model.safetensors",
+      "destination": "/mnt/e/GRIP-CU/artifacts/storage_relocation_20261111/codexm_s1.safetensors",
+      "bytes": 2204583480,
+      "sha256": "b73f08325cc812c5230b5d7891d6adea3f1c5b0e211a164c2fefa9b444eb8785",
+      "original_path_accessible": true
+    },
+    {
+      "original": "/mnt/c/users/administrator/desktop/实验/grip-cu/13_base_method/grip-exp/outputs/paper_runs/wn18rr_taskfile_3090/stage1_adapter/adapter_model.safetensors",
+      "destination": "/mnt/e/GRIP-CU/artifacts/storage_relocation_20261111/wn18rr_s1.safetensors",
+      "bytes": 2355972056,
+      "sha256": "cd3ccdf30f1d0b420001baaa31b0491318b8df0024bee68269fcbf6b2c46d94b",
+      "original_path_accessible": true
+    },
+    {
+      "original": "/mnt/c/users/administrator/desktop/实验/grip-cu/08_experiments/Hard_Negative_Contrastive_GRIP/results/hpo/nell_fb_guard_20261029/fb15k237_2/b1/stage1_adapter/adapter_model.safetensors",
+      "destination": "/mnt/e/GRIP-CU/artifacts/storage_relocation_20261111/fb_s1.safetensors",
+      "bytes": 2355972056,
+      "sha256": "abf0a81b197b10d15c567c0877345035092dd4c6123905149d61c37643407130",
+      "original_path_accessible": true
+    }
+  ],
+  "completed_at": "2026-11-11T10:02:18.004954+08:00",
+  "free_c_after": 10425806848,
+  "free_e_after": 36151795712
+}

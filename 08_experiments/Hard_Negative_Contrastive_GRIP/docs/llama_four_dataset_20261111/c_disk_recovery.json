@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-11T10:03:31.191234+08:00",
+  "failed_attempt_completed_optimizer_steps": 2,
+  "checkpoint_available": false,
+  "recovery_mode": "fresh same-budget restart; cannot recover first two updates",
+  "startup_c_reserve_gib": 6,
+  "runtime_c_reserve_gib": 1,
+  "save_steps": 1,
+  "save_total_limit": 1,
+  "model_relocation_receipt_sha256": "bf87e1a24483c252ee472c28ae3612749a2c9bed27732abccf161ae645eaf7f3",
+  "failure_evidence": "/home/kieran/grip-cu-runs/llama_four_20261111/recovery/c_disk_after_step2",
+  "losses_before_interruption": [
+    3.096,
+    2.264
+  ]
+}
