@@ -118,26 +118,27 @@ def prepare():
     hpo.freeze_text(ROOT / "plan.json", json.dumps(plan, ensure_ascii=False, indent=2) + "\n")
 
 
-def run():
+def run(root_dir=ROOT):
     if not os.environ.get("TMUX"):
         raise RuntimeError("Start inside the dedicated tmux session.")
     with (RUNS / "ccfb_gpu.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         sprint.check_idle_gpu()
-        status = ROOT / "run_status.json"
-        plan = hpo.read_json(ROOT / "plan.json")
+        status = root_dir / "run_status.json"
+        plan = hpo.read_json(root_dir / "plan.json")
         try:
-            execute(plan, status, lock)
+            execute(plan, status, lock, root_dir)
         except (Exception, KeyboardInterrupt) as exc:
             current = hpo.read_json(status) if status.is_file() else {}
             hpo.write_json(status, {**current, "status": "INTERRUPTED", "error": str(exc)})
             raise
 
 
-def execute(plan, status, lock):
-    for dataset, minimum_gib in (("nell23k", 20), ("fb15k237", 22)):
-        job = plan[dataset]
-        root = ROOT / dataset
+def execute(plan, status, lock, root_dir):
+    specs = {"nell23k": (20, 4951), "fb15k237": (22, 10000), "wn18rr": (22, 3034)}
+    for dataset, job in plan.items():
+        minimum_gib, validation_count = specs[dataset]
+        root = root_dir / dataset
         for path, expected in job["inputs"].items():
             if hpo.sha256(path) != expected:
                 raise ValueError(f"Input changed: {path}")
@@ -162,7 +163,7 @@ def execute(plan, status, lock):
             if stage == "train":
                 summary = adapter.parent / "summary.json"
                 sprint.validation(hpo.read_json(summary), {
-                    "dataset": dataset, "spec": {"validation_count": 4951 if dataset == "nell23k" else 10000},
+                    "dataset": dataset, "spec": {"validation_count": validation_count},
                 })
                 outputs = [summary, adapter / "adapter_model.safetensors"]
             else:

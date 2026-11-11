@@ -1,0 +1,310 @@
+{
+  "seed": 2026,
+  "left": "soft_mix_1",
+  "right": "top_k_hard",
+  "error_definition": "Wrong strict official answer within versus outside the normalized candidate list.",
+  "datasets": {
+    "nell23k": {
+      "n": 4943,
+      "excluded_question_id": "nell23k:test:4943",
+      "test_em": {
+        "soft_mix_1": 0.8834715759660126,
+        "top_k_hard": 0.8759862431721627
+      },
+      "errors": {
+        "soft_mix_1": {
+          "correct": 4367,
+          "wrong_in_list": 347,
+          "wrong_out_of_list": 229
+        },
+        "top_k_hard": {
+          "correct": 4330,
+          "wrong_in_list": 327,
+          "wrong_out_of_list": 286
+        }
+      },
+      "gains": 88,
+      "regressions": 125,
+      "net": -37,
+      "both_correct": 4242,
+      "both_wrong": 488,
+      "mcnemar": {
+        "discordant": 213,
+        "p_value": 0.01344971309960505,
+        "log10_p_value": -1.8712869796457594,
+        "chi2_cc": 6.084507042253521
+      },
+      "common_in_list_confusions": {
+        "soft_mix_1": [
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptlocationlocatedwithinlocation",
+            "count": 7
+          },
+          {
+            "gold": "concept:mutualproxyfor",
+            "predicted_normalized": "conceptproxyfor",
+            "count": 5
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptatlocation",
+            "count": 5
+          },
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:agentcreated",
+            "predicted_normalized": "conceptbookwriter",
+            "count": 4
+          }
+        ],
+        "top_k_hard": [
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptlocationlocatedwithinlocation",
+            "count": 6
+          },
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:agentcreated",
+            "predicted_normalized": "conceptbookwriter",
+            "count": 4
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptagentcreated",
+            "count": 4
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "concept:agentparticipatedinevent",
+          6
+        ],
+        [
+          "concept:proxyfor",
+          4
+        ],
+        [
+          "concept:agentcreated",
+          4
+        ],
+        [
+          "concept:personbornincity",
+          3
+        ],
+        [
+          "concept:worksfor",
+          2
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "concept:subpartof",
+          -6
+        ],
+        [
+          "concept:animalthatfeedoninsect",
+          -4
+        ],
+        [
+          "concept:arthropodcalledarthropod",
+          -4
+        ],
+        [
+          "concept:countryalsoknownas",
+          -4
+        ],
+        [
+          "concept:agentcollaborateswithagent",
+          -3
+        ]
+      ],
+      "s2_training": {
+        "soft_mix_1": {
+          "seconds": 18077.8,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "top_k_hard": {
+          "seconds": 18169.5,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 13571.9
+      },
+      "inputs": {
+        "results/runs/paper_v2_nell23k/hpo_budget60_seed2026/selected_test/predictions_correct.jsonl": "2404c866e3b19c96546deab6ccf31b441ad86bd109e74be902be2f85efb2bd5b",
+        "results/runs/ccfb_top9_seed2026/nell23k/test/predictions_correct.jsonl": "bf32736557c3a12bc836e8146e4c83f66db0f5476be42f5cd25ac873b4d4f109",
+        "data/nell23k/recurrent_relation_prediction_full.aligned.json": "5f383019fa87e4c3490174c551395121762ae2b47eebc86a92d6ba84e878bc53"
+      }
+    },
+    "fb15k237": {
+      "n": 10000,
+      "excluded_question_id": null,
+      "test_em": {
+        "soft_mix_1": 0.9036,
+        "top_k_hard": 0.9214
+      },
+      "errors": {
+        "soft_mix_1": {
+          "correct": 9036,
+          "wrong_in_list": 504,
+          "wrong_out_of_list": 460
+        },
+        "top_k_hard": {
+          "correct": 9214,
+          "wrong_in_list": 507,
+          "wrong_out_of_list": 279
+        }
+      },
+      "gains": 378,
+      "regressions": 200,
+      "net": 178,
+      "both_correct": 8836,
+      "both_wrong": 586,
+      "mcnemar": {
+        "discordant": 578,
+        "p_value": 1.1649737180468163e-13,
+        "log10_p_value": -12.933683872265423,
+        "chi2_cc": 54.20242214532872
+      },
+      "common_in_list_confusions": {
+        "soft_mix_1": [
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "awards won by works",
+            "count": 16
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award winners",
+            "count": 12
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "awards won by individual",
+            "count": 10
+          },
+          {
+            "gold": "Film Release Region and Date",
+            "predicted_normalized": "films country of production",
+            "count": 8
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award nominations received",
+            "count": 7
+          }
+        ],
+        "top_k_hard": [
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "award nominations received",
+            "count": 15
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award nominations received",
+            "count": 14
+          },
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "awards won by works",
+            "count": 11
+          },
+          {
+            "gold": "Film Release Region and Date",
+            "predicted_normalized": "films country of production",
+            "count": 11
+          },
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "nominated works for awards",
+            "count": 9
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "Nominations Received by an Award Nominee",
+          96
+        ],
+        [
+          "Award Nominations Received",
+          14
+        ],
+        [
+          "Taxonomy Subject Entries",
+          10
+        ],
+        [
+          "Second Level Divisions of a Country",
+          9
+        ],
+        [
+          "Cause of Death",
+          9
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "Award Winners at a Ceremony",
+          -18
+        ],
+        [
+          "Film Release Region and Date",
+          -11
+        ],
+        [
+          "Geographical Containment",
+          -6
+        ],
+        [
+          "Honored Individuals at an Award Ceremony",
+          -6
+        ],
+        [
+          "Film Crew Roles",
+          -5
+        ]
+      ],
+      "s2_training": {
+        "soft_mix_1": {
+          "seconds": 18958.2,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "top_k_hard": {
+          "seconds": 19123.5,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 53436.3
+      },
+      "inputs": {
+        "results/runs/fb15k237_three_configs_seed2026/test/soft_mix_1/predictions_correct.jsonl": "77c378e4a8647daa18d66f9b0057a4a9cc4e7c0a03ce5fad889321dfa01b877f",
+        "results/runs/ccfb_top9_seed2026/fb15k237/test/predictions_correct.jsonl": "5e61680693c3ec7dfabe256ed6c592573cc4b1266798b2a315c338585ea6a49d",
+        "data/fb15k237/recurrent_relation_prediction_full.json": "c5c7bbca97693d69423682ce986146773d8f3e708174285d302796cb2745987e"
+      }
+    }
+  }
+}

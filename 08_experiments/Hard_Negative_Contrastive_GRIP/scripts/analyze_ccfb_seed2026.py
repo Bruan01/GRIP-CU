@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Pair the archived seed2026 B1 and Soft-Mix test predictions."""
+"""Pair the archived seed2026 test predictions."""
+import argparse
 from collections import Counter
 import json
 from pathlib import Path
@@ -36,20 +37,21 @@ def timing(adapter):
     return {}
 
 
-def analyze(dataset, primary, evaluation, left, right, expected_n, expected_scores, adapters):
-    left_path, b1 = read_predictions(left, expected_n)
-    right_path, sm = read_predictions(right, expected_n)
+def analyze(dataset, primary, evaluation, left, right, expected_n, expected_scores, adapters,
+            methods=("b1", "soft_mix_1")):
+    left_path, left_rows = read_predictions(left, expected_n)
+    right_path, right_rows = read_predictions(right, expected_n)
     samples = eval_samples(hpo.read_json(evaluation), ("test",))
     by_id = {sample["question_id"]: sample for sample in samples}
-    if set(by_id) != set(b1) or set(b1) != set(sm) or len(samples) != expected_n:
+    if set(by_id) != set(left_rows) or set(left_rows) != set(right_rows) or len(samples) != expected_n:
         raise ValueError(f"{dataset}: test IDs differ from evaluation inputs")
     excluded = "nell23k:test:4943" if dataset == "nell23k" else None
-    counts = {"b1": Counter(), "soft_mix_1": Counter()}
+    counts = {method: Counter() for method in methods}
     transitions = Counter()
-    confusions = {"b1": Counter(), "soft_mix_1": Counter()}
+    confusions = {method: Counter() for method in methods}
     changes_by_gold = Counter()
     for qid, sample in by_id.items():
-        a, b = b1[qid], sm[qid]
+        a, b = left_rows[qid], right_rows[qid]
         if a["target"] != b["target"] or a["question"] != b["question"]:
             raise ValueError(f"Mismatch in paired prompt or target: {qid}")
         gold = sample["answer"]
@@ -58,7 +60,7 @@ def analyze(dataset, primary, evaluation, left, right, expected_n, expected_scor
         if qid == excluded:
             continue
         candidates = {normalize_answer(x) for x in (*listed_relations_from_sample(sample), gold)}
-        for method, row in (("b1", a), ("soft_mix_1", b)):
+        for method, row in zip(methods, (a, b), strict=True):
             predicted = row["official_response"]
             normalized = normalize_answer(predicted or "")
             kind = ("correct" if row["official_correct"] else
@@ -103,7 +105,42 @@ def result_rows(primary):
     return {row["arm"]: row for row in hpo.read_json(primary / "comparison.json")["rows"]}
 
 
+def top9_report():
+    runs = RUNS / "ccfb_top9_seed2026"
+    if hpo.read_json(runs / "run_status.json")["status"] != "COMPLETE":
+        raise ValueError("Both Top-9 controls must be complete.")
+    comparisons = {}
+    for dataset, primary, eval_name, soft, adapter, n in (
+        ("nell23k", NELL, "recurrent_relation_prediction_full.aligned.json",
+         NELL_HPO / "selected_test", NELL_HPO / "trial_001/listed/adapter", 4944),
+        ("fb15k237", FB, "recurrent_relation_prediction_full.json",
+         FB / "test/soft_mix_1", FB / "soft_mix_1/listed/adapter", 10000),
+    ):
+        root = runs / dataset
+        metric = "official_harness_em" if dataset == "nell23k" else "official_em"
+        comparisons[dataset] = analyze(
+            dataset, primary, DATA / dataset / eval_name, soft, root / "test", n,
+            (hpo.read_json(soft / "summary.json")["test"][metric],
+             hpo.read_json(root / "test_result.json")[metric]),
+            (adapter, root / "listed/adapter"), methods=("soft_mix_1", "top_k_hard"),
+        )
+    return comparisons
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--top9", action="store_true", help="Compare Soft-Mix with Top-9 Hard.")
+    if parser.parse_args().top9:
+        datasets = top9_report()
+        output = HNG / "results/archive/ccfb_seed2026_top9_paired_errors.json"
+        hpo.freeze_text(output, json.dumps({
+            "seed": 2026, "left": "soft_mix_1", "right": "top_k_hard",
+            "error_definition": "Wrong strict official answer within versus outside the normalized candidate list.",
+            "datasets": datasets,
+        }, ensure_ascii=False, indent=2) + "\n")
+        for dataset, row in datasets.items():
+            print(dataset, row["gains"], row["regressions"], row["errors"])
+        return
     configs = [
         ("nell23k", NELL, DATA / "nell23k/recurrent_relation_prediction_full.aligned.json",
          NELL_B1 / "test/b1", NELL_HPO / "selected_test", 4944,
