@@ -1,10 +1,10 @@
 \section{相关工作}
 
 \paragraph{关系预测与生成式图推理。}
-TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。GRIP 以图上下文和生成式问答学习参数化图推理，并比较图到嵌入方法 OFA/GOFA 与有无边列表上下文的 Qwen/Llama；其知识图谱结果同时报告准确率和输入 token 数 \citep{feng2026grip}。这些方法界定了关系预测的外部参照面，但不能替代对候选构造作用的同协议检验。本文关注固定实体对上的关系标签竞争，在 GRIP 的生成式训练框架中研究候选来源与候选级对比目标的结合；相关原文数值与本地比较边界见表~\ref{tab:grip-published-baselines}。
+TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。GRIP 以图知识参数内化和生成式问答实现图推理，并比较图到嵌入方法 OFA/GOFA 与有无边列表上下文的 Qwen/Llama；其知识图谱结果同时报告准确率和输入 token 数 \citep{feng2026grip}。本文以 GRIP 为目标框架，在其 Stage~2 生成式 QA 目标上增加关系候选级 InfoNCE，使竞争关系参与参数更新。结构画像与冻结基线反馈用于构造该训练目标所需的反事实关系；来源对照检验候选变化对该扩展结果的影响。相关原文数值与本地比较边界见表~\ref{tab:grip-published-baselines}。
 
 \paragraph{困难候选与假阴性。}
-结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}。去偏对比学习与 ProGCL 讨论了对比学习中候选难度和假阴性风险的关系 \citep{chuang2020dcl,xia2022progcl}。\scc{} 将训练图关系画像与冻结模型的分数违例度共同用于关系候选构造，并以训练已知关系过滤、均匀采样下限和固定候选库明确候选的构造规则。本文的区别在于将两种信号用于固定实体对的关系标签候选，并冻结其来源以支持条件对照；结构或模型困难采样本身并非本文首次提出。该设计也不构成对SANS或KBGAN的同协议性能比较。本文采用的开放世界真值约定见问题定义节。
+SC-CL 的核心改动是在 GRIP Stage~2 增加关系候选级对比目标；候选构造为该目标提供用于关系判别的训练输入。结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}，去偏对比学习与 ProGCL 讨论了对比候选难度和假阴性风险 \citep{chuang2020dcl,xia2022progcl}。本文借鉴这些问题设定，将关系画像与冻结 GRIP 基线的分数违例度用于固定实体对上的关系标签比较，并用训练已知关系过滤、均匀采样下限和固定候选库明确新增训练目标所使用的信号。结构或模型困难采样本身并非本文首次提出；本文关注其在 GRIP 参数内化式关系 QA 中的训练目标扩展及实证边界。该设计也不构成对 SANS 或 KBGAN 的同协议性能比较。本文采用的开放世界真值约定见问题定义节。
 
 \paragraph{关系候选评估。}
 传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经过人工核验的实体替换困难负例 \citep{safavi2020codex}。实体替换与关系替换对应不同的候选空间。本文在固定实体对上评价关系标签排序，并分别使用直接解码与逐候选评分衡量两种答案选择方式；实体替换负例保留其三元组判断用途，关系候选按各自的已知事实与未判定状态记录。

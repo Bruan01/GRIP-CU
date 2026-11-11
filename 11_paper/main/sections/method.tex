@@ -1,6 +1,6 @@
-\section{结构反事实对比学习}
+\section{SC-CL：面向 GRIP Stage 2 的关系判别扩展}
 
-\scc{} 将候选构造与 Stage~2 优化分为两个阶段（图~\ref{fig:mechanism}）。离线阶段融合训练图关系画像与冻结 B1 在训练问题上的违例度，在过滤后的关系池中采样并固定每题$K$个候选，默认$K=9$。学习阶段从 Stage~1 adapter 初始化 GRIP，在固定候选库上联合优化候选损失与原始生成损失。
+\scc{} 将关系候选级对比目标接入 GRIP Stage~2，以增强生成式 QA 对目标关系和竞争关系的辨别。它保留原始 Stage~1 adapter、提示和生成损失，并新增候选级 InfoNCE。训练前，离线阶段融合训练图关系画像与冻结 B1 在训练问题上的违例度，在过滤后的关系池中采样并固定每题$K$个候选，默认$K=9$；学习阶段从 Stage~1 adapter 初始化 GRIP，在固定候选库上联合优化新增候选损失与原始生成损失。
 
 \begin{figure}[H]
     \centering
