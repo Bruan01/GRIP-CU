@@ -1,10 +1,10 @@
 \section{相关工作}
 
 \paragraph{关系预测与生成式图推理。}
-TransE、ComplEx、RotatE 和 ConvE 通过不同的三元组打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}。KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。GRIP 以图知识参数内化和生成式问答实现图推理，并比较图到嵌入方法 OFA/GOFA 与有无边列表上下文的 Qwen/Llama；其知识图谱结果同时报告准确率和输入 token 数 \citep{feng2026grip}。本文以 GRIP 为目标框架，在其 Stage~2 生成式 QA 目标上增加关系候选级 InfoNCE，使竞争关系参与参数更新。结构画像与冻结基线反馈用于构造该训练目标所需的反事实关系；来源对照检验候选变化对该扩展结果的影响。相关原文数值与本地比较边界见表~\ref{tab:grip-published-baselines}。
+关系预测方法从三元组打分逐步扩展到语言模型。TransE、ComplEx、RotatE 和 ConvE 使用不同打分函数建模实体与关系 \citep{bordes2013transe,trouillon2016complex,sun2019rotate,dettmers2018conve}；KG-BERT 将三元组判断转为文本建模 \citep{yao2019kgbert}，SimKGC 则在预训练语言模型上使用多种实体负例进行对比学习 \citep{wang2022simkgc}。GRIP 将图知识写入模型参数，并以生成式问答实现图推理；其比较涵盖图到嵌入方法 OFA/GOFA，以及有无边列表上下文的 Qwen/Llama，同时报告知识图谱准确率和输入 token 数 \citep{feng2026grip}。本文沿用 GRIP 的参数内化流程，在 Stage~2 生成式 QA 目标上增加关系候选级 InfoNCE，让竞争关系参与参数更新。结构画像与冻结基线反馈负责构造该目标的关系候选；后续来源对照检验候选替换与结果之间的关系。原文数值及本地比较边界见表~\ref{tab:grip-published-baselines}。
 
 \paragraph{困难候选与假阴性。}
-SC-CL 的核心改动是在 GRIP Stage~2 增加关系候选级对比目标；候选构造为该目标提供用于关系判别的训练输入。结构感知负采样 SANS 和对抗式采样 KBGAN 分别从图结构与模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}，去偏对比学习与 ProGCL 讨论了对比候选难度和假阴性风险 \citep{chuang2020dcl,xia2022progcl}。本文借鉴这些问题设定，将关系画像与冻结 GRIP 基线的分数违例度用于固定实体对上的关系标签比较，并用训练已知关系过滤、均匀采样下限和固定候选库明确新增训练目标所使用的信号。结构或模型困难采样本身并非本文首次提出；本文关注其在 GRIP 参数内化式关系 QA 中的训练目标扩展及实证边界。该设计也不构成对 SANS 或 KBGAN 的同协议性能比较。本文采用的开放世界真值约定见问题定义节。
+\scc{} 的核心改动是为 GRIP Stage~2 增加关系候选级对比目标；候选构造为这一目标提供关系判别输入。结构感知采样 SANS 与对抗式采样 KBGAN 分别利用图结构和模型反馈寻找困难负例 \citep{ahrabian2020sans,cai2018kbgan}，去偏对比学习与 ProGCL 则讨论候选难度和假阴性风险 \citep{chuang2020dcl,xia2022progcl}。本文沿用这些工作提出的问题视角，将关系画像和冻结 GRIP 基线的分数违例度用于固定实体对上的关系标签比较；训练已知关系过滤、均匀采样下限和固定候选库则界定这一新增目标使用的信号。困难候选采样本身并非本文的新颖性主张；本文研究的是这种训练目标在 GRIP 参数内化式关系问答中的扩展及其证据边界，也不将结果解释为对 SANS 或 KBGAN 的同协议比较。开放世界下候选的真值约定见问题定义节。
 
 \paragraph{关系候选评估。}
-传统 link prediction 常在实体替换候选上报告 MRR/Hits，CoDEx 还提供经过人工核验的实体替换困难负例 \citep{safavi2020codex}。实体替换与关系替换对应不同的候选空间。本文在固定实体对上评价关系标签排序，并分别使用直接解码与逐候选评分衡量两种答案选择方式；实体替换负例保留其三元组判断用途，关系候选按各自的已知事实与未判定状态记录。
+传统 link prediction 通常在实体替换候选上报告 MRR/Hits；CoDEx 还提供经人工核验的实体替换困难负例 \citep{safavi2020codex}。实体替换与关系替换对应不同的候选空间。本文固定实体对并评价关系标签排序，同时分别报告直接解码和逐候选评分结果，以区分两种答案选择规则。实体替换负例仍用于三元组判断；本文关系候选则按其已知事实或真值未判定状态记录。
