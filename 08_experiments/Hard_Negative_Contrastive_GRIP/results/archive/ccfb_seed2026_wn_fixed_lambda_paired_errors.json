@@ -1,0 +1,148 @@
+{
+  "n": 3134,
+  "excluded_question_id": null,
+  "test_em": {
+    "calibrated_1": 0.7715379706445438,
+    "fixed_mean": 0.8107849393746012
+  },
+  "errors": {
+    "calibrated_1": {
+      "correct": 2418,
+      "wrong_in_list": 679,
+      "wrong_out_of_list": 37
+    },
+    "fixed_mean": {
+      "correct": 2541,
+      "wrong_in_list": 566,
+      "wrong_out_of_list": 27
+    }
+  },
+  "gains": 223,
+  "regressions": 100,
+  "net": 123,
+  "both_correct": 2318,
+  "both_wrong": 493,
+  "mcnemar": {
+    "discordant": 323,
+    "p_value": 6.3485853641853165e-12,
+    "log10_p_value": -11.197323036435908,
+    "chi2_cc": 46.080495356037154
+  },
+  "common_in_list_confusions": {
+    "calibrated_1": [
+      {
+        "gold": "hypernym",
+        "predicted_normalized": "instance hypernym",
+        "count": 201
+      },
+      {
+        "gold": "derivationally related form",
+        "predicted_normalized": "member of domain usage",
+        "count": 77
+      },
+      {
+        "gold": "hypernym",
+        "predicted_normalized": "verb group",
+        "count": 60
+      },
+      {
+        "gold": "derivationally related form",
+        "predicted_normalized": "instance hypernym",
+        "count": 38
+      },
+      {
+        "gold": "hypernym",
+        "predicted_normalized": "derivationally related form",
+        "count": 29
+      }
+    ],
+    "fixed_mean": [
+      {
+        "gold": "hypernym",
+        "predicted_normalized": "instance hypernym",
+        "count": 160
+      },
+      {
+        "gold": "hypernym",
+        "predicted_normalized": "verb group",
+        "count": 68
+      },
+      {
+        "gold": "derivationally related form",
+        "predicted_normalized": "instance hypernym",
+        "count": 29
+      },
+      {
+        "gold": "hypernym",
+        "predicted_normalized": "derivationally related form",
+        "count": 27
+      },
+      {
+        "gold": "derivationally related form",
+        "predicted_normalized": "verb group",
+        "count": 26
+      }
+    ]
+  },
+  "largest_net_gains_by_gold": [
+    [
+      "derivationally related form",
+      54
+    ],
+    [
+      "hypernym",
+      34
+    ],
+    [
+      "has part",
+      22
+    ],
+    [
+      "also see",
+      14
+    ],
+    [
+      "verb group",
+      5
+    ]
+  ],
+  "largest_net_losses_by_gold": [
+    [
+      "member meronym",
+      -11
+    ],
+    [
+      "instance hypernym",
+      -2
+    ],
+    [
+      "member of domain region",
+      -1
+    ]
+  ],
+  "s2_training": {
+    "calibrated_1": {
+      "seconds": 18999.5,
+      "trainer_global_step": 117,
+      "trainer_epoch": 3.0
+    },
+    "fixed_mean": {
+      "seconds": 19024.8,
+      "trainer_global_step": 117,
+      "trainer_epoch": 3.0
+    }
+  },
+  "shared_s1_training": {
+    "seconds": 27404.3
+  },
+  "inputs": {
+    "results/runs/wn18rr_three_configs_seed2026/test/calibrated_1/predictions_correct.jsonl": "d9881046899ed5f1e058709e59aa73d00609000994e071f2e1a70f2805d0b956",
+    "results/runs/ccfb_wn_fixed_lambda_seed2026/wn18rr/test/predictions_correct.jsonl": "8b18989445054ac491bda8c6992e38a7d563e220bb3e9e96afaf81686e58aa90",
+    "data/wn18rr/recurrent_relation_prediction_full.json": "8afcb11652ab6fa6b1dc35b7eec7d2bd079e423ac5e7dcd3a3b71d2558c09657"
+  },
+  "validation_em": {
+    "calibrated_1": 0.7666446934739618,
+    "fixed_mean": 0.7910349373764007
+  },
+  "fixed_lambda": 0.5003904878743024
+}
