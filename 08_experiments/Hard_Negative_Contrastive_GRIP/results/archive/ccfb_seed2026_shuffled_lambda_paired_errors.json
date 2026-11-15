@@ -1,0 +1,338 @@
+{
+  "seed": 2026,
+  "shuffle_seed": 2026,
+  "left": "calibrated_1",
+  "right": "shuffled_lambda",
+  "datasets": {
+    "nell23k": {
+      "n": 4943,
+      "excluded_question_id": "nell23k:test:4943",
+      "test_em": {
+        "calibrated_1": 0.8838761885494639,
+        "shuffled_lambda": 0.8814485130487558
+      },
+      "errors": {
+        "calibrated_1": {
+          "correct": 4369,
+          "wrong_in_list": 357,
+          "wrong_out_of_list": 217
+        },
+        "shuffled_lambda": {
+          "correct": 4357,
+          "wrong_in_list": 359,
+          "wrong_out_of_list": 227
+        }
+      },
+      "gains": 25,
+      "regressions": 37,
+      "net": -12,
+      "both_correct": 4332,
+      "both_wrong": 549,
+      "mcnemar": {
+        "discordant": 62,
+        "p_value": 0.16188140552559538,
+        "log10_p_value": -0.7908030335283068,
+        "chi2_cc": 1.9516129032258065
+      },
+      "common_in_list_confusions": {
+        "calibrated_1": [
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptlocationlocatedwithinlocation",
+            "count": 7
+          },
+          {
+            "gold": "concept:mutualproxyfor",
+            "predicted_normalized": "conceptproxyfor",
+            "count": 5
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptatlocation",
+            "count": 5
+          },
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:agentcreated",
+            "predicted_normalized": "conceptbookwriter",
+            "count": 4
+          }
+        ],
+        "shuffled_lambda": [
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptlocationlocatedwithinlocation",
+            "count": 7
+          },
+          {
+            "gold": "concept:mutualproxyfor",
+            "predicted_normalized": "conceptproxyfor",
+            "count": 5
+          },
+          {
+            "gold": "concept:proxyfor",
+            "predicted_normalized": "conceptatlocation",
+            "count": 5
+          },
+          {
+            "gold": "concept:subpartof",
+            "predicted_normalized": "conceptatlocation",
+            "count": 4
+          },
+          {
+            "gold": "concept:agentcreated",
+            "predicted_normalized": "conceptbookwriter",
+            "count": 4
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "concept:mutualproxyfor",
+          3
+        ],
+        [
+          "concept:subpartoforganization",
+          2
+        ],
+        [
+          "concept:proxyfor",
+          2
+        ],
+        [
+          "concept:subpartof",
+          1
+        ],
+        [
+          "concept:automobilemakercardealersinstateorprovince",
+          1
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "concept:agentparticipatedinevent",
+          -3
+        ],
+        [
+          "concept:worksfor",
+          -2
+        ],
+        [
+          "concept:animalpreyson",
+          -2
+        ],
+        [
+          "concept:agentactsinlocation",
+          -2
+        ],
+        [
+          "concept:animalthatfeedoninsect",
+          -2
+        ]
+      ],
+      "s2_training": {
+        "calibrated_1": {
+          "seconds": 18142.0,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "shuffled_lambda": {
+          "seconds": 18188.5,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 13571.9
+      },
+      "inputs": {
+        "results/runs/paper_v2_nell23k/hpo_budget60_seed2026/test_comparison/trial_003/predictions_correct.jsonl": "472937f4bc135dd455dc8a6163a05931edc21580214b5614cadfc83e4a50d2a8",
+        "results/runs/ccfb_shuffled_lambda_seed2026/nell23k/test/predictions_correct.jsonl": "60de5f8614069ee42589b1ce8c4a8fa7d659d27a96a5deaf55956e5b2ad604cd",
+        "data/nell23k/recurrent_relation_prediction_full.aligned.json": "5f383019fa87e4c3490174c551395121762ae2b47eebc86a92d6ba84e878bc53"
+      },
+      "validation_em": {
+        "calibrated_1": 0.8878787878787879,
+        "shuffled_lambda": 0.8882828282828282
+      },
+      "weights": {
+        "seed": 2026,
+        "eligible": 3030,
+        "excluded": 0,
+        "changed_weights": 3030,
+        "min": 0.7104713467086651,
+        "max": 0.9205500234500402,
+        "mean": 0.8660362551808223,
+        "std": 0.02628462819190706
+      }
+    },
+    "fb15k237": {
+      "n": 10000,
+      "excluded_question_id": null,
+      "test_em": {
+        "calibrated_1": 0.9046,
+        "shuffled_lambda": 0.9067
+      },
+      "errors": {
+        "calibrated_1": {
+          "correct": 9046,
+          "wrong_in_list": 487,
+          "wrong_out_of_list": 467
+        },
+        "shuffled_lambda": {
+          "correct": 9067,
+          "wrong_in_list": 508,
+          "wrong_out_of_list": 425
+        }
+      },
+      "gains": 180,
+      "regressions": 159,
+      "net": 21,
+      "both_correct": 8887,
+      "both_wrong": 774,
+      "mcnemar": {
+        "discordant": 339,
+        "p_value": 0.27734717476664233,
+        "log10_p_value": -0.5569762537602915,
+        "chi2_cc": 1.1799410029498525
+      },
+      "common_in_list_confusions": {
+        "calibrated_1": [
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "awards won by works",
+            "count": 14
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award winners",
+            "count": 12
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "awards won by individual",
+            "count": 10
+          },
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "award nominations received",
+            "count": 9
+          },
+          {
+            "gold": "Film Release Region and Date",
+            "predicted_normalized": "films country of production",
+            "count": 9
+          }
+        ],
+        "shuffled_lambda": [
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award nominations received",
+            "count": 13
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "awards won by work",
+            "count": 11
+          },
+          {
+            "gold": "Award Nominations for Individuals",
+            "predicted_normalized": "awards won by works",
+            "count": 10
+          },
+          {
+            "gold": "Film Release Region and Date",
+            "predicted_normalized": "films country of production",
+            "count": 10
+          },
+          {
+            "gold": "Nominations Received by an Award Nominee",
+            "predicted_normalized": "award winners",
+            "count": 8
+          }
+        ]
+      },
+      "largest_net_gains_by_gold": [
+        [
+          "Nominations Received by an Award Nominee",
+          46
+        ],
+        [
+          "Award Nominations for Individuals",
+          9
+        ],
+        [
+          "Estimated Number of Mortgages in HUD Foreclosure Area",
+          6
+        ],
+        [
+          "Award Nominees",
+          5
+        ],
+        [
+          "Netflix Genre Titles",
+          5
+        ]
+      ],
+      "largest_net_losses_by_gold": [
+        [
+          "Webpage Categories",
+          -18
+        ],
+        [
+          "Award Winners at a Ceremony",
+          -18
+        ],
+        [
+          "Person's Profession",
+          -7
+        ],
+        [
+          "Film Release Region and Date",
+          -5
+        ],
+        [
+          "Place in HUD County",
+          -4
+        ]
+      ],
+      "s2_training": {
+        "calibrated_1": {
+          "seconds": 18975.0,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        },
+        "shuffled_lambda": {
+          "seconds": 18995.1,
+          "trainer_global_step": 117,
+          "trainer_epoch": 3.0
+        }
+      },
+      "shared_s1_training": {
+        "seconds": 53436.3
+      },
+      "inputs": {
+        "results/runs/fb15k237_three_configs_seed2026/test/calibrated_1/predictions_correct.jsonl": "7b7d27a93e27521598363aa0a03aee850c979f1000b03acf478e059bb8792b21",
+        "results/runs/ccfb_shuffled_lambda_seed2026/fb15k237/test/predictions_correct.jsonl": "a05a72625d656c7869ba1737bd894126b731aec35f58780edfc554dad2e62788",
+        "data/fb15k237/recurrent_relation_prediction_full.json": "c5c7bbca97693d69423682ce986146773d8f3e708174285d302796cb2745987e"
+      },
+      "validation_em": {
+        "calibrated_1": 0.9058,
+        "shuffled_lambda": 0.9112
+      },
+      "weights": {
+        "seed": 2026,
+        "eligible": 3021,
+        "excluded": 0,
+        "changed_weights": 3020,
+        "min": 0.6690219345560802,
+        "max": 0.9159976809169014,
+        "mean": 0.8552755833511468,
+        "std": 0.03413163373073411
+      }
+    }
+  }
+}

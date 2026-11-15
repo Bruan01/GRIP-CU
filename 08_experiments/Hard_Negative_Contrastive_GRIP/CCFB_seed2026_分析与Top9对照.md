@@ -67,4 +67,13 @@ Top-9 的 S2 实测耗时分别为 NELL 5.05 小时和 FB 5.31 小时，均完�
 
 NELL 使用既有官方加载器的 4,950 道验证题与 4,943 道测试题计分，FB 验证和测试各使用 10,000 道题。NELL 的测试参照为原 Calibrated 1.0 的 trial 003，FB 使用四分支首轮的 Calibrated 1.0。两组完成测试后对同一批题计算改对、改错和候选内外错误。[权重打乱入口](scripts/run_ccfb_shuffled_lambda.py)
 
-2026-11-14 20:14（北京时间），tmux 会话 `ccfb-shuffled-lambda-2026` 开始按照 NELL、FB 的顺序运行。冻结计划、日志和待生成的对比文件位于服务器 `/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_shuffled_lambda_seed2026/`。
+2026-11-14 20:14（北京时间），tmux 会话 `ccfb-shuffled-lambda-2026` 启动。两组于 2026-11-15 09:58（北京时间）完成。冻结计划、日志和配对结果位于服务器 `/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_shuffled_lambda_seed2026/`。
+
+表中的测试差以打乱权重的 EM 减去原 Calibrated 1.0 计算。
+
+| 数据集 | 官方计分题数 | 原 Calibrated 验证 / 测试 | 打乱权重验证 / 测试 | 测试差（百分点） | 改对 / 改错 | 双侧精确 McNemar p |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| NELL23K | 4,943 | 88.7879% / 88.3876% | 88.8283% / 88.1449% | −0.2428 | 25 / 37 | 0.162 |
+| FB15k-237 | 10,000 | 90.5800% / 90.4600% | 91.1200% / 90.6700% | +0.2100 | 180 / 159 | 0.277 |
+
+NELL 打乱后净少答对 12 题，候选外错误从 217 增至 227。FB 净多答对 21 题，候选外错误从 467 减至 425，候选内错误从 487 增至 508。两组逐题差异均未达到 0.05 的显著性水平，这两个 seed2026 对照中尚未观察到按题权重分配的一致收益。[逐题比较记录](results/archive/ccfb_seed2026_shuffled_lambda_paired_errors.json)

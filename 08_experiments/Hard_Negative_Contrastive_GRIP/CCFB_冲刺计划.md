@@ -1,8 +1,8 @@
 # GRIP-CU 冲刺 CCF B 计划
 
-> 2026-11-14 执行状态（北京时间）。四数据集主表采用已完成的 seed2026 单次成绩。原多种子队列已停止。逐题分析、NELL 和 FB 的 Top-9 Hard 对照、WN18RR 固定平均权重对照均已完成。NELL23K 和 FB15k-237 已进入权重打乱对照串行队列。[单次结果与对照记录](CCFB_seed2026_分析与Top9对照.md)
+> 2026-11-15 执行状态（北京时间）。四数据集主表采用已完成的 seed2026 单次成绩。原多种子队列已停止。逐题分析、NELL 和 FB 的 Top-9 Hard 对照、WN18RR 固定平均权重对照均已完成。NELL23K 和 FB15k-237 的权重打乱对照于 11 月 15 日 09:58 完成。[单次结果与对照记录](CCFB_seed2026_分析与Top9对照.md)
 
-- 2026-11-14 20:14，tmux 会话 `ccfb-shuffled-lambda-2026` 启动。NELL 训练与评测完毕后运行 FB，每个数据集沿用 seed2026，并与原 Calibrated 1.0 配对。
+- 2026-11-14 20:14，tmux 会话 `ccfb-shuffled-lambda-2026` 启动。两组依次完成 117 步训练、验证和测试，每个数据集沿用 seed2026，并与原 Calibrated 1.0 配对。
 - 服务器运行目录为 `/home/ubuntu2/linkc/ltw-lkc/GRIP-CU/08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_shuffled_lambda_seed2026/`。
 - 计划周期为 2026-11-03 至 2026-12-07。下文 11 月 8 日的状态和多种子排期保留为执行历史。
 
@@ -264,7 +264,7 @@ CoDEx-M 首轮启动时的仓库 HEAD 为 `c17e4386c0c196f1f55e0ba37ab92288d501a
 | --- | --- | --- | --- |
 | P1 | Top-9 Hard，固定权重 1，对比 Soft-Mix | NELL、FB 各 1 seed，已完成 | 混合采样是否优于只选择最高分负例 |
 | P1 | 固定平均权重，对比 Calibrated 1.0 | WN 1 seed，已完成 | 固定平均权重的测试 EM 高 3.9247 个百分点 |
-| P1 | 保持 Calibrated 权重分布，打乱权重与题目对应 | NELL、FB 各 1 seed，已启动串行队列 | 检验权重与题目的对应是否改善精确匹配 |
+| P1 | 保持 Calibrated 权重分布，打乱权重与题目对应 | NELL、FB 各 1 seed，已完成 | 打乱权重后 NELL 测试 EM 低 0.2428 个百分点，FB 高 0.2100 个百分点 |
 | P1 | 易混淆关系、列表内外错误及逐题纠错/退化分析 | 四数据集 seed2026，已完成 | 量化候选内外错误与关系级改对、改错 |
 | P2 | S2 时间匹配 B1，预算内按验证集选 checkpoint | FB 先做 1 组 | 额外 S2 计算能否解释主要收益 |
 | P2 | 独立 S1 的 B1＋主方法检查 | WN 先做 1 组 | 结论是否依赖当前共享 S1 |
