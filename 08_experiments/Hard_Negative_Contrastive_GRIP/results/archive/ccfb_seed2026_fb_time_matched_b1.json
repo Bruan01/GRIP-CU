@@ -1,0 +1,286 @@
+{
+  "dataset": "fb15k237",
+  "seed": 2026,
+  "left": "soft_mix_1",
+  "right": "time_matched_b1",
+  "pair_direction": "gains and regressions are from left to right",
+  "entrypoint": "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/run_ccfb_fb_time_matched_b1.py",
+  "run_path": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_fb_time_matched_b1_seed2026",
+  "source_sha256": {
+    "comparison.json": "81aca6dc568e1839ad7a59fba6d55051d505846e68b03248df9f2d7c70cba10e",
+    "run_status.json": "baea29c9faca66093dc6225a433d158f77bbd0d4024b0c4f7b6ac9417de27a36",
+    "selection.json": "fa351174bb7b3c559072891302ce4c5d972c958175e830b5a2b8c7a22eb8b22a",
+    "plan.json": "9a3671c5cd95c08576f778dd6708127193995363a4cef8c87d4ee3f99674269a"
+  },
+  "timing_scope": "Active S2 Trainer loop including checkpoint writes. Model loading, validation and test are outside this budget. Resume carries forward durably recorded active time.",
+  "selection_rule": "Maximum validation official_em among steps 117, 234 and the latest checkpoint saved within budget. Ties use the earlier step.",
+  "scheduler_epochs": 10,
+  "selection": {
+    "metric": "validation.official_em",
+    "scores": {
+      "117": 0.8992,
+      "234": 0.8811,
+      "354": 0.8782
+    },
+    "selected_step": 117,
+    "selected": {
+      "path": "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_fb_time_matched_b1_seed2026/selection_checkpoints/checkpoint-117",
+      "epoch": 3.0,
+      "seconds": 6142.965390938916,
+      "adapter_sha256": "a590b4c2247cca5d96d7cbb18df610e320a723253dccf3b5b80a56ca83e46cf8"
+    },
+    "test_seen": false
+  },
+  "train_arguments": [
+    "08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/bin/python",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/train_listed_contrastive.py",
+    "--input_file",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/fb15k237_three_configs_seed2026/tasks/tasks.json",
+    "--eval_file",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/data/fb15k237/recurrent_relation_prediction_full.json",
+    "--eval_splits",
+    "validation",
+    "--output_dir",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/ccfb_fb_time_matched_b1_seed2026",
+    "--stage",
+    "b1",
+    "--s1_adapter",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/fb15k237_three_configs_seed2026/s1_adapter",
+    "--model_name",
+    "qwen-7b",
+    "--model_cache_dir",
+    "08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache",
+    "--raw_dir",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/data/raw_datasets/fb15k237",
+    "--relation_text_file",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/data/raw_datasets/fb15k237/rel2text.json",
+    "--lora_r",
+    "24",
+    "--lora_alpha",
+    "48",
+    "--target_modules",
+    "down_proj",
+    "up_proj",
+    "gate_proj",
+    "--num_train_epochs",
+    "1",
+    "--s1_stop_loss_threshold",
+    "0.15",
+    "--involve_qa_epochs",
+    "10",
+    "--qa_loss_mask",
+    "answer_only",
+    "--per_device_train_batch_size",
+    "1",
+    "--gradient_accumulation_steps",
+    "512",
+    "--s1_gradient_checkpointing",
+    "--learning_rate",
+    "0.001",
+    "--weight_decay",
+    "0.0001",
+    "--adam_epsilon",
+    "0.0001",
+    "--max_grad_norm",
+    "1",
+    "--s2_optimizer",
+    "inherit_s1",
+    "--gen_max_length",
+    "1000",
+    "--save_steps",
+    "10",
+    "--save_total_limit",
+    "2",
+    "--seed",
+    "2026",
+    "--lambda_candidate",
+    "0",
+    "--temperature",
+    "1",
+    "--memory_size",
+    "0",
+    "--listed_negative_source",
+    "train_graph"
+  ],
+  "eval_argument_template": [
+    "08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/.venv/bin/python",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/scripts/eval_listed_decode.py",
+    "--adapter_dir",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/fb15k237_three_configs_seed2026/soft_mix_1/listed/adapter",
+    "--output_dir",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/results/runs/fb15k237_three_configs_seed2026/test/soft_mix_1",
+    "--eval_file",
+    "08_experiments/Hard_Negative_Contrastive_GRIP/data/fb15k237/recurrent_relation_prediction_full.json",
+    "--splits",
+    "test",
+    "--model_name",
+    "qwen-7b",
+    "--model_cache_dir",
+    "08_experiments/RecurrentGRIP/v1_1_nell23k_first_2026-08-29/grip-exp/model_cache",
+    "--decode",
+    "generate",
+    "--gen_max_length",
+    "1000",
+    "--progress_every",
+    "100"
+  ],
+  "comparison": {
+    "n": 10000,
+    "excluded_question_id": null,
+    "test_em": {
+      "soft_mix_1": 0.9036,
+      "time_matched_b1": 0.8961
+    },
+    "errors": {
+      "soft_mix_1": {
+        "correct": 9036,
+        "wrong_in_list": 504,
+        "wrong_out_of_list": 460
+      },
+      "time_matched_b1": {
+        "correct": 8961,
+        "wrong_in_list": 713,
+        "wrong_out_of_list": 326
+      }
+    },
+    "gains": 387,
+    "regressions": 462,
+    "net": -75,
+    "both_correct": 8574,
+    "both_wrong": 577,
+    "mcnemar": {
+      "discordant": 849,
+      "p_value": 0.011052469037692032,
+      "log10_p_value": -1.9565406930498495,
+      "chi2_cc": 6.449941107184923
+    },
+    "common_in_list_confusions": {
+      "soft_mix_1": [
+        {
+          "gold": "Award Nominations for Individuals",
+          "predicted_normalized": "awards won by works",
+          "count": 16
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "award winners",
+          "count": 12
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "awards won by individual",
+          "count": 10
+        },
+        {
+          "gold": "Film Release Region and Date",
+          "predicted_normalized": "films country of production",
+          "count": 8
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "award nominations received",
+          "count": 7
+        }
+      ],
+      "time_matched_b1": [
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "award nominations received",
+          "count": 19
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "awards won by works",
+          "count": 18
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "award winners at ceremony",
+          "count": 14
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "awards won by work",
+          "count": 13
+        },
+        {
+          "gold": "Nominations Received by an Award Nominee",
+          "predicted_normalized": "award winners",
+          "count": 13
+        }
+      ]
+    },
+    "largest_net_gains_by_gold": [
+      [
+        "Award Nominations Received",
+        30
+      ],
+      [
+        "Award Nominees",
+        21
+      ],
+      [
+        "Award Nominations for Individuals",
+        13
+      ],
+      [
+        "Second Level Divisions of a Country",
+        10
+      ],
+      [
+        "Place in HUD County",
+        10
+      ]
+    ],
+    "largest_net_losses_by_gold": [
+      [
+        "Nominations Received by an Award Nominee",
+        -105
+      ],
+      [
+        "Webpage Categories",
+        -14
+      ],
+      [
+        "Film Genres",
+        -13
+      ],
+      [
+        "Film's Country of Production",
+        -12
+      ],
+      [
+        "Major Field of Study for Graduates",
+        -12
+      ]
+    ],
+    "s2_training": {
+      "soft_mix_1": {
+        "seconds": 18958.2,
+        "trainer_global_step": 117,
+        "trainer_epoch": 3.0
+      },
+      "time_matched_b1": {
+        "batch_active_seconds": 18928.400226559956,
+        "budget_seconds": 18958.2,
+        "selected_checkpoint_seconds": 6142.965390938916,
+        "selected_step": 117,
+        "selected_epoch": 3.0,
+        "last_training_step": 354
+      }
+    },
+    "shared_s1_training": {
+      "seconds": 53436.3
+    },
+    "inputs": {
+      "results/runs/fb15k237_three_configs_seed2026/test/soft_mix_1/predictions_correct.jsonl": "77c378e4a8647daa18d66f9b0057a4a9cc4e7c0a03ce5fad889321dfa01b877f",
+      "results/runs/ccfb_fb_time_matched_b1_seed2026/test/predictions_correct.jsonl": "2d82c77997ea769793a7b86a4ec85d19d68fbd2482f7a771c228a5ee767a4b4c",
+      "data/fb15k237/recurrent_relation_prediction_full.json": "c5c7bbca97693d69423682ce986146773d8f3e708174285d302796cb2745987e"
+    },
+    "validation_em": {
+      "soft_mix_1": 0.911,
+      "time_matched_b1": 0.8992
+    },
+    "three_epoch_b1_test_em": 0.8896
+  }
+}
