@@ -1,0 +1,51 @@
+{
+  "format_version": 1,
+  "status": "COMPLETE",
+  "user": "ubuntu2",
+  "started_at_utc": "2026-11-18T03:30:27+00:00",
+  "repository_head": "559c63ccd7119d714202ca398f1a60406308e1aa",
+  "scope": "Three approved intermediate S2 checkpoints.",
+  "targets": [
+    {
+      "path": "results/runs/ccfb_shuffled_lambda_seed2026/fb15k237/trainer_listed/checkpoint-110",
+      "allocated_bytes": 2735468544,
+      "status": "deleted",
+      "retained_checkpoint": "results/runs/ccfb_shuffled_lambda_seed2026/fb15k237/trainer_listed/checkpoint-117",
+      "retained_adapter": "results/runs/ccfb_shuffled_lambda_seed2026/fb15k237/listed/adapter",
+      "retained_test": "results/runs/ccfb_shuffled_lambda_seed2026/fb15k237/test/summary.json",
+      "test_rows": 10000,
+      "deleted_at_utc": "2026-11-18T03:30:27+00:00"
+    },
+    {
+      "path": "results/runs/ccfb_fb_time_matched_b1_seed2026/trainer_b1/checkpoint-350",
+      "allocated_bytes": 2735583232,
+      "status": "deleted",
+      "retained_checkpoint": "results/runs/ccfb_fb_time_matched_b1_seed2026/trainer_b1/checkpoint-354",
+      "retained_adapter": "results/runs/ccfb_fb_time_matched_b1_seed2026/selection_checkpoints/checkpoint-117",
+      "retained_test": "results/runs/ccfb_fb_time_matched_b1_seed2026/test/summary.json",
+      "test_rows": 10000,
+      "deleted_at_utc": "2026-11-18T03:30:27+00:00"
+    },
+    {
+      "path": "results/runs/ccfb_shuffled_lambda_seed2026/nell23k/trainer_listed/checkpoint-110",
+      "allocated_bytes": 2281299968,
+      "status": "deleted",
+      "retained_checkpoint": "results/runs/ccfb_shuffled_lambda_seed2026/nell23k/trainer_listed/checkpoint-117",
+      "retained_adapter": "results/runs/ccfb_shuffled_lambda_seed2026/nell23k/listed/adapter",
+      "retained_test": "results/runs/ccfb_shuffled_lambda_seed2026/nell23k/test/summary.json",
+      "test_rows": 4944,
+      "deleted_at_utc": "2026-11-18T03:30:27+00:00"
+    }
+  ],
+  "filesystem": {
+    "free_bytes_before": 20351537152,
+    "allocated_bytes_targeted": 7752351744,
+    "free_bytes_after": 28103884800
+  },
+  "verification": {
+    "retained_files": 47,
+    "retained_files_unchanged": true,
+    "preexisting_tracked_diff_unchanged": true
+  },
+  "finished_at_utc": "2026-11-18T03:30:27+00:00"
+}
