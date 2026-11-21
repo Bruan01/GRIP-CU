@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "status": "COMPLETE",
+  "principal": "ubuntu2",
+  "started_at_utc": "2026-11-21T07:58:20+00:00",
+  "repository_head": "3f438a01e9fadd679e280efeea15776d0461a4cf",
+  "scope": "One completed WN18RR seed2026 intermediate S1 checkpoint.",
+  "targets": [
+    {
+      "path": "results/runs/wn18rr_three_configs_seed2026/trainer_s1/checkpoint-310",
+      "allocated_bytes": 2735456256,
+      "status": "deleted",
+      "files": 15,
+      "retained_checkpoint": "results/runs/wn18rr_three_configs_seed2026/trainer_s1/checkpoint-320",
+      "retained_s1_export": "results/runs/wn18rr_three_configs_seed2026/s1_adapter",
+      "checked_test_predictions": 12536,
+      "deleted_at_utc": "2026-11-21T07:58:20+00:00"
+    }
+  ],
+  "filesystem": {
+    "free_bytes_before": 5431255040,
+    "nell23k_start_bytes": 5600531878,
+    "codexm_start_bytes": 4818234968,
+    "estimated_bytes_for_remaining_queue": 7197541374,
+    "free_bytes_after": 8166707200
+  },
+  "verification": {
+    "retained_files_checked": 21,
+    "retained_files_verified": true,
+    "tracked_worktree_diff_preserved": true
+  },
+  "finished_at_utc": "2026-11-21T07:58:20+00:00"
+}
