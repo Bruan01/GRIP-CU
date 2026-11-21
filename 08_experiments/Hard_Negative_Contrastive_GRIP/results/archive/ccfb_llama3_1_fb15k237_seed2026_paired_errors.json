@@ -1,0 +1,171 @@
+{
+  "n": 10000,
+  "excluded_question_id": null,
+  "test_em": {
+    "b1": 0.8317,
+    "soft_mix_1": 0.8442
+  },
+  "errors": {
+    "b1": {
+      "correct": 8317,
+      "wrong_in_list": 1522,
+      "wrong_out_of_list": 161
+    },
+    "soft_mix_1": {
+      "correct": 8442,
+      "wrong_in_list": 508,
+      "wrong_out_of_list": 1050
+    }
+  },
+  "gains": 970,
+  "regressions": 845,
+  "net": 125,
+  "both_correct": 7472,
+  "both_wrong": 713,
+  "mcnemar": {
+    "discordant": 1815,
+    "p_value": 0.0035957611488334957,
+    "log10_p_value": -2.444209164321668,
+    "chi2_cc": 8.471625344352617
+  },
+  "common_in_list_confusions": {
+    "b1": [
+      {
+        "gold": "Film Release Region and Date",
+        "predicted_normalized": "executive producers of film",
+        "count": 22
+      },
+      {
+        "gold": "Film Release Region and Date",
+        "predicted_normalized": "runtime of films by region",
+        "count": 20
+      },
+      {
+        "gold": "Film Release Region and Date",
+        "predicted_normalized": "country of origin of tv program",
+        "count": 14
+      },
+      {
+        "gold": "Film Release Region and Date",
+        "predicted_normalized": "items appearing in ranked lists",
+        "count": 12
+      },
+      {
+        "gold": "Nominations Received by an Award Nominee",
+        "predicted_normalized": "award winners",
+        "count": 12
+      }
+    ],
+    "soft_mix_1": [
+      {
+        "gold": "Award Nominations for Individuals",
+        "predicted_normalized": "awards won by works",
+        "count": 8
+      },
+      {
+        "gold": "Film Release Region and Date",
+        "predicted_normalized": "films country of production",
+        "count": 7
+      },
+      {
+        "gold": "Nominations Received by an Award Nominee",
+        "predicted_normalized": "award winners",
+        "count": 6
+      },
+      {
+        "gold": "Film Release Region and Date",
+        "predicted_normalized": "runtime of films by region",
+        "count": 6
+      },
+      {
+        "gold": "Films Featuring an Actor",
+        "predicted_normalized": "award nominees",
+        "count": 6
+      }
+    ]
+  },
+  "largest_net_gains_by_gold": [
+    [
+      "Film Release Region and Date",
+      176
+    ],
+    [
+      "Films Featuring an Actor",
+      73
+    ],
+    [
+      "Ethnic Groups and Their People",
+      65
+    ],
+    [
+      "Film Crew Roles",
+      30
+    ],
+    [
+      "Geographical Containment",
+      28
+    ]
+  ],
+  "largest_net_losses_by_gold": [
+    [
+      "Nominations Received by an Award Nominee",
+      -68
+    ],
+    [
+      "Webpage Categories",
+      -66
+    ],
+    [
+      "Olympic Athletes by Olympics",
+      -20
+    ],
+    [
+      "Places Lived by a Person",
+      -19
+    ],
+    [
+      "Awards Won by Works",
+      -19
+    ]
+  ],
+  "s2_training": {
+    "b1": {
+      "seconds": 7664.2,
+      "trainer_global_step": 117,
+      "trainer_epoch": 3.0
+    },
+    "soft_mix_1": {
+      "seconds": 22539.2,
+      "trainer_global_step": 117,
+      "trainer_epoch": 3.0
+    }
+  },
+  "shared_s1_training": {
+    "seconds": 61221.2
+  },
+  "inputs": {
+    "results/runs/ccfb_llama3_1_seed2026/fb15k237/test/b1/predictions_correct.jsonl": "e3e8f6c0dc4848846d9bef60b81aa51e96f4e2037fb72aa0eb254299312c59d8",
+    "results/runs/ccfb_llama3_1_seed2026/fb15k237/test/soft_mix_1/predictions_correct.jsonl": "ba18417348c3eef0546daecfb947bc7ec68208e6c2f7a4eefb0e8b9bc712c697",
+    "data/fb15k237/recurrent_relation_prediction_full.json": "c5c7bbca97693d69423682ce986146773d8f3e708174285d302796cb2745987e"
+  },
+  "delta_em": 0.012499999999999956,
+  "paper_llama_em": 0.7779,
+  "validation": {
+    "b1": {
+      "official_em": 0.8383
+    },
+    "soft_mix_1": {
+      "official_em": 0.8566
+    }
+  },
+  "seed": 2026,
+  "stage_wall_seconds": {
+    "soft_mix_1": 27057.087035149103,
+    "score": 27612.936999886064,
+    "freeze": 8.898431485984474,
+    "b1": 12091.830287273973,
+    "s1": 61234.148781308904,
+    "test_b1": 4396.030811039032,
+    "test_soft_mix_1": 4510.279730651062
+  }
+}
